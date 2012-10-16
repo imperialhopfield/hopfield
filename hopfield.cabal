@@ -18,7 +18,7 @@ library
     src
   build-depends:
       base >= 4 && <= 5
-    , vector
+    , vector >= 0.10.0.1
   ghc-options:
     -Wall -fwarn-unused-imports
 
