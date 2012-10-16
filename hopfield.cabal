@@ -22,7 +22,7 @@ library
     -Wall -fwarn-unused-imports
 
 
-executable d
+executable hopfield
   default-language: Haskell2010
   hs-source-dirs:
     apps
@@ -31,8 +31,6 @@ executable d
   other-modules:
   build-depends:
       base >= 4 && <= 5
-    , cmdargs >= 0.10
-    , HaXml >= 1.23.3
     , hopfield
   ghc-options:
     -Wall -fwarn-unused-imports
