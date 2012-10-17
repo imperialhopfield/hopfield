@@ -12,7 +12,15 @@ type NetworkSize = Int
 
 
 train :: [Pattern] -> Weights
-train = undefined
+train [] = V.fromList []
+train pats = vector2D weights
+  where
+    vector2D ll = V.fromList (map V.fromList ll)
+    neurons = V.length (head pats)
+    w i j
+      | i == j    = 0
+      | otherwise = sum [ (p ! i) * (p ! j) | p <- pats ]
+    weights = [ [ w i j | j <- [0 .. neurons-1] ] | i <- [0 .. neurons-1] ]
 
 
 update :: Weights -> Pattern -> Pattern
