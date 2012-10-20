@@ -2,8 +2,9 @@
 module Hopfield (
     Weights
   , Pattern
-  -- * Training
-  , train
+  -- * Hopfield data structure
+  , HopfieldData ()
+  , buildHopfieldData
   -- * Running
   , update
   , repeatedUpdate
@@ -21,7 +22,16 @@ import qualified Data.Vector as V
 type Weights = Vector (Vector Int)
 type Pattern = Vector Int
 
-type HopfieldNetwork = (Weights, [Pattern])
+data HopfieldData = HopfieldData Weights [Pattern]
+
+-- | @buildHopfieldData patterns@: Takes a list of patterns and
+-- builds a Hopfield network (by training) in which these patterns are
+-- stable states.
+buildHopfieldData :: [Pattern] -> HopfieldData
+buildHopfieldData pats = HopfieldData weigths pats
+  where
+    weigths = train pats
+
 
 -- | @train pattern@: Trains and construct network given a list of patterns
 -- which are then stored in the network. These patterns will be stable points in
@@ -53,6 +63,7 @@ update ws pat =
                         | j <- [0 .. p-1] ] >= 0 then 1 else -1
     p          = V.length pat
 
+
 -- | @repeatedUpdate weights pattern@: Performs repeated updates on the given
 -- pattern until it reaches a stable state with respect to the Hopfield network
 -- (represented by @weights@).
@@ -65,17 +76,17 @@ repeatedUpdate ws pat
     new_pat = update ws pat
 
 
--- | @matchPatterns weights patterns pattern@:
+-- | @matchPatterns (HopfieldData weights pattterns) pattern@:
 -- Computes the stable state of a pattern given a Hopfield network(represented
 -- by @weights@) and tries to find a match in a list of patterns (@patterns@).
 -- Returns:
---
+
 --    The index of the matching pattern in @patterns@, if a match exists
 --    The converged pattern (the stable state), otherwise
 --
 -- Pre: @length weights == length pattern@
-matchPattern :: Weights -> [Pattern] -> Pattern -> Either Pattern Int
-matchPattern ws pats pat =
+matchPattern :: HopfieldData -> Pattern -> Either Pattern Int
+matchPattern (HopfieldData ws pats) pat =
   case m_index of
     Nothing    -> Left converged_pattern
     Just index -> Right index
