@@ -21,8 +21,11 @@ import qualified Data.Vector as V
 type Weights = Vector (Vector Int)
 type Pattern = Vector Int
 
--- | @train pattern@:
---
+type HopfieldNetwork = (Weights, [Pattern])
+
+-- | @train pattern@: Trains and construct network given a list of patterns
+-- which are then stored in the network. These patterns will be stable points in
+-- the network (by construction).
 train :: [Pattern] -> Weights
 train [] = V.fromList []
 train pats = vector2D weights
@@ -36,7 +39,7 @@ train pats = vector2D weights
 
 
 -- | @update weights pattern@: Applies the update rule on @pattern@ for a random
--- updatable neuron given the Hopefield network (represented by @weights@).
+-- updatable neuron given the Hopfield network (represented by @weights@).
 --
 -- Pre: @length weights == length pattern@
 update :: Weights -> Pattern -> Pattern
@@ -80,7 +83,8 @@ matchPattern ws pats pat =
     converged_pattern = repeatedUpdate ws pat
     m_index = converged_pattern `elemIndex` pats
 
--- | @enjoy weights pattern@: Computes the energy of a pattern given a Hopefield
+
+-- | @enjoy weights pattern@: Computes the energy of a pattern given a Hopfield
 -- network (represented by weigths)
 -- Pre: @length weights == length pattern@
 energy :: Weights -> Pattern -> Int
