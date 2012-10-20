@@ -22,34 +22,51 @@ import qualified Data.Vector as V
 type Weights = Vector (Vector Int)
 type Pattern = Vector Int
 
+-- | Encapsulates the network weights together with the patterns that generate
+-- it with the patterns which generate it
 data HopfieldData = HopfieldData Weights [Pattern]
 
 -- | @buildHopfieldData patterns@: Takes a list of patterns and
 -- builds a Hopfield network (by training) in which these patterns are
--- stable states.
+-- stable states. The result of this function can be used to run a pattern
+-- againts the network, by using 'matchPattern'.
 buildHopfieldData :: [Pattern] -> HopfieldData
-buildHopfieldData pats = HopfieldData weigths pats
+buildHopfieldData pats = HopfieldData ws pats
   where
-    weigths = train pats
+    ws = train pats
 
 
--- | @train pattern@: Trains and construct network given a list of patterns
--- which are then stored in the network. These patterns will be stable points in
--- the network (by construction).
+-- | @weights hopefieldData@
+-- Gets the weights corresponding to the Hopefield network represented by
+-- @hopefieldData@
+weights :: HopfieldData -> Weights
+weights (HopfieldData ws _) = ws
+
+
+-- | @patterns hopefieldData@
+-- Gets the patterns which were used to train the Hopefield network
+-- represented by @hopefieldData@
+patterns :: HopfieldData -> [Pattern]
+patterns (HopfieldData _ pats) = pats
+
+
+-- | @train patterns@: Trains and constructs network given a list of patterns
+-- which are used to build the weight matrix. As a consequence, they will be
+-- stable points in the network (by construction).
 train :: [Pattern] -> Weights
 train [] = V.fromList []
-train pats = vector2D weights
+train pats = vector2D ws
   where
     vector2D ll = V.fromList (map V.fromList ll)
     neurons = V.length (head pats)
     w i j
       | i == j    = 0
       | otherwise = sum [ (p ! i) * (p ! j) | p <- pats ]
-    weights = [ [ w i j | j <- [0 .. neurons-1] ] | i <- [0 .. neurons-1] ]
+    ws = [ [ w i j | j <- [0 .. neurons-1] ] | i <- [0 .. neurons-1] ]
 
 
--- | @update weights pattern@: Applies the update rule on @pattern@ for a random
--- updatable neuron given the Hopfield network (represented by @weights@).
+-- | @update weights pattern@: Applies the update rule on @pattern@ for the
+-- first updatable neuron given the Hopfield network (represented by @weights@).
 --
 -- Pre: @length weights == length pattern@
 update :: Weights -> Pattern -> Pattern
@@ -76,11 +93,12 @@ repeatedUpdate ws pat
     new_pat = update ws pat
 
 
--- | @matchPatterns (HopfieldData weights pattterns) pattern@:
+-- | @matchPatterns hopefieldData pattern@:
 -- Computes the stable state of a pattern given a Hopfield network(represented
--- by @weights@) and tries to find a match in a list of patterns (@patterns@).
+-- by @weights@) and tries to find a match in a list of patterns which are
+-- stored in @hopefieldData@.
 -- Returns:
-
+--
 --    The index of the matching pattern in @patterns@, if a match exists
 --    The converged pattern (the stable state), otherwise
 --
@@ -95,8 +113,8 @@ matchPattern (HopfieldData ws pats) pat =
     m_index = converged_pattern `elemIndex` pats
 
 
--- | @enjoy weights pattern@: Computes the energy of a pattern given a Hopfield
--- network (represented by weigths)
+-- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
+-- network (represented by weights).
 -- Pre: @length weights == length pattern@
 energy :: Weights -> Pattern -> Int
 energy ws pat =
