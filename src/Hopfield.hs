@@ -16,7 +16,7 @@ train [] = V.fromList []
 train pats = vector2D weights
   where
     vector2D ll = V.fromList (map V.fromList ll)
-    neurons = V.length (head pats)
+    neurons     = V.length (head pats)
     w i j
       | i == j    = 0
       | otherwise = sum [ (p ! i) * (p ! j) | p <- pats ]
@@ -50,13 +50,13 @@ matchPattern ws pats pat =
     Just index -> Right index
   where
     converged_pattern = repeatedUpdate ws pat
-    m_index = converged_pattern `elemIndex` pats
+    m_index           = converged_pattern `elemIndex` pats
 
 
 energy :: Weights -> Pattern -> Int
 energy ws pat =
   sum [ w i j * x i * x j | i <- [0 .. p-1], j <- [0 .. p-1] ]
   where
-    p = V.length pat
+    p     = V.length pat
     w i j = ws ! i ! j
-    x i = pat ! i
+    x i   = pat ! i
