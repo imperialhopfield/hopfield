@@ -22,10 +22,10 @@ import           Data.Vector (Vector, (!))
 import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
 
-import           Util (repeatUntilEqual)
+import           Util
 
 
-type Weights = Vector (Vector Int)
+type Weights = Vector (Vector Double)
 type Pattern = Vector Int
 
 -- | Encapsulates the network weights together with the patterns that generate
@@ -51,11 +51,11 @@ train :: [Pattern] -> Weights
 train pats = vector2D ws
   -- No need to check pats ws size, buildHopfieldData does it
   where
-    ws = [ [ w i j | j <- [0 .. neurons-1] ] | i <- [0 .. neurons-1] ]
+    ws = [ [ w i j ./. p | j <- [0 .. p-1] ] | i <- [0 .. p-1] ]
     w i j
       | i == j    = 0
       | otherwise = sum [ (p ! i) * (p ! j) | p <- pats ]
-    neurons     = V.length (head pats)
+    p           = V.length (head pats)
     vector2D ll = V.fromList (map V.fromList ll)
 
 
@@ -67,7 +67,7 @@ update' ws pat =
     i:_ -> V.modify (\v -> write v i (o i)) pat
   where
     updatables = [ i | (i, x_i) <- zip [1..] (V.toList pat), o i /= x_i ]
-    o i        = if sum [ (ws ! i ! j) * (pat ! j)
+    o i        = if sum [ (ws ! i ! j) *. (pat ! j)
                         | j <- [0 .. p-1] ] >= 0 then 1 else -1
     p          = V.length pat
 
@@ -120,16 +120,16 @@ matchPattern (HopfieldData ws pats) pat
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
 -- network (represented by weights).
 -- Pre: @length weights == length pattern@
-energy :: Weights -> Pattern -> Int
+energy :: Weights -> Pattern -> Double
 energy ws pat
   | Just e <- validPattern ws pat = error e
   | Just e <- validWeights ws     = error e
-  | otherwise = s `div` (-2)
+  | otherwise = s / (-2.0)
     where
       p     = V.length pat
       w i j = ws ! i ! j
       x i   = pat ! i
-      s = sum [ w i j * x i * x j | i <- [0 .. p-1], j <- [0 .. p-1] ]
+      s = sum [ w i j *. (x i * x j) | i <- [0 .. p-1], j <- [0 .. p-1] ]
 
 
 validPattern :: Weights -> Pattern -> Maybe String
