@@ -61,7 +61,8 @@ energy :: Weights -> Pattern -> Int
 energy ws pat
   | not $ compatibleWeightsPattern ws pat
     = error "Pattern incompatible with weight matrix"
-  | otherwise = sum [ w i j * x i * x j | i <- [0 .. p-1], j <- [0 .. p-1] ]
+  | otherwise
+    = sum [ w i j * x i * x j | i <- [0 .. p-1], j <- [0 .. p-1] ] `div` (-2)
     where
       p     = V.length pat
       w i j = ws ! i ! j
