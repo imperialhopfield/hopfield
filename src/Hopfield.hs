@@ -79,8 +79,9 @@ update' ws pat =
 -- Pre: @length weights == length pattern@
 update :: Weights -> Pattern -> Pattern
 update ws pat
-  | Just e <- m_validPattern ws pat = error e
-  | otherwise              = update' ws pat
+  | Just e <- validPattern ws pat  = error e
+  | Just e <- validWeights ws      = error e
+  | otherwise                      = update' ws pat
 
 
 -- | @repeatedUpdate weights pattern@: Performs repeated updates on the given
@@ -89,8 +90,9 @@ update ws pat
 -- Pre: @length weights == length pattern@
 repeatedUpdate :: Weights -> Pattern -> Pattern
 repeatedUpdate ws pat
-  | Just e <- m_validPattern ws pat = error e
-  | otherwise              = repeatUntilEqual (update' ws) pat
+  | Just e <- validPattern ws pat  = error e
+  | Just e <- validWeights ws      = error e
+  | otherwise                      = repeatUntilEqual (update' ws) pat
 
 
 -- | @matchPatterns hopfieldData pattern@:
@@ -105,7 +107,8 @@ repeatedUpdate ws pat
 -- Pre: @length weights == length pattern@
 matchPattern :: HopfieldData -> Pattern -> Either Pattern Int
 matchPattern (HopfieldData ws pats) pat
-  | Just e <- m_validPattern ws pat = error e
+  | Just e <- validPattern ws pat = error e
+  | Just e <- validWeights ws = error e
   | otherwise
     = case m_index of
         Nothing    -> Left converged_pattern
@@ -120,7 +123,8 @@ matchPattern (HopfieldData ws pats) pat
 -- Pre: @length weights == length pattern@
 energy :: Weights -> Pattern -> Int
 energy ws pat
-  | Just e <- m_validPattern ws pat = error e
+  | Just e <- validPattern ws pat = error e
+  | Just e <- validWeights ws     = error e
   | otherwise = sum [ w i j * x i * x j | i <- [0 .. p-1], j <- [0 .. p-1] ]
     where
       p     = V.length pat
@@ -128,38 +132,28 @@ energy ws pat
       x i   = pat ! i
 
 
-m_validPattern :: Weights -> Pattern -> Maybe String
-m_validPattern ws pat
+validPattern :: Weights -> Pattern -> Maybe String
+validPattern ws pat
   | V.length ws /= V.length pat = Just "Pattern size must match network size"
   | otherwise                   = Nothing
 
-
--- TODO get first like with the patterns, instead of using random
-m_validPatterns :: Weights -> [Pattern] -> Maybe String
-m_validPatterns ws pats =
-    Just $ concat . intersperse ", " . map show $ invalid_pattern_indices
-    where
-      valid_patterns = map (isNothing . m_validPattern ws) pats
-      bool_index_pairs = zip [0..] valid_patterns
-      invalid_pattern_indices = [ i | (i, valid) <- bool_index_pairs, valid ]
 
 -- | @validWeights weights@: Validates the weight matrix's correctness:
 -- * It is non-empty
 -- * It is square
 -- * It is symmetric
 -- * All diagonal elements must be zero
--- Throws an error if the weight matrix is invalid.
---validWeights :: Weights -> Bool
---validWeights ws
---  | n == 0
---    = error "Weight matrix must be non-empty"
---  | not $ allEquals $ [n] ++ (map V.length $ V.toList ws)
---    = error "Weight matrix must be square"
---  | not $ all (== 0) [ ws ! i ! i | i <- [0..n-1]]
---    = error "Weight matrix diagonal must be zero"
---  | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1]]
---    = error "Weight matrix must be symmetric"
---  | otherwise = True
---  where
---    n = V.length ws
+validWeights :: Weights -> Maybe String
+validWeights ws
+  | n == 0
+    = Just "Weight matrix must be non-empty"
+  | not $ all (\x -> V.length x == n) $ V.toList ws
+    = Just "Weight matrix has to be a square matrix"
+  | not $ all (== 0) [ ws ! i ! i | i <- [0..n-1] ]
+    = Just "Weight matrix first diagonal must be zero"
+  | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
+    = Just "Weight matrix must be symmetric"
+  | otherwise = Nothing
+  where
+    n = V.length ws
 
