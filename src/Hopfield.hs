@@ -148,8 +148,11 @@ validPattern ws pat
 
 -- | @validWeights weights@: Validates the weight matrix's correctness:
 -- * It is non-empty
+--
 -- * It is square
+--
 -- * It is symmetric
+--
 -- * All diagonal elements must be zero
 validWeights :: Weights -> Maybe String
 validWeights ws
