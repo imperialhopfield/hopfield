@@ -1,6 +1,5 @@
 module Util (
     repeatUntilEqual
-  , getString
   , (./.)
   , (*.)
 ) where
@@ -21,7 +20,3 @@ repeatUntilEqual f a
   | otherwise  = repeatUntilEqual f new_a
   where
     new_a = f a
-
-
-getString :: (Show a) => [a] -> String
-getString vals = concat . intersperse ", " . map show $ vals
