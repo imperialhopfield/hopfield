@@ -41,7 +41,15 @@ data HopfieldData = HopfieldData {
 -- againts the network, by using 'matchPattern'.
 buildHopfieldData :: [Pattern] -> HopfieldData
 buildHopfieldData []   = error "Train patterns are empty"
-buildHopfieldData pats = HopfieldData (train pats) pats
+buildHopfieldData pats
+  | first_len == 0
+      = error "Cannot have empty patterns"
+  | not $ all (\x -> V.length x == first_len) pats
+      = error "All training patterns must have the same length"
+  | otherwise
+      = HopfieldData (train pats) pats
+  where
+    first_len = V.length (head pats)
 
 
 -- | @train patterns@: Trains and constructs network given a list of patterns
