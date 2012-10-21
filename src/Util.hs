@@ -4,8 +4,6 @@ module Util (
   , (*.)
 ) where
 
-import Data.List
-
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
 x ./. y = fromIntegral x / fromIntegral y
