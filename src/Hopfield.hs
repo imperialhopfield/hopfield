@@ -62,7 +62,7 @@ train pats = vector2D ws
     ws = [ [ w i j ./. p | j <- [0 .. p-1] ] | i <- [0 .. p-1] ]
     w i j
       | i == j    = 0
-      | otherwise = sum [ (p ! i) * (p ! j) | p <- pats ]
+      | otherwise = sum [ (pat ! i) * (pat ! j) | pat <- pats ]
     p           = V.length (head pats)
     vector2D ll = V.fromList (map V.fromList ll)
 
