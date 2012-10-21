@@ -18,7 +18,6 @@ module Hopfield (
 ) where
 
 import           Data.List
-import           Data.Maybe
 import           Data.Vector (Vector, (!))
 import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
