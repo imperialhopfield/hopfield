@@ -124,11 +124,12 @@ energy :: Weights -> Pattern -> Int
 energy ws pat
   | Just e <- validPattern ws pat = error e
   | Just e <- validWeights ws     = error e
-  | otherwise = sum [ w i j * x i * x j | i <- [0 .. p-1], j <- [0 .. p-1] ]
+  | otherwise = s `div` (-2)
     where
       p     = V.length pat
       w i j = ws ! i ! j
       x i   = pat ! i
+      s = sum [ w i j * x i * x j | i <- [0 .. p-1], j <- [0 .. p-1] ]
 
 
 validPattern :: Weights -> Pattern -> Maybe String
