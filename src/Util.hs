@@ -1,11 +1,12 @@
 module Util (
     repeatUntilEqual
+  , getRandom
   , (./.)
   , (*.)
 ) where
 
-import System.Random
-import Control.Monad.Random
+import           Control.Monad.Random (MonadRandom, Rand, RandomGen)
+import qualified Control.Monad.Random as Random
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
 x ./. y = fromIntegral x / fromIntegral y
@@ -19,6 +20,9 @@ x *. y = x * fromIntegral y
 --  r <- randomIO
 --  return $ abs (lower + r `mod` (upper - lower))
 
+--getRandom :: MonadRandom m => [a] -> m a
+getRandom :: RandomGen g => [a] -> Rand g a
+getRandom xs = Random.fromList (zip xs (cycle [1]))
 
 repeatUntilEqual :: (Eq a) => (a -> a) -> a -> a
 repeatUntilEqual f a

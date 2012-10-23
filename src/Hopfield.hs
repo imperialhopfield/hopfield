@@ -91,6 +91,7 @@ updateRandom ws pat =
   where
     updatables = [ i | (i, x_i) <- zip [1..] (V.toList pat), o i /= x_i ]
     -- what I have to do is :: IO Int -> [a] -> a
+    -- getRandom updatables
     o i        = if sum [ (ws ! i ! j) *. (pat ! j)
                         | j <- [0 .. p-1] ] >= 0 then 1 else -1
     p          = V.length pat
