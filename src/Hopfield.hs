@@ -80,6 +80,21 @@ update' ws pat =
     p          = V.length pat
 
 
+
+
+
+updateRandom :: Weights -> Pattern -> Pattern
+updateRandom ws pat =
+  case updatables of
+    []  -> pat
+    i:_ -> V.modify (\v -> write v i (o i)) pat
+  where
+    updatables = [ i | (i, x_i) <- zip [1..] (V.toList pat), o i /= x_i ]
+    -- what I have to do is :: IO Int -> [a] -> a
+    o i        = if sum [ (ws ! i ! j) *. (pat ! j)
+                        | j <- [0 .. p-1] ] >= 0 then 1 else -1
+    p          = V.length pat
+
 -- | @update weights pattern@: Applies the update rule on @pattern@ for the
 -- first updatable neuron given the Hopfield network (represented by @weights@).
 --

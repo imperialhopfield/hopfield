@@ -22,6 +22,7 @@ library
       base >= 4 && <= 5
     , vector >= 0.9.1
     , random >= 1.0.1.1
+    , MonadRandom >= 0.1.8
   ghc-options:
     -Wall -fwarn-unused-imports
 
