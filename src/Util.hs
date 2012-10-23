@@ -1,6 +1,6 @@
 module Util (
     repeatUntilEqual
-  , getRandom
+  , randomElem
   , (./.)
   , (*.)
 ) where
@@ -15,13 +15,12 @@ x ./. y = fromIntegral x / fromIntegral y
 x *. y = x * fromIntegral y
 
 
-getRandom :: MonadRandom m => [a] -> m a
-getRandom xs = Random.fromList (zip xs (cycle [1]))
+randomElem :: MonadRandom m => [a] -> m a
+randomElem xs = Random.fromList (zip xs (repeat 1))
 
-repeatUntilEqual :: (Eq a) => (a -> a) -> a -> a
-repeatUntilEqual f a
-  | a == new_a = a
-  | otherwise  = repeatUntilEqual f new_a
-  where
-    new_a = f a
 
+repeatUntilEqual ::  (MonadRandom m, Eq a) => (a -> m a) -> a -> m a
+repeatUntilEqual f a =
+  do
+    new_a <- f a
+    if a == new_a then return a else repeatUntilEqual f new_a

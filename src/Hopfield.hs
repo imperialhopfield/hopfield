@@ -21,6 +21,8 @@ import           Data.List
 import           Data.Vector (Vector, (!))
 import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
+import           Control.Monad.Random (MonadRandom)
+
 
 import           Util
 
@@ -68,39 +70,25 @@ train pats = vector2D ws
 
 
 -- | Same as 'update', without check, for performance.
-update' :: Weights -> Pattern -> Pattern
+update' :: MonadRandom m => Weights -> Pattern -> m Pattern
 update' ws pat =
   case updatables of
-    []  -> pat
-    i:_ -> V.modify (\v -> write v i (o i)) pat
+    []  -> return pat
+    _ -> do
+      index <- randomElem updatables
+      return $ V.modify (\v -> write v index (o index)) pat
   where
     updatables = [ i | (i, x_i) <- zip [1..] (V.toList pat), o i /= x_i ]
     o i        = if sum [ (ws ! i ! j) *. (pat ! j)
                         | j <- [0 .. p-1] ] >= 0 then 1 else -1
     p          = V.length pat
 
-
-
-
-
-updateRandom :: Weights -> Pattern -> Pattern
-updateRandom ws pat =
-  case updatables of
-    []  -> pat
-    i:_ -> V.modify (\v -> write v i (o i)) pat
-  where
-    updatables = [ i | (i, x_i) <- zip [1..] (V.toList pat), o i /= x_i ]
-    -- what I have to do is :: IO Int -> [a] -> a
-    -- getRandom updatables
-    o i        = if sum [ (ws ! i ! j) *. (pat ! j)
-                        | j <- [0 .. p-1] ] >= 0 then 1 else -1
-    p          = V.length pat
 
 -- | @update weights pattern@: Applies the update rule on @pattern@ for the
 -- first updatable neuron given the Hopfield network (represented by @weights@).
 --
 -- Pre: @length weights == length pattern@
-update :: Weights -> Pattern -> Pattern
+update :: MonadRandom m => Weights -> Pattern -> m Pattern
 update ws pat
   | Just e <- validPattern ws pat  = error e
   | Just e <- validWeights ws      = error e
@@ -111,7 +99,7 @@ update ws pat
 -- pattern until it reaches a stable state with respect to the Hopfield network
 -- (represented by @weights@).
 -- Pre: @length weights == length pattern@
-repeatedUpdate :: Weights -> Pattern -> Pattern
+repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
 repeatedUpdate ws pat
   | Just e <- validPattern ws pat  = error e
   | Just e <- validWeights ws      = error e
@@ -128,17 +116,17 @@ repeatedUpdate ws pat
 --    The converged pattern (the stable state), otherwise
 --
 -- Pre: @length weights == length pattern@
-matchPattern :: HopfieldData -> Pattern -> Either Pattern Int
+matchPattern :: MonadRandom m => HopfieldData -> Pattern -> m (Either Pattern Int)
 matchPattern (HopfieldData ws pats) pat
   | Just e <- validPattern ws pat = error e
   | Just e <- validWeights ws = error e
   | otherwise
-    = case m_index of
-        Nothing    -> Left converged_pattern
-        Just index -> Right index
-      where
-        converged_pattern = repeatedUpdate ws pat
-        m_index           = converged_pattern `elemIndex` pats
+    = do
+      converged_pattern     <- repeatedUpdate ws pat
+      let m_index           = converged_pattern `elemIndex` pats
+      case m_index of
+        Nothing    -> return $ Left converged_pattern
+        Just index -> return $ Right index
 
 
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
