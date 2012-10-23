@@ -1,7 +1,5 @@
 #include <wand/magick_wand.h>
 
-void test_wand(void)
-{
 #define ThrowWandException(wand) \
   { \
     char *description; \
@@ -12,6 +10,9 @@ void test_wand(void)
     exit(-1); \
   } \
 
+
+void test_wand(void)
+{
   MagickWand *mw = NULL;
 
   MagickWandGenesis();
@@ -20,7 +21,10 @@ void test_wand(void)
   mw = NewMagickWand();
 
   /* Read the input image */
- MagickBooleanType retVal = MagickReadImage(mw,"../..//images/black_and_white/black1.jpg");
+ char* inputImg = "../images/black3.jpg";
+ MagickBooleanType retVal = MagickReadImage(mw, inputImg);
+ printf("%s", inputImg);
+
    if (retVal == MagickFalse) 
      ThrowWandException(mw); 
  
