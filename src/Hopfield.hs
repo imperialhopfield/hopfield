@@ -46,7 +46,7 @@ buildHopfieldData []   = error "Train patterns are empty"
 buildHopfieldData pats
   | first_len == 0
       = error "Cannot have empty patterns"
-  | not $ all (\x -> V.length x == first_len) pats
+  | any (\x -> V.length x /= first_len) pats
       = error "All training patterns must have the same length"
   | otherwise
       = HopfieldData (train pats) pats
@@ -69,12 +69,12 @@ train pats = vector2D ws
     vector2D ll = V.fromList (map V.fromList ll)
 
 
--- | Same as 'update', without check, for performance.
+-- | Same as 'update', without size/dimension check, for performance.
 update' :: MonadRandom m => Weights -> Pattern -> m Pattern
 update' ws pat =
   case updatables of
     []  -> return pat
-    _ -> do
+    _   -> do
       index <- randomElem updatables
       return $ V.modify (\v -> write v index (o index)) pat
   where
@@ -90,9 +90,9 @@ update' ws pat =
 -- Pre: @length weights == length pattern@
 update :: MonadRandom m => Weights -> Pattern -> m Pattern
 update ws pat
-  | Just e <- validPattern ws pat  = error e
-  | Just e <- validWeights ws      = error e
-  | otherwise                      = update' ws pat
+  | Just e <- validPattern ws pat = error e
+  | Just e <- validWeights ws     = error e
+  | otherwise                     = update' ws pat
 
 
 -- | @repeatedUpdate weights pattern@: Performs repeated updates on the given
@@ -101,9 +101,9 @@ update ws pat
 -- Pre: @length weights == length pattern@
 repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
 repeatedUpdate ws pat
-  | Just e <- validPattern ws pat  = error e
-  | Just e <- validWeights ws      = error e
-  | otherwise                      = repeatUntilEqual (update' ws) pat
+  | Just e <- validPattern ws pat = error e
+  | Just e <- validWeights ws     = error e
+  | otherwise                     = repeatUntilEqual (update' ws) pat
 
 
 -- | @matchPatterns hopfieldData pattern@:
@@ -116,14 +116,15 @@ repeatedUpdate ws pat
 --    The converged pattern (the stable state), otherwise
 --
 -- Pre: @length weights == length pattern@
-matchPattern :: MonadRandom m => HopfieldData -> Pattern -> m (Either Pattern Int)
+matchPattern :: MonadRandom m => HopfieldData -> Pattern
+                                 -> m (Either Pattern Int)
 matchPattern (HopfieldData ws pats) pat
+  | Just e <- validWeights ws     = error e
   | Just e <- validPattern ws pat = error e
-  | Just e <- validWeights ws = error e
   | otherwise
     = do
-      converged_pattern     <- repeatedUpdate ws pat
-      let m_index           = converged_pattern `elemIndex` pats
+      converged_pattern <- repeatedUpdate ws pat
+      let m_index = converged_pattern `elemIndex` pats
       case m_index of
         Nothing    -> return $ Left converged_pattern
         Just index -> return $ Right index
@@ -134,9 +135,9 @@ matchPattern (HopfieldData ws pats) pat
 -- Pre: @length weights == length pattern@
 energy :: Weights -> Pattern -> Double
 energy ws pat
-  | Just e <- validPattern ws pat = error e
   | Just e <- validWeights ws     = error e
-  | otherwise = s / (-2.0)
+  | Just e <- validPattern ws pat = error e
+  | otherwise                     = s / (-2.0)
     where
       p     = V.length pat
       w i j = ws ! i ! j
@@ -144,13 +145,15 @@ energy ws pat
       s = sum [ w i j *. (x i * x j) | i <- [0 .. p-1], j <- [0 .. p-1] ]
 
 
+-- | @validPattern weights pattern@
+-- Returns an error string in a Just if the @pattern@ is not compatible
+-- with @weights@ and Nothing otherwise.
 validPattern :: Weights -> Pattern -> Maybe String
 validPattern ws pat
   | V.length ws /= V.length pat = Just "Pattern size must match network size"
   | otherwise                   = Nothing
 
-
--- | @validWeights weights@: Validates the weight matrix's correctness:
+-- Checks the validiaty of a weight matrix by ensuring:
 -- * It is non-empty
 --
 -- * It is square
@@ -162,13 +165,12 @@ validWeights :: Weights -> Maybe String
 validWeights ws
   | n == 0
     = Just "Weight matrix must be non-empty"
-  | not $ all (\x -> V.length x == n) $ V.toList ws
+  | any (\x -> V.length x /= n) $ V.toList ws
     = Just "Weight matrix has to be a square matrix"
-  | not $ all (== 0) [ ws ! i ! i | i <- [0..n-1] ]
+  | any (/= 0) [ ws ! i ! i | i <- [0..n-1] ]
     = Just "Weight matrix first diagonal must be zero"
   | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
     = Just "Weight matrix must be symmetric"
   | otherwise = Nothing
   where
     n = V.length ws
-
