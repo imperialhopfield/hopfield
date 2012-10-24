@@ -61,11 +61,12 @@ train :: [Pattern] -> Weights
 train pats = vector2D ws
   -- No need to check pats ws size, buildHopfieldData does it
   where
-    ws = [ [ w i j ./. p | j <- [0 .. p-1] ] | i <- [0 .. p-1] ]
+    ws = [ [ w i j ./. n | j <- [0 .. p-1] ] | i <- [0 .. p-1] ]
     w i j
       | i == j    = 0
       | otherwise = sum [ (pat ! i) * (pat ! j) | pat <- pats ]
     p           = V.length (head pats)
+    n           = length pats
     vector2D ll = V.fromList (map V.fromList ll)
 
 
