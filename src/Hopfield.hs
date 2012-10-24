@@ -131,7 +131,7 @@ matchPattern (HopfieldData ws pats) pat
 
 
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
--- network (represented by weights).
+-- network (represented by @weights@).
 -- Pre: @length weights == length pattern@
 energy :: Weights -> Pattern -> Double
 energy ws pat
