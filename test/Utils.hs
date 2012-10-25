@@ -3,6 +3,7 @@ module Utils where
 import qualified Data.Vector as V
 import Test.QuickCheck
 import Control.Monad
+import Hopfield
 
 -- Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
@@ -13,6 +14,9 @@ instance (Arbitrary a) => Arbitrary (V.Vector a) where
 toGenVector :: Gen [a] -> Gen (V.Vector a)
 toGenVector list = liftM V.fromList list
 
+
+patternGen :: Gen Pattern
+patternGen = arbitrary `suchThat` (not . null . V.toList)
 
 -- Generate lists containing only 'n'
 sameElemList :: a -> Gen [a]
