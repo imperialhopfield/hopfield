@@ -21,7 +21,7 @@ main = hspec $ do
          --  forAll ((sameElemVector 1) `suchThat` (not . V.null))
          --    (\pat -> weights (buildHopfieldData [pat]) == allOnesWeights (V.length pat))
          it "tests that the patterns stored in the hopfield datastructure are the same as the ones which were given as input" $
-            forAll (arbitrary `suchThat` (not . null))
-            (\pats -> (patterns $ buildHopfieldData pats) == pats)
+            forAll (patternListGen `suchThat` (not . null))
+               (\pats -> (patterns $ buildHopfieldData pats) == pats)
 
 

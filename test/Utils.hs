@@ -15,8 +15,15 @@ toGenVector :: Gen [a] -> Gen (V.Vector a)
 toGenVector list = liftM V.fromList list
 
 
-patternGen :: Gen Pattern
-patternGen = arbitrary `suchThat` (not . null . V.toList)
+patternGen :: Int -> Gen Pattern
+patternGen len = toGenVector $ vectorOf len arbitrary
+
+
+patternListGen :: Gen [Pattern]
+patternListGen = do
+  vector_len  <- arbitrary
+  listOf1 $ patternGen $ (abs vector_len + 1) `mod` 100 + 1
+
 
 -- Generate lists containing only 'n'
 sameElemList :: a -> Gen [a]
