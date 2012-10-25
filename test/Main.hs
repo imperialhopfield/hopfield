@@ -8,6 +8,7 @@ import Test.HUnit
 import Utils
 import Hopfield
 import qualified Data.Vector as V
+import Control.Monad
 
 main = hspec $ do
   describe "base model" $ do
