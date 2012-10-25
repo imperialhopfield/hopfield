@@ -34,6 +34,10 @@ allOnesWeights n
       ones = replicate n 1
 
 
+replicateGen :: Gen a -> Gen [a]
+replicateGen g = liftM2 replicate arbitrary g
+
+
 -- Replaces the nth element in the list with 'r'
 replaceAtN :: Int -> a -> [a] -> [a]
 replaceAtN _ _ []     = error "index greater than list size"
