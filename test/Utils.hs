@@ -1,33 +1,33 @@
 module Utils where
 
 import qualified Data.Vector as V
-import Test.QuickCheck
-import Control.Monad
+import           Test.QuickCheck
+import           Control.Monad
 
--- Defines an arbitrary vector
+-- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
-  arbitrary = fmap V.fromList arbitrary
+  arbitrary = liftM V.fromList arbitrary
 
 
--- Convert a list generator to a vector generator
+-- | Convert a list generator to a vector generator
 toGenVector :: Gen [a] -> Gen (V.Vector a)
-toGenVector list = liftM V.fromList list
+toGenVector listGen = liftM V.fromList listGen
 
 
--- Generate lists containing only 'n'
+-- | Generate lists containing the same element replicated
 sameElemList :: a -> Gen [a]
-sameElemList n = do
+sameElemList x = do
   len <- arbitrary
-  return $ replicate len n
+  return $ replicate len x
 
 
--- Generate vectors containing only 'n'
+-- | Generate vectors containing the same element replicated
 sameElemVector :: a -> Gen (V.Vector a)
 sameElemVector = toGenVector . sameElemList
 
 
--- Produces a matrix with 0's along the diagonal and 1's otherwise
-allOnesWeights :: Int -> (V.Vector (V.Vector Double))
+-- | Produces a matrix with 0's along the diagonal and 1's otherwise
+allOnesWeights :: Int -> V.Vector (V.Vector Double)
 allOnesWeights n
   = V.fromList $ map V.fromList [ replaceAtN i 0 ones | i <- [0..n-1] ]
     where
@@ -38,7 +38,7 @@ replicateGen :: Gen a -> Gen [a]
 replicateGen g = liftM2 replicate arbitrary g
 
 
--- Replaces the nth element in the list with 'r'
+-- | Replaces the nth element in the list with 'r'
 replaceAtN :: Int -> a -> [a] -> [a]
 replaceAtN _ _ []     = error "index greater than list size"
 replaceAtN 0 r (x:xs) = (r:xs)

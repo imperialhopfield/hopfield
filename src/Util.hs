@@ -1,10 +1,13 @@
 module Util (
     repeatUntilEqual
   , randomElem
+  , vector2D
   , (./.)
   , (*.)
 ) where
 
+import           Data.Vector (Vector)
+import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 
@@ -24,3 +27,8 @@ repeatUntilEqual f a =
   do
     new_a <- f a
     if a == new_a then return a else repeatUntilEqual f new_a
+
+
+-- | Converts a list of lists to a 2D vector
+vector2D :: [[a]] -> Vector (Vector a)
+vector2D ll = V.fromList (map V.fromList ll)

@@ -67,7 +67,6 @@ train pats = vector2D ws
       | otherwise = sum [ (pat ! i) * (pat ! j) | pat <- pats ]
     p           = V.length (head pats)
     n           = length pats
-    vector2D ll = V.fromList (map V.fromList ll)
 
 
 -- | Same as 'update', without size/dimension check, for performance.
