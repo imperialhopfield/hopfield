@@ -27,3 +27,8 @@ main = hspec $ do
           forAll (replicateGen (sameElemVector 1) `suchThat` (not . null))
             (\pats -> weights (buildHopfieldData pats) == allOnesWeights (V.length $ head pats))
 
+    
+      --describe "energy tests" $ do
+        
+      --  it "test if energy is computed correctly" $
+      --    abs (energy (matrixToVectors [[0,1],[2,3]] -  )) <= 0

@@ -45,3 +45,7 @@ replaceAtN 0 r (x:xs) = (r:xs)
 replaceAtN n r (x:xs)
   | n > 0     = (x:(replaceAtN (n-1) r xs))
   | otherwise = error "negative index"
+
+--converts a list of lists to a vector or vectors
+matrixToVectors :: [[a]] -> V.Vector ( V.Vector a)
+matrixToVectors matrix = V.fromList (map V.fromList matrix)
