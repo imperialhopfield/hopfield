@@ -29,12 +29,16 @@ import           Util
 type Weights = Vector (Vector Double)
 type Pattern = Vector Int
 
+
+--make Hopefield data implement show
 -- | Encapsulates the network weights together with the patterns that generate
 -- it with the patterns which generate it
 data HopfieldData = HopfieldData {
     weights :: Weights    -- ^ the weights of the network
   , patterns :: [Pattern] -- ^ the patterns which were used to train it
 }
+  deriving(Show)
+
 
 -- | @buildHopfieldData patterns@: Takes a list of patterns and
 -- builds a Hopfield network (by training) in which these patterns are
