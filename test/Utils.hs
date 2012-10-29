@@ -3,6 +3,9 @@ module Utils where
 import qualified Data.Vector as V
 import           Test.QuickCheck
 import           Control.Monad
+import Test.QuickCheck
+import Control.Monad
+import Hopfield
 
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
@@ -15,6 +18,17 @@ toGenVector listGen = liftM V.fromList listGen
 
 
 -- | Generate lists containing the same element replicated
+patternGen :: Int -> Gen Pattern
+patternGen len = toGenVector $ vectorOf len arbitrary
+
+
+patternListGen :: Gen [Pattern]
+patternListGen = do
+  vector_len  <- arbitrary
+  listOf1 $ patternGen $ (abs vector_len + 1) `mod` 100 + 1
+
+
+-- Generate lists containing only 'n'
 sameElemList :: a -> Gen [a]
 sameElemList x = do
   len <- arbitrary
