@@ -35,4 +35,4 @@ main = hspec $ do
 
       it "tests that patterns we trained on are fixed points" $
         forAll (patternListGen `suchThat` (not . null))
-          traningPatsAreFixedPoints
+          trainingPatsAreFixedPoints

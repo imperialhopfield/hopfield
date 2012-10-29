@@ -66,8 +66,10 @@ replaceAtN n r (x:xs)
   | otherwise = error "negative index"
 
 
-traningPatsAreFixedPoints:: [Pattern] -> Gen Bool
-traningPatsAreFixedPoints pats =
+-- | Used as a property to check that patterns which
+-- are used to create the network are stable in respect to update
+trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
+trainingPatsAreFixedPoints pats =
   and <$> mapM checkFixedPoint pats
   where
     ws = weights (buildHopfieldData pats)
