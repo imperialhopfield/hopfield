@@ -13,8 +13,11 @@ import           Hopfield
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
   arbitrary = liftM V.fromList arbitrary
 
---instance (MonadRandom m) => Eq (m Pattern) where
---  (==) x y = True
+
+mapMonad :: Monad m => (a -> b) -> m [a] -> m [b]
+mapMonad f m_xs = do
+  xs <- m_xs
+  return $ map f xs
 
 
 -- | Convert a list generator to a vector generator
@@ -22,9 +25,15 @@ toGenVector :: Gen [a] -> Gen (V.Vector a)
 toGenVector listGen = liftM V.fromList listGen
 
 
+randomSign :: Int -> Int
+randomSign x
+  | even x = 1
+  | otherwise = -1
+
+
 -- | Generate lists containing the same element replicated
 patternGen :: Int -> Gen Pattern
-patternGen len = toGenVector $ vectorOf len arbitrary
+patternGen len = toGenVector $ mapMonad randomSign (vectorOf len arbitrary)
 
 
 patternListGen :: Gen [Pattern]
