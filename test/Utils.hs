@@ -3,9 +3,9 @@ module Utils where
 import qualified Data.Vector as V
 import           Test.QuickCheck
 import           Control.Monad
-import Test.QuickCheck
-import Control.Monad
-import Hopfield
+import           Test.QuickCheck
+import           Control.Monad
+import           Hopfield
 
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
