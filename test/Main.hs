@@ -17,18 +17,22 @@ main = hspec $ do
 
       -- TODO limit pattern size! After around 19 tests,
       -- computer slows down to a halt due to high memory usage
-      it "trains a single all-positive pattern correctly" $
-        forAll ((sameElemVector 1) `suchThat` (not . V.null))
-          (\pat -> weights (buildHopfieldData [pat]) == allOnesWeights (V.length pat))
+      --it "trains a single all-positive pattern correctly" $
+      --  forAll ((sameElemVector 1) `suchThat` (not . V.null))
+      --    (\pat -> weights (buildHopfieldData [pat]) == allOnesWeights (V.length pat))
 
 
        -- TODO limit pattern size!
-      it "trains an arbitrary number of all-positive patterns correctly" $
-        forAll (replicateGen (sameElemVector 1) `suchThat` (not . null))
-          (\pats -> weights (buildHopfieldData pats) == allOnesWeights (V.length $ head pats))
+      --it "trains an arbitrary number of all-positive patterns correctly" $
+      --  forAll (replicateGen (sameElemVector 1) `suchThat` (not . null))
+      --    (\pats -> weights (buildHopfieldData pats) == allOnesWeights (V.length $ head pats))
 
          --TODO limit pattern size! After around 19 tests,
          --computer slows down to a halt due to high memory usage
       it "tests that the patterns stored in the hopfield datastructure are the same as the ones which were given as input" $
         forAll (patternListGen `suchThat` (not . null))
           (\pats -> (patterns $ buildHopfieldData pats) == pats)
+
+      it "tests that patterns we trained on are fixed points" $
+        forAll (patternListGen `suchThat` (not . null))
+          traningPatsAreFixedPoints

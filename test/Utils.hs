@@ -1,15 +1,20 @@
 module Utils where
 
+import           Control.Applicative
+import           Control.Monad
+import           Control.Monad.Random
 import qualified Data.Vector as V
 import           Test.QuickCheck
-import           Control.Monad
-import           Test.QuickCheck
-import           Control.Monad
+
 import           Hopfield
+
 
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
   arbitrary = liftM V.fromList arbitrary
+
+--instance (MonadRandom m) => Eq (m Pattern) where
+--  (==) x y = True
 
 
 -- | Convert a list generator to a vector generator
@@ -59,3 +64,13 @@ replaceAtN 0 r (x:xs) = (r:xs)
 replaceAtN n r (x:xs)
   | n > 0     = (x:(replaceAtN (n-1) r xs))
   | otherwise = error "negative index"
+
+
+traningPatsAreFixedPoints:: [Pattern] -> Gen Bool
+traningPatsAreFixedPoints pats =
+  and <$> mapM checkFixedPoint pats
+  where
+    ws = weights (buildHopfieldData pats)
+    checkFixedPoint pat = do
+      i <- arbitrary
+      return $ evalRand (update ws pat) (mkStdGen i) == pat
