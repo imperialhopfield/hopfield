@@ -23,7 +23,6 @@ import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 
-
 import           Util
 
 
@@ -61,12 +60,11 @@ train :: [Pattern] -> Weights
 train pats = vector2D ws
   -- No need to check pats ws size, buildHopfieldData does it
   where
-    ws = [ [ w i j ./. n | j <- [0 .. p-1] ] | i <- [0 .. p-1] ]
+    ws = [ [ w i j ./. n | j <- [0 .. n-1] ] | i <- [0 .. n-1] ]
     w i j
       | i == j    = 0
       | otherwise = sum [ (pat ! i) * (pat ! j) | pat <- pats ]
-    p           = V.length (head pats)
-    n           = length pats
+    n = V.length (head pats)
 
 
 -- | Same as 'update', without size/dimension check, for performance.
