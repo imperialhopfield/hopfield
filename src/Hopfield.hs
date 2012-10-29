@@ -76,7 +76,7 @@ update' ws pat =
       index <- randomElem updatables
       return $ V.modify (\v -> write v index (o index)) pat
   where
-    updatables = [ i | (i, x_i) <- zip [1..] (V.toList pat), o i /= x_i ]
+    updatables = [ i | (i, x_i) <- zip [0..] (V.toList pat), o i /= x_i ]
     o i        = if sum [ (ws ! i ! j) *. (pat ! j)
                         | j <- [0 .. p-1] ] >= 0 then 1 else -1
     p          = V.length pat
