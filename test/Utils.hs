@@ -7,6 +7,8 @@ import           Test.QuickCheck
 import           Control.Monad
 import           Hopfield
 
+import           Util
+
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
   arbitrary = liftM V.fromList arbitrary
@@ -44,9 +46,7 @@ sameElemVector = toGenVector . sameElemList
 -- | Produces a matrix with 0's along the diagonal and 1's otherwise
 allOnesWeights :: Int -> [[Double]]
 allOnesWeights n
-  = [ replaceAtN i 0 ones | i <- [0..n-1] ]
-    where
-      ones = replicate n 1
+  = [ [ if i==j then 0 else 1 | i <- [1..n-1] ] | j <- [1..n-1] ]
 
 
 boundedClonedGen :: Int -> Gen a -> Gen [a]
