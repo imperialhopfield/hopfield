@@ -17,15 +17,16 @@ toGenVector :: Gen [a] -> Gen (V.Vector a)
 toGenVector listGen = liftM V.fromList listGen
 
 
--- | Generate lists containing the same element replicated
+-- | @patternGen n@: Generates patterns of size n
 patternGen :: Int -> Gen Pattern
-patternGen len = toGenVector $ vectorOf len arbitrary
+patternGen n = toGenVector $ vectorOf n arbitrary
 
 
-patternListGen :: Gen [Pattern]
-patternListGen = do
-  vector_len  <- arbitrary
-  listOf1 $ patternGen $ (abs vector_len + 1) `mod` 100 + 1
+-- | @boundedListGen g n@: Generates lists (max length n) of the given Gen
+boundedListGen :: Gen a -> Int -> Gen [a]
+boundedListGen g n = do
+  len <- choose (0, n)
+  vectorOf len g
 
 
 -- Generate lists containing only 'n'
@@ -41,15 +42,15 @@ sameElemVector = toGenVector . sameElemList
 
 
 -- | Produces a matrix with 0's along the diagonal and 1's otherwise
-allOnesWeights :: Int -> V.Vector (V.Vector Double)
+allOnesWeights :: Int -> [[Double]]
 allOnesWeights n
-  = V.fromList $ map V.fromList [ replaceAtN i 0 ones | i <- [0..n-1] ]
+  = [ replaceAtN i 0 ones | i <- [0..n-1] ]
     where
       ones = replicate n 1
 
 
-replicateGen :: Gen a -> Gen [a]
-replicateGen g = liftM2 replicate arbitrary g
+boundedClonedGen :: Int -> Gen a -> Gen [a]
+boundedClonedGen n g = liftM2 replicate (choose (0, n)) g
 
 
 -- | Replaces the nth element in the list with 'r'

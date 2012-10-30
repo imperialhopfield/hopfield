@@ -13,9 +13,8 @@ cabal-version: >= 1.10
 library
   default-language: Haskell2010
   exposed-modules:
-    Hopfield
-  other-modules:
-    Util
+      Hopfield
+    , Util
   hs-source-dirs:
     src
   build-depends:
