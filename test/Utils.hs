@@ -84,4 +84,4 @@ trainingPatsAreFixedPoints pats =
     ws = weights (buildHopfieldData pats)
     checkFixedPoint pat = do
       i <- arbitrary
-      return $ evalRand (update ws pat) (mkStdGen i) == pat
+      return $ evalRand (update ws pat) (mkStdGen i) `elem` pat
