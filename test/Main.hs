@@ -33,7 +33,8 @@ main = hspec $ do
       -- Pattern list generator
       let patListGen     = do
             i <- choose (1, maxPatSize)
-            nonempty $ boundedListGen (patternGen i) maxPatListSize
+            nonempty $ boundedReplicateGen (patternGen i) maxPatListSize
+
 
       it "trains a single all-positive pattern correctly" $
         forAll patternGenAll1

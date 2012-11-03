@@ -38,9 +38,9 @@ patternGen :: Int -> Gen Pattern
 patternGen n = toGenVector $ vectorOf n signGen
 
 
--- | @boundedListGen g n@: Generates lists (max length n) of the given Gen
-boundedListGen :: Gen a -> Int -> Gen [a]
-boundedListGen g n = do
+-- | @boundedReplicateGen g n@: Generates lists (max length n) of the given Gen
+boundedReplicateGen :: Gen a -> Int -> Gen [a]
+boundedReplicateGen g n = do
   len <- choose (0, n)
   vectorOf len g
 
