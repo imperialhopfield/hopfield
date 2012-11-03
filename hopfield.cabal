@@ -1,8 +1,8 @@
 name:          hopfield
 version:       0.1.0.0
 license:       AllRightsReserved
-author:        Lukasz Severyn, Mihaela Rosca, Niklas Hambuechen, Razvan Marinescu, Wael Al Jisihi
-copyright:     Copyright: (c) 2012 Lukasz Severyn, Mihaela Rosca, Niklas Hambuechen, Razvan Marinescu, Wael Al Jisihi
+author:        Lukasz Severyn, Mihaela Rosca, Niklas Hambuechen, Razvan Marinescu, Wael Al Jishi
+copyright:     Copyright: (c) 2012 Lukasz Severyn, Mihaela Rosca, Niklas Hambuechen, Razvan Marinescu, Wael Al Jishi
 maintainer:    Niklas Hambüchen <mail@nh2.me>
 stability:     experimental
 
