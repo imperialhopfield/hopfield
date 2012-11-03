@@ -50,7 +50,7 @@ main = hspec $ do
 
 
       it "tests that patterns we trained on are fixed points" $
-        forAll (patListGen `suchThat` (not . null))
+        forAll (nonempty patListGen)
           trainingPatsAreFixedPoints
 
     describe "energy tests" $ do
