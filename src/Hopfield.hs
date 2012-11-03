@@ -23,19 +23,22 @@ import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 
-
 import           Util
 
 
 type Weights = Vector (Vector Double)
 type Pattern = Vector Int
 
+
+--make Hopefield data implement show
 -- | Encapsulates the network weights together with the patterns that generate
 -- it with the patterns which generate it
 data HopfieldData = HopfieldData {
     weights :: Weights    -- ^ the weights of the network
   , patterns :: [Pattern] -- ^ the patterns which were used to train it
 }
+  deriving(Show)
+
 
 -- | @buildHopfieldData patterns@: Takes a list of patterns and
 -- builds a Hopfield network (by training) in which these patterns are
@@ -61,12 +64,11 @@ train :: [Pattern] -> Weights
 train pats = vector2D ws
   -- No need to check pats ws size, buildHopfieldData does it
   where
-    ws = [ [ w i j ./. n | j <- [0 .. p-1] ] | i <- [0 .. p-1] ]
+    ws = [ [ w i j ./. n | j <- [0 .. n-1] ] | i <- [0 .. n-1] ]
     w i j
       | i == j    = 0
       | otherwise = sum [ (pat ! i) * (pat ! j) | pat <- pats ]
-    p           = V.length (head pats)
-    n           = length pats
+    n = V.length (head pats)
 
 
 -- | Same as 'update', without size/dimension check, for performance.
@@ -78,7 +80,7 @@ update' ws pat =
       index <- randomElem updatables
       return $ V.modify (\v -> write v index (o index)) pat
   where
-    updatables = [ i | (i, x_i) <- zip [1..] (V.toList pat), o i /= x_i ]
+    updatables = [ i | (i, x_i) <- zip [0..] (V.toList pat), o i /= x_i ]
     o i        = if sum [ (ws ! i ! j) *. (pat ! j)
                         | j <- [0 .. p-1] ] >= 0 then 1 else -1
     p          = V.length pat
@@ -171,6 +173,8 @@ validWeights ws
     = Just "Weight matrix first diagonal must be zero"
   | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
     = Just "Weight matrix must be symmetric"
+  | null ([abs (ws ! i ! j) > 1 | i <- [0..n-1], j <- [0..n-1] ]) 
+      = Just "Weights should be between (-1, 1)"
   | otherwise = Nothing
   where
     n = V.length ws

@@ -20,6 +20,7 @@ x *. y = x * fromIntegral y
 
 
 randomElem :: MonadRandom m => [a] -> m a
+randomElem [] = error "randomElem: empty list"
 randomElem xs = Random.fromList (zip xs (repeat 1))
 
 
