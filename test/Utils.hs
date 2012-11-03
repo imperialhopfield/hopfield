@@ -12,7 +12,7 @@ import           Util
 
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
-  arbitrary = liftM V.fromList arbitrary
+  arbitrary = fmap V.fromList arbitrary
 
 
 mapMonad :: Monad m => (a -> b) -> m [a] -> m [b]
@@ -23,7 +23,7 @@ mapMonad f m_xs = do
 
 -- | Convert a list generator to a vector generator
 toGenVector :: Gen [a] -> Gen (V.Vector a)
-toGenVector listGen = liftM V.fromList listGen
+toGenVector listGen = fmap V.fromList listGen
 
 
 -- | Generate a random sign (+/- 1)
@@ -63,8 +63,10 @@ allOnesWeights n
   = [ [ if i==j then 0 else 1 | i <- [0..n-1] ] | j <- [0..n-1] ]
 
 
-boundedClonedGen :: Int -> Gen a -> Gen [a]
-boundedClonedGen n g = liftM2 replicate (choose (0, n)) g
+-- | @boundedReplicateGen n g@ Generates lists containing 'g' replicated.
+-- The list is bounded in size by n.
+boundedReplicateGen :: Int -> Gen a -> Gen [a]
+boundedReplicateGen n g = liftM2 replicate (choose (0, n)) g
 
 
 -- | Replaces the nth element in the list with 'r'
@@ -76,10 +78,6 @@ replaceAtN n r (x:xs)
   | otherwise = error "negative index"
 
 
---converts a list of lists to a vector or vectors
-matrixToVectors :: [[a]] -> V.Vector ( V.Vector a)
-matrixToVectors matrix = V.fromList (map V.fromList matrix)
-
 -- | Used as a property to check that patterns which
 -- are used to create the network are stable in respect to update
 trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
@@ -89,4 +87,4 @@ trainingPatsAreFixedPoints pats =
     ws = weights (buildHopfieldData pats)
     checkFixedPoint pat = do
       i <- arbitrary
-      return $ evalRand (update ws pat) (mkStdGen i) `elem` pat
+      return $ evalRand (update ws pat) (mkStdGen i) == pat

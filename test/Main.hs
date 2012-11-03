@@ -28,7 +28,7 @@ main = hspec $ do
       let maxPatSize     = 1000
 
       -- Patterns must not be empty
-      let patternGenAll1 = toV . nonempty $ boundedClonedGen maxPatSize (return 1)
+      let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
 
       -- Pattern list generator
       let patListGen     = do
@@ -41,7 +41,7 @@ main = hspec $ do
 
 
       it "trains an arbitrary number of all-positive patterns correctly" $
-        forAll (nonempty $ boundedClonedGen maxPatListSize patternGenAll1)
+        forAll (nonempty $ boundedReplicateGen maxPatListSize patternGenAll1)
           (\pats -> (list2D . weights) (buildHopfieldData pats) == allOnesWeights (V.length $ head pats))
 
 
@@ -56,17 +56,17 @@ main = hspec $ do
     describe "energy tests" $ do
 
       it "energy is computed ok for small system, 2 neurons" $
-        energy (matrixToVectors [[0,0.5],[0.5,0]]) (V.fromList [1,0])
+        energy (vector2D [[0,0.5],[0.5,0]]) (V.fromList [1,0])
           `shouldBe` 0
 
-      it "energy is computed ok for small system, 3 neurons, positive weights" $
-        abs (energy (matrixToVectors [[0  ,0.2,0.5],
+      it "energy is computed ok for a system of 3 neurons, positive weights" $
+        abs (energy (vector2D        [[0  ,0.2,0.5],
                                       [0.2,0  ,0.7],
                                       [0.5,0.7,0  ]])
                                 (V.fromList [1,-1,1]) - 0.4) < _EPSILON
 
-      it "energy is computed ok for large system, 5 neurons, positive & negative weights" $
-        abs (energy (matrixToVectors [[ 0  , 0.2,-0.5,0.7,-0.1],
+      it "energy is computed ok for a system of 5 neurons, positive & negative weights" $
+        abs (energy (vector2D        [[ 0  , 0.2,-0.5,0.7,-0.1],
                                       [ 0.2, 0  , 0.3,0.4,-0.7],
                                       [-0.5, 0.3, 0  ,0.2,-0.4],
                                       [ 0.7, 0.4, 0.2,0  , 0.5],
@@ -74,12 +74,12 @@ main = hspec $ do
                                       ])
                                 (V.fromList [1,-1,-1,1,-1]) - 0.8) < _EPSILON
 
-      it "energy is decreasing after doing one step, large system" $
+      it "energy decreases after doing one step" $
         init_energy > final_energy
         where
         init_energy  = energy ws init_pattern
         final_energy = energy ws final_pattern
-        ws           = (matrixToVectors [[ 0  , 0.2,-0.5,0.7,-0.1],
+        ws           = (vector2D        [[ 0  , 0.2,-0.5,0.7,-0.1],
                                          [ 0.2, 0  , 0.3,0.4,-0.7],
                                          [-0.5, 0.3, 0  ,0.2,-0.4],
                                          [ 0.7, 0.4, 0.2,0  , 0.5],

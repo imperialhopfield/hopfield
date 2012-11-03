@@ -11,7 +11,7 @@
   } \
 
 /* converts a list of doubles to binary + flattens the matrix to a vector */
-int* 
+int*
 mapToBinary(double** pattern, int width, int height){
   int* binaryPattern =(int*) malloc(sizeof(int) * width * height);
   int i=0;
@@ -21,7 +21,7 @@ mapToBinary(double** pattern, int width, int height){
     {
       binaryPattern[i] = pattern[w][h] < 0.5 ? 0 : 1;
       i++;
-    }    
+    }
 
   return binaryPattern;
 }
@@ -39,9 +39,9 @@ int* load_picture(char* inputImg)
   /* Read the input image */
  MagickBooleanType retVal = MagickReadImage(mw, inputImg);
 
-   if (retVal == MagickFalse) 
-     ThrowWandException(mw); 
- 
+   if (retVal == MagickFalse)
+     ThrowWandException(mw);
+
   PixelWand** pixels;
   PixelIterator* pixelIt = NewPixelIterator(mw);
   size_t width = MagickGetImageWidth(mw);
@@ -52,23 +52,23 @@ int* load_picture(char* inputImg)
   {
     outputPattern[i] = (double*) malloc(sizeof(double) * height);
   }
-  
+
   /* get pixel grayscale values */
-  for (y=0; y < (long) height; y++) 
-  { 
+  for (y=0; y < (long) height; y++)
+  {
     pixels=PixelGetNextIteratorRow(pixelIt,&width);
-    for (long x=0; x < (long) width; x++) { 
-      outputPattern[x][y] = (PixelGetRed(pixels[x]) + 
-        PixelGetGreen(pixels[x]) + PixelGetBlue(pixels[x]))/3; 
+    for (long x=0; x < (long) width; x++) {
+      outputPattern[x][y] = (PixelGetRed(pixels[x]) +
+        PixelGetGreen(pixels[x]) + PixelGetBlue(pixels[x]))/3;
     }
   }
 
   return mapToBinary(outputPattern, width, height);
 
   /* print the vector */
-  for (y=0; y < (long) height; y++){ 
-    for (long x=0; x < (long) width; x++) 
-      printf("%f ", outputPattern[x][y]); 
+  for (y=0; y < (long) height; y++){
+    for (long x=0; x < (long) width; x++)
+      printf("%f ", outputPattern[x][y]);
 
     printf("\n\n\n");
   }
@@ -81,16 +81,16 @@ int* load_picture(char* inputImg)
 
 int main(int argc, char** args){
 
-  //char* imageInput = "../images/3x3.bmp"; 
+  //char* imageInput = "../images/3x3.bmp";
   if(args[1] != NULL)
-  {  
-    int* finalPattern = load_picture(args[1]); 
+  {
+    int* finalPattern = load_picture(args[1]);
     for(int i = 0; i < 9; i++)
       printf("%d ", finalPattern[i]);
   }
   else
     printf("FREEZE!!! no image input provided!!! ");
-  
+
 
   return 0;
 }
