@@ -63,10 +63,10 @@ allOnesWeights n
   = [ [ if i==j then 0 else 1 | i <- [0..n-1] ] | j <- [0..n-1] ]
 
 
--- | @boundedClonedGen n g@ Generates lists containing 'g' replicated.
+-- | @boundedReplicateGen n g@ Generates lists containing 'g' replicated.
 -- The list is bounded in size by n.
-boundedClonedGen :: Int -> Gen a -> Gen [a]
-boundedClonedGen n g = liftM2 replicate (choose (0, n)) g
+boundedReplicateGen :: Int -> Gen a -> Gen [a]
+boundedReplicateGen n g = liftM2 replicate (choose (0, n)) g
 
 
 -- | Replaces the nth element in the list with 'r'

@@ -28,7 +28,7 @@ main = hspec $ do
       let maxPatSize     = 1000
 
       -- Patterns must not be empty
-      let patternGenAll1 = toV . nonempty $ boundedClonedGen maxPatSize (return 1)
+      let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
 
       -- Pattern list generator
       let patListGen     = do
@@ -41,7 +41,7 @@ main = hspec $ do
 
 
       it "trains an arbitrary number of all-positive patterns correctly" $
-        forAll (nonempty $ boundedClonedGen maxPatListSize patternGenAll1)
+        forAll (nonempty $ boundedReplicateGen maxPatListSize patternGenAll1)
           (\pats -> (list2D . weights) (buildHopfieldData pats) == allOnesWeights (V.length $ head pats))
 
 
