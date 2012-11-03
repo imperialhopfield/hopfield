@@ -56,17 +56,17 @@ main = hspec $ do
     describe "energy tests" $ do
 
       it "energy is computed ok for small system, 2 neurons" $
-        energy (matrixToVectors [[0,0.5],[0.5,0]]) (V.fromList [1,0])
+        energy (vector2D [[0,0.5],[0.5,0]]) (V.fromList [1,0])
           `shouldBe` 0
 
       it "energy is computed ok for small system, 3 neurons, positive weights" $
-        abs (energy (matrixToVectors [[0  ,0.2,0.5],
+        abs (energy (vector2D        [[0  ,0.2,0.5],
                                       [0.2,0  ,0.7],
                                       [0.5,0.7,0  ]])
                                 (V.fromList [1,-1,1]) - 0.4) < _EPSILON
 
       it "energy is computed ok for large system, 5 neurons, positive & negative weights" $
-        abs (energy (matrixToVectors [[ 0  , 0.2,-0.5,0.7,-0.1],
+        abs (energy (vector2D        [[ 0  , 0.2,-0.5,0.7,-0.1],
                                       [ 0.2, 0  , 0.3,0.4,-0.7],
                                       [-0.5, 0.3, 0  ,0.2,-0.4],
                                       [ 0.7, 0.4, 0.2,0  , 0.5],
@@ -79,7 +79,7 @@ main = hspec $ do
         where
         init_energy  = energy ws init_pattern
         final_energy = energy ws final_pattern
-        ws           = (matrixToVectors [[ 0  , 0.2,-0.5,0.7,-0.1],
+        ws           = (vector2D        [[ 0  , 0.2,-0.5,0.7,-0.1],
                                          [ 0.2, 0  , 0.3,0.4,-0.7],
                                          [-0.5, 0.3, 0  ,0.2,-0.4],
                                          [ 0.7, 0.4, 0.2,0  , 0.5],

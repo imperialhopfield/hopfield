@@ -76,10 +76,6 @@ replaceAtN n r (x:xs)
   | otherwise = error "negative index"
 
 
---converts a list of lists to a vector or vectors
-matrixToVectors :: [[a]] -> V.Vector ( V.Vector a)
-matrixToVectors matrix = V.fromList (map V.fromList matrix)
-
 -- | Used as a property to check that patterns which
 -- are used to create the network are stable in respect to update
 trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
