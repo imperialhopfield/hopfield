@@ -86,4 +86,3 @@ trainingPatsAreFixedPoints pats =
     checkFixedPoint pat = do
       i <- arbitrary
       return $ evalRand (update ws pat) (mkStdGen i) == pat
-
