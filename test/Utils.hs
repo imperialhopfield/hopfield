@@ -1,14 +1,14 @@
 module Utils where
 
-import Control.Applicative
-import Control.Monad
-import Control.Monad.Random
+import           Control.Applicative
+import           Control.Monad
+import           Control.Monad.Random
 import qualified Data.Vector as V
-import Test.QuickCheck
-import Control.Monad
+import           Test.QuickCheck
+import           Control.Monad
 
-import Hopfield
-
+import           Hopfield
+import           Util
 
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
@@ -26,21 +26,23 @@ toGenVector :: Gen [a] -> Gen (V.Vector a)
 toGenVector listGen = liftM V.fromList listGen
 
 
-randomSign :: Int -> Int
-randomSign x
-  | even x = 1
-  | otherwise = -1
+-- | Generate a random sign (+/- 1)
+signGen :: Gen Int
+signGen = do
+  n <- choose (0,1)
+  return $ n*2 - 1
 
 
--- | Generate lists containing the same element replicated
+-- | @patternGen n@: Generates patterns of size n
 patternGen :: Int -> Gen Pattern
-patternGen len = toGenVector $ mapMonad randomSign (vectorOf len arbitrary)
+patternGen n = toGenVector $ vectorOf n signGen
 
 
-patternListGen :: Gen [Pattern]
-patternListGen = do
-  vector_len  <- arbitrary
-  listOf1 $ patternGen $ (abs vector_len + 1) `mod` 100 + 1
+-- | @boundedListGen g n@: Generates lists (max length n) of the given Gen
+boundedListGen :: Gen a -> Int -> Gen [a]
+boundedListGen g n = do
+  len <- choose (0, n)
+  vectorOf len g
 
 
 -- Generate lists containing only 'x'
@@ -56,15 +58,13 @@ sameElemVector = toGenVector . sameElemList
 
 
 -- | Produces a matrix with 0's along the diagonal and 1's otherwise
-allOnesWeights :: Int -> V.Vector (V.Vector Double)
+allOnesWeights :: Int -> [[Double]]
 allOnesWeights n
-  = V.fromList $ map V.fromList [ replaceAtN i 0 ones | i <- [0..n-1] ]
-    where
-      ones = replicate n 1
+  = [ [ if i==j then 0 else 1 | i <- [0..n-1] ] | j <- [0..n-1] ]
 
 
-replicateGen :: Gen a -> Gen [a]
-replicateGen g = liftM2 replicate arbitrary g
+boundedClonedGen :: Int -> Gen a -> Gen [a]
+boundedClonedGen n g = liftM2 replicate (choose (0, n)) g
 
 
 -- | Replaces the nth element in the list with 'r'
@@ -89,5 +89,4 @@ trainingPatsAreFixedPoints pats =
     ws = weights (buildHopfieldData pats)
     checkFixedPoint pat = do
       i <- arbitrary
-      return $ evalRand (update ws pat) (mkStdGen i) == pat
-
+      return $ evalRand (update ws pat) (mkStdGen i) `elem` pat

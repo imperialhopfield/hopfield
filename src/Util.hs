@@ -2,6 +2,7 @@ module Util (
     repeatUntilEqual
   , randomElem
   , vector2D
+  , list2D
   , (./.)
   , (*.)
 ) where
@@ -32,4 +33,9 @@ repeatUntilEqual f a =
 
 -- | Converts a list of lists to a 2D vector
 vector2D :: [[a]] -> Vector (Vector a)
-vector2D ll = V.fromList (map V.fromList ll)
+vector2D ll = V.fromList $ map V.fromList ll
+
+
+-- | Converts a 2D vector into a list of lists
+list2D :: Vector (Vector a) -> [[a]]
+list2D vv = map V.toList $ V.toList vv
