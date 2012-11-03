@@ -173,6 +173,8 @@ validWeights ws
     = Just "Weight matrix first diagonal must be zero"
   | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
     = Just "Weight matrix must be symmetric"
+  | null ([abs (ws ! i ! j) > 1 | i <- [0..n-1], j <- [0..n-1] ]) 
+      = Just "Weights should be between (-1, 1)"
   | otherwise = Nothing
   where
     n = V.length ws
