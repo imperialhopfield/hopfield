@@ -59,13 +59,13 @@ main = hspec $ do
         energy (vector2D [[0,0.5],[0.5,0]]) (V.fromList [1,0])
           `shouldBe` 0
 
-      it "energy is computed ok for small system, 3 neurons, positive weights" $
+      it "energy is computed ok for a system of 3 neurons, positive weights" $
         abs (energy (vector2D        [[0  ,0.2,0.5],
                                       [0.2,0  ,0.7],
                                       [0.5,0.7,0  ]])
                                 (V.fromList [1,-1,1]) - 0.4) < _EPSILON
 
-      it "energy is computed ok for large system, 5 neurons, positive & negative weights" $
+      it "energy is computed ok for a system of 5 neurons, positive & negative weights" $
         abs (energy (vector2D        [[ 0  , 0.2,-0.5,0.7,-0.1],
                                       [ 0.2, 0  , 0.3,0.4,-0.7],
                                       [-0.5, 0.3, 0  ,0.2,-0.4],
@@ -74,7 +74,7 @@ main = hspec $ do
                                       ])
                                 (V.fromList [1,-1,-1,1,-1]) - 0.8) < _EPSILON
 
-      it "energy is decreasing after doing one step, large system" $
+      it "energy decreases after doing one step" $
         init_energy > final_energy
         where
         init_energy  = energy ws init_pattern

@@ -12,7 +12,7 @@ import           Util
 
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
-  arbitrary = liftM V.fromList arbitrary
+  arbitrary = fmap V.fromList arbitrary
 
 
 mapMonad :: Monad m => (a -> b) -> m [a] -> m [b]
@@ -23,7 +23,7 @@ mapMonad f m_xs = do
 
 -- | Convert a list generator to a vector generator
 toGenVector :: Gen [a] -> Gen (V.Vector a)
-toGenVector listGen = liftM V.fromList listGen
+toGenVector listGen = fmap V.fromList listGen
 
 
 -- | Generate a random sign (+/- 1)
@@ -63,6 +63,8 @@ allOnesWeights n
   = [ [ if i==j then 0 else 1 | i <- [0..n-1] ] | j <- [0..n-1] ]
 
 
+-- | @boundedClonedGen n g@ Generates lists containing 'g' replicated.
+-- The list is bounded in size by n.
 boundedClonedGen :: Int -> Gen a -> Gen [a]
 boundedClonedGen n g = liftM2 replicate (choose (0, n)) g
 
