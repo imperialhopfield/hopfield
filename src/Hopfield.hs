@@ -11,6 +11,7 @@ module Hopfield (
   , buildHopfieldData
   -- * Running
   , update
+  , updateViaIndex
   , repeatedUpdate
   , matchPattern
   -- * Energy
@@ -18,11 +19,11 @@ module Hopfield (
 ) where
 
 import           Data.List
+import           Data.Maybe
 import           Data.Vector (Vector, (!))
 import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
-
 import           Util
 
 
@@ -71,19 +72,30 @@ train pats = vector2D ws
     n = V.length (head pats)
 
 
--- | Same as 'update', without size/dimension check, for performance.
-update' :: MonadRandom m => Weights -> Pattern -> m Pattern
-update' ws pat =
-  case updatables of
-    []  -> return pat
-    _   -> do
-      index <- randomElem updatables
-      return $ V.modify (\v -> write v index (h index)) pat
+getUpdatables:: Weights -> Pattern -> [(Int, Int)]
+getUpdatables ws pat = updatables
   where
-    updatables = [ i | (i, x_i) <- zip [0..] (V.toList pat), h i /= x_i ]
+    updatables = [ (i, h i) | (i, x_i) <- zip [0..] (V.toList pat), h i /= x_i ]
     h i        = if sum [ (ws ! i ! j) *. (pat ! j)
                         | j <- [0 .. p-1] ] >= 0 then 1 else -1
     p          = V.length pat
+
+
+-- The caller must ensure that index is smaller than the length of updatables
+updateViaIndex :: [(Int, Int)] -> Int -> Pattern -> Pattern
+updateViaIndex updatables index pat =
+  case updatables of
+    [] -> pat
+    _  -> V.modify (\v -> write v index (fromJust $ lookup index updatables)) pat
+
+
+-- | Same as 'update', without size/dimension check, for performance.
+update' :: MonadRandom m => Weights -> Pattern -> m Pattern
+update' ws pat = do
+      index <- randomElem $ map fst updatables
+      return $ updateViaIndex updatables index pat
+  where
+    updatables = getUpdatables ws pat
 
 
 -- | @update weights pattern@: Applies the update rule on @pattern@ for the
