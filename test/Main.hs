@@ -21,19 +21,20 @@ _EPSILON = 0.001
 
 main = hspec $ do
   describe "base model" $ do
+    let maxPatListSize = 20
+    let maxPatSize     = 1000
+
+      -- Pattern list generator
+    let patListGen     = do
+          i <- choose (1, maxPatSize)
+          nonempty $ boundedListGen (patternGen i) maxPatListSize
 
     describe "buildHopfieldData" $ do
 
-      let maxPatListSize = 20
-      let maxPatSize     = 1000
 
       -- Patterns must not be empty
       let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
 
-      -- Pattern list generator
-      let patListGen     = do
-            i <- choose (1, maxPatSize)
-            nonempty $ boundedListGen (patternGen i) maxPatListSize
 
       it "trains a single all-positive pattern correctly" $
         forAll patternGenAll1
@@ -74,16 +75,5 @@ main = hspec $ do
                                       ])
                                 (V.fromList [1,-1,-1,1,-1]) - 0.8) < _EPSILON
 
-      it "energy decreases after doing one step" $
-        init_energy > final_energy
-        where
-        init_energy  = energy ws init_pattern
-        final_energy = energy ws final_pattern
-        ws           = (vector2D        [[ 0  , 0.2,-0.5,0.7,-0.1],
-                                         [ 0.2, 0  , 0.3,0.4,-0.7],
-                                         [-0.5, 0.3, 0  ,0.2,-0.4],
-                                         [ 0.7, 0.4, 0.2,0  , 0.5],
-                                         [-0.1,-0.7,-0.4,0.5, 0  ]
-                                         ])
-        init_pattern  = (V.fromList [1,-1,-1,1,-1])
-        final_pattern = evalRand (update ws init_pattern) (mkStdGen 1)
+      --it "energy decreases after doing one step" $
+        --forAll (nonempty patListGen)
