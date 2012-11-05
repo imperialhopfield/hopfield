@@ -51,9 +51,10 @@ patListGen maxPatSize maxPatListSize = do
 
 
 -- | @patternsTupleGen g m1 m2@Generates a tuple of lists, as follows:
--- Uses patListGen to generate 1 list bounded in length by m1 and m2
--- and created a different list which constains patterns of the same
--- length as the patterns generated for the first list
+-- Uses patListGen to generate 1 list of patterns with length less than m2.
+-- The list itself has to have length less than m1.
+-- The second element of a tuple is a list of patterns which have the same size
+-- as the patterns of the first list.
 patternsTupleGen :: Int -> Int -> Gen ([Pattern], [Pattern])
 patternsTupleGen m1 m2 = do
   fst_list <- patListGen  m1 m2
