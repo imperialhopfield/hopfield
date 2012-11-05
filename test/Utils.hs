@@ -14,6 +14,7 @@ import           Util
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
   arbitrary = fmap V.fromList arbitrary
 
+nonempty = (`suchThat` (not . null))
 
 mapMonad :: Monad m => (a -> b) -> m [a] -> m [b]
 mapMonad f m_xs = do
@@ -44,10 +45,11 @@ boundedListGen g n = do
   len <- choose (0, n)
   vectorOf len g
 
--- TODO add description and add non-empty
+
+patListGen :: Int -> Int -> Gen [Pattern]
 patListGen maxPatSize maxPatListSize = do
     i <- choose (1, maxPatSize)
-    (`suchThat` (not . null)) $ boundedListGen (patternGen i) maxPatListSize
+    nonempty $ boundedListGen (patternGen i) maxPatListSize
 
 
 -- | @patternsTupleGen g m1 m2@Generates a tuple of lists, as follows:
@@ -78,7 +80,8 @@ sameElemVector = toGenVector . sameElemList
 -- | Produces a matrix with 0's along the diagonal and 1's otherwise
 allOnesWeights :: Int -> [[Double]]
 allOnesWeights n
-  = [ [ if i==j then 0 else 1 | i <- [0..n-1] ] | j <- [0..n-1] ]
+  = [ [ if i==j then 0 else w | i <- [0..n-1] ] | j <- [0..n-1] ]
+    where w = 1 ./. n
 
 
 -- | @boundedReplicateGen n g@ Generates lists containing 'g' replicated.
@@ -119,5 +122,5 @@ energyDecreasesAfterUpdate (training_pats, pats)
         pattern_after_update <- update ws pat
         return (energy ws pat >= energy ws pattern_after_update)
       energyDecreases pat = do
-        i<- arbitrary
+        i <- arbitrary
         return $ evalRand (energyDecreases' pat) (mkStdGen i)
