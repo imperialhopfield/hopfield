@@ -88,3 +88,18 @@ trainingPatsAreFixedPoints pats =
     checkFixedPoint pat = do
       i <- arbitrary
       return $ evalRand (update ws pat) (mkStdGen i) == pat
+
+-- | Tranins a network using @traning_pats@ and then updates each
+-- pattern in pats according to the weigths of that network.
+-- The aim is to check that the energy decreases after each update.
+energyDecreasesAfterUpdate:: [Pattern] -> [Pattern] -> Gen Bool
+energyDecreasesAfterUpdate training_pats pats
+  = and <$> mapM energyDecreases pats
+    where
+      ws = weights $ buildHopfieldData training_pats
+      energyDecreases' pat = do
+        pattern_after_update <- update ws pat
+        return (energy ws pat > energy ws pattern_after_update)
+      energyDecreases pat = do
+        i<- arbitrary
+        return $ evalRand (energyDecreases' pat) (mkStdGen i)
