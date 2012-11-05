@@ -124,3 +124,19 @@ energyDecreasesAfterUpdate (training_pats, pats)
       energyDecreases pat = do
         i <- arbitrary
         return $ evalRand (energyDecreases' pat) (mkStdGen i)
+
+
+repeatedUpdateCheck:: ([Pattern], [Pattern]) -> Gen Bool
+repeatedUpdateCheck (training_pats, pats)
+  = and <$> mapM  s pats
+    where
+      ws = weights $ buildHopfieldData training_pats
+      stopped pat = do
+        p     <- converged_pattern
+        new_p <- update ws p
+        return $ p == new_p
+        where
+          converged_pattern = repeatedUpdate ws pat
+      s pat = do
+        i <- arbitrary
+        return $ evalRand (stopped pat) (mkStdGen i)

@@ -27,7 +27,6 @@ main = hspec $ do
     let patListGen'     = patListGen maxPatSize maxPatListSize
 
     describe "buildHopfieldData" $ do
-
     -- Patterns must not be empty
       let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
 
@@ -53,6 +52,10 @@ main = hspec $ do
         updateViaIndex [(0, 1), (2, -1), (6, -1)] 6 (V.fromList [-1, 1, 1, -1, 1, -1, 1])
           `shouldBe` (V.fromList [-1, 1, 1, -1, 1, -1, -1])
 
+    describe "test repeatedUpdate" $ do
+      it "test that when repeatedUpdate has finished, no other update can occur" $
+        forAll (patternsTupleGen maxPatSize maxPatListSize) energyDecreasesAfterUpdate
+
     describe "getUpdatables" $ do
       it "getUpdatables test1" $
         getUpdatables (vector2D  [[0  ,0.2,0.5],
@@ -68,7 +71,6 @@ main = hspec $ do
                            [-0.1,-0.7,-0.4,0.5, 0  ]
                            ]) (V.fromList [1,-1,-1,1,-1])
         `shouldBe` ([(1, 1), (3, -1), (4, 1)])
-
 
     describe "energy tests" $ do
       it "energy is computed ok for a system with 2 neurons" $
