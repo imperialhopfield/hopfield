@@ -29,20 +29,12 @@ main = hspec $ do
 
     describe "buildHopfieldData" $ do
 
-
       -- Patterns must not be empty
       let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
-
 
       it "trains a single all-positive pattern correctly" $
         forAll patternGenAll1
           (\pat -> (list2D . weights) (buildHopfieldData [pat]) == allOnesWeights (V.length pat))
-
-
-      it "trains an arbitrary number of all-positive patterns correctly" $
-        forAll (nonempty $ boundedReplicateGen maxPatListSize patternGenAll1)
-          (\pats -> (list2D . weights) (buildHopfieldData pats) == allOnesWeights (V.length $ head pats))
-
 
       it "tests that the patterns stored in the hopfield datastructure are the same as the ones which were given as input" $
         forAll patListGen' (\pats -> (patterns $ buildHopfieldData pats) == pats)
