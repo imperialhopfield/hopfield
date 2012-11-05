@@ -21,7 +21,7 @@ _EPSILON = 0.001
 main = hspec $ do
   describe "base model" $ do
     let maxPatListSize = 20
-    let maxPatSize     = 1000
+    let maxPatSize     = 100
 
     -- Pattern list generator
     let patListGen'     = patListGen maxPatSize maxPatListSize
