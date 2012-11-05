@@ -25,9 +25,7 @@ main = hspec $ do
     let maxPatSize     = 1000
 
       -- Pattern list generator
-    let patListGen     = do
-          i <- choose (1, maxPatSize)
-          nonempty $ boundedListGen (patternGen i) maxPatListSize
+    let patListGen'     = patListGen maxPatSize maxPatListSize
 
     describe "buildHopfieldData" $ do
 
@@ -47,11 +45,11 @@ main = hspec $ do
 
 
       it "tests that the patterns stored in the hopfield datastructure are the same as the ones which were given as input" $
-        forAll patListGen (\pats -> (patterns $ buildHopfieldData pats) == pats)
+        forAll patListGen' (\pats -> (patterns $ buildHopfieldData pats) == pats)
 
 
       it "tests that patterns we trained on are fixed points" $
-        forAll (nonempty patListGen)
+        forAll (nonempty patListGen')
           trainingPatsAreFixedPoints
 
     describe "energy tests" $ do
@@ -75,5 +73,5 @@ main = hspec $ do
                                       ])
                                 (V.fromList [1,-1,-1,1,-1]) - 0.8) < _EPSILON
 
-      --it "energy decreases after doing one step" $
-        --forAll (nonempty patListGen)
+      it "energy decreases after doing one step" $
+        forAll (patternsTupleGen maxPatSize maxPatListSize) energyDecreasesAfterUpdate

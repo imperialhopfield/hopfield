@@ -44,6 +44,23 @@ boundedListGen g n = do
   len <- choose (0, n)
   vectorOf len g
 
+-- TODO add description and add non-empty
+patListGen maxPatSize maxPatListSize = do
+    i <- choose (1, maxPatSize)
+    (`suchThat` (not . null)) $ boundedListGen (patternGen i) maxPatListSize
+
+
+-- | @patternsTupleGen g m1 m2@Generates a tuple of lists, as follows:
+-- Uses patListGen to generate 1 list bounded in length by m1 and m2
+-- and created a different list which constains patterns of the same
+-- length as the patterns generated for the first list
+patternsTupleGen :: Int -> Int -> Gen ([Pattern], [Pattern])
+patternsTupleGen m1 m2 = do
+  fst_list <- patListGen  m1 m2
+  i <- choose (0, m2)
+  snd_list <- vectorOf i (patternGen $ V.length $ head fst_list)
+  return $ (fst_list, snd_list)
+
 
 -- Generate lists containing only 'x'
 sameElemList :: a -> Gen [a]
@@ -92,8 +109,8 @@ trainingPatsAreFixedPoints pats =
 -- | Tranins a network using @traning_pats@ and then updates each
 -- pattern in pats according to the weigths of that network.
 -- The aim is to check that the energy decreases after each update.
-energyDecreasesAfterUpdate:: [Pattern] -> [Pattern] -> Gen Bool
-energyDecreasesAfterUpdate training_pats pats
+energyDecreasesAfterUpdate:: ([Pattern], [Pattern]) -> Gen Bool
+energyDecreasesAfterUpdate (training_pats, pats)
   = and <$> mapM energyDecreases pats
     where
       ws = weights $ buildHopfieldData training_pats
