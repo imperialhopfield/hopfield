@@ -33,19 +33,22 @@ main = hspec $ do
 
       it "trains a single all-positive pattern correctly" $
         forAll patternGenAll1
-          (\pat -> (list2D . weights) (buildHopfieldData [pat]) == allOnesWeights (V.length pat))
+          (\pat -> (list2D . weights) (buildHopfieldData [pat]) == allWeightsSame (V.length pat))
 
       it "tests that the patterns stored in the hopfield datastructure are the same as the ones which were given as input" $
         forAll patListGen' (\pats -> (patterns $ buildHopfieldData pats) == pats)
-
 
       it "tests that patterns we trained on are fixed points" $
         forAll (nonempty patListGen')
           trainingPatsAreFixedPoints
 
-    describe "energy tests" $ do
+    describe "update tests" $ do
+      it "one update is  computed ok "
 
-      it "energy is computed ok for small system, 2 neurons" $
+    --describe "energy tests" $ do
+
+
+      it "energy is computed ok for a system with 2 neurons" $
         energy (vector2D [[0,0.5],[0.5,0]]) (V.fromList [1,0])
           `shouldBe` 0
 

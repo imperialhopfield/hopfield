@@ -78,8 +78,8 @@ sameElemVector = toGenVector . sameElemList
 
 
 -- | Produces a matrix with 0's along the diagonal and 1's otherwise
-allOnesWeights :: Int -> [[Double]]
-allOnesWeights n
+allWeightsSame :: Int -> [[Double]]
+allWeightsSame n
   = [ [ if i==j then 0 else w | i <- [0..n-1] ] | j <- [0..n-1] ]
     where w = 1 ./. n
 
