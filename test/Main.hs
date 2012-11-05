@@ -15,7 +15,6 @@ import           Control.Applicative
 import           System.Random
 
 toV = (V.fromList <$>)
-nonempty = (`suchThat` (not . null))
 _EPSILON = 0.001
 
 
@@ -24,7 +23,7 @@ main = hspec $ do
     let maxPatListSize = 20
     let maxPatSize     = 1000
 
-      -- Pattern list generator
+    -- Pattern list generator
     let patListGen'     = patListGen maxPatSize maxPatListSize
 
     describe "buildHopfieldData" $ do
