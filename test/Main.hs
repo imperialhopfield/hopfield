@@ -28,7 +28,7 @@ main = hspec $ do
 
     describe "buildHopfieldData" $ do
 
-      -- Patterns must not be empty
+    -- Patterns must not be empty
       let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
 
       it "trains a single all-positive pattern correctly" $
@@ -42,12 +42,35 @@ main = hspec $ do
         forAll (nonempty patListGen')
           trainingPatsAreFixedPoints
 
-    --describe "update tests" $ do
-    --  it "one update is  computed ok "
-    --
+    describe "updateViaIndex tests" $ do
+      it "updateViaIndex test1" $
+        updateViaIndex [(1, 1), (2, -1)] 2 (V.fromList [1, 1, 1])
+          `shouldBe` (V.fromList [1, 1, -1])
+      it "updateViaIndex test2" $
+        updateViaIndex [(0, 1), (2, -1)] 0 (V.fromList [-1, 1, 1, -1])
+          `shouldBe` (V.fromList [1, 1, 1, -1])
+      it "updateViaIndex test2" $
+        updateViaIndex [(0, 1), (2, -1), (6, -1)] 6 (V.fromList [-1, 1, 1, -1, 1, -1, 1])
+          `shouldBe` (V.fromList [-1, 1, 1, -1, 1, -1, -1])
+
+    describe "getUpdatables" $ do
+      it "getUpdatables test1" $
+        getUpdatables (vector2D  [[0  ,0.2,0.5],
+                                [0.2,0  ,0.7],
+                                [0.5,0.7,0  ]]) (V.fromList [1, 1, -1])
+        `shouldBe` ([(0, -1), (1, -1), (2, 1)])
+
+      it "getUpdatables test2" $
+        getUpdatables (vector2D [[ 0  , 0.2,-0.5,0.7,-0.1],
+                           [ 0.2, 0  , 0.3,0.4,-0.7],
+                           [-0.5, 0.3, 0  ,0.2,-0.4],
+                           [ 0.7, 0.4, 0.2,0  , 0.5],
+                           [-0.1,-0.7,-0.4,0.5, 0  ]
+                           ]) (V.fromList [1,-1,-1,1,-1])
+        `shouldBe` ([(1, 1), (3, -1), (4, 1)])
+
+
     describe "energy tests" $ do
-
-
       it "energy is computed ok for a system with 2 neurons" $
         energy (vector2D [[0,0.5],[0.5,0]]) (V.fromList [1,0])
           `shouldBe` 0

@@ -11,6 +11,7 @@ module Hopfield (
   , buildHopfieldData
   -- * Running
   , update
+  , getUpdatables
   , updateViaIndex
   , repeatedUpdate
   , matchPattern
@@ -72,6 +73,13 @@ train pats = vector2D ws
     n = V.length (head pats)
 
 
+-- | @getUpdatables ws pat@. Given a Hopfield network represented by ws, returns
+-- a list of paris comprising of the updatable neurons (represented by the index
+-- in the pattern) and their new, changed value.
+-- No check is performed in this function for efficiency reasons: the checks
+-- are expensive and are done in update, before update'.
+-- Any other caller should ensure that ws and pat are compatible and valid
+-- (by calling @valid)
 getUpdatables:: Weights -> Pattern -> [(Int, Int)]
 getUpdatables ws pat = updatables
   where
@@ -81,7 +89,10 @@ getUpdatables ws pat = updatables
     p          = V.length pat
 
 
--- The caller must ensure that index is smaller than the length of updatables
+-- | @updateViaIndex updatables index pat@ Takes the new value of the neuron
+-- represented by @index@ and changes its value in pat, returning the
+-- changed, updated pattern.
+-- The caller must ensure that index is smalupdateViaIndex updatables index patler than the length of updatables
 updateViaIndex :: [(Int, Int)] -> Int -> Pattern -> Pattern
 updateViaIndex updatables index pat =
   case updatables of
