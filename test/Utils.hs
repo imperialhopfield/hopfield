@@ -117,7 +117,7 @@ energyDecreasesAfterUpdate (training_pats, pats)
       ws = weights $ buildHopfieldData training_pats
       energyDecreases' pat = do
         pattern_after_update <- update ws pat
-        return (energy ws pat > energy ws pattern_after_update)
+        return (energy ws pat >= energy ws pattern_after_update)
       energyDecreases pat = do
         i<- arbitrary
         return $ evalRand (energyDecreases' pat) (mkStdGen i)
