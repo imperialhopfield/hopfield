@@ -42,10 +42,10 @@ main = hspec $ do
         forAll (nonempty patListGen')
           trainingPatsAreFixedPoints
 
-    describe "update tests" $ do
-      it "one update is  computed ok "
-
-    --describe "energy tests" $ do
+    --describe "update tests" $ do
+    --  it "one update is  computed ok "
+    --
+    describe "energy tests" $ do
 
 
       it "energy is computed ok for a system with 2 neurons" $
