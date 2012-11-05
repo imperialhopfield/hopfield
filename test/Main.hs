@@ -67,5 +67,5 @@ main = hspec $ do
                                       ])
                                 (V.fromList [1,-1,-1,1,-1]) - 0.8) < _EPSILON
 
-      it "energy decreases after doing one step" $
-        forAll (patternsTupleGen maxPatSize maxPatListSize) energyDecreasesAfterUpdate
+     -- it "energy decreases after doing one step" $
+     --   forAll (patternsTupleGen maxPatSize maxPatListSize) energyDecreasesAfterUpdate
