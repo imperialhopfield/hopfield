@@ -72,38 +72,28 @@ main = hspec $ do
                            ]) (V.fromList [1,-1,-1,1,-1])
         `shouldBe` ([(1, 1), (3, -1), (4, 1)])
 
-    describe "matchPattern tests" $
+    describe "matchPattern tests" $ do
+      let check pats p = evalRand (matchPattern
+                                     (buildHopfieldData $ V.fromList <$> pats)
+                                     (V.fromList p))
+                                  (mkStdGen 1)
+          y `givesIndex` x = y `shouldBe` (Right x)
+          y `givesPattern` p = y `shouldBe` (Left $ V.fromList p)
+
       it "matchPattern test for one pattern, giving the same pattern for recognion" $
-        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1]]) (V.fromList [1, 1, 1]))
-                  (mkStdGen 1)
-          `shouldBe` (Right 0);
+        check [[1, 1, 1]] [1, 1, 1] `givesIndex` 0
 
       it "matchPattern test for one pattern, giving the opposite pattern for recognion" $
-        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1]]) (V.fromList [-1, -1, -1]))
-                  (mkStdGen 1)
-          `shouldBe` (Left $ V.fromList [-1, -1, -1]);
+        check [[1, 1, 1]] [-1, -1, -1]  `givesPattern` [-1, -1, -1]
 
       it "matchPattern test for one pattern, giving the opposite pattern for recognion" $
-        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1],
-                                                   V.fromList [-1, 1, -1]])
-                  (V.fromList [1, 1, 1]))
-                  (mkStdGen 1)
-          `shouldBe` (Right 0);
+        check [[1, 1, 1], [-1, 1, -1]] [1, 1, 1] `givesIndex` 0
 
       it "matchPattern test for one pattern, giving the opposite pattern for recognion" $
-        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1],
-                                                   V.fromList [-1, 1, -1]])
-                  (V.fromList [-1, 1, -1]))
-                  (mkStdGen 1)
-          `shouldBe` (Right 1);
+        check [[1, 1, 1], [-1, 1, -1]] [-1, 1, -1] `givesIndex` 1
 
       it "matchPattern test for one pattern, giving the opposite pattern for recognion" $
-        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1],
-                                                   V.fromList [-1, 1, -1]])
-                  (V.fromList [-1, -1, -1]))
-                  (mkStdGen 1)
-          `shouldBe` (Right 1)
-
+        check [[1, 1, 1], [-1, 1, -1]] [-1, -1, -1] `givesIndex` 1
 
     describe "energy tests" $ do
       it "energy is computed ok for a system with 2 neurons" $
