@@ -72,6 +72,39 @@ main = hspec $ do
                            ]) (V.fromList [1,-1,-1,1,-1])
         `shouldBe` ([(1, 1), (3, -1), (4, 1)])
 
+    describe "matchPattern tests" $
+      it "matchPattern test for one pattern, giving the same pattern for recognion" $
+        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1]]) (V.fromList [1, 1, 1]))
+                  (mkStdGen 1)
+          `shouldBe` (Right 0);
+
+      it "matchPattern test for one pattern, giving the opposite pattern for recognion" $
+        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1]]) (V.fromList [-1, -1, -1]))
+                  (mkStdGen 1)
+          `shouldBe` (Left $ V.fromList [-1, -1, -1]);
+
+      it "matchPattern test for one pattern, giving the opposite pattern for recognion" $
+        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1],
+                                                   V.fromList [-1, 1, -1]])
+                  (V.fromList [1, 1, 1]))
+                  (mkStdGen 1)
+          `shouldBe` (Right 0);
+
+      it "matchPattern test for one pattern, giving the opposite pattern for recognion" $
+        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1],
+                                                   V.fromList [-1, 1, -1]])
+                  (V.fromList [-1, 1, -1]))
+                  (mkStdGen 1)
+          `shouldBe` (Right 1);
+
+      it "matchPattern test for one pattern, giving the opposite pattern for recognion" $
+        evalRand (matchPattern (buildHopfieldData [V.fromList [1, 1, 1],
+                                                   V.fromList [-1, 1, -1]])
+                  (V.fromList [-1, -1, -1]))
+                  (mkStdGen 1)
+          `shouldBe` (Right 1)
+
+
     describe "energy tests" $ do
       it "energy is computed ok for a system with 2 neurons" $
         energy (vector2D [[0,0.5],[0.5,0]]) (V.fromList [1,0])
