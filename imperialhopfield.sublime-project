@@ -1,0 +1,20 @@
+{
+	"folders":
+	[
+    {
+      "path": "."
+    }
+  ],
+  "settings":
+  {
+    "sublimeclang_options":
+    [
+      "-Wall",
+      "-Wextra",
+      "-fopenmp",
+      "-I/usr/include/ImageMagick",
+      "-lMagickWand",
+      "-lMagickCore"
+    ]
+  }
+}
