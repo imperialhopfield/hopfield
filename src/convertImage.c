@@ -1,15 +1,5 @@
+#include "convertImage.h"
 #include <wand/magick_wand.h>
-
-
-
-struct BinaryPattern
-{
-  int size;
-  int * pattern;
-};
-
-typedef struct BinaryPattern binary_pattern_t;
-
 
 void ThrowWandException(MagickWand *wand)
   {
