@@ -104,9 +104,10 @@ int main(int argc, char** args){
     binary_pattern_t finalPattern = load_picture(args[1]);
     for(int i = 0; i < finalPattern.size; i++)
       printf("%d ", finalPattern.pattern[i]);
+    printf("\n");
   }
   else
-    printf("FREEZE!!! no image input provided!!! ");
+    printf("FREEZE!!! no image input provided!!!\n");
 
 
   return 0;
