@@ -1,14 +1,14 @@
 #include <wand/magick_wand.h>
 
-#define ThrowWandException(wand) \
-  { \
-    char *description; \
-    ExceptionType severity; \
-    description=MagickGetException(wand,&severity); \
-    (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description); \
-    description=(char *) MagickRelinquishMemory(description); \
-    exit(-1); \
-  } \
+void ThrowWandException(MagickWand *wand)
+  {
+    char *description;
+    ExceptionType severity;
+    description=MagickGetException(wand,&severity);
+    (void) fprintf(stderr,"%s %s %lu %s\n",GetMagickModule(),description);
+    description=(char *) MagickRelinquishMemory(description);
+    exit(-1);
+  }
 
 /* converts a list of doubles to binary + flattens the matrix to a vector */
 int*
@@ -48,7 +48,7 @@ int* load_picture(char* inputImg)
   size_t height = MagickGetImageHeight(mw);
   long y;
   double** outputPattern = (double**) malloc (sizeof(double*) * width);
-  for(int i=0; i < width; i++)
+  for(size_t i=0; i < width; i++)
   {
     outputPattern[i] = (double*) malloc(sizeof(double) * height);
   }
@@ -82,7 +82,7 @@ int* load_picture(char* inputImg)
 int main(int argc, char** args){
 
   //char* imageInput = "../images/3x3.bmp";
-  if(args[1] != NULL)
+  if(argc == 2 && args[1] != NULL)
   {
     int* finalPattern = load_picture(args[1]);
     for(int i = 0; i < 9; i++)
