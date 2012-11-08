@@ -15,13 +15,26 @@ library
   exposed-modules:
       Hopfield
     , Util
+  other-modules:
+      ConvertImage
   hs-source-dirs:
     src
+  build-tools: hsc2hs
   build-depends:
       base >= 4 && <= 5
     , vector >= 0.9.1
     , random >= 1.0.1.1
     , MonadRandom >= 0.1.8
+  c-sources:
+      src/convertImage.c
+  include-dirs:
+      src
+    , /usr/include/ImageMagick
+  includes:
+      wand/magick_wand.h
+  cc-options:
+    -- Can't use "-Wextra -Werror" here due to hsc2hs generating unused main() parameters
+    -std=c99 -O2 -Wall -Wextra
   ghc-options:
     -Wall -fwarn-unused-imports
 

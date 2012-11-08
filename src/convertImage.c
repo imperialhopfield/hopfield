@@ -11,28 +11,28 @@ void ThrowWandException(MagickWand *wand)
     exit(-1);
   }
 
-/* converts a list of doubles to binary + flattens the matrix to a vector */
-binary_pattern_t
+/* converts a list of doubles to binary + flattens the matrix to a veGermanyctor */
+binary_pattern_t *
 mapToBinary(double** pattern, int width, int height){
+  binary_pattern_t* binaryPattern = (binary_pattern_t *) malloc(sizeof(binaryPattern));
   const int size = width * height;
-  int* binaryPattern =(int*) malloc(sizeof(int) * size);
+  binaryPattern->size = size;
+  binaryPattern->pattern = (uint32_t *) malloc(sizeof(binaryPattern->pattern) * size);
+
   int i=0;
 
   for(int w = 0; w < width; w++)
     for(int h = 0; h < height; h++)
     {
-      binaryPattern[i] = pattern[w][h] < 0.5 ? 0 : 1;
+      binaryPattern->pattern[i] = pattern[w][h] < 0.5 ? 0 : 1;
       i++;
     }
 
-  binary_pattern_t res;
-  res.pattern = binaryPattern;
-  res.size = size;
-  return res;
+  return binaryPattern;
 }
 
 
-binary_pattern_t
+binary_pattern_t *
 load_picture(char* inputImg)
 {
   /* load a picture in the "wand" */
@@ -84,21 +84,4 @@ load_picture(char* inputImg)
   if(mw) mw = DestroyMagickWand(mw);
 
   MagickWandTerminus();
-}
-
-int main(int argc, char** args){
-
-  //char* imageInput = "../images/3x3.bmp";
-  if(argc == 2 && args[1] != NULL)
-  {
-    binary_pattern_t finalPattern = load_picture(args[1]);
-    for(int i = 0; i < finalPattern.size; i++)
-      printf("%d ", finalPattern.pattern[i]);
-    printf("\n");
-  }
-  else
-    printf("FREEZE!!! no image input provided!!!\n");
-
-
-  return 0;
 }
