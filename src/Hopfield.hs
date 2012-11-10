@@ -27,7 +27,6 @@ import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import           Util
 
-
 type Weights = Vector (Vector Double)
 type Pattern = Vector Int
 
@@ -201,3 +200,4 @@ validWeights ws
   | otherwise = Nothing
   where
     n = V.length ws
+

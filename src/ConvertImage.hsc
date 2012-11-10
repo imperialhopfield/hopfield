@@ -22,7 +22,7 @@ data CBinaryPattern = CBinaryPattern {
 } deriving (Eq, Show)
 
 
-foreign import ccall "convertImage.h load_picture" load_picture :: CString -> Ptr CBinaryPattern
+foreign import ccall "convertImage.h load_picture" load_picture :: CString -> CInt -> CInt -> Ptr CBinaryPattern
 
 
 instance Storable CBinaryPattern where
@@ -36,7 +36,10 @@ instance Storable CBinaryPattern where
 
 
 
-loadPicture :: String -> IO CBinaryPattern
-loadPicture path = do
+loadPicture :: String -> Int -> Int-> IO CBinaryPattern
+loadPicture path w h = do
   cpath <- newCString path
-  peek (load_picture cpath)
+  -- I need to create CInt from Int in haskell
+  --cw    <- newCInt w
+  --ch    <- newCInt h
+  peek (load_picture cpath 4 4)

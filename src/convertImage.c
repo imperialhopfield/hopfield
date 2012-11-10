@@ -11,7 +11,7 @@ void ThrowWandException(MagickWand *wand)
     exit(-1);
   }
 
-/* converts a list of doubles to binary + flattens the matrix to a veGermanyctor */
+/* converts a list of doubles to binary + flattens the matrix to a vector */
 binary_pattern_t *
 mapToBinary(double** pattern, int width, int height){
   binary_pattern_t* binaryPattern = (binary_pattern_t *) malloc(sizeof(binaryPattern));
@@ -33,7 +33,7 @@ mapToBinary(double** pattern, int width, int height){
 
 
 binary_pattern_t *
-load_picture(char* inputImg)
+load_picture(char* inputImg, size_t width, size_t height)
 {
   /* load a picture in the "wand" */
   MagickWand *mw = NULL;
@@ -51,15 +51,16 @@ load_picture(char* inputImg)
 
   PixelWand** pixels;
   PixelIterator* pixelIt = NewPixelIterator(mw);
-  size_t width = MagickGetImageWidth(mw);
-  size_t height = MagickGetImageHeight(mw);
-  long y;
+  // size_t width = MagickGetImageWidth(mw);
+  // size_t height = MagickGetImageHeight(mw);
+  MagickResizeImage(mw, height, width, LanczosFilter, 0);
   double** outputPattern = (double**) malloc (sizeof(double*) * width);
   for(size_t i=0; i < width; i++)
   {
     outputPattern[i] = (double*) malloc(sizeof(double) * height);
   }
 
+  long y;
   /* get pixel grayscale values */
   for (y=0; y < (long) height; y++)
   {

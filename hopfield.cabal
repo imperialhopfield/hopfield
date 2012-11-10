@@ -15,6 +15,7 @@ library
   exposed-modules:
       Hopfield
     , Util
+    , IOHopfield
   other-modules:
       ConvertImage
   hs-source-dirs:
