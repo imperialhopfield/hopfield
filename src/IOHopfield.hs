@@ -1,8 +1,7 @@
 module IOHopfield(
-  getPatternsFromPictures
+  getPatternsFromPicture
   ) where
 
---this should be in the main file
 import           Hopfield
 import           ConvertImage
 import           Data.Functor
@@ -15,10 +14,10 @@ toIOPattern io_cpat = toPattern <$> io_cpat
   where
     toPattern cpat = V.fromList $ map ((\x -> 2 * x - 1) . fromIntegral) $ pattern cpat
 
-buildHopfieldFromStrings w h = buildIO . (getPatternsFromPictures w h)
+buildHopfieldFromStrings w h = buildIO . (mapM $ getPatternsFromPicture w h)
 
-getPatternsFromPictures :: Int -> Int -> [String] -> IO [Pattern]
-getPatternsFromPictures w h= mapM (toIOPattern. (\x -> loadPicture x w h))
+getPatternsFromPicture :: Int -> Int -> String -> IO Pattern
+getPatternsFromPicture w h = toIOPattern. (\x -> loadPicture x w h)
 
 buildIO :: IO [Pattern] -> IO HopfieldData
 buildIO = fmap buildHopfieldData

@@ -42,4 +42,4 @@ loadPicture path w h = do
   -- I need to create CInt from Int in haskell
   --cw    <- newCInt w
   --ch    <- newCInt h
-  peek (load_picture cpath 4 4)
+  peek (load_picture cpath 3 3)
