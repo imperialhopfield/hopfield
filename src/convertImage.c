@@ -74,7 +74,7 @@ resize(MagickWand* imgWand, size_t width, size_t height)
    heights across the images. Furthermore, if the values are
    not in the range min, max, then we shall scale them so that
    they fit in the range as well */
-MagickWand**
+void
 resizeToMin(MagickWand** imgWands, int nr)
 {
   size_t imgMinW = INT_MAX, imgMinH = INT_MAX; 
@@ -105,8 +105,6 @@ resizeToMin(MagickWand** imgWands, int nr)
   {
     resize(imgWands[i], imgMinW, imgMinH);
   }
-
-  return NULL;
 }
 
 
@@ -149,5 +147,32 @@ mwToBinary(MagickWand* imgWand)
 
 }
 
+
+/* loads a list of images located at filepaths, and returns a list of 
+   patterns that will be loaded in the Hopfield network */
+binary_pattern_t**
+image_to_binary (char** filepaths, int nr_images)
+{
+  MagickWand** wand_list = malloc (sizeof(MagickWand*) * nr_images);
+  /* load images into wands  */
+  for(int i = 0; i < nr_images; i++)
+  {
+    wand_list[i] = load_into_wand(filepaths[i]);
+  }
+
+  /* resize the images */
+  resizeToMin(wand_list, nr_images); 
+ 
+  binary_pattern_t** binary_patterns = 
+    (binary_pattern_t**) malloc (sizeof(binary_pattern_t*) * nr_images);
+  /* convert to patterns */
+  for(int i = 0; i < nr_images; i++)
+  {
+    binary_patterns[i] = mwToBinary(wand_list[i]);
+  }
+
+  return binary_patterns; 
+
+}
 
 

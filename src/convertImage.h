@@ -11,6 +11,6 @@ struct BinaryPattern
 
 typedef struct BinaryPattern binary_pattern_t;
 
-binary_pattern_t * load_picture(char* inputImg, size_t w, size_t h);
+binary_pattern_t** image_to_binary (char** filepaths, int nr_images);
 
 #endif
