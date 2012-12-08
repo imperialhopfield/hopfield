@@ -16,6 +16,10 @@ toIOPattern io_cpat = toPattern <$> io_cpat
 
 buildHopfieldFromStrings w h = buildIO . (mapM $ getPatternsFromPicture w h)
 
+--getPatternsFromPictures:: [String] -> IO [Pattern]
+--getPatternsFromPictures pics =
+
+
 getPatternsFromPicture :: Int -> Int -> String -> IO Pattern
 getPatternsFromPicture w h = toIOPattern. (\x -> loadPicture x w h)
 
@@ -25,10 +29,10 @@ buildIO = fmap buildHopfieldData
 
 matchPatternIO :: IO HopfieldData -> IO Pattern -> IO (Either Pattern Int)
 matchPatternIO io_hd io_pat = do
-    pat <- io_pat
-    hd <- io_hd
-    --i <- arbitrary
-    return $ evalRand (matchPattern hd pat) (mkStdGen 1)
+    pat  <- io_pat
+    hd   <- io_hd
+    gen  <- getStdGen
+    return $ evalRand (matchPattern hd pat) gen
 
 
 

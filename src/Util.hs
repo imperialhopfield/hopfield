@@ -11,7 +11,7 @@ import           Data.Vector (Vector)
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
-
+import           System.Random
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
 x ./. y = fromIntegral x / fromIntegral y
@@ -40,4 +40,3 @@ vector2D ll = V.fromList $ map V.fromList ll
 -- | Converts a 2D vector into a list of lists
 list2D :: Vector (Vector a) -> [[a]]
 list2D vv = map V.toList $ V.toList vv
-

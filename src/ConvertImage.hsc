@@ -24,7 +24,6 @@ data CBinaryPattern = CBinaryPattern {
 
 foreign import ccall "convertImage.h load_picture" load_picture :: CString -> CInt -> CInt -> Ptr CBinaryPattern
 
-
 instance Storable CBinaryPattern where
   alignment _ = #{alignment binary_pattern_t}
   sizeOf _ = #{size binary_pattern_t}
@@ -35,11 +34,7 @@ instance Storable CBinaryPattern where
   poke _ptr (CBinaryPattern _s _p) = error "Storable CBinaryPattern: poke not implemented"
 
 
-
 loadPicture :: String -> Int -> Int-> IO CBinaryPattern
 loadPicture path w h = do
   cpath <- newCString path
-  -- I need to create CInt from Int in haskell
-  --cw    <- newCInt w
-  --ch    <- newCInt h
-  peek (load_picture cpath 3 3)
+  peek (load_picture cpath (fromIntegral w) (fromIntegral h))
