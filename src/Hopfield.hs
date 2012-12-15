@@ -11,6 +11,7 @@ module Hopfield (
   , buildHopfieldData
   -- * Running
   , update
+  , h
   , getUpdatables
   , updateViaIndex
   , repeatedUpdate

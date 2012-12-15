@@ -3,6 +3,8 @@ module Utils where
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
+import           Data.List
+import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Test.QuickCheck
 import           Control.Monad
@@ -99,16 +101,39 @@ replaceAtN n r (x:xs)
   | otherwise = error "negative index"
 
 
+-- | Compute crosstalk term for a pattern and a given neuron
+-- @crosstalk hopfield index neuron
+-- todo think if it is better to actually pass in the hopfield data
+-- strucutre
+-- the pattern on which we do this has to be one of the traninig patterns
+-- todo error checks
+-- note that this is a very basic check
+-- one should try and implement the probability error thing as
+-- that would give as a good idea of how to
+-- scale
+crosstalk:: HopfieldData -> Int -> Int -> Int
+-- the cross talk term is h(xi k ) - xi k
+crosstalk hs index n = h (weights hs) pat n - pat V.! n
+                          where pat = (patterns hs) !! index
+
+compTerm:: HopfieldData -> Int -> Int -> Int
+compTerm hs index n = - (pat V.! n) * (h (weights hs) pat n - pat V.! n)
+                        where pat = (patterns hs) !! index
+
+checkFixed :: HopfieldData -> Int -> Bool
+checkFixed hs index = all (\x -> compTerm hs index x <= 1) [1.. V.length ((patterns hs) !! index)]
+
 -- | Used as a property to check that patterns which
 -- are used to create the network are stable in respect to update
 trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
 trainingPatsAreFixedPoints pats =
   and <$> mapM checkFixedPoint pats
   where
+    hs = buildHopfieldData pats
     ws = weights (buildHopfieldData pats)
     checkFixedPoint pat = do
       i <- arbitrary
-      return $ evalRand (update ws pat) (mkStdGen i) == pat
+      return $ evalRand (update ws pat) (mkStdGen i) == pat or (not checkFixed hs index)
 
 -- | Tranins a network using @traning_pats@ and then updates each
 -- pattern in pats according to the weigths of that network.
