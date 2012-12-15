@@ -82,10 +82,13 @@ train pats = vector2D ws
 getUpdatables:: Weights -> Pattern -> [(Int, Int)]
 getUpdatables ws pat = updatables
   where
-    updatables = [ (i, h i) | (i, x_i) <- zip [0..] (V.toList pat), h i /= x_i ]
-    h i        = if sum [ (ws ! i ! j) *. (pat ! j)
-                        | j <- [0 .. p-1] ] >= 0 then 1 else -1
-    p          = V.length pat
+    updatables = [ (i, h ws pat i) | (i, x_i) <- zip [0..] (V.toList pat), h ws pat i /= x_i ]
+
+
+h :: Weights -> Pattern -> Int -> Int
+h ws pat i = if sum [ (ws ! i ! j) *. (pat ! j)
+                     | j <- [0 .. p-1] ] >= 0 then 1 else -1
+              where   p = V.length pat
 
 
 -- | @updateViaIndex updatables index pat@ Takes the new value of the neuron
