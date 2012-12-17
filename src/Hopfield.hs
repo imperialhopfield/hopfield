@@ -159,6 +159,15 @@ matchPattern (HopfieldData ws pats) pat
         Just index -> return $ Right index
 
 
+-- | Computes the probability of error for one element given a hopfield data
+-- structure. Note that I claim that the actuall error of probability depends
+-- on this, but is not the whole term
+computeError :: HopfieldData -> Double
+computeError (HopfieldData _ pats) = 1 ./. 2 * (1 - (erf $ sqrt $ n ./. p))
+  where n = V.length $ pats !! 0
+        p = length pats
+
+
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
 -- network (represented by @weights@).
 -- Pre: @length weights == length pattern@
