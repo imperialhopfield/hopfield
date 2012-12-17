@@ -1,7 +1,7 @@
 import Hopfield
 import Numeric.Container
 
--- start with no biases initially
+-- start with no biases initially, introduce them after
 
 -- note that v and h do not need to have the same state
 -- state h v
@@ -61,7 +61,11 @@ updateWS ws v = lr * (ws + dws)
           h' = getHidden ws v'
 
 
--- train, update the ws for all patterns
+ --train, update the ws for all patterns
+ --
+train :: MonadRandom m => [Pattern] -> Int -> m Weigths
+train pats nr_hidden = foldM updateWS ws_start pats
+  --where ws_start =
 
 activation :: Double -> Double
 activation x = 1 ./. (1 - exp (-x))

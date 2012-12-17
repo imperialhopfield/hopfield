@@ -16,6 +16,7 @@ library
       Hopfield
     , Util
     , IOHopfield
+    , BolzmannMachine
   other-modules:
       ConvertImage
   hs-source-dirs:
