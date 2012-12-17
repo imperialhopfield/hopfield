@@ -121,19 +121,19 @@ compTerm hs index n = - (pat V.! n) * (h (weights hs) pat n - pat V.! n)
                         where pat = (patterns hs) !! index
 
 checkFixed :: HopfieldData -> Int -> Bool
-checkFixed hs index = all (\x -> compTerm hs index x <= 1) [1.. V.length ((patterns hs) !! index)]
+checkFixed hs index = all (\x -> compTerm hs index x <= 1) [0.. V.length ((patterns hs) !! index) - 1]
 
 -- | Used as a property to check that patterns which
 -- are used to create the network are stable in respect to update
 trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
 trainingPatsAreFixedPoints pats =
-  and <$> mapM checkFixedPoint pats
+  and <$> mapM checkFixedPoint [0.. length pats - 1]
   where
     hs = buildHopfieldData pats
-    ws = weights (buildHopfieldData pats)
-    checkFixedPoint pat = do
+    ws = weights hs
+    checkFixedPoint index = do
       i <- arbitrary
-      return $ evalRand (update ws pat) (mkStdGen i) == pat or (not checkFixed hs index)
+      return $ evalRand (update ws (pats !! index)) (mkStdGen i) == (pats !! index) || (not $ checkFixed hs index)
 
 -- | Tranins a network using @traning_pats@ and then updates each
 -- pattern in pats according to the weigths of that network.
