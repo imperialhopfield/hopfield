@@ -1,5 +1,6 @@
 module Util (
-    repeatUntilEqual
+    fromDataVector
+  , repeatUntilEqual
   , randomElem
   , vector2D
   , list2D
@@ -7,11 +8,12 @@ module Util (
   , (*.)
 ) where
 
-import           Data.Vector (Vector)
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
-import           System.Random
+import           Foreign.Storable
+import qualified Numeric.Container as NC
+
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
 x ./. y = fromIntegral x / fromIntegral y
@@ -33,10 +35,17 @@ repeatUntilEqual f a =
 
 
 -- | Converts a list of lists to a 2D vector
-vector2D :: [[a]] -> Vector (Vector a)
+vector2D :: [[a]] -> V.Vector (V.Vector a)
 vector2D ll = V.fromList $ map V.fromList ll
 
 
 -- | Converts a 2D vector into a list of lists
-list2D :: Vector (Vector a) -> [[a]]
+list2D :: V.Vector (V.Vector a) -> [[a]]
 list2D vv = map V.toList $ V.toList vv
+
+-- from Data.Vector to Numeric.Container.Vector
+fromDataVector::  (Foreign.Storable.Storable a) => V.Vector a -> NC.Vector a
+fromDataVector v = NC.fromList $ V.toList v
+
+fromMatrix:: (NC.Element a, Foreign.Storable.Storable a) => V.Vector (V.Vector a) -> NC.Matrix a
+fromMatrix ws = NC.fromLists $ list2D ws

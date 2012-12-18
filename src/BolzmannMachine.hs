@@ -62,14 +62,16 @@ getVisible ws h = do
 
 
 updateWS:: MonadRandom m => Weights -> Pattern -> m Weights
-updateWS ws v =  dws = do
+updateWS ws v = do
     h  <- getHidden ws v
     v' <- getVisible ws h
     h' <- getHidden ws v'
-    pos <- return $ V.fromList $ fromRows (v outer h)
-    neg <- return $ V.fromList $ fromRows (v' outer h')
+    --pos <- return $ vector2D $ toLists ((fromDataVector v) `outer` (fromDataVector h))
+    --neg <- return $ vector2D $ toLists ((fromDataVector v') `outer` (fromDataVector h'))
+    pos <- (fromDataVector v) `outer` (fromDataVector h)
+    neg <- (fromDataVector v') `outer` (fromDataVector h')
     dws <- return $ pos - neg
-    return lr * (ws + dws)
+    return vector2D $ toLists $ lr * (ws + dws)
 
  --train, update the ws for all patterns
  --
@@ -80,5 +82,5 @@ train pats nr_hidden = foldM updateWS ws_start pats
         p = length pats
 
 activation :: Double -> Double
-activation x = 1 ./. (1 - exp (-x))
+activation x = 1.0 / (1.0 - exp (-x))
 
