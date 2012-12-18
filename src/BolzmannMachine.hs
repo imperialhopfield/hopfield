@@ -1,7 +1,5 @@
 module BolzmannMachine where
 
-import           Data.Functor
-import           Data.List
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.Vector ((!))
@@ -13,20 +11,12 @@ import Util
 
 -- start with no biases initially, introduce them after
 
--- note that v and h do not need to have the same state
--- state h v
--- energy
-
--- probability
--- sample h given v
--- sample v given h
--- update weigths between hidden and visible layer
-
 lr = 0.1 :: Double -- learning rate
 
--- todo checks for Weigths. Here there are different
--- todo checks for patterns. Here there are different
--- todo see order of updates
+-- TODO checks for Weigths. Here there are different
+-- TODO checks for patterns. Here there are different
+-- TODO see order of updates using shuffle
+-- TODO see how you can change update and co from Hopfield to fit this
 
 
 -- TODO check size h and width ws same
