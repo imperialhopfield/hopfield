@@ -2,7 +2,6 @@ module BolzmannMachine where
 
 import           Data.Functor
 import           Data.List
---import           Data.Random
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.Vector ((!))

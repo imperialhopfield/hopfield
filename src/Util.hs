@@ -5,7 +5,6 @@ module Util (
   , randomElem
   , vector2D
   , list2D
-  , toMatrix
   , (./.)
   , (*.)
 ) where
@@ -48,9 +47,6 @@ list2D vv = map V.toList $ V.toList vv
 -- from Data.Vector to Numeric.Container.Vector
 fromDataVector::  (Foreign.Storable.Storable a) => V.Vector a -> NC.Vector a
 fromDataVector v = NC.fromList $ V.toList v
-
-toMatrix:: (NC.Element a, Foreign.Storable.Storable a) => V.Vector (V.Vector a) -> NC.Matrix a
-toMatrix ws = NC.fromLists $ list2D ws
 
 -- the caller has to ensure that the dimensions are the same
 combine:: (a-> a -> a) -> [[a]] -> [[a]] -> [[a]]
