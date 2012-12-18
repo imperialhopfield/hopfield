@@ -1,12 +1,12 @@
 module BolzmannMachine where
 
 import           Data.List
-import Data.Random.Distribution.Normal
-import Numeric.Container
-import Control.Monad
-import Control.Monad.Random
-import           Data.Vector (Vector, (!))
+import           Data.Random.Distribution.Normal
+import           Control.Monad
+import           Control.Monad.Random
+import           Data.Vector ((!))
 import qualified Data.Vector as V
+import qualified Numeric.Container as NC
 
 import Hopfield
 import Util
@@ -63,15 +63,18 @@ getVisible ws h = do
 
 updateWS:: MonadRandom m => Weights -> Pattern -> m Weights
 updateWS ws v = do
-    h  <- getHidden ws v
-    v' <- getVisible ws h
-    h' <- getHidden ws v'
-    --pos <- return $ vector2D $ toLists ((fromDataVector v) `outer` (fromDataVector h))
-    --neg <- return $ vector2D $ toLists ((fromDataVector v') `outer` (fromDataVector h'))
-    pos <- (fromDataVector v) `outer` (fromDataVector h)
-    neg <- (fromDataVector v') `outer` (fromDataVector h')
-    dws <- return $ pos - neg
-    return vector2D $ toLists $ lr * (ws + dws)
+    h    <- getHidden ws v
+    v'   <- getVisible ws h
+    h'   <- getHidden ws v'
+    v_d  <- return $ V.fromList $ map fromIntegral (V.toList v)
+    v_d' <- return $ V.fromList $ map fromIntegral (V.toList v')
+    h_d  <- return $ V.fromList $ map fromIntegral (V.toList h)
+    h_d' <- return $ V.fromList $ map fromIntegral (V.toList h')
+    pos  <- return $ (fromDataVector v_d) `NC.outer` (fromDataVector h_d)
+    neg  <- return $ (fromDataVector v_d') `NC.outer` (fromDataVector h_d')
+    dws  <- return $ (pos::NC.Matrix Double) - (neg:: NC.Matrix Double)
+    ws_m <- return $ toMatrix ws
+    return $ vector2D $ NC.toLists $ lr * (ws_m + dws)
 
  --train, update the ws for all patterns
  --
