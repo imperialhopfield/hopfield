@@ -56,15 +56,15 @@ updateWS ws v = do
     h    <- getHidden ws v
     v'   <- getVisible ws h
     h'   <- getHidden ws v'
-    v_d  <- return $ V.fromList $ map fromIntegral (V.toList v)
-    v_d' <- return $ V.fromList $ map fromIntegral (V.toList v')
-    h_d  <- return $ V.fromList $ map fromIntegral (V.toList h)
-    h_d' <- return $ V.fromList $ map fromIntegral (V.toList h')
-    pos  <- return $ NC.toLists $ (fromDataVector v_d) `NC.outer` (fromDataVector h_d)
-    neg  <- return $ NC.toLists $ (fromDataVector v_d') `NC.outer` (fromDataVector h_d')
-    dws  <- return $ combine (-) pos neg
-    ws_f <-  return $ combine (+) (list2D ws) dws
-    final <- return $ map (map (\x -> x * lr)) ws_f
+    let v_d  = V.fromList $ map fromIntegral (V.toList v)
+    let v_d' = V.fromList $ map fromIntegral (V.toList v')
+    let h_d  = V.fromList $ map fromIntegral (V.toList h)
+    let h_d' = V.fromList $ map fromIntegral (V.toList h')
+    let pos  = NC.toLists $ (fromDataVector v_d) `NC.outer` (fromDataVector h_d)
+    let neg  = NC.toLists $ (fromDataVector v_d') `NC.outer` (fromDataVector h_d')
+    let dws  = combine (-) pos neg
+    let ws_f = combine (+) (list2D ws) dws
+    let final = map (map (\x -> x * lr)) ws_f
     return $ vector2D final
 
 train :: MonadRandom m => [Pattern] -> Int -> m Weights
