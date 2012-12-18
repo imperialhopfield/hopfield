@@ -11,7 +11,7 @@ module Hopfield (
   , buildHopfieldData
   -- * Running
   , update
-  , h
+  , computeH
   , getUpdatables
   , updateViaIndex
   , repeatedUpdate
@@ -85,11 +85,11 @@ train pats = vector2D ws
 getUpdatables:: Weights -> Pattern -> [(Int, Int)]
 getUpdatables ws pat = updatables
   where
-    updatables = [ (i, h ws pat i) | (i, x_i) <- zip [0..] (V.toList pat), h ws pat i /= x_i ]
+    updatables = [ (i, computeH ws pat i) | (i, x_i) <- zip [0..] (V.toList pat), computeH ws pat i /= x_i ]
 
 
-h :: Weights -> Pattern -> Int -> Int
-h ws pat i = if sum [ (ws ! i ! j) *. (pat ! j)
+computeH :: Weights -> Pattern -> Int -> Int
+computeH ws pat i = if sum [ (ws ! i ! j) *. (pat ! j)
                      | j <- [0 .. p-1] ] >= 0 then 1 else -1
               where   p = V.length pat
 

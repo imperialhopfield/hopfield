@@ -23,7 +23,7 @@ import Util
 -- sample v given h
 -- update weigths between hidden and visible layer
 
-lr = 0.1 -- learning rate
+lr = 0.1 :: Double -- learning rate
 
 -- todo checks for Weigths. Here there are different
 -- todo checks for patterns. Here there are different
@@ -71,12 +71,12 @@ updateWS ws v = do
     v_d' <- return $ V.fromList $ map fromIntegral (V.toList v')
     h_d  <- return $ V.fromList $ map fromIntegral (V.toList h)
     h_d' <- return $ V.fromList $ map fromIntegral (V.toList h')
-    pos  <- return $ (fromDataVector v_d) `NC.outer` (fromDataVector h_d)
-    neg  <- return $ (fromDataVector v_d') `NC.outer` (fromDataVector h_d')
-    dws  <- return $ (pos::NC.Matrix Double) - (neg:: NC.Matrix Double)
-    ws_m <- return $ toMatrix ws
-    return $ vector2D $ NC.toLists $ lr * (ws_m + dws)
-
+    pos  <- return $ NC.toLists $ (fromDataVector v_d) `NC.outer` (fromDataVector h_d)
+    neg  <- return $ NC.toLists $ (fromDataVector v_d') `NC.outer` (fromDataVector h_d')
+    dws  <- return $ combine (-) pos neg
+    ws_f <-  return $ combine (+) (list2D ws) dws
+    final <- return $ map (map (\x -> x * lr)) ws_f
+    return $ vector2D final
 
 train :: MonadRandom m => [Pattern] -> Int -> m Weights
 train pats nr_hidden = do

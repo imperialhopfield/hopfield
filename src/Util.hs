@@ -1,5 +1,6 @@
 module Util (
-    fromDataVector
+    combine
+  , fromDataVector
   , repeatUntilEqual
   , randomElem
   , vector2D
@@ -50,3 +51,7 @@ fromDataVector v = NC.fromList $ V.toList v
 
 toMatrix:: (NC.Element a, Foreign.Storable.Storable a) => V.Vector (V.Vector a) -> NC.Matrix a
 toMatrix ws = NC.fromLists $ list2D ws
+
+-- the caller has to ensure that the dimensions are the same
+combine:: (a-> a -> a) -> [[a]] -> [[a]] -> [[a]]
+combine f xs ys = zipWith (zipWith f) xs ys
