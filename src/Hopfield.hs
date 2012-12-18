@@ -20,6 +20,7 @@ module Hopfield (
   , energy
 ) where
 
+
 import           Data.List
 import           Data.Maybe
 import           Data.Number.Erf
