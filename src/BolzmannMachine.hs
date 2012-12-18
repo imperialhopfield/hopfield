@@ -1,7 +1,8 @@
 module BolzmannMachine where
 
+import           Data.Functor
 import           Data.List
-import           Data.Random.Distribution.Normal
+--import           Data.Random
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.Vector ((!))
@@ -76,14 +77,46 @@ updateWS ws v = do
     ws_m <- return $ toMatrix ws
     return $ vector2D $ NC.toLists $ lr * (ws_m + dws)
 
- --train, update the ws for all patterns
- --
+
 train :: MonadRandom m => [Pattern] -> Int -> m Weights
-train pats nr_hidden = foldM updateWS ws_start pats
--- todo remove the Rvar from start matrices
-  where ws_start = take p (repeat $ take nr_hidden $ repeat $ normal 0.0 0.01)
-        p = length pats
+train pats nr_hidden = do
+  ws_start <- ws_start''
+  foldM updateWS ws_start pats
+    where ws_start'  = take p (repeat $ take nr_hidden $ repeat $ normal 0.0 0.01)
+          ws_start'' = liftM vector2D (sequence $ map sequence ws_start')
+          p = length pats
 
 activation :: Double -> Double
 activation x = 1.0 / (1.0 - exp (-x))
 
+
+-- stack overflow code
+
+-- |Generates uniform random variables.
+unif :: (MonadRandom m) => m Double
+unif = getRandomR (0,1)
+
+-- |Generate two samples from the standard normal distribution, using
+--  the Box-Muller method.
+stdNormals :: (MonadRandom m) => m (Double,Double)
+stdNormals = do
+    u <- unif
+    v <- unif
+    let r = sqrt((-2) * log u)
+    let arg1 = cos (2 * pi * v)
+    let arg2 = sin (2 * pi * v)
+    return (r * arg1, r * arg2)
+
+-- |Generate a single sample from the standard normal distribution, by
+--  generating two samples and throwing away the second one.
+stdNormal :: (MonadRandom m) => m Double
+stdNormal = do
+    (x,_) <- stdNormals
+    return x
+
+-- |Generate a sample from the standard normal distribution with a given
+--  mean and variance.
+normal :: (MonadRandom m) => Double -> Double -> m Double
+normal mu sigma = do
+    x <- stdNormal
+    return $ mu + sigma * x
