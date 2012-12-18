@@ -22,50 +22,50 @@ lr = 0.1 :: Double -- learning rate
 -- TODO check size h and width ws same
 updateHidden:: MonadRandom m => Weights -> Pattern -> Int -> m Int
 updateHidden ws v index= do
-    r <- getRandomR (0.0, 1.0)
-    return $ if  (r < a) then 1 else 0
-      where
-        a = activation (sum [ (ws ! i ! index) *. (v ! i) | i <- [0 .. p-1] ])
-        p = V.length v
+  r <- getRandomR (0.0, 1.0)
+  return $ if  (r < a) then 1 else 0
+    where
+      a = activation (sum [ (ws ! i ! index) *. (v ! i) | i <- [0 .. p-1] ])
+      p = V.length v
 
 
 -- TODO check size h and length ws same
 updateVisible:: MonadRandom m => Weights -> Pattern -> Int -> m Int
 updateVisible ws h index = do
-    r <- getRandomR (0.0, 1.0)
-    return $ if  (r < a) then 1 else 0
-      where
-        a = activation (sum [ (ws ! index ! i) *. (h ! i) | i <- [0 .. p-1] ])
-        p = V.length h
+  r <- getRandomR (0.0, 1.0)
+  return $ if  (r < a) then 1 else 0
+    where
+      a = activation (sum [ (ws ! index ! i) *. (h ! i) | i <- [0 .. p-1] ])
+      p = V.length h
 
 
 getHidden:: MonadRandom m => Weights -> Pattern -> m Pattern
 getHidden ws v = do
-      h <- mapM (updateHidden ws v) [0.. (V.length $ ws ! 0) - 1]
-      return $ V.fromList h
+  h <- mapM (updateHidden ws v) [0.. (V.length $ ws ! 0) - 1]
+  return $ V.fromList h
 
 
 getVisible:: MonadRandom m => Weights -> Pattern -> m Pattern
 getVisible ws h = do
-      v <- mapM (updateVisible ws h) [0.. (V.length ws) - 1]
-      return $ V.fromList v
+  v <- mapM (updateVisible ws h) [0.. (V.length ws) - 1]
+  return $ V.fromList v
 
 
 updateWS:: MonadRandom m => Weights -> Pattern -> m Weights
 updateWS ws v = do
-    h    <- getHidden ws v
-    v'   <- getVisible ws h
-    h'   <- getHidden ws v'
-    let v_d  = V.fromList $ map fromIntegral (V.toList v)
-    let v_d' = V.fromList $ map fromIntegral (V.toList v')
-    let h_d  = V.fromList $ map fromIntegral (V.toList h)
-    let h_d' = V.fromList $ map fromIntegral (V.toList h')
-    let pos  = NC.toLists $ (fromDataVector v_d) `NC.outer` (fromDataVector h_d)
-    let neg  = NC.toLists $ (fromDataVector v_d') `NC.outer` (fromDataVector h_d')
-    let dws  = combine (-) pos neg
-    let ws_f = combine (+) (list2D ws) dws
-    let final = map (map (\x -> x * lr)) ws_f
-    return $ vector2D final
+  h    <- getHidden ws v
+  v'   <- getVisible ws h
+  h'   <- getHidden ws v'
+  let v_d  = V.fromList $ map fromIntegral (V.toList v)
+  let v_d' = V.fromList $ map fromIntegral (V.toList v')
+  let h_d  = V.fromList $ map fromIntegral (V.toList h)
+  let h_d' = V.fromList $ map fromIntegral (V.toList h')
+  let pos  = NC.toLists $ (fromDataVector v_d) `NC.outer` (fromDataVector h_d)
+  let neg  = NC.toLists $ (fromDataVector v_d') `NC.outer` (fromDataVector h_d')
+  let dws  = combine (-) pos neg
+  let ws_f = combine (+) (list2D ws) dws
+  let final = map (map (\x -> x * lr)) ws_f
+  return $ vector2D final
 
 train :: MonadRandom m => [Pattern] -> Int -> m Weights
 train pats nr_hidden = do
@@ -89,23 +89,23 @@ unif = getRandomR (0,1)
 --  the Box-Muller method.
 stdNormals :: (MonadRandom m) => m (Double,Double)
 stdNormals = do
-    u <- unif
-    v <- unif
-    let r = sqrt((-2) * log u)
-    let arg1 = cos (2 * pi * v)
-    let arg2 = sin (2 * pi * v)
-    return (r * arg1, r * arg2)
+  u <- unif
+  v <- unif
+  let r = sqrt((-2) * log u)
+  let arg1 = cos (2 * pi * v)
+  let arg2 = sin (2 * pi * v)
+  return (r * arg1, r * arg2)
 
 -- |Generate a single sample from the standard normal distribution, by
 --  generating two samples and throwing away the second one.
 stdNormal :: (MonadRandom m) => m Double
 stdNormal = do
-    (x,_) <- stdNormals
-    return x
+  (x,_) <- stdNormals
+  return x
 
 -- |Generate a sample from the standard normal distribution with a given
 --  mean and variance.
 normal :: (MonadRandom m) => Double -> Double -> m Double
 normal mu sigma = do
-    x <- stdNormal
-    return $ mu + sigma * x
+  x <- stdNormal
+  return $ mu + sigma * x
