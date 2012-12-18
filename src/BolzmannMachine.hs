@@ -1,5 +1,9 @@
+module BolzmannMachine where
+
+import Data.Random.Distribution.Normal
 import Hopfield
 import Numeric.Container
+
 
 -- start with no biases initially, introduce them after
 
@@ -65,7 +69,8 @@ updateWS ws v = lr * (ws + dws)
  --
 train :: MonadRandom m => [Pattern] -> Int -> m Weigths
 train pats nr_hidden = foldM updateWS ws_start pats
-  --where ws_start =
+  where ws_start = take p (repeat $ take nr_hidden $ repeat $ normal 0.0 0.01)
+        p = length pats
 
 activation :: Double -> Double
 activation x = 1 ./. (1 - exp (-x))
