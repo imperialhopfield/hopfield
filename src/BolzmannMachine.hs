@@ -49,7 +49,7 @@ updateVisible ws h index = do
 
 getHidden:: MonadRandom m => Weights -> Pattern -> m Pattern
 getHidden ws v
-  | Just e <- validHiddenPattern ws h  = error e
+  | Just e <- validVisiblePattern ws v  = error e
   | otherwise = do
       h <- mapM (updateHidden ws v) [0.. (V.length $ ws ! 0) - 1]
       return $ V.fromList h
@@ -84,9 +84,9 @@ train :: MonadRandom m => [Pattern] -> Int -> m Weights
 train pats nr_hidden = do
   ws_start <- ws_start''
   foldM updateWS ws_start pats
-    where ws_start'  = take p (repeat $ take nr_hidden $ repeat $ normal 0.0 0.01)
+    where ws_start'  = take nr_visible (repeat $ take nr_hidden $ repeat $ normal 0.0 0.01)
           ws_start'' = liftM vector2D (sequence $ map sequence ws_start')
-          p = length pats
+          nr_visible = V.length $ pats !! 0
 
 activation :: Double -> Double
 activation x = 1.0 / (1.0 - exp (-x))
@@ -97,7 +97,7 @@ activation x = 1.0 / (1.0 - exp (-x))
 -- with @weights@ and Nothing otherwise.
 validHiddenPattern :: Weights -> Pattern -> Maybe String
 validHiddenPattern ws h
-  | V.length $ ws ! 0 /= V.length h = Just "Size of hidden must match network size"
+  | V.length (ws ! 0) /= V.length h = Just "Size of hidden must match network size"
   | otherwise                   = Nothing
 
 
