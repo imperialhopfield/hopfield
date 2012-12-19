@@ -11,7 +11,7 @@ import           Data.Vector ((!))
 import qualified Data.Vector as V
 import qualified Numeric.Container as NC
 
-import Hopfield
+import Common
 import Util
 
 -- In the case of the Bolzamann Machine the weight matrix establishes the
@@ -143,12 +143,12 @@ normal mu sigma = do
 
 
 
-
 main = do
   gen  <- getStdGen
-  let v1 = V.fromList [0, 1, 0]
-  let v2 = V.fromList [1, 0, 0]
-  let v3 = V.fromList [1, 1, 0]
-  let v4 = V.fromList [0, 0, 0]
-  return $ evalRand (train [v1, v2, v3, v4] 4) gen
+  let v1 = V.fromList [-1, 1, -1]
+  let v2 = V.fromList [1, -1, -1]
+  let v3 = V.fromList [1, 1, -1]
+  let v4 = V.fromList [-1, -1, -1]
+  let ws = evalRand (train [v1, v2, v3, v4] 4) gen
+  return $ evalRand (update validVisiblePattern ws (V.fromList [-1, 1, -1])) gen
 
