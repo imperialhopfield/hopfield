@@ -27,10 +27,10 @@ lr = 0.1 :: Double -- learning rate
 -- TODO see order of updates using shuffle
 -- TODO see how you can change update and co from Hopfield to fit this
 
+-- checks are done once in getHidden and getVisible, for efficiency
 
--- TODO check size h and width ws same
 updateHidden:: MonadRandom m => Weights -> Pattern -> Int -> m Int
-updateHidden ws v index= do
+updateHidden ws v index = do
   r <- getRandomR (0.0, 1.0)
   return $ if  (r < a) then 1 else 0
     where
@@ -38,7 +38,6 @@ updateHidden ws v index= do
       p = V.length v
 
 
--- TODO check size h and length ws same
 updateVisible:: MonadRandom m => Weights -> Pattern -> Int -> m Int
 updateVisible ws h index = do
   r <- getRandomR (0.0, 1.0)
@@ -49,7 +48,7 @@ updateVisible ws h index = do
 
 
 getHidden:: MonadRandom m => Weights -> Pattern -> m Pattern
-getHidden ws v =
+getHidden ws v
   | Just e <- validHiddenPattern ws h  = error e
   | otherwise = do
       h <- mapM (updateHidden ws v) [0.. (V.length $ ws ! 0) - 1]
