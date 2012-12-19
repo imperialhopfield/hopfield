@@ -19,6 +19,8 @@ import Util
 -- w i j - connection between visible neuron i and hidden neuron j
 
 -- start with no biases initially, introduce them after (if needed)
+-- if biases are used, they should be normally distributed
+
 
 lr = 0.1 :: Double -- learning rate
 
@@ -32,7 +34,7 @@ lr = 0.1 :: Double -- learning rate
 updateHidden:: MonadRandom m => Weights -> Pattern -> Int -> m Int
 updateHidden ws v index = do
   r <- getRandomR (0.0, 1.0)
-  return $ if  (r < a) then 1 else 0
+  return $ if  (r < a) then 1 else -1
     where
       a = activation (sum [ (ws ! i ! index) *. (v ! i) | i <- [0 .. p-1] ])
       p = V.length v
@@ -41,7 +43,7 @@ updateHidden ws v index = do
 updateVisible:: MonadRandom m => Weights -> Pattern -> Int -> m Int
 updateVisible ws h index = do
   r <- getRandomR (0.0, 1.0)
-  return $ if  (r < a) then 1 else 0
+  return $ if  (r < a) then 1 else -1
     where
       a = activation (sum [ (ws ! index ! i) *. (h ! i) | i <- [0 .. p-1] ])
       p = V.length h
@@ -141,7 +143,11 @@ normal mu sigma = do
   x <- stdNormal
   return $ mu + sigma * x
 
+update1 ws pat = do
+  h <- getHidden ws pat
+  getVisible ws h
 
+repeatedUpdate1 ws pat = repeatUntilEqual (update1 ws) pat
 
 main = do
   gen  <- getStdGen
@@ -150,5 +156,4 @@ main = do
   let v3 = V.fromList [1, 1, -1]
   let v4 = V.fromList [-1, -1, -1]
   let ws = evalRand (train [v1, v2, v3, v4] 4) gen
-  return $ evalRand (update validVisiblePattern ws (V.fromList [-1, 1, -1])) gen
-
+  return $ evalRand (repeatedUpdate1 ws (V.fromList [-1, -1, -1])) gen
