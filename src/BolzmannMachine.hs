@@ -143,10 +143,12 @@ normal mu sigma = do
   x <- stdNormal
   return $ mu + sigma * x
 
+update1 :: MonadRandom m => Weights -> Pattern -> m Pattern
 update1 ws pat = do
   h <- getHidden ws pat
   getVisible ws h
 
+repeatedUpdate1 :: MonadRandom m => Weights -> Pattern -> m Pattern
 repeatedUpdate1 ws pat = repeatUntilEqual (update1 ws) pat
 
 main = do
@@ -154,6 +156,5 @@ main = do
   let v1 = V.fromList [-1, 1, -1]
   let v2 = V.fromList [1, -1, -1]
   let v3 = V.fromList [1, 1, -1]
-  let v4 = V.fromList [-1, -1, -1]
-  let ws = evalRand (train [v1, v2, v3, v4] 4) gen
-  return $ evalRand (repeatedUpdate1 ws (V.fromList [-1, -1, -1])) gen
+  let ws = evalRand (train [v1, v2, v3] 4) gen
+  return $ evalRand (repeatedUpdate1 ws (V.fromList [1, 1, 1])) gen
