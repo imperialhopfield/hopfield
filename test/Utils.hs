@@ -148,6 +148,7 @@ compError hs = num_errors / (fromIntegral num_pats)
 
 
 -- | @compExpectedError hopfield@: Computes the expected error for a network
+-- containing random iid patterns
 compExpectedError :: HopfieldData -> Double
 compExpectedError hs = normcdf x
   where
@@ -163,8 +164,8 @@ p2nRatio hs = num_pats / num_neurons
     num_pats    = fromIntegral . length $ patterns hs
     num_neurons = fromIntegral . V.length $ (patterns hs) !! 0
 
--- | Trains a network using @traning_pats@ and then updates each
--- pattern in pats according to the weigths of that network.
+-- | Trains a network using @training_pats@ and then updates each
+-- pattern in pats according to the weights of that network.
 -- The aim is to check that the energy decreases after each update.
 energyDecreasesAfterUpdate:: ([Pattern], [Pattern]) -> Gen Bool
 energyDecreasesAfterUpdate (training_pats, pats)

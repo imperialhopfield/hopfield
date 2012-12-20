@@ -45,7 +45,7 @@ data HopfieldData = HopfieldData {
 -- | @buildHopfieldData patterns@: Takes a list of patterns and
 -- builds a Hopfield network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
--- againts the network, by using 'matchPattern'.
+-- against the network, by using 'matchPattern'.
 buildHopfieldData :: [Pattern] -> HopfieldData
 buildHopfieldData []   = error "Train patterns are empty"
 buildHopfieldData pats
@@ -74,7 +74,7 @@ train pats = vector2D ws
 
 
 -- | @getUpdatables ws pat@. Given a Hopfield network represented by ws, returns
--- a list of paris comprising of the updatable neurons (represented by the index
+-- a list of pairs comprising of the updatable neurons (represented by the index
 -- in the pattern) and their new, changed value.
 -- No check is performed in this function for efficiency reasons: the checks
 -- are expensive and are done in update, before update'.
@@ -181,7 +181,7 @@ validPattern ws pat
   | V.length ws /= V.length pat = Just "Pattern size must match network size"
   | otherwise                   = Nothing
 
--- Checks the validiaty of a weight matrix by ensuring:
+-- Checks the validity of a weight matrix by ensuring:
 -- * It is non-empty
 --
 -- * It is square
