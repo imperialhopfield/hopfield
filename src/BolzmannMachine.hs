@@ -27,7 +27,9 @@ import Util
 -- if biases are used, they should be normally distributed
 
 
-lr = 0.1 :: Double -- learning rate
+-- TODO haddoc, refer to algorithm
+learningRate = 0.1 :: Double
+
 
 data Mode = Hidden | Visible
 
@@ -64,36 +66,39 @@ getCounterPattern mode ws pat
       updatedIndices = [0 .. getDimension (notMode mode) ws - 1]
 
 
--- | One step in updates the weigths in the training process.
+-- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
-updateWS:: MonadRandom m => Weights -> Pattern -> m Weights
-updateWS ws v = do
-  h         <- getCounterPattern Visible ws v
-  v'        <- getCounterPattern Hidden ws h
-  h'        <- getCounterPattern Visible ws v'
-  let f     = fromDataVector . fmap fromIntegral
-      pos   = NC.toLists $ (f v) `NC.outer` (f h)
-      neg   = NC.toLists $ (f v') `NC.outer` (f h')
-      dws   = combine (-) pos neg
-      ws_f  = combine (+) (list2D ws) dws
-      ws_l = map (map (* lr)) ws_f
-  return $ vector2D ws_l
+-- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
+updateWeights :: MonadRandom m => Weights -> Pattern -> m Weights
+updateWeights ws v = do
+  h        <- getCounterPattern Visible ws v
+  v'       <- getCounterPattern Hidden ws h
+  h'       <- getCounterPattern Visible ws v'
+  let f    = fromDataVector . fmap fromIntegral
+      pos  = NC.toLists $ (f v) `NC.outer` (f h)   -- "positive gradient"
+      neg  = NC.toLists $ (f v') `NC.outer` (f h') -- "negative gradient"
+      d_ws = map (map (* learningRate)) $ combine (-) pos neg -- weights delta
+      new_weights = combine (+) (list2D ws) d_ws
+  return $ vector2D new_weights
 
 
--- | The training function for the BolzmannMachine.
--- We are using the contrastive divergence algorithm.
--- CD-1 (we could extend to CD-n)
-train :: MonadRandom m => [Pattern] -> Int -> m Weights
-train pats nr_hidden = do
-  ws_start <- genWs
-  foldM updateWS (vector2D ws_start) pats
+-- | The training function for the Bolzmann Machine.
+-- We are using the contrastive divergence algorithm CD-1
+-- (we could extend to CD-n).
+-- @trainBolzmann pats nr_hidden@ where @pats@ are the training patterns
+-- and @nr_hidden@ is the number of neurons to be created in the hidden layer.
+-- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
+trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m Weights
+trainBolzmann pats nr_hidden = do
+  ws_start <- genWeights
+  foldM updateWeights (vector2D ws_start) pats
     where
-      genWs      = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
+      genWeights = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
       nr_visible = V.length $ pats !! 0
 
 
-
 -- | The activation functiom for the network (the logistic sigmoid).
+-- http://en.wikipedia.org/wiki/Sigmoid_function
 activation :: Double -> Double
 activation x = 1.0 / (1.0 - exp (-x))
 
@@ -112,7 +117,7 @@ validPattern mode ws pat
  -- standard deviation.
 normal :: forall m . MonadRandom m => Double -> Double -> m Double
 normal m std = do
-  r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
+  r <- runRVar (normal m std) (getRandom :: MonadRandom m => m Word32)
   return r
 
 -- | Does one update of a visible pattern by updating the hidden layer neurons once
@@ -132,5 +137,5 @@ main = do
   let v1 = V.fromList [-1, 1, -1]
   let v2 = V.fromList [1, -1, -1]
   let v3 = V.fromList [1, 1, -1]
-  let ws = evalRand (train [v1, v2, v3] 4) gen
+  let ws = evalRand (trainBolzmann [v1, v2, v3] 4) gen
   return $ evalRand (repeatedUpdate1 ws (V.fromList [1, 1, 1])) gen
