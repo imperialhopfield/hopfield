@@ -39,16 +39,18 @@ getDimension Hidden ws = V.length $ ws ! 0
 getDimension Visible ws = V.length $ ws
 
 
--- Mode gives the mode of the current pattern, not the opposite one
+-- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
+-- updates the neuron with number @index@ in the layer with opposite type.
 updateNeuron :: MonadRandom m => Mode -> Weights -> Pattern -> Int -> m Int
 updateNeuron mode ws pat index = do
   r <- getRandomR (0.0, 1.0)
   return $ if (r < a) then 1 else -1
     where
       a = activation . sum $ case mode of
-            Hidden  -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
+            Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
             Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
       p = V.length pat
+
 
 -- Mode gives the mode of the current pattern, not the opposite one
 getCounterPattern:: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
