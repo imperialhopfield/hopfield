@@ -27,7 +27,8 @@ import Util
 -- if biases are used, they should be normally distributed
 
 
--- TODO haddoc, refer to algorithm
+-- | determines the rate in which the weights are changed in the training phase.
+-- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 learningRate = 0.1 :: Double
 
 
@@ -38,7 +39,8 @@ notMode :: Mode -> Mode
 notMode Hidden  = Visible
 notMode Visible = Hidden
 
--- |
+-- | Retrieves the dimension of the weights matrix corresponding to the given mode.
+-- For hidden, it is the width of the matrix, and for visible it is the height.
 getDimension :: Mode -> Weights -> Int
 getDimension Hidden ws = V.length $ ws ! 0
 getDimension Visible ws = V.length $ ws
@@ -117,7 +119,7 @@ validPattern mode ws pat
  -- standard deviation.
 normal :: forall m . MonadRandom m => Double -> Double -> m Double
 normal m std = do
-  r <- runRVar (normal m std) (getRandom :: MonadRandom m => m Word32)
+  r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
   return r
 
 -- | Does one update of a visible pattern by updating the hidden layer neurons once
@@ -140,4 +142,4 @@ main = do
   let v2 = V.fromList [1, -1, -1]
   let v3 = V.fromList [1, 1, -1]
   let ws = evalRand (trainBolzmann [v1, v2, v3] 4) gen
-  return $ evalRand (repeatedUpdate1 ws (V.fromList [1, 1, 1])) gen
+  return $ evalRand (repeatedUpdateBolzmann ws (V.fromList [1, 1, 1])) gen
