@@ -3,9 +3,12 @@ module Utils where
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
+import           Data.List
+import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Test.QuickCheck
 import           Control.Monad
+import           Data.Number.Erf (normcdf)
 
 import           Hopfield
 import           Util
@@ -99,19 +102,70 @@ replaceAtN n r (x:xs)
   | otherwise = error "negative index"
 
 
+-- | Compute crosstalk term for a pattern and a given neuron
+-- @crosstalk hopfield index neuron
+-- todo think if it is better to actually pass in the hopfield data
+-- strucutre
+-- the pattern on which we do this has to be one of the traninig patterns
+-- todo error checks
+-- note that this is a very basic check
+-- one should try and implement the probability error thing as
+-- that would give as a good idea of how to
+-- scale
+crosstalk:: HopfieldData -> Int -> Int -> Int
+-- the cross talk term is h(xi k ) - xi k
+crosstalk hs index n = h (weights hs) pat n - pat V.! n
+                          where pat = (patterns hs) !! index
+
+compTerm:: HopfieldData -> Int -> Int -> Int
+compTerm hs index n = - (pat V.! n) * (h (weights hs) pat n - pat V.! n)
+                        where pat = (patterns hs) !! index
+
+checkFixed :: HopfieldData -> Int -> Bool
+checkFixed hs index = all (\x -> compTerm hs index x <= 1) [0.. V.length ((patterns hs) !! index) - 1]
+
 -- | Used as a property to check that patterns which
 -- are used to create the network are stable in respect to update
 trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
 trainingPatsAreFixedPoints pats =
-  and <$> mapM checkFixedPoint pats
+  and <$> mapM checkFixedPoint [0.. length pats - 1]
   where
-    ws = weights (buildHopfieldData pats)
-    checkFixedPoint pat = do
+    hs = buildHopfieldData pats
+    ws = weights hs
+    checkFixedPoint index = do
       i <- arbitrary
-      return $ evalRand (update ws pat) (mkStdGen i) == pat
+      return $ evalRand (update ws (pats !! index)) (mkStdGen i) == (pats !! index) || (not $ checkFixed hs index)
 
--- | Tranins a network using @traning_pats@ and then updates each
--- pattern in pats according to the weigths of that network.
+
+-- | @compError hopfield@: Computes the percentage of patterns in the network
+-- which are NOT fixed points
+compError :: HopfieldData -> Double
+compError hs = num_errors / (fromIntegral num_pats)
+  where
+    fixed_points = map (checkFixed hs) [0..num_pats-1]
+    num_errors   = fromIntegral . length $ filter not fixed_points
+    num_pats     = length $ patterns hs
+
+
+-- | @compExpectedError hopfield@: Computes the expected error for a network
+-- containing random iid patterns
+compExpectedError :: HopfieldData -> Double
+compExpectedError hs = normcdf x
+  where
+    variance = p2nRatio hs
+    x        = -1 * ( sqrt (1 / variance) )
+
+
+-- |@p2nRatio hopfield@: Computes the ratio p/n, the number of patterns to
+-- the number of neurons
+p2nRatio :: HopfieldData -> Double
+p2nRatio hs = num_pats / num_neurons
+  where
+    num_pats    = fromIntegral . length $ patterns hs
+    num_neurons = fromIntegral . V.length $ (patterns hs) !! 0
+
+-- | Trains a network using @training_pats@ and then updates each
+-- pattern in pats according to the weights of that network.
 -- The aim is to check that the energy decreases after each update.
 energyDecreasesAfterUpdate:: ([Pattern], [Pattern]) -> Gen Bool
 energyDecreasesAfterUpdate (training_pats, pats)
