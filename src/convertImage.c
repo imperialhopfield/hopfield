@@ -14,10 +14,10 @@ void ThrowWandException(MagickWand *wand)
 /* converts a list of doubles to binary + flattens the matrix to a vector */
 binary_pattern_t *
 mapToBinary(double** pattern, int width, int height){
-  binary_pattern_t* binaryPattern = (binary_pattern_t *) malloc(sizeof(binaryPattern));
+  binary_pattern_t* binaryPattern = (binary_pattern_t *) malloc(sizeof(*binaryPattern));
   const int size = width * height;
   binaryPattern->size = size;
-  binaryPattern->pattern = (uint32_t *) malloc(sizeof(binaryPattern->pattern) * size);
+  binaryPattern->pattern = (uint32_t *) malloc(sizeof(*binaryPattern->pattern) * size);
 
   int i=0;
 
