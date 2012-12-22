@@ -39,7 +39,7 @@ getDimension Hidden ws = V.length $ ws ! 0
 getDimension Visible ws = V.length $ ws
 
 
-
+-- Mode gives the mode of the current pattern, not the opposite one
 updateNeuron :: MonadRandom m => Mode -> Weights -> Pattern -> Int -> m Int
 updateNeuron mode ws pat index = do
   r <- getRandomR (0.0, 1.0)
@@ -47,22 +47,23 @@ updateNeuron mode ws pat index = do
     where
       a = activation . sum $ case mode of
             Hidden  -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
-            Visible -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
+            Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
       p = V.length pat
 
+-- Mode gives the mode of the current pattern, not the opposite one
 getCounterPattern:: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
 getCounterPattern mode ws pat
-  | Just e <- validVisiblePattern ws pat  = error e
+  | Just e <- validPattern mode ws pat  = error e
   | otherwise = do
-      c_pat <- mapM (updateNeuron (notMode mode) ws pat) [0.. getDimension mode - 1]
+      c_pat <- mapM (updateNeuron mode ws pat) [0.. getDimension (notMode mode) ws - 1]
       return $ V.fromList c_pat
 
 
 updateWS:: MonadRandom m => Weights -> Pattern -> m Weights
 updateWS ws v = do
-  h         <- getCounterPattern Hidden ws v
-  v'        <- getCounterPattern Visible ws h
-  h'        <- getCounterPattern Hidden ws v'
+  h         <- getCounterPattern Visible ws v
+  v'        <- getCounterPattern Hidden ws h
+  h'        <- getCounterPattern Visible ws v'
   let f     = fromDataVector . fmap fromIntegral
       pos   = NC.toLists $ (f v) `NC.outer` (f h)
       neg   = NC.toLists $ (f v') `NC.outer` (f h')
@@ -86,14 +87,12 @@ activation :: Double -> Double
 activation x = 1.0 / (1.0 - exp (-x))
 
 
-
-
 -- | @validPattern weights pattern@
 -- Returns an error string in a Just if the @pattern@ is not compatible
 -- with @weights@ and Nothing otherwise.
-validHiddenPattern :: Mode -> Weights -> Pattern -> Maybe String
-validHiddenPattern mode ws pat
-  | getDimension mode /= V.length pat = Just "Size of hidden must match network size"
+validPattern :: Mode -> Weights -> Pattern -> Maybe String
+validPattern mode ws pat
+  | getDimension mode ws /= (V.length pat) = Just "Size of hidden must match network size"
   | otherwise                   = Nothing
 
 
@@ -105,8 +104,8 @@ normal m std = do
 
 update1 :: MonadRandom m => Weights -> Pattern -> m Pattern
 update1 ws pat = do
-  h <- getCounterPattern Hidden ws pat
-  getCounterPattern Visible ws h
+  h <- getCounterPattern Visible ws pat
+  getCounterPattern Hidden ws h
 
 repeatedUpdate1 :: MonadRandom m => Weights -> Pattern -> m Pattern
 repeatedUpdate1 ws pat = repeatUntilEqual (update1 ws) pat
