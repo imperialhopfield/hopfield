@@ -78,11 +78,12 @@ updateWS ws v = do
 -- CD-1 (we could extend to CD-n)
 train :: MonadRandom m => [Pattern] -> Int -> m Weights
 train pats nr_hidden = do
-  ws_start <- ws_start''
-  foldM updateWS ws_start pats
-    where ws_start'  = take nr_visible (repeat $ take nr_hidden $ repeat $ normal 0.0 0.01)
-          ws_start'' = liftM vector2D (sequence $ map sequence ws_start')
-          nr_visible = V.length $ pats !! 0
+  ws_start <- genWs
+  foldM updateWS (vector2D ws_start) pats
+    where
+      genWs      = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
+      nr_visible = V.length $ pats !! 0
+
 
 activation :: Double -> Double
 activation x = 1.0 / (1.0 - exp (-x))
