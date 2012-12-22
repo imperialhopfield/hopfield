@@ -106,11 +106,11 @@ activation x = 1.0 / (1.0 - exp (-x))
 -- | @validPattern mode weights pattern@
 -- Returns an error string in a Just if the @pattern@ is not compatible
 -- with @weights@ and Nothing otherwise. @mode@ gives the type of the pattern,
--- which is checked (Visible or Hidden)
+-- which is checked (Visible or Hidden).
 validPattern :: Mode -> Weights -> Pattern -> Maybe String
 validPattern mode ws pat
-  | getDimension mode ws /= (V.length pat) = Just "Size of hidden must match network size"
-  | otherwise                   = Nothing
+  | getDimension mode ws /= V.length pat = Just "Size of pattern must match network size"
+  | otherwise            = Nothing
 
 
  -- | Generates a number sampled from a random distribution, given the mean and
