@@ -37,8 +37,13 @@ lr = 0.1 :: Double -- learning rate
 
 data Mode = Hidden | Visible
 
-updateCounterPattern :: MonadRandom m => Mode -> Weights -> Pattern -> Int -> m Int
-updateCounterPattern mode ws pat index = do
+
+notMode :: Mode -> Mode
+notMode Hidden  = Visible
+notMode Visible = Hidden
+
+updateNeuron :: MonadRandom m => Mode -> Weights -> Pattern -> Int -> m Int
+updateNeuron mode ws pat index = do
   r <- getRandomR (0.0, 1.0)
   return $ if (r < a) then 1 else -1
     where
@@ -47,27 +52,23 @@ updateCounterPattern mode ws pat index = do
             Visible -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
       p = V.length pat
 
-getHidden:: MonadRandom m => Weights -> Pattern -> m Pattern
-getHidden ws v
-  | Just e <- validVisiblePattern ws v  = error e
+getCounterPattern:: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
+getCounterPattern mode ws pat
+  | Just e <- validVisiblePattern ws pat  = error e
   | otherwise = do
-      h <- mapM (updateHidden ws v) [0.. (V.length $ ws ! 0) - 1]
-      return $ V.fromList h
+      c_pat <- mapM (updateNeuron (notMode mode) ws pat) [0.. p - 1]
+      return $ V.fromList c_pat
+         where p = case mode of
+                Hidden  -> V.length $ ws ! 0
+                Visible -> V.length $ ws
 
-
-getVisible:: MonadRandom m => Weights -> Pattern -> m Pattern
-getVisible ws h
-  | Just e <- validHiddenPattern ws h  = error e
-  | otherwise = do
-      v <- mapM (updateVisible ws h) [0.. (V.length ws) - 1]
-      return $ V.fromList v
 
 
 updateWS:: MonadRandom m => Weights -> Pattern -> m Weights
 updateWS ws v = do
-  h         <- getHidden ws v
-  v'        <- getVisible ws h
-  h'        <- getHidden ws v'
+  h         <- getCounterPattern Hidden ws v
+  v'        <- getCounterPattern Visible ws h
+  h'        <- getCounterPattern Hidden ws v'
   let f     = fromDataVector . fmap fromIntegral
       pos   = NC.toLists $ (f v) `NC.outer` (f h)
       neg   = NC.toLists $ (f v') `NC.outer` (f h')
@@ -109,16 +110,16 @@ validVisiblePattern ws v
   | otherwise                   = Nothing
 
 
- --| Generates a number sampled from a random distribution.
-normal :: MonadRandom m => m Int
-normal = do
-  r <- DR.runRVar (DR.normal 0 0.10) (getRandom :: MonadRandom m => m Word32)
+ -- | Generates a number sampled from a random distribution.
+normal :: forall m . MonadRandom m => Double -> Double -> m Double
+normal m std = do
+  r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
   return r
 
 update1 :: MonadRandom m => Weights -> Pattern -> m Pattern
 update1 ws pat = do
-  h <- getHidden ws pat
-  getVisible ws h
+  h <- getCounterPattern Hidden ws pat
+  getCounterPattern Visible ws h
 
 repeatedUpdate1 :: MonadRandom m => Weights -> Pattern -> m Pattern
 repeatedUpdate1 ws pat = repeatUntilEqual (update1 ws) pat
