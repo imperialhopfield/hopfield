@@ -14,6 +14,8 @@ import qualified Numeric.Container as NC
 import Common
 import Util
 
+--TODO CHECK IF IT IS OK WITH -1 and 1 instead of 0 and 1
+
 -- In the case of the Bolzamann Machine the weight matrix establishes the
 -- weigths between visible and hidden neurons
 -- w i j - connection between visible neuron i and hidden neuron j
@@ -31,23 +33,17 @@ lr = 0.1 :: Double -- learning rate
 
 -- checks are done once in getHidden and getVisible, for efficiency
 
-updateHidden:: MonadRandom m => Weights -> Pattern -> Int -> m Int
-updateHidden ws v index = do
+data Mode = Hidden | Visible
+
+updateCounterPattern :: MonadRandom m => Mode -> Weights -> Pattern -> Int -> m Int
+updateCounterPattern mode ws pat index = do
   r <- getRandomR (0.0, 1.0)
-  return $ if  (r < a) then 1 else -1
+  return $ if (r < a) then 1 else -1
     where
-      a = activation (sum [ (ws ! i ! index) *. (v ! i) | i <- [0 .. p-1] ])
-      p = V.length v
-
-
-updateVisible:: MonadRandom m => Weights -> Pattern -> Int -> m Int
-updateVisible ws h index = do
-  r <- getRandomR (0.0, 1.0)
-  return $ if  (r < a) then 1 else -1
-    where
-      a = activation (sum [ (ws ! index ! i) *. (h ! i) | i <- [0 .. p-1] ])
-      p = V.length h
-
+      a = activation . sum $ case mode of
+            Hidden  -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
+            Visible -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
+      p = V.length pat
 
 getHidden:: MonadRandom m => Weights -> Pattern -> m Pattern
 getHidden ws v
@@ -81,7 +77,7 @@ updateWS ws v = do
   let final = map (map (\x -> x * lr)) ws_f
   return $ vector2D final
 
-
+-- CD-1 (we could extend to CD-n)
 train :: MonadRandom m => [Pattern] -> Int -> m Weights
 train pats nr_hidden = do
   ws_start <- ws_start''
