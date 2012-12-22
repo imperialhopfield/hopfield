@@ -1,4 +1,4 @@
-{-# LANGUAGE PatternGuards #-}
+{-# LANGUAGE PatternGuards, ScopedTypeVariables #-}
 
 module BolzmannMachine where
 -- | Base Restricted Bolzamann machine.
@@ -7,8 +7,10 @@ module BolzmannMachine where
 
 import           Control.Monad
 import           Control.Monad.Random
+import qualified Data.Random as DR
 import           Data.Vector ((!))
 import qualified Data.Vector as V
+import           Data.Word (Word32)
 import qualified Numeric.Container as NC
 
 import Common
@@ -107,36 +109,11 @@ validVisiblePattern ws v
   | otherwise                   = Nothing
 
 
--- TODO move to Util
-
--- |Generates uniform random variables.
-unif :: (MonadRandom m) => m Double
-unif = getRandomR (0, 1)
-
--- |Generate two samples from the standard normal distribution, using
---  the Box-Muller method.
-stdNormals :: (MonadRandom m) => m (Double,Double)
-stdNormals = do
-  u <- unif
-  v <- unif
-  let r = sqrt((-2) * log u)
-  let arg1 = cos (2 * pi * v)
-  let arg2 = sin (2 * pi * v)
-  return (r * arg1, r * arg2)
-
--- |Generate a single sample from the standard normal distribution, by
---  generating two samples and throwing away the second one.
-stdNormal :: (MonadRandom m) => m Double
-stdNormal = do
-  (x, _) <- stdNormals
-  return x
-
--- |Generate a sample from the standard normal distribution with a given
---  mean and variance.
-normal :: (MonadRandom m) => Double -> Double -> m Double
-normal mu sigma = do
-  x <- stdNormal
-  return $ mu + sigma * x
+ --| Generates a number sampled from a random distribution.
+normal :: MonadRandom m => m Int
+normal = do
+  r <- DR.runRVar (DR.normal 0 0.10) (getRandom :: MonadRandom m => m Word32)
+  return r
 
 update1 :: MonadRandom m => Weights -> Pattern -> m Pattern
 update1 ws pat = do

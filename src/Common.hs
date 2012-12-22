@@ -3,14 +3,7 @@
 module Common where
 
 
-import           Data.List
-import           Data.Maybe
-import           Data.Number.Erf
-import           Data.Vector (Vector, (!))
-import           Data.Vector.Generic.Mutable (write)
-import qualified Data.Vector as V
-import           Control.Monad.Random (MonadRandom)
-import           Util
+import           Data.Vector (Vector)
 
 type Weights = Vector (Vector Double)
 type Pattern = Vector Int
