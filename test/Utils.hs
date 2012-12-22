@@ -114,11 +114,11 @@ replaceAtN n r (x:xs)
 -- scale
 crosstalk:: HopfieldData -> Int -> Int -> Int
 -- the cross talk term is h(xi k ) - xi k
-crosstalk hs index n = h (weights hs) pat n - pat V.! n
+crosstalk hs index n = computeH (weights hs) pat n - pat V.! n
                           where pat = (patterns hs) !! index
 
 compTerm:: HopfieldData -> Int -> Int -> Int
-compTerm hs index n = - (pat V.! n) * (h (weights hs) pat n - pat V.! n)
+compTerm hs index n = - (pat V.! n) * (computeH (weights hs) pat n - pat V.! n)
                         where pat = (patterns hs) !! index
 
 checkFixed :: HopfieldData -> Int -> Bool
