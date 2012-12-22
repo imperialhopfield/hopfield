@@ -14,9 +14,6 @@ import           Control.Monad.Random
 import           Control.Applicative
 import           System.Random
 
--- TODO(mihaela) add check that if a pattern is a fixed point
--- -pattern is a fixed point
--- computation for crosstalk term to fix failing test
 
 toV = (V.fromList <$>)
 _EPSILON = 0.001

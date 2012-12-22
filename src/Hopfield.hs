@@ -11,7 +11,7 @@ module Hopfield (
   , buildHopfieldData
   -- * Running
   , update
-  , h
+  , computeH
   , getUpdatables
   , updateViaIndex
   , repeatedUpdate
@@ -20,8 +20,10 @@ module Hopfield (
   , energy
 ) where
 
+
 import           Data.List
 import           Data.Maybe
+import           Data.Number.Erf
 import           Data.Vector (Vector, (!))
 import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
@@ -83,11 +85,11 @@ train pats = vector2D ws
 getUpdatables:: Weights -> Pattern -> [(Int, Int)]
 getUpdatables ws pat = updatables
   where
-    updatables = [ (i, h ws pat i) | (i, x_i) <- zip [0..] (V.toList pat), h ws pat i /= x_i ]
+    updatables = [ (i, computeH ws pat i) | (i, x_i) <- zip [0..] (V.toList pat), computeH ws pat i /= x_i ]
 
 
-h :: Weights -> Pattern -> Int -> Int
-h ws pat i = if sum [ (ws ! i ! j) *. (pat ! j)
+computeH :: Weights -> Pattern -> Int -> Int
+computeH ws pat i = if sum [ (ws ! i ! j) *. (pat ! j)
                      | j <- [0 .. p-1] ] >= 0 then 1 else -1
               where   p = V.length pat
 
@@ -156,6 +158,15 @@ matchPattern (HopfieldData ws pats) pat
       case m_index of
         Nothing    -> return $ Left converged_pattern
         Just index -> return $ Right index
+
+
+-- | Computes the probability of error for one element given a hopfield data
+-- structure. Note that I claim that the actuall error of probability depends
+-- on this, but is not the whole term
+computeError :: HopfieldData -> Double
+computeError (HopfieldData _ pats) = 1 ./. 2 * (1 - (erf $ sqrt $ n ./. p))
+  where n = V.length $ pats !! 0
+        p = length pats
 
 
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
