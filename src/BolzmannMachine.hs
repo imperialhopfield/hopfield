@@ -5,6 +5,7 @@ module BolzmannMachine where
 
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
 
+import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
 import qualified Data.Random as DR
@@ -30,10 +31,12 @@ lr = 0.1 :: Double -- learning rate
 
 data Mode = Hidden | Visible
 
+-- | Gives the opposite type of layer.
 notMode :: Mode -> Mode
 notMode Hidden  = Visible
 notMode Visible = Hidden
 
+-- |
 getDimension :: Mode -> Weights -> Int
 getDimension Hidden ws = V.length $ ws ! 0
 getDimension Visible ws = V.length $ ws
@@ -51,14 +54,14 @@ updateNeuron mode ws pat index = do
             Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
       p = V.length pat
 
--- | @getCounterPattern mode ws pat@ , given a vector @pat@ of type @mode@
--- computes the values of all the neurons of the layer of the opposite type.
-getCounterPattern:: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
+-- | @getCounterPattern mode ws pat@, given a vector @pat@ of type @mode@
+-- computes the values of all the neurons in the layer of the opposite type.
+getCounterPattern :: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
 getCounterPattern mode ws pat
-  | Just e <- validPattern mode ws pat  = error e
-  | otherwise = do
-      c_pat <- mapM (updateNeuron mode ws pat) [0.. getDimension (notMode mode) ws - 1]
-      return $ V.fromList c_pat
+  | Just e <- validPattern mode ws pat = error e
+  | otherwise = V.fromList `liftM` mapM (updateNeuron mode ws pat) updatedIndices
+    where
+      updatedIndices = [0 .. getDimension (notMode mode) ws - 1]
 
 
 -- | One step in updates the weigths in the training process.
