@@ -16,31 +16,29 @@ import qualified Numeric.Container as NC
 import Common
 import Util
 
---TODO CHECK IF IT IS OK WITH -1 and 1 instead of 0 and 1
-
 -- In the case of the Bolzamann Machine the weight matrix establishes the
 -- weigths between visible and hidden neurons
 -- w i j - connection between visible neuron i and hidden neuron j
 
+
+--TODO CHECK IF IT IS OK WITH -1 and 1 instead of 0 and 1
 -- start with no biases initially, introduce them after (if needed)
 -- if biases are used, they should be normally distributed
 
 
 lr = 0.1 :: Double -- learning rate
 
--- TODO checks for Weigths. Here there are different
--- TODO checks for patterns. Here there are different
--- TODO see order of updates using shuffle
--- TODO see how you can change update and co from Hopfield to fit this
-
--- checks are done once in getHidden and getVisible, for efficiency
-
 data Mode = Hidden | Visible
-
 
 notMode :: Mode -> Mode
 notMode Hidden  = Visible
 notMode Visible = Hidden
+
+getDimension :: Mode -> Weights -> Int
+getDimension Hidden ws = V.length $ ws ! 0
+getDimension Visible ws = V.length $ ws
+
+
 
 updateNeuron :: MonadRandom m => Mode -> Weights -> Pattern -> Int -> m Int
 updateNeuron mode ws pat index = do
@@ -56,12 +54,8 @@ getCounterPattern:: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
 getCounterPattern mode ws pat
   | Just e <- validVisiblePattern ws pat  = error e
   | otherwise = do
-      c_pat <- mapM (updateNeuron (notMode mode) ws pat) [0.. p - 1]
+      c_pat <- mapM (updateNeuron (notMode mode) ws pat) [0.. getDimension mode - 1]
       return $ V.fromList c_pat
-         where p = case mode of
-                Hidden  -> V.length $ ws ! 0
-                Visible -> V.length $ ws
-
 
 
 updateWS:: MonadRandom m => Weights -> Pattern -> m Weights
@@ -92,21 +86,14 @@ activation :: Double -> Double
 activation x = 1.0 / (1.0 - exp (-x))
 
 
--- | @validPattern weights pattern@
--- Returns an error string in a Just if the @pattern@ is not compatible
--- with @weights@ and Nothing otherwise.
-validHiddenPattern :: Weights -> Pattern -> Maybe String
-validHiddenPattern ws h
-  | V.length (ws ! 0) /= V.length h = Just "Size of hidden must match network size"
-  | otherwise                   = Nothing
 
 
 -- | @validPattern weights pattern@
 -- Returns an error string in a Just if the @pattern@ is not compatible
 -- with @weights@ and Nothing otherwise.
-validVisiblePattern :: Weights -> Pattern -> Maybe String
-validVisiblePattern ws v
-  | V.length ws /= V.length v = Just "Size of visible pattern must match network size"
+validHiddenPattern :: Mode -> Weights -> Pattern -> Maybe String
+validHiddenPattern mode ws pat
+  | getDimension mode /= V.length pat = Just "Size of hidden must match network size"
   | otherwise                   = Nothing
 
 
