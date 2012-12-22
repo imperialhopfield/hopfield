@@ -51,8 +51,8 @@ updateNeuron mode ws pat index = do
             Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
       p = V.length pat
 
-
--- Mode gives the mode of the current pattern, not the opposite one
+-- | @getCounterPattern mode ws pat@ , given a vector @pat@ of type @mode@
+-- computes the values of all the neurons of the layer of the opposite type.
 getCounterPattern:: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
 getCounterPattern mode ws pat
   | Just e <- validPattern mode ws pat  = error e
