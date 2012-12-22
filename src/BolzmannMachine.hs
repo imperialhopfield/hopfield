@@ -96,7 +96,8 @@ validPattern mode ws pat
   | otherwise                   = Nothing
 
 
- -- | Generates a number sampled from a random distribution.
+ -- | Generates a number sampled from a random distribution, given the mean and
+ -- standard deviation.
 normal :: forall m . MonadRandom m => Double -> Double -> m Double
 normal m std = do
   r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
