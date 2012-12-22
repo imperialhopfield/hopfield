@@ -31,7 +31,7 @@ mapToBinary(double** pattern, int width, int height){
   return binaryPattern;
 }
 
-// TODO write function which takes all the traning images
+// TODO write function which takes all the training images
 // and gets min size for all
 //  check how it will work with very different sizes
 
