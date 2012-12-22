@@ -122,15 +122,17 @@ normal m std = do
 
 -- | Does one update of a visible pattern by updating the hidden layer neurons once
 -- and then using the new values to obtain new values for the visible layer.
-update1 :: MonadRandom m => Weights -> Pattern -> m Pattern
-update1 ws pat = do
+updateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
+updateBolzmann ws pat = do
   h <- getCounterPattern Visible ws pat
   getCounterPattern Hidden ws h
 
--- | As in the case of the Hopfield network, repeates an update until the pattern
--- converges.
-repeatedUpdate1 :: MonadRandom m => Weights -> Pattern -> m Pattern
-repeatedUpdate1 ws pat = repeatUntilEqual (update1 ws) pat
+
+-- | Repeates an update until the pattern converges (does not change any
+-- more on further updates).
+repeatedUpdateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
+repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann ws) pat
+
 
 main = do
   gen  <- getStdGen
