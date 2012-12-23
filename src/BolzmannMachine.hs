@@ -183,12 +183,3 @@ matchPatternBolzmann (BolzmannData ws pats nr_h)  pat
   | otherwise = do
       converged_pattern <- repeatedUpdateBolzmann ws pat
       return $ getPatternFromList pats converged_pattern
-
-
-main = do
-  gen  <- getStdGen
-  let v1 = V.fromList [0, 1, 0]
-  let v2 = V.fromList [1, 0, 0]
-  let v3 = V.fromList [1, 1, 0]
-  let ws = evalRand (trainBolzmann [v1, v2, v3] 2) gen
-  return $ evalRand (repeatedUpdateBolzmann ws (V.fromList [1, 0, 1])) gen

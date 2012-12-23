@@ -1,4 +1,4 @@
-module Recognize where
+module Main where
 
 
 import           System.Environment
@@ -44,6 +44,6 @@ main = do
       width  = read widthStr
       height = read heightStr
   foundPath <- recPic method (width, height) filePaths queryPath
-  putStrLn $ case foundPath of 
+  putStrLn $ case foundPath of
     Nothing  -> "no pattern found"
     Just path -> path

@@ -44,6 +44,8 @@ library
     -std=c99 -O2 -Wall -Wextra
   ghc-options:
     -Wall -fwarn-unused-imports
+  extra-libraries:
+    MagickWand MagickCore
 
 
 executable hopfield
