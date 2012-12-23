@@ -34,6 +34,14 @@ learningRate = 0.1 :: Double
 
 data Mode = Hidden | Visible
 
+
+data BolzmannData = BolzmannData {
+    weights :: Weights    -- ^ the weights of the network
+  , patterns :: [Pattern] -- ^ the patterns which were used to train it
+  , nr_hidden :: Int      -- ^ number of neurons in the hidden layer
+}
+  deriving(Show)
+
 -- | Gives the opposite type of layer.
 notMode :: Mode -> Mode
 notMode Hidden  = Visible
@@ -46,17 +54,41 @@ getDimension Hidden ws = V.length $ ws ! 0
 getDimension Visible ws = V.length $ ws
 
 
+-- | @buildHopfieldData patterns@: Takes a list of patterns and
+-- builds a Hopfield network (by training) in which these patterns are
+-- stable states. The result of this function can be used to run a pattern
+-- against the network, by using 'matchPattern'.
+buildBolzmannData :: MonadRandom  m => [Pattern] -> Int ->  m BolzmannData
+buildBolzmannData [] _  = error "Train patterns are empty"
+buildBolzmannData pats nr_hidden
+  | first_len == 0
+      = error "Cannot have empty patterns"
+  | any (\x -> V.length x /= first_len) pats
+      = error "All training patterns must have the same length"
+  | otherwise = do
+      ws:: Weights <- trainBolzmann pats nr_hidden
+      return $ BolzmannData ws pats nr_hidden
+  where
+    first_len = V.length (head pats)
+
+
+-- Pure version of updateNeuron for testing
+updateNeuron'::  Double -> Mode -> Weights -> Pattern -> Int -> Int
+updateNeuron' r mode ws pat index = if (r < a) then 1 else -1
+  where
+    a = activation . sum $ case mode of
+          Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
+          Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
+    p = V.length pat
+
+
 -- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
 -- updates the neuron with number @index@ in the layer with opposite type.
 updateNeuron :: MonadRandom m => Mode -> Weights -> Pattern -> Int -> m Int
 updateNeuron mode ws pat index = do
   r <- getRandomR (0.0, 1.0)
-  return $ if (r < a) then 1 else -1
-    where
-      a = activation . sum $ case mode of
-            Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
-            Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
-      p = V.length pat
+  return $ updateNeuron' r mode ws pat index
+
 
 -- | @getCounterPattern mode ws pat@, given a vector @pat@ of type @mode@
 -- computes the values of all the neurons in the layer of the opposite type.
@@ -74,7 +106,7 @@ getCounterPattern mode ws pat
 updateWeights :: MonadRandom m => Weights -> Pattern -> m Weights
 updateWeights ws v = do
   h        <- getCounterPattern Visible ws v
-  v'       <- getCounterPattern Hidden ws h
+  v'       <- getCounterPattern Hidden  ws h
   h'       <- getCounterPattern Visible ws v'
   let f    = fromDataVector . fmap fromIntegral
       pos  = NC.toLists $ (f v) `NC.outer` (f h)   -- "positive gradient"
