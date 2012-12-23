@@ -75,7 +75,7 @@ buildBolzmannData pats nr_hidden
 
 -- Pure version of updateNeuron for testing
 updateNeuron'::  Double -> Mode -> Weights -> Pattern -> Int -> Int
-updateNeuron' r mode ws pat index = if (r < a) then 1 else -1
+updateNeuron' r mode ws pat index = if (r < a) then 1 else 0
   where
     a = activation . sum $ case mode of
           Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
@@ -171,8 +171,8 @@ repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann ws) pat
 
 main = do
   gen  <- getStdGen
-  let v1 = V.fromList [-1, 1, -1]
-  let v2 = V.fromList [1, -1, -1]
-  let v3 = V.fromList [1, 1, -1]
+  let v1 = V.fromList [0, 1, 0]
+  let v2 = V.fromList [1, 0, 0]
+  let v3 = V.fromList [1, 1, 0]
   let ws = evalRand (trainBolzmann [v1, v2, v3] 4) gen
   return $ evalRand (repeatedUpdateBolzmann ws (V.fromList [1, 1, 1])) gen
