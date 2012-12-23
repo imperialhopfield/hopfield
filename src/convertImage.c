@@ -1,4 +1,5 @@
 #include "convertImage.h"
+#include <assert.h>
 #include <wand/magick_wand.h>
 
 void ThrowWandException(MagickWand *wand)
@@ -55,7 +56,14 @@ load_picture(char* inputImg, size_t width, size_t height)
   PixelWand** pixels;
   // size_t width = MagickGetImageWidth(mw);
   // size_t height = MagickGetImageHeight(mw);
-  MagickResizeImage(mw, height, width, LanczosFilter, 0);
+  int resizeSuccess = MagickResizeImage(mw, height, width, LanczosFilter, 0);
+
+  if (!resizeSuccess)
+  {
+    printf("resize failed\n");
+    exit(1);
+  }
+
   PixelIterator* pixelIt = NewPixelIterator(mw);
   double** outputPattern = (double**) malloc (sizeof(double*) * width);
   for(size_t i=0; i < width; i++)
@@ -67,8 +75,12 @@ load_picture(char* inputImg, size_t width, size_t height)
   /* get pixel grayscale values */
   for (y=0; y < (long) height; y++)
   {
-    pixels=PixelGetNextIteratorRow(pixelIt,&width);
-    for (long x=0; x < (long) width; x++) {
+    size_t iter_width;
+    pixels=PixelGetNextIteratorRow(pixelIt,&iter_width);
+    assert (iter_width == width);
+    for (long x=0; x < (long) iter_width; x++) {
+      printf("asdf\n");
+
       outputPattern[x][y] = (PixelGetRed(pixels[x]) +
         PixelGetGreen(pixels[x]) + PixelGetBlue(pixels[x]))/3;
     }
