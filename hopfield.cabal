@@ -41,7 +41,7 @@ library
       wand/magick_wand.h
   cc-options:
     -- Can't use "-Wextra -Werror" here due to hsc2hs generating unused main() parameters
-    -std=c99 -O2 -Wall -Wextra
+    -g -std=c99 -O0 -Wall -Wextra
   ghc-options:
     -Wall -fwarn-unused-imports
   extra-libraries:
