@@ -29,11 +29,11 @@ testBolzmannMachine = do
     it "tests that the activation funcion application always gives us a probability" $
       forAll bolzmannAndPatGen' $ probabilityCheck
 
-    --it "tests that if r is 0 then the neuron always gets value 1" $
-    --  forAll bolzmannAndPatGen' $ updateNeuronCheck 0
+    it "tests that if r is 0 then the neuron always gets value 1" $
+      forAll bolzmannAndPatGen' $ updateNeuronCheck 0
 
-    --it "tests that if r is 1 then the neuron always gets value 0" $
-    --  forAll bolzmannAndPatGen' $ updateNeuronCheck 1
+    it "tests that if r is 1 then the neuron always gets value 0" $
+      forAll bolzmannAndPatGen' $ updateNeuronCheck 1
 
 
 
