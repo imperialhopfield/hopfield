@@ -222,15 +222,13 @@ bolzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
 bolzmannAndPatGen m1 m2 max_hidden = do
   pats_train <- patListGen BM m1 m2
   i          <- choose (1, max_hidden)
-  pats_check <- patternGen BM i
+  pats_check <- patternGen BM (V.length $ pats_train !! 0)
   return $ (pats_train, i, pats_check)
 
 -- r should only be 0 or 1 for this test
-updateNeuronCheck :: Double -> ([Pattern], Int, Pattern) -> Gen Bool
+updateNeuronCheck :: Int -> ([Pattern], Int, Pattern) -> Gen Bool
 updateNeuronCheck r (pats, nr_h, pat) = do
     i    <- choose (0, nr_h -1)
     seed <- arbitrary
     let bd = evalRand (buildBolzmannData pats nr_h) (mkStdGen seed)
-    return $ updateNeuron' r Visible (weightsB bd) pat i == res
-       where res = if r == 0 then 1 else -1
-
+    return $ updateNeuron' (fromIntegral r) Visible (weightsB bd) pat i == (1 - r)
