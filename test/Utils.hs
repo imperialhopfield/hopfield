@@ -14,6 +14,9 @@ import           BolzmannMachine
 import           Hopfield
 import           Util
 
+
+
+data Type = H | BM
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
   arbitrary = fmap V.fromList arbitrary
@@ -37,10 +40,14 @@ signGen = do
   n <- choose (0,1)
   return $ n*2 - 1
 
-
+binaryGen :: Gen Int
+binaryGen = do
+  n <- choose (0,1)
+  return n
 -- | @patternGen n@: Generates patterns of size n
-patternGen :: Int -> Gen Pattern
-patternGen n = toGenVector $ vectorOf n signGen
+patternGen :: Type -> Int -> Gen Pattern
+patternGen H  n = toGenVector $ vectorOf n signGen
+patternGen BM n = toGenVector $ vectorOf n binaryGen
 
 
 -- | @boundedListGen g n@: Generates lists (max length n) of the given Gen
@@ -50,10 +57,10 @@ boundedListGen g n = do
   vectorOf len g
 
 
-patListGen :: Int -> Int -> Gen [Pattern]
-patListGen maxPatSize maxPatListSize = do
+patListGen :: Type -> Int -> Int -> Gen [Pattern]
+patListGen t maxPatSize maxPatListSize = do
     i <- choose (1, maxPatSize)
-    nonempty $ boundedListGen (patternGen i) maxPatListSize
+    nonempty $ boundedListGen (patternGen t i) maxPatListSize
 
 
 -- | @patternsTupleGen g m1 m2@Generates a tuple of lists, as follows:
@@ -61,11 +68,11 @@ patListGen maxPatSize maxPatListSize = do
 -- The list itself has to have length less than m1.
 -- The second element of a tuple is a list of patterns which have the same size
 -- as the patterns of the first list.
-patternsTupleGen :: Int -> Int -> Gen ([Pattern], [Pattern])
-patternsTupleGen m1 m2 = do
-  fst_list <- patListGen  m1 m2
+patternsTupleGen :: Type -> Int -> Int -> Gen ([Pattern], [Pattern])
+patternsTupleGen t m1 m2 = do
+  fst_list <- patListGen t m1 m2
   i <- choose (0, m2)
-  snd_list <- vectorOf i (patternGen $ V.length $ head fst_list)
+  snd_list <- vectorOf i (patternGen t $ V.length $ head fst_list)
   return $ (fst_list, snd_list)
 
 
@@ -200,7 +207,7 @@ repeatedUpdateCheck (training_pats, pats)
 
 bolzmannBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
 bolzmannBuildGen m1 m2 max_hidden = do
-  pats <- patListGen m1 m2
+  pats <- patListGen BM m1 m2
   i    <- choose (1, max_hidden)
   return $ (pats, i)
 
@@ -213,9 +220,9 @@ build_BM_Check (pats, nr_h) = do
 
 bolzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
 bolzmannAndPatGen m1 m2 max_hidden = do
-  pats_train <- patListGen m1 m2
+  pats_train <- patListGen BM m1 m2
   i          <- choose (1, max_hidden)
-  pats_check <- patternGen i
+  pats_check <- patternGen BM i
   return $ (pats_train, i, pats_check)
 
 -- r should only be 0 or 1 for this test
