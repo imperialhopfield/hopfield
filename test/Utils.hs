@@ -227,7 +227,7 @@ bolzmannAndPatGen m1 m2 max_hidden = do
 
 -- r should only be 0 or 1 for this test
 updateNeuronCheck :: Int -> ([Pattern], Int, Pattern) -> Gen Bool
-updateNeuronCheck r _ = if !(r == 0 || r == 1) then error "r has to be 0 or 1 for updateNeuronCheck"
+-- updateNeuronCheck r _ = if not (r == 0 || r == 1) then error "r has to be 0 or 1 for updateNeuronCheck"
 updateNeuronCheck r (pats, nr_h, pat) = do
     i    <- choose (0, nr_h -1)
     seed <- arbitrary

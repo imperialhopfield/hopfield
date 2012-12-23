@@ -121,7 +121,8 @@ updateWeights ws v = do
 
 -- | The training function for the Bolzmann Machine.
 -- We are using the contrastive divergence algorithm CD-1
--- (we could extend to CD-n).
+-- TODO see if making the vis
+-- (we could extend to CD-n, but "In pratice,  CD-1 has been shown to work surprisingly well."
 -- @trainBolzmann pats nr_hidden@ where @pats@ are the training patterns
 -- and @nr_hidden@ is the number of neurons to be created in the hidden layer.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
