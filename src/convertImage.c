@@ -79,8 +79,6 @@ load_picture(char* inputImg, size_t width, size_t height)
     pixels=PixelGetNextIteratorRow(pixelIt,&iter_width);
     assert (iter_width == width);
     for (long x=0; x < (long) iter_width; x++) {
-      printf("asdf\n");
-
       outputPattern[x][y] = (PixelGetRed(pixels[x]) +
         PixelGetGreen(pixels[x]) + PixelGetBlue(pixels[x]))/3;
     }
