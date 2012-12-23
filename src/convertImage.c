@@ -53,10 +53,10 @@ load_picture(char* inputImg, size_t width, size_t height)
      ThrowWandException(mw);
 
   PixelWand** pixels;
-  PixelIterator* pixelIt = NewPixelIterator(mw);
   // size_t width = MagickGetImageWidth(mw);
   // size_t height = MagickGetImageHeight(mw);
   MagickResizeImage(mw, height, width, LanczosFilter, 0);
+  PixelIterator* pixelIt = NewPixelIterator(mw);
   double** outputPattern = (double**) malloc (sizeof(double*) * width);
   for(size_t i=0; i < width; i++)
   {
