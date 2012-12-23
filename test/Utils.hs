@@ -10,6 +10,7 @@ import           Test.QuickCheck
 import           Control.Monad
 import           Data.Number.Erf (normcdf)
 
+import           BolzmannMachine
 import           Hopfield
 import           Util
 
@@ -197,15 +198,32 @@ repeatedUpdateCheck (training_pats, pats)
         return $ evalRand (stopped pat) (mkStdGen i)
 
 
-bolzmanBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
-bolzmanBuildGen m1 m2 max_hidden = do
+bolzmannBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
+bolzmannBuildGen m1 m2 max_hidden = do
   pats <- patListGen m1 m2
   i    <- choose (1, max_hidden)
   return $ (pats, i)
 
 
-build_BM_Check :: ([Pattern, Int]) -> Gen Bool
+build_BM_Check :: ([Pattern], Int) -> Gen Bool
 build_BM_Check (pats, nr_h) = do
   i <- arbitrary
-  let bd = evalRand (buildBolzmannData pats nr_hidden) mkStdGen i
-  return $ patterns bd == pats && nr_hidden bd == nr_h
+  let bd = evalRand (buildBolzmannData pats nr_h) (mkStdGen i)
+  return $ patternsB bd == pats && nr_hidden bd == nr_h
+
+bolzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
+bolzmannAndPatGen m1 m2 max_hidden = do
+  pats_train <- patListGen m1 m2
+  i          <- choose (1, max_hidden)
+  pats_check <- patternGen i
+  return $ (pats_train, i, pats_check)
+
+-- r should only be 0 or 1 for this test
+updateNeuronCheck :: Double -> ([Pattern], Int, Pattern) -> Gen Bool
+updateNeuronCheck r (pats, nr_h, pat) = do
+    i    <- choose (0, nr_h -1)
+    seed <- arbitrary
+    let bd = evalRand (buildBolzmannData pats nr_h) (mkStdGen seed)
+    return $ updateNeuron' r Visible (weightsB bd) pat i == res
+       where res = if r == 0 then 1 else -1
+

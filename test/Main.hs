@@ -14,12 +14,16 @@ import           Control.Monad.Random
 import           Control.Applicative
 import           System.Random
 
+import            TestBolzmann
 
 toV = (V.fromList <$>)
 _EPSILON = 0.001
 
 
 main = hspec $ do
+
+  tBM
+
   describe "base model" $ do
     let maxPatListSize = 20
     let maxPatSize     = 100

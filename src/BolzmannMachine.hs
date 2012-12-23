@@ -36,8 +36,8 @@ data Mode = Hidden | Visible
 
 
 data BolzmannData = BolzmannData {
-    weights :: Weights    -- ^ the weights of the network
-  , patterns :: [Pattern] -- ^ the patterns which were used to train it
+    weightsB :: Weights    -- ^ the weights of the network
+  , patternsB :: [Pattern] -- ^ the patterns which were used to train it
   , nr_hidden :: Int      -- ^ number of neurons in the hidden layer
 }
   deriving(Show)
