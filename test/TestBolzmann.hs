@@ -26,14 +26,14 @@ testBolzmannMachine = do
     it "tests that the patterns and nr of hidden neurons stored in the bolzmann datastructure are the same as the ones which were given as input" $
       forAll bolzmannBuildGen' build_BM_Check
 
-    it "tests that the activation funcion application always gives us a probability"
+    it "tests that the activation funcion application always gives us a probability" $
       forAll bolzmannAndPatGen' $ probabilityCheck
 
-    it "tests that if r is 0 then the neuron always gets value 1" $
-      forAll bolzmannAndPatGen' $ updateNeuronCheck 0
+    --it "tests that if r is 0 then the neuron always gets value 1" $
+    --  forAll bolzmannAndPatGen' $ updateNeuronCheck 0
 
-    it "tests that if r is 1 then the neuron always gets value 0" $
-      forAll bolzmannAndPatGen' $ updateNeuronCheck 1
+    --it "tests that if r is 1 then the neuron always gets value 0" $
+    --  forAll bolzmannAndPatGen' $ updateNeuronCheck 1
 
 
 

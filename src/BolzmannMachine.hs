@@ -75,14 +75,16 @@ buildBolzmannData pats nr_hidden
 -- Pure version of updateNeuron for testing
 updateNeuron'::  Double -> Mode -> Weights -> Pattern -> Int -> Int
 updateNeuron' r mode ws pat index = if (r < a) then 1 else 0
-  where a = getActivationProbability mode ws pat
+  where a = getActivationProbability mode ws pat index
 
 
-getActivationProbability :: Mode -> Weights -> Pattern -> Double
-getActivationProbability mode ws pat = activation . sum $ case mode of
-    Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
-    Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
-  where p = V.length pat
+getActivationProbability :: Mode -> Weights -> Pattern -> Int -> Double
+getActivationProbability mode ws pat index = if a <=1 && a >=0 then a else error (show a)
+  where
+    a = activation . sum $ case mode of
+      Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
+      Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
+    p = V.length pat
 
 
 -- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
@@ -138,7 +140,7 @@ trainBolzmann pats nr_hidden = do
 -- | The activation functiom for the network (the logistic sigmoid).
 -- http://en.wikipedia.org/wiki/Sigmoid_function
 activation :: Double -> Double
-activation x = 1.0 / (1.0 - exp (-x))
+activation x = 1.0 / (1.0 + exp (-x))
 
 
 -- | @validPattern mode weights pattern@
@@ -148,7 +150,9 @@ activation x = 1.0 / (1.0 - exp (-x))
 validPattern :: Mode -> Weights -> Pattern -> Maybe String
 validPattern mode ws pat
   | getDimension mode ws /= V.length pat = Just "Size of pattern must match network size"
+  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in bolzmann pattern"
   | otherwise            = Nothing
+    where
 
 
  -- | Generates a number sampled from a random distribution, given the mean and
@@ -177,5 +181,6 @@ main = do
   let v1 = V.fromList [0, 1, 0]
   let v2 = V.fromList [1, 0, 0]
   let v3 = V.fromList [1, 1, 0]
-  let ws = evalRand (trainBolzmann [v1, v2, v3] 4) gen
-  return $ evalRand (repeatedUpdateBolzmann ws (V.fromList [1, 0, 1])) gen
+  let ws = evalRand (trainBolzmann [v1, v2, v3] 2) gen
+  return $ ws
+  --return $ evalRand (repeatedUpdateBolzmann ws (V.fromList [1, 0, 1])) gen
