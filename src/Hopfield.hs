@@ -209,3 +209,40 @@ validWeights ws
   where
     n = V.length ws
 
+
+-- Generate list of states within hamming distance r of the given pattern
+withinHammingRadius :: Pattern -> Int -> [Pattern]
+withinHammingRadius pat r = map (V.fromList . multByPat) coeffsList
+  where
+    n                = V.length pat
+    perms            = sequence $ replicate n [1, -1]
+    withinDist       = null . (drop r) . (filter (== (-1)))
+    coeffsList       = filter withinDist perms
+    multByPat coeffs = zipWith (*) coeffs (V.toList pat)
+
+
+-- Percentage of sampled patterns within hamming distance 'r' from 'pat' which
+-- converge to 'pat'
+-- pre: pattern of same size as network
+samplePatternBasin :: (MonadRandom m) => HopfieldData -> Pattern -> Int -> m Double
+samplePatternBasin hs pat r = do
+  convergedPatterns <- mapM (repeatedUpdate ws) samples
+  let numConverging =  length $ filter (==pat) convergedPatterns
+  return $ numConverging ./. sampleSize
+    where
+      samples           = sample_temp 100 $ withinHammingRadius pat r
+      ws                = weights hs
+      sampleSize        = length samples
+      -- TODO change to use proper random sampling (sample in Data.Random.Extras)
+      sample_temp       = take
+
+
+-- Measures pattern's basin of attraction using the Storkey-Valabregue method
+measurePatternBasin :: (MonadRandom m) => HopfieldData -> Int -> m Int
+measurePatternBasin hs index = do
+  t_mus <- mapM (samplePatternBasin hs pat)  [1..n]
+  return $ fromMaybe n $ findIndex (<0.9) t_mus
+    where
+      pat = (patterns hs) !! index
+      n   = V.length pat
+
