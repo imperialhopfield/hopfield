@@ -55,6 +55,12 @@ patListGen maxPatSize maxPatListSize = do
     nonempty $ boundedListGen (patternGen i) maxPatListSize
 
 
+bolzmanBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
+bolzmanBuildGen m1 m2 max_hidden = do
+  pats <- patListGen m1 m2
+  i    <- choose (1, max_hidden)
+  return $ (pats, i)
+
 -- | @patternsTupleGen g m1 m2@Generates a tuple of lists, as follows:
 -- Uses patListGen to generate 1 list of patterns with length less than m2.
 -- The list itself has to have length less than m1.
