@@ -23,6 +23,7 @@ import Util
 
 
 --TODO CHECK IF IT IS OK WITH -1 and 1 instead of 0 and 1
+-- it is not
 -- start with no biases initially, introduce them after (if needed)
 -- if biases are used, they should be normally distributed
 
