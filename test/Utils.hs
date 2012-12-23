@@ -55,12 +55,6 @@ patListGen maxPatSize maxPatListSize = do
     nonempty $ boundedListGen (patternGen i) maxPatListSize
 
 
-bolzmanBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
-bolzmanBuildGen m1 m2 max_hidden = do
-  pats <- patListGen m1 m2
-  i    <- choose (1, max_hidden)
-  return $ (pats, i)
-
 -- | @patternsTupleGen g m1 m2@Generates a tuple of lists, as follows:
 -- Uses patListGen to generate 1 list of patterns with length less than m2.
 -- The list itself has to have length less than m1.
@@ -143,6 +137,7 @@ trainingPatsAreFixedPoints pats =
       return $ evalRand (update ws (pats !! index)) (mkStdGen i) == (pats !! index) || (not $ checkFixed hs index)
 
 
+
 -- | @compError hopfield@: Computes the percentage of patterns in the network
 -- which are NOT fixed points
 compError :: HopfieldData -> Double
@@ -200,3 +195,17 @@ repeatedUpdateCheck (training_pats, pats)
       s pat = do
         i <- arbitrary
         return $ evalRand (stopped pat) (mkStdGen i)
+
+
+bolzmanBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
+bolzmanBuildGen m1 m2 max_hidden = do
+  pats <- patListGen m1 m2
+  i    <- choose (1, max_hidden)
+  return $ (pats, i)
+
+
+build_BM_Check :: ([Pattern, Int]) -> Gen Bool
+build_BM_Check (pats, nr_h) = do
+  i <- arbitrary
+  let bd = evalRand (buildBolzmannData pats nr_hidden) mkStdGen i
+  return $ patterns bd == pats && nr_hidden bd == nr_h
