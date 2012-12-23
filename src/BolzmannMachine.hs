@@ -22,8 +22,7 @@ import Util
 -- w i j - connection between visible neuron i and hidden neuron j
 
 
---TODO CHECK IF IT IS OK WITH -1 and 1 instead of 0 and 1
--- it is not
+
 -- start with no biases initially, introduce them after (if needed)
 -- if biases are used, they should be normally distributed
 
@@ -76,11 +75,14 @@ buildBolzmannData pats nr_hidden
 -- Pure version of updateNeuron for testing
 updateNeuron'::  Double -> Mode -> Weights -> Pattern -> Int -> Int
 updateNeuron' r mode ws pat index = if (r < a) then 1 else 0
-  where
-    a = activation . sum $ case mode of
-          Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
-          Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
-    p = V.length pat
+  where a = getActivationProbability mode ws pat
+
+
+getActivationProbability :: Mode -> Weights -> Pattern -> Double
+getActivationProbability mode ws pat = activation . sum $ case mode of
+    Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
+    Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
+  where p = V.length pat
 
 
 -- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
