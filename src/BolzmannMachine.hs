@@ -162,6 +162,7 @@ normal m std = do
   r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
   return r
 
+
 -- | Does one update of a visible pattern by updating the hidden layer neurons once
 -- and then using the new values to obtain new values for the visible layer.
 updateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
@@ -176,11 +177,18 @@ repeatedUpdateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
 repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann ws) pat
 
 
+matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m (Either Pattern Int)
+matchPatternBolzmann (BolzmannData ws pats nr_h)  pat
+  | Just e <- validPattern Visible ws pat = error e
+  | otherwise = do
+      converged_pattern <- repeatedUpdateBolzmann ws pat
+      return $ getPatternFromList pats converged_pattern
+
+
 main = do
   gen  <- getStdGen
   let v1 = V.fromList [0, 1, 0]
   let v2 = V.fromList [1, 0, 0]
   let v3 = V.fromList [1, 1, 0]
   let ws = evalRand (trainBolzmann [v1, v2, v3] 2) gen
-  return $ ws
-  --return $ evalRand (repeatedUpdateBolzmann ws (V.fromList [1, 0, 1])) gen
+  return $ evalRand (repeatedUpdateBolzmann ws (V.fromList [1, 0, 1])) gen

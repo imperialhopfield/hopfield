@@ -10,4 +10,5 @@ import TestHopfield
 main = hspec $ do
 
   testBolzmannMachine
+
   testHopfield

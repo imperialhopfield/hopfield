@@ -27,11 +27,9 @@ import           Data.Number.Erf
 import           Data.Vector (Vector, (!))
 import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
+import           Common
 import           Control.Monad.Random (MonadRandom)
 import           Util
-
-type Weights = Vector (Vector Double)
-type Pattern = Vector Int
 
 
 --make Hopefield data implement show
@@ -151,14 +149,9 @@ matchPattern :: MonadRandom m => HopfieldData -> Pattern
 matchPattern (HopfieldData ws pats) pat
   | Just e <- validWeights ws     = error e
   | Just e <- validPattern ws pat = error e
-  | otherwise
-    = do
+  | otherwise = do
       converged_pattern <- repeatedUpdate ws pat
-      let m_index = converged_pattern `elemIndex` pats
-      case m_index of
-        Nothing    -> return $ Left converged_pattern
-        Just index -> return $ Right index
-
+      return $ getPatternFromList pats converged_pattern
 
 -- | Computes the probability of error for one element given a hopfield data
 -- structure. Note that I claim that the actuall error of probability depends
