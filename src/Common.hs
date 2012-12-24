@@ -3,7 +3,6 @@
 module Common where
 
 
-import Data.List
 import Data.Vector (Vector)
 
 type Weights = Vector (Vector Double)

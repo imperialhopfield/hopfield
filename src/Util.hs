@@ -1,5 +1,6 @@
 module Util (
     combine
+  , findInList
   , fromDataVector
   , repeatUntilEqual
   , randomElem
@@ -9,6 +10,7 @@ module Util (
   , (*.)
 ) where
 
+import           Data.List
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
