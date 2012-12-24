@@ -172,10 +172,23 @@ activation x = 1.0 / (1.0 + exp (-x))
 -- which is checked (Visible or Hidden).
 validPattern :: Mode -> Weights -> Pattern -> Maybe String
 validPattern mode ws pat
-  | getDimension mode ws /= V.length pat = Just "Size of pattern must match network size"
-  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in bolzmann pattern"
+  | getDimension mode ws - 1 /= V.length pat = Just "Size of pattern must match network size"
+  | V.any (\x -> notElem x [0, 1]) pat       = Just "Non binary element in bolzmann pattern"
   | otherwise            = Nothing
-    where
+
+
+validTrainingPattern :: Mode -> Weights -> Pattern -> Maybe String
+validTrainingPattern mode ws pat
+  | getDimension mode ws /= V.length pat = Just "Size of pattern must match network size in training"
+  | V.any (\x -> notElem x [0, 1]) pat       = Just "Non binary element in bolzmann pattern"
+  | otherwise            = Nothing
+
+
+validWeights :: Weights -> Maybe String
+validWeights ws
+  | V.null ws = Just "The  matrix of weights is empty"
+  | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "Weigths matrix ill formed"
+  | otherwise = Nothing
 
 
  -- | Generates a number sampled from a random distribution, given the mean and
