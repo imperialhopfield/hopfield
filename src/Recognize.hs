@@ -28,11 +28,9 @@ recPic method (width, height) imgPaths queryImgPath = do
       runRand r = evalRand r gen
       result =  case method of
           Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
-          -- TODO change hardcoded value. The number of hidden neurons should not be
-          -- passed as a parameter but computed in terms of the number of visible neurons
-          Boltzmann -> runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats 10) queryPat
+          Boltzmann -> runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
   return $ case result of
-            Left pattern -> Nothing -- TODO apply heuristic if we want
+            Left pattern -> Nothing -- TODO apply heuristic if we want (we want)
             Right i      -> Just $ imgPaths !! i
 
 
@@ -48,5 +46,5 @@ main = do
       height = read heightStr
   foundPath <- recPic method (width, height) filePaths queryPath
   putStrLn $ case foundPath of
-    Nothing  -> "no pattern found"
+    Nothing   -> "no pattern found"
     Just path -> path

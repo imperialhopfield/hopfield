@@ -38,7 +38,7 @@ data Mode = Hidden | Visible
 data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
   , patternsB :: [Pattern] -- ^ the patterns which were used to train it
-  , nr_hidden :: Int      -- ^ number of neurons in the hidden layer
+  , nr_hidden :: Int       -- ^ number of neurons in the hidden layer
 }
   deriving(Show)
 
@@ -54,13 +54,21 @@ getDimension Hidden ws = V.length $ ws ! 0
 getDimension Visible ws = V.length $ ws
 
 
--- | @buildHopfieldData patterns@: Takes a list of patterns and
--- builds a Hopfield network (by training) in which these patterns are
+buildBolzmannData ::  MonadRandom  m => [Pattern] ->  m BolzmannData
+buildBolzmannData [] = error "Train patterns are empty"
+buildBolzmannData pats = do
+  nr_hidden <- getRandomR (floor (1.0/ 2.0 * (fromIntegral nr_visible)), nr_visible)
+  buildBolzmannData' pats nr_hidden
+    where nr_visible = V.length (head pats)
+
+
+-- | @buildBolzmannData' patterns nr_hidden@: Takes a list of patterns and
+-- builds a Bolzmann network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
--- against the network, by using 'matchPattern'.
-buildBolzmannData :: MonadRandom  m => [Pattern] -> Int ->  m BolzmannData
-buildBolzmannData [] _  = error "Train patterns are empty"
-buildBolzmannData pats nr_hidden
+-- against the network, by using 'matchPatternBolzmann'.
+buildBolzmannData' :: MonadRandom  m => [Pattern] -> Int ->  m BolzmannData
+buildBolzmannData' [] _  = error "Train patterns are empty"
+buildBolzmannData' pats nr_hidden
   | first_len == 0
       = error "Cannot have empty patterns"
   | any (\x -> V.length x /= first_len) pats

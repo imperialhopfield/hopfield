@@ -215,7 +215,7 @@ bolzmannBuildGen m1 m2 max_hidden = do
 build_BM_Check :: ([Pattern], Int) -> Gen Bool
 build_BM_Check (pats, nr_h) = do
   i <- arbitrary
-  let bd = evalRand (buildBolzmannData pats nr_h) (mkStdGen i)
+  let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen i)
   return $ patternsB bd == pats && nr_hidden bd == nr_h
 
 bolzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
@@ -230,7 +230,7 @@ bolzmannAndPatGen m1 m2 max_hidden = do
 probabilityCheck ::  ([Pattern], Int, Pattern) -> Gen Bool
 probabilityCheck (pats, nr_h, pat) = do
   seed <- arbitrary
-  let bd = evalRand (buildBolzmannData pats nr_h) (mkStdGen seed)
+  let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
       ws = weightsB bd
   return $ all  (\x -> c $ getActivationProbability Visible ws pat x) [0 .. nr_h - 1]
     where c x = x <= 1 && x >=0
@@ -242,5 +242,5 @@ updateNeuronCheck :: Int -> ([Pattern], Int, Pattern) -> Gen Bool
 updateNeuronCheck r (pats, nr_h, pat) = do
     i    <- choose (0, nr_h -1)
     seed <- arbitrary
-    let bd = evalRand (buildBolzmannData pats nr_h) (mkStdGen seed)
+    let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
     return $ updateNeuron' (fromIntegral r) Visible (weightsB bd) pat i == (1 - r)
