@@ -3,6 +3,7 @@ module Util (
   , findInList
   , fromDataVector
   , repeatUntilEqual
+  , repeatUntilEqualOrLimitExceeded
   , randomElem
   , vector2D
   , list2D
@@ -35,6 +36,20 @@ repeatUntilEqual f a =
   do
     new_a <- f a
     if a == new_a then return a else repeatUntilEqual f new_a
+
+
+repeatUntilEqualOrLimitExceeded :: (MonadRandom m, Eq a) => Int -> (a -> m a) -> a -> m a
+repeatUntilEqualOrLimitExceeded limit f a
+  | limit < 0 = error "negative limit in repeatUntilEqualOrLimitExceeded"
+  | otherwise = repeatUntilEqualOrLimitExceeded' 0 limit f a
+
+
+repeatUntilEqualOrLimitExceeded' :: (MonadRandom m, Eq a) => Int -> Int -> (a -> m a) -> a -> m a
+repeatUntilEqualOrLimitExceeded' current limit f a
+  | current == limit = return a
+  | otherwise = do
+      new_a <- f a
+      if a == new_a then return a else repeatUntilEqualOrLimitExceeded' (current + 1) limit f new_a
 
 
 -- | Converts a list of lists to a 2D vector

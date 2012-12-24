@@ -74,7 +74,8 @@ executable recognize
     , MonadRandom >= 0.1.8
     , vector >= 0.9.1
   ghc-options:
-    -Wall -fwarn-unused-imports
+
+    -Wall -fwarn-unused-imports  +RTS -M128m -RTS
 
 
 Test-Suite tests

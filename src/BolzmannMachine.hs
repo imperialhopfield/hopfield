@@ -56,10 +56,12 @@ getDimension Visible ws = V.length $ ws
 
 buildBolzmannData ::  MonadRandom  m => [Pattern] ->  m BolzmannData
 buildBolzmannData [] = error "Train patterns are empty"
-buildBolzmannData pats = do
-  nr_hidden <- getRandomR (floor (1.0/ 2.0 * (fromIntegral nr_visible)), nr_visible)
-  buildBolzmannData' pats nr_hidden
-    where nr_visible = V.length (head pats)
+buildBolzmannData pats =
+
+  --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
+  buildBolzmannData' pats (floor (logBase 2 nr_visible) - 3)
+    where nr_visible = fromIntegral $ V.length (head pats)
+
 
 
 -- | @buildBolzmannData' patterns nr_hidden@: Takes a list of patterns and
@@ -179,15 +181,25 @@ updateBolzmann ws pat = do
   getCounterPattern Hidden ws h
 
 
--- | Repeates an update until the pattern converges (does not change any
--- more on further updates).
+ -- | Repeates an update until the pattern converges (does not change any
+ --more on further updates).
 repeatedUpdateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
 repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann ws) pat
 
 
+-- changing the recognition method for the bolzman machine
 matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m (Either Pattern Int)
-matchPatternBolzmann (BolzmannData ws pats nr_h)  pat
+matchPatternBolzmann (BolzmannData ws pats nr_h) pat
   | Just e <- validPattern Visible ws pat = error e
   | otherwise = do
-      converged_pattern <- repeatedUpdateBolzmann ws pat
-      return $ findInList pats converged_pattern
+      hidden <- getCounterPattern Visible ws pat
+      hidden_of_trained_pats <- mapM (getCounterPattern Visible ws) pats
+      return $ findInList hidden_of_trained_pats hidden
+
+
+--matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m (Either Pattern Int)
+--matchPatternBolzmann (BolzmannData ws pats nr_h) pat
+--  | Just e <- validPattern Visible ws pat = error e
+--  | otherwise = do
+--      converged_pattern <- repeatedUpdateBolzmann ws pat
+--      return $ findInList pats converged_pattern
