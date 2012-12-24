@@ -1,4 +1,4 @@
-module Recognize where
+module Main where
 
 
 import           System.Environment
@@ -16,8 +16,13 @@ import BolzmannMachine
 
 data Method = Hopfield | Boltzmann
 
-toPattern :: CBinaryPattern -> Pattern
-toPattern (CBinaryPattern { pattern = pat }) = V.fromList $ map ((\x -> 2 * x - 1) . fromIntegral) $ pat
+
+transformFunction :: Method -> (Int -> Int)
+transformFunction Hopfield  = (\x -> 2 * x - 1)
+transformFunction Boltzmann = (\x -> x)
+
+toPattern :: Method -> CBinaryPattern -> Pattern
+toPattern m (CBinaryPattern { pattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
 
 
 recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)

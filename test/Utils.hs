@@ -44,6 +44,7 @@ binaryGen :: Gen Int
 binaryGen = do
   n <- choose (0,1)
   return n
+
 -- | @patternGen n@: Generates patterns of size n
 patternGen :: Type -> Int -> Gen Pattern
 patternGen H  n = toGenVector $ vectorOf n signGen
