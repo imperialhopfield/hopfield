@@ -15,7 +15,6 @@ library
   exposed-modules:
       Hopfield
     , Util
-    , IOHopfield
     , Recognize
     , BolzmannMachine
     , Common
