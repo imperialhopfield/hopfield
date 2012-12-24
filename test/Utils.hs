@@ -133,6 +133,7 @@ compTerm hs index n = - (pat V.! n) * (computeH (weights hs) pat n - pat V.! n)
 checkFixed :: HopfieldData -> Int -> Bool
 checkFixed hs index = all (\x -> compTerm hs index x <= 1) [0.. V.length ((patterns hs) !! index) - 1]
 
+
 -- | Used as a property to check that patterns which
 -- are used to create the network are stable in respect to update
 trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
@@ -233,7 +234,7 @@ probabilityCheck (pats, nr_h, pat) = do
   seed <- arbitrary
   let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
       ws = weightsB bd
-  return $ all  (\x -> c $ getActivationProbability Visible ws pat x) [0 .. nr_h - 1]
+  return $ all  (\x -> c $ getActivationProbability Matching Visible ws pat x) [0 .. nr_h - 1]
     where c x = x <= 1 && x >=0
 
 
@@ -244,4 +245,4 @@ updateNeuronCheck r (pats, nr_h, pat) = do
     i    <- choose (0, nr_h -1)
     seed <- arbitrary
     let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
-    return $ updateNeuron' (fromIntegral r) Visible (weightsB bd) pat i == (1 - r)
+    return $ updateNeuron' (fromIntegral r) Matching Visible (weightsB bd) pat i == (1 - r)

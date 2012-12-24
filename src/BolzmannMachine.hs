@@ -34,6 +34,8 @@ learningRate = 0.1 :: Double
 
 data Mode = Hidden | Visible
 
+data Phase = Training | Matching
+
 
 data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
@@ -83,45 +85,37 @@ buildBolzmannData' pats nr_hidden
 
 
 -- Pure version of updateNeuron for testing
-updateNeuron'::  Double -> Mode -> Weights -> Pattern -> Int -> Int
-updateNeuron' r mode ws pat index = if (r < a) then 1 else 0
-  where a = getActivationProbability mode ws pat index
+updateNeuron'::  Double -> Phase -> Mode -> Weights -> Pattern -> Int -> Int
+updateNeuron' r mode ws phase pat index = if (r < a) then 1 else 0
+  where a = getActivationProbability phase mode ws pat index
 
 
-getActivationProbability :: Mode -> Weights -> Pattern -> Int -> Double
-getActivationProbability mode ws pat index = if a <=1 && a >=0 then a else error (show a)
+getActivationProbability :: Phase -> Mode -> Weights -> Pattern -> Int -> Double
+getActivationProbability phase mode ws pat index = if a <=1 && a >=0 then a else error (show a)
   where
     a = activation . sum $ case mode of
-      Hidden   -> [ (ws ! index ! i) *. (pat_with_bias !! i) | i <- [0 .. p-1] ]
-      Visible  -> [ (ws ! i ! index) *. (pat_with_bias !! i) | i <- [0 .. p-1] ]
-    pat_with_bias = (1: (V.toList pat))
+      Hidden   -> [ (ws ! index ! i) *. (pat' ! i) | i <- [0 .. p-1] ]
+      Visible  -> [ (ws ! i ! index) *. (pat' ! i) | i <- [0 .. p-1] ]
+    pat' = if phase == Training then V.cons 1 pat else pat
     p = length pat_with_bias
 
 
 -- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
 -- updates the neuron with number @index@ in the layer with opposite type.
-updateNeuron :: MonadRandom m => Mode -> Weights -> Pattern -> Int -> m Int
-updateNeuron mode ws pat index = do
+updateNeuron :: MonadRandom m => Phase -> Mode -> Weights -> Pattern -> Int -> m Int
+updateNeuron phase mode ws pat index = do
   r <- getRandomR (0.0, 1.0)
-  return $ updateNeuron' r mode ws pat index
+  return $ updateNeuron' phase r mode ws pat index
 
 
 -- | @getCounterPattern mode ws pat@, given a vector @pat@ of type @mode@
 -- computes the values of all the neurons in the layer of the opposite type.
-getCounterPattern :: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
-getCounterPattern mode ws pat
+getCounterPattern :: MonadRandom m => Phase -> Mode -> Weights -> Pattern -> m Pattern
+getCounterPattern phase mode ws pat
   | Just e <- validPattern mode ws pat = error e
-  | otherwise = V.fromList `liftM` mapM (updateNeuron mode ws pat) updatedIndices
+  | otherwise = V.fromList `liftM` mapM (updateNeuron phase mode ws pat) updatedIndices
     where
       updatedIndices = [0 .. getDimension (notMode mode) ws - 2]
-
-
-getCounterPatternForTraining :: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
-getCounterPatternForTraining mode ws pat
-   | Just e <- validTrainingPattern mode ws pat = error e
-   | otherwise = V.fromList `liftM` mapM (updateNeuron mode ws pat) updatedIndices
-    where
-      updatedIndices = [0 .. getDimension (notMode mode) ws - 1]
 
 
 -- | One step which updates the weights in the CD-n training process.
@@ -129,11 +123,12 @@ getCounterPatternForTraining mode ws pat
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 updateWeights :: MonadRandom m => Weights -> Pattern -> m Weights
 updateWeights ws v = do
-  h        <- getCounterPatternForTraining Visible ws v
-  v'       <- getCounterPatternForTraining Hidden  ws h
-  h'       <- getCounterPatternForTraining Visible ws v'
+  let biased_v = V.cons 1 v
+  h        <- getCounterPattern Training Visible ws biased_v
+  v'       <- getCounterPattern Training Hidden  ws h
+  h'       <- getCounterPattern Training Visible ws v'
   let f    = fromDataVector . fmap fromIntegral
-      pos  = NC.toLists $ (f v) `NC.outer` (f h)   -- "positive gradient"
+      pos  = NC.toLists $ (f biased_v) `NC.outer` (f h)   -- "positive gradient"
       neg  = NC.toLists $ (f v') `NC.outer` (f h') -- "negative gradient"
       d_ws = map (map (* learningRate)) $ combine (-) pos neg -- weights delta
       new_weights = combine (+) (list2D ws) d_ws
@@ -180,7 +175,7 @@ validPattern mode ws pat
 validTrainingPattern :: Mode -> Weights -> Pattern -> Maybe String
 validTrainingPattern mode ws pat
   | getDimension mode ws /= V.length pat = Just "Size of pattern must match network size in training"
-  | V.any (\x -> notElem x [0, 1]) pat       = Just "Non binary element in bolzmann pattern"
+  | V.any (\x -> notElem x [0, 1])   pat = Just "Non binary element in bolzmann pattern"
   | otherwise            = Nothing
 
 
@@ -203,14 +198,14 @@ normal m std = do
 -- and then using the new values to obtain new values for the visible layer.
 updateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
 updateBolzmann ws pat = do
-  h <- getCounterPattern Visible ws pat
-  getCounterPattern Hidden ws h
+  h <- getCounterPattern Matching Visible ws pat
+  getCounterPattern Matching Hidden ws h
 
 
  -- | Repeates an update until the pattern converges (does not change any
  --more on further updates).
 repeatedUpdateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
-repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann ws) pat
+repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann Matching ws) pat
 
 
 -- changing the recognition method for the bolzman machine
@@ -218,8 +213,8 @@ matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m (Either Pa
 matchPatternBolzmann (BolzmannData ws pats nr_h) pat
   | Just e <- validPattern Visible ws pat = error e
   | otherwise = do
-      hidden <- getCounterPattern Visible ws pat
-      hidden_of_trained_pats <- mapM (getCounterPattern Visible ws) pats
+      hidden <- getCounterPattern Matching Visible ws pat
+      hidden_of_trained_pats <- mapM (getCounterPattern Matching Visible ws) pats
       return $ findInList hidden_of_trained_pats hidden
 
 
