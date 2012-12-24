@@ -25,18 +25,29 @@ toPattern :: Method -> CBinaryPattern -> Pattern
 toPattern m (CBinaryPattern { pattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
 
 
-recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
-recPic method (width, height) imgPaths queryImgPath = do
+-- recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
+-- recPic method (width, height) imgPaths queryImgPath = do
+--   l@(queryImg:imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
+--   gen <- getStdGen
+--   let queryPat:imgPats = map (toPattern method) l
+--       runRand r = evalRand r gen
+--       result =  case method of
+--           Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
+--           Boltzmann -> runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
+--   return $ case result of
+--             Left pattern -> Nothing -- TODO apply heuristic if we want (we want)
+--             Right i      -> Just $ imgPaths !! i
+
+
+
+bmPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO ([(FilePath, Double)])
+bmPic method (width, height) imgPaths queryImgPath = do
   l@(queryImg:imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
   gen <- getStdGen
   let queryPat:imgPats = map (toPattern method) l
       runRand r = evalRand r gen
-      result =  case method of
-          Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
-          Boltzmann -> runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
-  return $ case result of
-            Left pattern -> Nothing -- TODO apply heuristic if we want (we want)
-            Right i      -> Just $ imgPaths !! i
+      result = runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
+  return $ map (\(x, y) -> (imgPaths !! x, y)) result
 
 
 main :: IO ()
@@ -49,7 +60,5 @@ main = do
                  _           -> error "unrecognized method"
       width  = read widthStr
       height = read heightStr
-  foundPath <- recPic method (width, height) filePaths queryPath
-  putStrLn $ case foundPath of
-    Nothing   -> "no pattern found"
-    Just path -> path
+  foundPaths <- bmPic method (width, height) filePaths queryPath
+  putStrLn $ concatMap show foundPaths

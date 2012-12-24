@@ -5,9 +5,12 @@ module BolzmannMachine where
 
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
 
+
+import           Data.Maybe
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
+import           Data.List
 import qualified Data.Random as DR
 import           Data.Vector ((!))
 import qualified Data.Vector as V
@@ -199,22 +202,54 @@ updateBolzmann ws pat = do
  -- | Repeates an update until the pattern converges (does not change any
  --more on further updates).
 repeatedUpdateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
-repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann ws) pat
+repeatedUpdateBolzmann ws pat = repeatUntilEqualOrLimitExceeded 1000 (updateBolzmann ws) pat
 
 
--- changing the recognition method for the bolzman machine
-matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m (Either Pattern Int)
-matchPatternBolzmann (BolzmannData ws pats nr_h) pat
-  | Just e <- validPattern Matching Visible ws pat = error e
-  | otherwise = do
-      hidden <- getCounterPattern Matching Visible ws pat
-      hidden_of_trained_pats <- mapM (getCounterPattern Matching Visible ws) pats
-      return $ findInList hidden_of_trained_pats hidden
+-- TODO change the recognition method
+
+-- TODO see if this is limit or limit + 1
+getStableProbabilities :: MonadRandom m => Weights -> Pattern -> m [(Pattern, Double)]
+getStableProbabilities ws heated_pattern = do
+    pattern_occurences <- getStableProbabilities' 0 limit ws heated_pattern (return [])
+    return $ map (\(x, y) -> (x, y ./. limit)) pattern_occurences
+      where limit = 1000 -- TODO see how to change this
+
+getStableProbabilities' :: MonadRandom m => Int -> Int -> Weights -> Pattern
+                     -> m [(Pattern, Int)]  -> m [(Pattern, Int)]
+getStableProbabilities' current limit ws pat m_current_occurences
+  | current == limit = m_current_occurences
+  | otherwise = getStableProbabilities' (current + 1) limit ws pat new_current_values
+      where new_current_values = do
+              new_pat <- updateBolzmann ws pat
+              current_occurences <- m_current_occurences
+              let pattern_occurences = lookup new_pat current_occurences
+              return $ case pattern_occurences of
+                        Nothing -> (new_pat, 1)     : current_occurences
+                        Just n  -> (new_pat, n + 1) : [(x, y) | (x, y) <- current_occurences, x /= new_pat]
+
+
+matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m [(Int, Double)]
+matchPatternBolzmann (BolzmannData ws pats nr_h) pat = do
+  heated_pattern <- repeatedUpdateBolzmann ws pat
+  stable_probs   <- getStableProbabilities ws pat
+  let index_map =  map (\(x, y) -> (x `elemIndex` pats, y)) stable_probs
+  return $ [(fromJust x, y) | (x, y) <- index_map, x /= Nothing]
+
+-- it will never converge but I can look at the probablity distributions after some time
+
+--matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m (Either Pattern Int)
+--matchPatternBolzmann (BolzmannData ws pats nr_h) pat
+--  | Just e <- validPattern Matching Visible ws pat = error e
+--  | otherwise = do
+--      converged_pattern <- repeatedUpdateBolzmann ws pat
+--      return $ findInList pats converged_pattern
+
 
 
 --matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m (Either Pattern Int)
 --matchPatternBolzmann (BolzmannData ws pats nr_h) pat
---  | Just e <- validPattern Visible ws pat = error e
+--  | Just e <- validPattern Matching Visible ws pat = error e
 --  | otherwise = do
---      converged_pattern <- repeatedUpdateBolzmann ws pat
---      return $ findInList pats converged_pattern
+--      hidden <- getCounterPattern Matching Visible ws pat
+--      hidden_of_trained_pats <- mapM (getCounterPattern Matching Visible ws) pats
+--      return $ findInList hidden_of_trained_pats hidden
