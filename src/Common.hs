@@ -10,6 +10,9 @@ type Weights = Vector (Vector Double)
 type Pattern = Vector Int
 
 
+-- TODO move to Util
+-- make it more general
+
 getPatternFromList :: [Pattern] -> Pattern -> Either Pattern Int
 getPatternFromList pats pat =
   case m_index of
