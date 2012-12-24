@@ -1,4 +1,4 @@
-module Main where
+module Recognize where
 
 
 import           System.Environment
@@ -26,11 +26,12 @@ recPic method (width, height) imgPaths queryImgPath = do
   gen <- getStdGen
   let queryPat:imgPats = map toPattern l
       runRand r = evalRand r gen
-  return $ case method of
-    Hopfield -> case runRand $ matchPattern (buildHopfieldData imgPats) queryPat of
-                   Left pattern -> Nothing -- TODO apply heuristic if we want
-                   Right i      -> Just $ imgPaths !! i
-    Boltzmann -> error "Boltzmann not implemented"
+      result =  case method of
+          Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
+          Boltzmann -> runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
+  return $ case result of
+            Left pattern -> Nothing -- TODO apply heuristic if we want (we want)
+            Right i      -> Just $ imgPaths !! i
 
 
 main :: IO ()
@@ -45,5 +46,5 @@ main = do
       height = read heightStr
   foundPath <- recPic method (width, height) filePaths queryPath
   putStrLn $ case foundPath of
-    Nothing  -> "no pattern found"
+    Nothing   -> "no pattern found"
     Just path -> path
