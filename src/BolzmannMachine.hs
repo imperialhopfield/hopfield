@@ -35,7 +35,7 @@ learningRate = 0.1 :: Double
 data Mode = Hidden | Visible
 
 data Phase = Training | Matching
-
+  deriving(Eq)
 
 data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
@@ -86,7 +86,7 @@ buildBolzmannData' pats nr_hidden
 
 -- Pure version of updateNeuron for testing
 updateNeuron'::  Double -> Phase -> Mode -> Weights -> Pattern -> Int -> Int
-updateNeuron' r mode ws phase pat index = if (r < a) then 1 else 0
+updateNeuron' r phase mode ws pat index = if (r < a) then 1 else 0
   where a = getActivationProbability phase mode ws pat index
 
 
@@ -96,8 +96,8 @@ getActivationProbability phase mode ws pat index = if a <=1 && a >=0 then a else
     a = activation . sum $ case mode of
       Hidden   -> [ (ws ! index ! i) *. (pat' ! i) | i <- [0 .. p-1] ]
       Visible  -> [ (ws ! i ! index) *. (pat' ! i) | i <- [0 .. p-1] ]
-    pat' = if phase == Training then V.cons 1 pat else pat
-    p = length pat_with_bias
+    pat' = if phase == Matching then V.cons 1 pat else pat
+    p = V.length pat'
 
 
 -- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
@@ -105,14 +105,14 @@ getActivationProbability phase mode ws pat index = if a <=1 && a >=0 then a else
 updateNeuron :: MonadRandom m => Phase -> Mode -> Weights -> Pattern -> Int -> m Int
 updateNeuron phase mode ws pat index = do
   r <- getRandomR (0.0, 1.0)
-  return $ updateNeuron' phase r mode ws pat index
+  return $ updateNeuron' r phase mode ws pat index
 
 
 -- | @getCounterPattern mode ws pat@, given a vector @pat@ of type @mode@
 -- computes the values of all the neurons in the layer of the opposite type.
 getCounterPattern :: MonadRandom m => Phase -> Mode -> Weights -> Pattern -> m Pattern
 getCounterPattern phase mode ws pat
-  | Just e <- validPattern mode ws pat = error e
+  | Just e <- validPattern phase mode ws pat = error e
   | otherwise = V.fromList `liftM` mapM (updateNeuron phase mode ws pat) updatedIndices
     where
       updatedIndices = [0 .. getDimension (notMode mode) ws - 2]
@@ -165,18 +165,13 @@ activation x = 1.0 / (1.0 + exp (-x))
 -- Returns an error string in a Just if the @pattern@ is not compatible
 -- with @weights@ and Nothing otherwise. @mode@ gives the type of the pattern,
 -- which is checked (Visible or Hidden).
-validPattern :: Mode -> Weights -> Pattern -> Maybe String
-validPattern mode ws pat
-  | getDimension mode ws - 1 /= V.length pat = Just "Size of pattern must match network size"
-  | V.any (\x -> notElem x [0, 1]) pat       = Just "Non binary element in bolzmann pattern"
+validPattern :: Phase -> Mode -> Weights -> Pattern -> Maybe String
+validPattern phase mode ws pat
+  | checked_dim /= V.length pat        = Just "Size of pattern must match network size"
+  | V.any (\x -> notElem x [0, 1]) pat = Just "Non binary element in bolzmann pattern"
   | otherwise            = Nothing
-
-
-validTrainingPattern :: Mode -> Weights -> Pattern -> Maybe String
-validTrainingPattern mode ws pat
-  | getDimension mode ws /= V.length pat = Just "Size of pattern must match network size in training"
-  | V.any (\x -> notElem x [0, 1])   pat = Just "Non binary element in bolzmann pattern"
-  | otherwise            = Nothing
+  where checked_dim = if phase == Training then actual_dim else actual_dim - 1
+        actual_dim  = getDimension mode ws
 
 
 validWeights :: Weights -> Maybe String
@@ -205,13 +200,13 @@ updateBolzmann ws pat = do
  -- | Repeates an update until the pattern converges (does not change any
  --more on further updates).
 repeatedUpdateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
-repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann Matching ws) pat
+repeatedUpdateBolzmann ws pat = repeatUntilEqual (updateBolzmann ws) pat
 
 
 -- changing the recognition method for the bolzman machine
 matchPatternBolzmann :: MonadRandom m => BolzmannData -> Pattern -> m (Either Pattern Int)
 matchPatternBolzmann (BolzmannData ws pats nr_h) pat
-  | Just e <- validPattern Visible ws pat = error e
+  | Just e <- validPattern Matching Visible ws pat = error e
   | otherwise = do
       hidden <- getCounterPattern Matching Visible ws pat
       hidden_of_trained_pats <- mapM (getCounterPattern Matching Visible ws) pats
