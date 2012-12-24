@@ -35,7 +35,7 @@ learningRate = 0.1 :: Double
 data Mode = Hidden | Visible
 
 data Phase = Training | Matching
-  deriving(Eq)
+  deriving(Eq, Show)
 
 data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
@@ -52,18 +52,17 @@ notMode Visible = Hidden
 -- | Retrieves the dimension of the weights matrix corresponding to the given mode.
 -- For hidden, it is the width of the matrix, and for visible it is the height.
 getDimension :: Mode -> Weights -> Int
-getDimension Hidden ws = V.length $ ws ! 0
+getDimension Hidden ws  = V.length $ ws ! 0
 getDimension Visible ws = V.length $ ws
 
 
 buildBolzmannData ::  MonadRandom  m => [Pattern] ->  m BolzmannData
-buildBolzmannData [] = error "Train patterns are empty"
+buildBolzmannData []   = error "Train patterns are empty"
 buildBolzmannData pats =
 
   --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
   buildBolzmannData' pats (floor (logBase 2 nr_visible) - 3)
     where nr_visible = fromIntegral $ V.length (head pats)
-
 
 
 -- | @buildBolzmannData' patterns nr_hidden@: Takes a list of patterns and
@@ -115,8 +114,8 @@ getCounterPattern phase mode ws pat
   | Just e <- validPattern phase mode ws pat = error e
   | otherwise = V.fromList `liftM` mapM (updateNeuron phase mode ws pat) updatedIndices
     where
-      updatedIndices = [0 .. getDimension (notMode mode) ws - 2]
-
+      updatedIndices = [0 .. getDimension (notMode mode) ws - diff]
+      diff = if phase == Training then 1 else 2
 
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
@@ -167,7 +166,7 @@ activation x = 1.0 / (1.0 + exp (-x))
 -- which is checked (Visible or Hidden).
 validPattern :: Phase -> Mode -> Weights -> Pattern -> Maybe String
 validPattern phase mode ws pat
-  | checked_dim /= V.length pat        = Just "Size of pattern must match network size"
+  | checked_dim /= V.length pat        = Just ("Size of pattern must match network size in " ++ show phase)
   | V.any (\x -> notElem x [0, 1]) pat = Just "Non binary element in bolzmann pattern"
   | otherwise            = Nothing
   where checked_dim = if phase == Training then actual_dim else actual_dim - 1
