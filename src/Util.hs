@@ -51,3 +51,11 @@ fromDataVector v = NC.fromList $ V.toList v
 -- the caller has to ensure that the dimensions are the same
 combine:: (a-> a -> a) -> [[a]] -> [[a]] -> [[a]]
 combine f xs ys = zipWith (zipWith f) xs ys
+
+
+findInList :: Eq a => [a] -> a -> Either a Int
+findInList xs x =
+  case m_index of
+        Nothing    -> Left x
+        Just index -> Right index
+  where m_index = x `elemIndex` xs

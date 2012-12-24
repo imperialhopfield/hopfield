@@ -182,4 +182,4 @@ matchPatternBolzmann (BolzmannData ws pats nr_h)  pat
   | Just e <- validPattern Visible ws pat = error e
   | otherwise = do
       converged_pattern <- repeatedUpdateBolzmann ws pat
-      return $ getPatternFromList pats converged_pattern
+      return $ findInList pats converged_pattern

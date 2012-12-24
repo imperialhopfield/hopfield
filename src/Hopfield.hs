@@ -151,7 +151,7 @@ matchPattern (HopfieldData ws pats) pat
   | Just e <- validPattern ws pat = error e
   | otherwise = do
       converged_pattern <- repeatedUpdate ws pat
-      return $ getPatternFromList pats converged_pattern
+      return $ findInList pats converged_pattern
 
 -- | Computes the probability of error for one element given a hopfield data
 -- structure. Note that I claim that the actuall error of probability depends
