@@ -92,9 +92,10 @@ getActivationProbability :: Mode -> Weights -> Pattern -> Int -> Double
 getActivationProbability mode ws pat index = if a <=1 && a >=0 then a else error (show a)
   where
     a = activation . sum $ case mode of
-      Hidden   -> [ (ws ! index ! i) *. (pat ! i) | i <- [0 .. p-1] ]
-      Visible  -> [ (ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
-    p = V.length pat
+      Hidden   -> [ (ws ! index ! i) *. (pat_with_bias !! i) | i <- [0 .. p-1] ]
+      Visible  -> [ (ws ! i ! index) *. (pat_with_bias !! i) | i <- [0 .. p-1] ]
+    pat_with_bias = (1: (V.toList pat))
+    p = length pat_with_bias
 
 
 -- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
@@ -112,6 +113,14 @@ getCounterPattern mode ws pat
   | Just e <- validPattern mode ws pat = error e
   | otherwise = V.fromList `liftM` mapM (updateNeuron mode ws pat) updatedIndices
     where
+      updatedIndices = [0 .. getDimension (notMode mode) ws - 2]
+
+
+getCounterPatternForTraining :: MonadRandom m => Mode -> Weights -> Pattern -> m Pattern
+getCounterPatternForTraining mode ws pat
+   | Just e <- validTrainingPattern mode ws pat = error e
+   | otherwise = V.fromList `liftM` mapM (updateNeuron mode ws pat) updatedIndices
+    where
       updatedIndices = [0 .. getDimension (notMode mode) ws - 1]
 
 
@@ -120,9 +129,9 @@ getCounterPattern mode ws pat
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 updateWeights :: MonadRandom m => Weights -> Pattern -> m Weights
 updateWeights ws v = do
-  h        <- getCounterPattern Visible ws v
-  v'       <- getCounterPattern Hidden  ws h
-  h'       <- getCounterPattern Visible ws v'
+  h        <- getCounterPatternForTraining Visible ws v
+  v'       <- getCounterPatternForTraining Hidden  ws h
+  h'       <- getCounterPatternForTraining Visible ws v'
   let f    = fromDataVector . fmap fromIntegral
       pos  = NC.toLists $ (f v) `NC.outer` (f h)   -- "positive gradient"
       neg  = NC.toLists $ (f v') `NC.outer` (f h') -- "negative gradient"
@@ -140,7 +149,11 @@ updateWeights ws v = do
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m Weights
 trainBolzmann pats nr_hidden = do
-  ws_start <- genWeights
+  weights_without_bias <- genWeights
+  -- add biases as a dimension of the matrix, in order to include them in the
+  -- contrastive divergence algorithm
+  let ws = map (\x -> (0: x)) weights_without_bias
+      ws_start  = (replicate (nr_hidden + 1) 0) : ws
   foldM updateWeights (vector2D ws_start) pats
     where
       genWeights = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
