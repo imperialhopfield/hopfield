@@ -1,18 +1,33 @@
 % IMPORTANT: Please write various parts in different files, and then include
 % them into this document.
-% If you have a file called chapter1.tex then write: \include{chapter1}
-% This is to avoid nasty merge conflicts, as well as to keep it tidy
+% If you have a file called intro.tex then write: \include{intro}
+% This is to avoid nasty merge conflicts, as well as to keep it tidy,
+% modular, etc
 
 \documentclass[11pt,a4paper,oneside]{report}
+
+\title{Attractor Neural Networks for Modelling Associative Memory}
+\date{January 2012}
+\author{
+  Name 1\\
+  \texttt{first1.last1@xxxxx.com}
+  \and
+  Name2\\
+  \texttt{first2.last2@xxxxx.com}
+}
 
 
 \begin{document}
 % General notes:
 
+% Report Guidlines:
+% http://www.doc.ic.ac.uk/lab/thirdyear/group-project/ReportGuidelines2012.pdf
+
 % "This is more marketing than engineering. We don't want a diary"
 
 % Tony: "How long? I don't know. Keep it short. 30 pages is absolutely fine.
 % 40 a bit too much. 20 is a bit..."
+% NOTE this excludes the appendices
 
 % Keep it simple and to the point. Don't waffle
 
@@ -20,14 +35,23 @@
 % technically minded
 
 
-\section{Executive Summary}
+\maketitle{}
+
+
+\renewcommand{\abstractname}{Executive Summary}
+\begin{abstract}
 % Compulsory
 % 1 page max. Tony: "third to half a page ideal probably"
-% Anandha: "Don't put a photo of your group in the executive summary!!!"
+% Anandha: "Don't put a photo of your group in the executive summary or
+% something like that!"
+% Wael: I would say it might be appropriate to do something like that in the
+% presentation though. We can discuss and see.
+\end{abstract}
 
 
+\tableofcontents
 
-\section{Introduction}
+\chapter{Introduction}
 % Tony: "1, 2, 3 pages"
 % What is the problem?
 % Why is it interesting?
@@ -37,13 +61,13 @@
 % Includes motivation, objectives, and contributions (what you achieved)
 
 
-\section{Design and Implementation}
+\chapter{Design and Implementation}
 % Justify design decisions, tools used, etc.
 % NO CODE!!! (except for skeleton of algorithms maybe)
 
 
 
-\section{Evaluation}
+\chapter{Evaluation}
 % Step back and say things like:
 % "X worked out well"
 % "in hindsight we could have used this tool instead"
@@ -57,22 +81,31 @@
 % to show your mistakes and more importantly what you learned!"
 
 
-\section{Conclusion and Future Extensions}
+\chapter{Conclusion and Future Extensions}
 % Tony: "Conclusion is NOT a summary"
 % e.g. result that you did not know about
 
-\section{Project Management}
+\chapter{Project Management}
 % Use this to convey your *group collaboration*
 % Team organisation, supervisor, software engineering team skills
 
 % DONT give lots of text about the SE process (a la diary), rather your team,
 % deliverables, etc
 
+% Note that group collaboration is worth 30%. This is part assessed by our
+% supervisor comments, how we present ourselves, and probably a bit will be
+% influenced by what we say here. Bare this in mind!
 
-\section{Bibliography}
+
+\nocite{*} % Show all Bib-entries
+\bibliographystyle{plain}
+\bibliography{main}
 
 
-\section{Appendices}
+
+\chapter{Appendices}
+% these do NOT count as part of the suggested page count
+% This is probably a good place to explain the models in some detail for example
 
 
 \end{document}
