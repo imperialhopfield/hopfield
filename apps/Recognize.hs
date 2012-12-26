@@ -33,7 +33,8 @@ recPic method (width, height) imgPaths queryImgPath = do
       runRand r = evalRand r gen
       result =  case method of
           Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
-          Boltzmann -> runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
+          Boltzmann -> error "Boltzmann not implemented yet"
+          --runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
   return $ case result of
             Left pattern -> Nothing -- TODO apply heuristic if we want (we want)
             Right i      -> Just $ imgPaths !! i
