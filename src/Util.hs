@@ -1,3 +1,6 @@
+{-# LANGUAGE ParallelListComp #-}
+
+
 module Util (
     combine
   , findInList
@@ -89,11 +92,12 @@ toBinary :: Int -> Int -> [Int]
 toBinary n size
   | n < 0             = error "toBinary requires positive arguments"
   | n >  2 ^ size - 1 = error "cannot fit binary representation into given size"
-  | otherwise =  map (\i -> (n `div` 2 ^ i) `mod` 2) ([size - 1, size -2 .. 0])
+  | otherwise =  [ (n `div` 2 ^ i) `mod` 2 | i <- [size - 1, size - 2 .. 0] ]
 
 
+-- TODO write comment
 getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
-getBinaryIndices xs = map (\x -> (x, f x)) ys
-  where ys   = nub xs
-        size = ceiling $ logBase 2.0 $ fromIntegral (length ys)
-        f x  = toBinary (fromJust $ x `elemIndex` ys) size
+getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
+  where
+    nub_xs = nub xs
+    bitsNeeded = ceiling $ logBase 2.0 $ fromIntegral (length nub_xs)
