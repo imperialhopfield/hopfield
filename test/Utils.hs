@@ -233,9 +233,9 @@ updateNeuronCheck r (pats, nr_h, pat) = do
 
 buildIntTuple :: Gen (Int, Int)
 buildIntTuple = do
-  i <- choose (0, 100000)
+  i <- choose (0, 100)
   let min_size = ceiling $ logBase 2.0 $ fromIntegral i
-  j <- choose (min_size, 2 * min_size)
+  j <- choose (min_size, min_size + 1)
   return $ (i, j)
 
 

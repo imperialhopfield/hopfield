@@ -91,8 +91,7 @@ toBinary 1 1 = [1]
 toBinary n size
   | n < 0             = error "toBinary requires positive arguments"
   | n >  2 ^ size - 1 = error "cannot fit binary representation into given size"
-  | otherwise = (n `div` p) : toBinary (n `mod` p) (size - 1)
-      where p = 2 ^ (size - 1)
+  | otherwise =  map (\i -> (n `div` 2 ^ i) `mod` 2) ([size - 1, size -2 .. 0])
 
 
 getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
