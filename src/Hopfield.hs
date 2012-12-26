@@ -18,6 +18,8 @@ module Hopfield (
   , matchPattern
   -- * Energy
   , energy
+  -- * Basin of attraction
+  , measurePatternBasin
 ) where
 
 
@@ -238,11 +240,11 @@ samplePatternBasin hs pat r = do
 
 
 -- Measures pattern's basin of attraction using the Storkey-Valabregue method
-measurePatternBasin :: (MonadRandom m) => HopfieldData -> Int -> m Int
-measurePatternBasin hs index = do
+-- pre: pattern of same size as network
+measurePatternBasin :: (MonadRandom m) => HopfieldData -> Pattern -> m Int
+measurePatternBasin hs pat = do
   t_mus <- mapM (samplePatternBasin hs pat)  [1..n]
   return $ fromMaybe n $ findIndex (<0.9) t_mus
     where
-      pat = (patterns hs) !! index
       n   = V.length pat
 
