@@ -64,6 +64,7 @@ buildBolzmannData []   = error "Train patterns are empty"
 buildBolzmannData pats =
 
   --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
+  -- TODO replace with getRandomR with bigger range
   buildBolzmannData' pats (floor (logBase 2 nr_visible) - 3)
     where nr_visible = fromIntegral $ V.length (head pats)
 
