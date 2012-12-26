@@ -18,6 +18,7 @@ library
     , BolzmannMachine
     , Common
     , ConvertImage
+    , SuperAttractors
   other-modules:
   hs-source-dirs:
     src

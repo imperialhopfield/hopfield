@@ -247,4 +247,3 @@ measurePatternBasin hs pat = do
   return $ fromMaybe n $ findIndex (<0.9) t_mus
     where
       n   = V.length pat
-
