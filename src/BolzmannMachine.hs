@@ -51,6 +51,9 @@ data BolzmannData = BolzmannData {
 }
   deriving(Show)
 
+data Phase = Training | Matching
+ deriving(Eq, Show)
+
 -- | Gives the opposite type of layer.
 notMode :: Mode -> Mode
 notMode Hidden  = Visible
@@ -208,8 +211,6 @@ updateBolzmann ws pat = do
   getCounterPattern Matching Hidden ws h
 
 
-
--- TODO check for valid weigths
 -- see http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf section 16.1
 getFreeEnergy :: Weights -> Pattern -> Double
 getFreeEnergy ws pat
@@ -225,10 +226,11 @@ getFreeEnergy ws pat
 matchPatternBolzmann :: BolzmannData -> Pattern -> Pattern
 matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat
   = fromJust $ lookup encoding binary_encodings_to_pats
-    where trials = map (\x -> (V.++) x pat) (map (V.fromList . snd) pats_with_binary)
-          enconding_size = length $ snd $ head pats_with_binary
-          binary_encodings_to_pats = map swap pats_with_binary
-          getPatternProbability x = exp $ getFreeEnergy ws x
-          compare_according_to_energy x y = compare (getPatternProbability x) (getPatternProbability y)
-          min_pat = maximumBy compare_according_to_energy trials
-          encoding = drop (V.length min_pat - enconding_size) (V.toList min_pat)
+    where
+      trials = map (\x -> (V.++) x pat) (map (V.fromList . snd) pats_with_binary)
+      enconding_size = length $ snd $ head pats_with_binary
+      binary_encodings_to_pats = map swap pats_with_binary
+      getPatternProbability x = exp $ getFreeEnergy ws x
+      compare_according_to_energy x y = compare (getPatternProbability x) (getPatternProbability y)
+      min_pat = maximumBy compare_according_to_energy trials
+      encoding = drop (V.length min_pat - enconding_size) (V.toList min_pat)
