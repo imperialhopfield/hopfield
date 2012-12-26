@@ -87,5 +87,7 @@ load_picture(char* inputImg, size_t width, size_t height)
 
   MagickWandTerminus();
   
+  /* since outputPattern is a list of doubles, convert it to a list of
+     binary values */
   return mapToBinary(outputPattern, width, height);
 }
