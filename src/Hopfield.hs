@@ -164,16 +164,6 @@ computeError (HopfieldData _ pats) = 1 ./. 2 * (1 - (erf $ sqrt $ n ./. p))
         p = length pats
 
 
--- | @measureError hopfield@: Measures the percentage of patterns in the network
--- which are NOT fixed points. That is, it measures the *actual* error
-measureError :: HopfieldData -> Double
-measureError hs = num_errors ./. num_pats
-  where
-    fixed_points = map (checkFixed hs) [0..num_pats-1]
-    num_errors   = length $ filter not fixed_points
-    num_pats     = length $ patterns hs
-
-
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
 -- network (represented by @weights@).
 -- Pre: @length weights == length pattern@

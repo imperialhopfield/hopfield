@@ -147,6 +147,16 @@ trainingPatsAreFixedPoints pats =
       return $ evalRand (update ws (pats !! index)) (mkStdGen i) == (pats !! index) || (not $ checkFixed hs index)
 
 
+-- | @measureError hopfield@: Measures the percentage of patterns in the network
+-- which are NOT fixed points. That is, it measures the *actual* error
+measureError :: HopfieldData -> Double
+measureError hs = num_errors ./. num_pats
+  where
+    fixed_points = map (checkFixed hs) [0..num_pats-1]
+    num_errors   = length $ filter not fixed_points
+    num_pats     = length $ patterns hs
+
+
 -- | Trains a network using @training_pats@ and then updates each
 -- pattern in pats according to the weights of that network.
 -- The aim is to check that the energy decreases after each update.
