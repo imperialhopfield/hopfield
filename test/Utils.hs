@@ -235,7 +235,7 @@ buildIntTuple :: Gen (Int, Int)
 buildIntTuple = do
   i <- choose (0, 100)
   let min_size = ceiling $ logBase 2.0 $ fromIntegral i
-  j <- choose (min_size, min_size + 1)
+  j <- choose (min_size + 1, min_size + 2)
   return $ (i, j)
 
 
