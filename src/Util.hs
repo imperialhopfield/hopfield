@@ -69,10 +69,23 @@ fromDataVector v = NC.fromList $ V.toList v
 combine:: (a-> a -> a) -> [[a]] -> [[a]] -> [[a]]
 combine f xs ys = zipWith (zipWith f) xs ys
 
-
+-- Tries to find a element in a list. In case of success, returns the index
+-- of the element (the first one, in case of multiple occurences). In case of
+-- failure, returns the search element itself.
 findInList :: Eq a => [a] -> a -> Either a Int
 findInList xs x =
   case m_index of
         Nothing    -> Left x
         Just index -> Right index
   where m_index = x `elemIndex` xs
+
+
+-- @toBinary n size@. Returns the binary representation of n in size bits.
+-- The caller has to ensure that n fits in size bits, or an error will be raised.
+toBinary :: Int -> Int -> [Int]
+toBinary 0 1 = [0]
+toBinary 1 1 = [1]
+toBinary n size
+  | n >  2 ^ size - 1 = error "cannot fit binary representation into given size"
+  | otherwise = (n `div` p) : toBinary (n `mod` p) (size - 1)
+      where p = 2 ^ (size - 1)

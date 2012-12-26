@@ -29,11 +29,12 @@ recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
 recPic method (width, height) imgPaths queryImgPath = do
   l@(queryImg:imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
   gen <- getStdGen
-  let queryPat:imgPats = map (toPattern method) l
+  let queryPat:imgPats = map toPattern l
       runRand r = evalRand r gen
       result =  case method of
           Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
-          Boltzmann -> runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
+          Boltzmann -> error "Boltzmann not implemented yet"
+          --runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
   return $ case result of
             Left pattern -> Nothing -- TODO apply heuristic if we want (we want)
             Right i      -> Just $ imgPaths !! i
