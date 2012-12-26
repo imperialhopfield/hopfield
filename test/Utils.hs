@@ -1,6 +1,7 @@
 module Utils where
 
 import           Control.Applicative
+import           Control.Exception
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.List
@@ -228,3 +229,18 @@ updateNeuronCheck r (pats, nr_h, pat) = do
     seed <- arbitrary
     let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
     return $ updateNeuron' (fromIntegral r) Matching Visible (weightsB bd) pat i == (1 - r)
+
+
+buildIntTuple :: Gen (Int, Int)
+buildIntTuple = do
+  i <- choose (0, 100000)
+  let min_size = ceiling $ logBase 2.0 $ fromIntegral i
+  j <- choose (min_size, 2 * min_size)
+  return $ (i, j)
+
+
+binaryCheck :: (Int, Int) -> Bool
+binaryCheck (x, y) =  p == x
+  where p = sum $ map (\i -> 2 ^ i * (bits !! i)) indices
+        bits = toBinary x y
+        indices = [0 .. length bits - 1]

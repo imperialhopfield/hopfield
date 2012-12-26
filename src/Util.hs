@@ -7,6 +7,8 @@ module Util (
   , randomElem
   , vector2D
   , list2D
+  , toBinary
+  , getBinaryIndices
   , (./.)
   , (*.)
 ) where
