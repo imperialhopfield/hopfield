@@ -29,7 +29,7 @@ recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
 recPic method (width, height) imgPaths queryImgPath = do
   l@(queryImg:imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
   gen <- getStdGen
-  let queryPat:imgPats = map toPattern l
+  let queryPat:imgPats = map (toPattern method) l
       runRand r = evalRand r gen
       result =  case method of
           Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
