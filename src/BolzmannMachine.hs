@@ -44,6 +44,10 @@ data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
   , patternsB :: [Pattern] -- ^ the patterns which were used to train it
   , nr_hidden :: Int       -- ^ number of neurons in the hidden layer
+  , pattern_to_binary :: [(Pattern, [Int])] -- ^ the binary representation of the pattern index
+      -- the pattern_to_binary field will not replace the patternsB field as it does
+      -- not contain duplicated patterns, which might be required for statistical
+      -- analysis in clustering and super attractors
 }
   deriving(Show)
 
