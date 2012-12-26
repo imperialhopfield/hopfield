@@ -86,7 +86,7 @@ buildBolzmannData' pats nr_hidden
       = error "All training patterns must have the same length"
   | otherwise = do
       ws:: Weights <- trainBolzmann pats nr_hidden
-      return $ BolzmannData ws pats nr_hidden
+      return $ BolzmannData ws pats nr_hidden (getBinaryIndices pats)
   where
     first_len = V.length (head pats)
 

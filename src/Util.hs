@@ -12,6 +12,7 @@ module Util (
 ) where
 
 import           Data.List
+import           Data.Maybe
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
@@ -89,3 +90,10 @@ toBinary n size
   | n >  2 ^ size - 1 = error "cannot fit binary representation into given size"
   | otherwise = (n `div` p) : toBinary (n `mod` p) (size - 1)
       where p = 2 ^ (size - 1)
+
+
+getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
+getBinaryIndices xs = map (\x -> (x, f x)) ys
+  where ys   = nub xs
+        size = ceiling $ logBase 2.0 $ fromIntegral (length ys)
+        f x  = toBinary (fromJust $ x `elemIndex` ys) size
