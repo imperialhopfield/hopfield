@@ -241,6 +241,6 @@ buildIntTuple = do
 
 binaryCheck :: (Int, Int) -> Bool
 binaryCheck (x, y) =  p == x
-  where p = sum $ map (\i -> 2 ^ i * (bits !! i)) indices
+  where p = sum $ map (\i -> 2 ^ i * (bits !! (p - i))) [0 .. size]
         bits = toBinary x y
-        indices = [0 .. length bits - 1]
+        size = length bits - 1

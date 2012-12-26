@@ -89,6 +89,7 @@ toBinary :: Int -> Int -> [Int]
 toBinary 0 1 = [0]
 toBinary 1 1 = [1]
 toBinary n size
+  | n < 0             = error "toBinary requires positive arguments"
   | n >  2 ^ size - 1 = error "cannot fit binary representation into given size"
   | otherwise = (n `div` p) : toBinary (n `mod` p) (size - 1)
       where p = 2 ^ (size - 1)
