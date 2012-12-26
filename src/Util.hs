@@ -86,8 +86,6 @@ findInList xs x =
 -- @toBinary n size@. Returns the binary representation of n in size bits.
 -- The caller has to ensure that n fits in size bits, or an error will be raised.
 toBinary :: Int -> Int -> [Int]
-toBinary 0 1 = [0]
-toBinary 1 1 = [1]
 toBinary n size
   | n < 0             = error "toBinary requires positive arguments"
   | n >  2 ^ size - 1 = error "cannot fit binary representation into given size"
