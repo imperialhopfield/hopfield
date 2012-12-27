@@ -82,13 +82,14 @@ train pats = vector2D ws
     n = V.length (head pats)
 
 
+-- TODO Mihaela what valid?
 -- | @getUpdatables ws pat@. Given a Hopfield network represented by ws, returns
 -- a list of pairs comprising of the updatable neurons (represented by the index
 -- in the pattern) and their new, changed value.
 -- No check is performed in this function for efficiency reasons: the checks
 -- are expensive and are done in update, before update'.
 -- Any other caller should ensure that ws and pat are compatible and valid
--- (by calling @valid)
+-- (by calling @valid@)
 getUpdatables:: Weights -> Pattern -> [(Int, Int)]
 getUpdatables ws pat = updatables
   where
