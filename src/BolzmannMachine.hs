@@ -7,7 +7,6 @@ module BolzmannMachine where
 
 import           Data.Maybe
 import           Data.Tuple
-import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.List
@@ -32,7 +31,8 @@ import Util
 
 -- | determines the rate in which the weights are changed in the training phase.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-learningRate = 0.1 :: Double
+learningRate :: Double
+learningRate = 0.1
 
 
 data Mode = Hidden | Visible
@@ -42,8 +42,8 @@ data Mode = Hidden | Visible
 data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
   , patternsB :: [Pattern] -- ^ the patterns which were used to train it
-  , nr_hidden :: Int       -- ^ number of neurons in the hidden layer
-  , pattern_to_binary :: [(Pattern, [Int])] -- ^ the binary representation of the pattern index
+  , nr_hiddenB :: Int      -- ^ number of neurons in the hidden layer
+  , pattern_to_binaryB :: [(Pattern, [Int])] -- ^ the binary representation of the pattern index
       -- the pattern_to_binary field will not replace the patternsB field as it does
       -- not contain duplicated patterns, which might be required for statistical
       -- analysis in clustering and super attractors
@@ -70,7 +70,7 @@ buildBolzmannData []   = error "Train patterns are empty"
 buildBolzmannData pats =
   --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
   -- TODO replace with getRandomR with bigger range
-  buildBolzmannData' pats (floor (logBase 2 nr_visible) - 3)
+  buildBolzmannData' pats (floor (log2 nr_visible) - 3)
     where nr_visible = fromIntegral $ V.length (head pats)
 
 
@@ -158,8 +158,8 @@ trainBolzmann pats nr_hidden = do
   -- contrastive divergence algorithm
   let ws = map (\x -> (0: x)) weights_without_bias
       ws_start  = (replicate (nr_hidden + 1) 0) : ws
-  ws <- foldM updateWeights (vector2D ws_start) pats'
-  return (ws, paths_with_binary_indices)
+  updated_ws <- foldM updateWeights (vector2D ws_start) pats'
+  return (updated_ws, paths_with_binary_indices)
     where
       genWeights = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
       paths_with_binary_indices = getBinaryIndices pats
@@ -222,8 +222,9 @@ getFreeEnergy ws pat
           p = V.length pat
 
 
+-- TODO Mihaela two arguments not used
 matchPatternBolzmann :: BolzmannData -> Pattern -> Pattern
-matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat
+matchPatternBolzmann (BolzmannData ws _pats _nr_h pats_with_binary) pat
   = fromJust $ lookup encoding binary_encodings_to_pats
     where
       trials = map (\x -> (V.++) x pat) (map (V.fromList . snd) pats_with_binary)

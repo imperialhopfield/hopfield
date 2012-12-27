@@ -14,10 +14,10 @@ module Util (
   , getBinaryIndices
   , (./.)
   , (*.)
+  , log2
 ) where
 
 import           Data.List
-import           Data.Maybe
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
@@ -30,6 +30,10 @@ x ./. y = fromIntegral x / fromIntegral y
 
 (*.) :: (Integral a1, Num a) => a -> a1 -> a
 x *. y = x * fromIntegral y
+
+
+log2 :: Double -> Double
+log2 = logBase 2.0
 
 
 randomElem :: MonadRandom m => [a] -> m a
@@ -100,4 +104,4 @@ getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
 getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
   where
     nub_xs = nub xs
-    bitsNeeded = ceiling $ logBase 2.0 $ fromIntegral (length nub_xs)
+    bitsNeeded = ceiling . log2 . fromIntegral . length $ nub_xs

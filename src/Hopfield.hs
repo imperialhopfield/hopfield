@@ -21,22 +21,23 @@ module Hopfield (
   , energy
   -- * Basin of attraction
   , measurePatternBasin
+  -- * Other
+  , computeError
 ) where
 
-
+import           Control.Monad.Random (MonadRandom)
+import           Control.Monad.Random.Class (getRandom)
 import           Data.List
 import           Data.Maybe
 import           Data.Number.Erf
-import           Data.Random.Distribution.Uniform (stdUniform)
 import           Data.Random.Extras (sample)
 import           Data.RVar (runRVar)
-import           Data.Vector (Vector, (!))
-import           Data.Vector.Generic.Mutable (write)
+import           Data.Vector ((!))
 import qualified Data.Vector as V
+import           Data.Vector.Generic.Mutable (write)
 import           Data.Word (Word32)
+
 import           Common
-import           Control.Monad.Random (MonadRandom)
-import           Control.Monad.Random.Class (getRandom)
 import           Util
 
 
@@ -161,11 +162,14 @@ matchPattern (HopfieldData ws pats) pat
       converged_pattern <- repeatedUpdate ws pat
       return $ findInList pats converged_pattern
 
+
+-- TODO I don't understand this (niklas)
+-- TODO check where this function is used
 -- | Computes the probability of error for one element given a hopfield data
 -- structure. Note that I claim that the actuall error of probability depends
 -- on this, but is not the whole term
 computeError :: HopfieldData -> Double
-computeError (HopfieldData _ pats) = 1 ./. 2 * (1 - (erf $ sqrt $ n ./. p))
+computeError (HopfieldData _ pats) = 1.0 / 2.0 * (1 - (erf $ sqrt $ n ./. p))
   where n = V.length $ pats !! 0
         p = length pats
 

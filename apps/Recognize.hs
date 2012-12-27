@@ -1,20 +1,16 @@
 module Main where
 
-
-import           System.Environment
-import           System.Random
-
-
 import           Control.Monad
 import           Control.Monad.Random
-import           Control.Applicative
+import           System.Environment
 import qualified Data.Vector as V
 
 import Hopfield
 import ConvertImage
-import BolzmannMachine
+-- import BolzmannMachine
 
-data Method = Hopfield | Boltzmann
+
+data Method = Hopfield | Boltzmann deriving (Eq, Enum, Ord, Show)
 
 
 transformFunction :: Method -> (Int -> Int)
@@ -27,17 +23,17 @@ toPattern m (CBinaryPattern { cPattern = pat }) = V.fromList $ map (transformFun
 
 recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
 recPic method (width, height) imgPaths queryImgPath = do
-  l@(queryImg:imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
+  l@(_queryImg:_imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
   gen <- getStdGen
   let queryPat:imgPats = map (toPattern method) l
-      runRand r = evalRand r gen
+      runRandom r = evalRand r gen
       result =  case method of
-          Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
+          Hopfield  -> runRandom $ matchPattern (buildHopfieldData imgPats) queryPat
           Boltzmann -> error "Boltzmann not implemented yet"
-          --runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
+          --runRandom $ matchPatternBolzmann (runRandom $ buildBolzmannData imgPats) queryPat
   return $ case result of
-            Left pattern -> Nothing -- TODO apply heuristic if we want (we want)
-            Right i      -> Just $ imgPaths !! i
+             Left _pattern -> Nothing -- TODO apply heuristic if we want (we want)
+             Right i      -> Just $ imgPaths !! i
 
 
 main :: IO ()
