@@ -12,10 +12,8 @@ import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.List
-import qualified Data.Random as DR
 import           Data.Vector ((!))
 import qualified Data.Vector as V
-import           Data.Word (Word32)
 import qualified Numeric.Container as NC
 
 import Common
