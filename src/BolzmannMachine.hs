@@ -129,7 +129,9 @@ getCounterPattern phase mode ws pat
   | otherwise = V.fromList `liftM` mapM (updateNeuron phase mode ws pat) updatedIndices
     where
       updatedIndices = [0 .. getDimension (notMode mode) ws - diff]
-      diff = if phase == Training then 1 else 2
+      diff = case phase of
+              Training -> 1
+              Matching -> 2
 
 
 -- | One step which updates the weights in the CD-n training process.
@@ -197,14 +199,6 @@ validWeights ws
   | V.null ws = Just "The  matrix of weights is empty"
   | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "Weigths matrix ill formed"
   | otherwise = Nothing
-
-
- -- | Generates a number sampled from a random distribution, given the mean and
- -- standard deviation.
-normal :: forall m . MonadRandom m => Double -> Double -> m Double
-normal m std = do
-  r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
-  return r
 
 
 -- see http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf section 16.1

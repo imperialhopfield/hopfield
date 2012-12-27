@@ -1,24 +1,27 @@
-{-# LANGUAGE ParallelListComp #-}
+{-# LANGUAGE ParallelListComp, ScopedTypeVariables #-}
 
 
 module Util (
     combine
+  , (*.)
+  , (./.)
   , findInList
   , fromDataVector
+  , getBinaryIndices
+  , list2D
+  , normal
+  , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
-  , randomElem
-  , vector2D
-  , list2D
   , toBinary
-  , getBinaryIndices
-  , (./.)
-  , (*.)
+  , vector2D
 ) where
 
-import           Data.List
 import           Data.Maybe
+import           Data.List
+import qualified Data.Random as DR
 import qualified Data.Vector as V
+import           Data.Word (Word32)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Foreign.Storable
@@ -31,6 +34,13 @@ x ./. y = fromIntegral x / fromIntegral y
 (*.) :: (Integral a1, Num a) => a -> a1 -> a
 x *. y = x * fromIntegral y
 
+
+ -- | Generates a number sampled from a random distribution, given the mean and
+ -- standard deviation.
+normal :: forall m . MonadRandom m => Double -> Double -> m Double
+normal m std = do
+  r <- DR.runRVar (DR.normal m std) (Random.getRandom :: MonadRandom m => m Word32)
+  return r
 
 randomElem :: MonadRandom m => [a] -> m a
 randomElem [] = error "randomElem: empty list"
