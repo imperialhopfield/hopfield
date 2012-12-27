@@ -23,12 +23,6 @@ import Util
 -- weigths between visible and hidden neurons
 -- w i j - connection between visible neuron i and hidden neuron j
 
-
-
--- start with no biases initially, introduce them after (if needed)
--- if biases are used, they should be normally distributed
-
-
 -- | determines the rate in which the weights are changed in the training phase.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 learningRate = 0.1 :: Double
@@ -206,8 +200,8 @@ getFreeEnergy ws pat
   | Just e <- validPattern Matching Visible ws pat = error e
   | otherwise = - biases - sum (map f xs)
     where w i j = ((ws :: Weights) ! i ! j) :: Double
-          biases = sum ([ w i 0  *. (pat ! (i + 1)) | i <- [0 .. p] ])
-          xs = [ w 0 j + sum [ w (i + 1) j *.  (pat ! i)  | i <- [0 .. p] ] | j <- [1 .. V.length $ ws ! 0]]
+          biases = sum [ w (i + 1) 0  *. (pat ! i)        | i <- [0 .. p - 1] ]
+          xs = [ w 0 j + sum [ w (i + 1) j *.  (pat ! i)  | i <- [0 .. p - 1] ] | j <- [1 .. (V.length $ ws ! 0) - 1]]
           f x = log (1 + exp x)
           p = V.length pat
 
