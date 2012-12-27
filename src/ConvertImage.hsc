@@ -17,8 +17,8 @@ import Foreign.Marshal.Array
 #let alignment t = "%lu", (unsigned long) offsetof(struct { char x__; t (y__); }, y__)
 
 data CBinaryPattern = CBinaryPattern {
-    size :: Word32
-  , pattern :: [Word32]
+    cPatternSize :: Word32
+  , cPattern :: [Word32]
 } deriving (Eq, Show)
 
 

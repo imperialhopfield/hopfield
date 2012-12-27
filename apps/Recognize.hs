@@ -22,7 +22,7 @@ transformFunction Hopfield  = (\x -> 2 * x - 1)
 transformFunction Boltzmann = (\x -> x)
 
 toPattern :: Method -> CBinaryPattern -> Pattern
-toPattern m (CBinaryPattern { pattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
+toPattern m (CBinaryPattern { cPattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
 
 
 recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
