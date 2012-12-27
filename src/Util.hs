@@ -100,4 +100,4 @@ getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
 getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
   where
     nub_xs = nub xs
-    bitsNeeded = ceiling $ logBase 2.0 $ fromIntegral (length nub_xs)
+    bitsNeeded = 1 + (floor $ logBase 2.0 $ fromIntegral (length nub_xs)) :: Int

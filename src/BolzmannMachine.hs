@@ -37,7 +37,11 @@ learningRate = 0.1 :: Double
 
 
 data Mode = Hidden | Visible
+ deriving(Eq, Show)
 
+
+data Phase = Training | Matching
+ deriving(Eq, Show)
 
 
 data BolzmannData = BolzmannData {
@@ -51,8 +55,6 @@ data BolzmannData = BolzmannData {
 }
   deriving(Show)
 
-data Phase = Training | Matching
- deriving(Eq, Show)
 
 -- | Gives the opposite type of layer.
 notMode :: Mode -> Mode
@@ -105,7 +107,9 @@ getActivationProbability phase mode ws pat index = if a <=1 && a >=0 then a else
     a = activation . sum $ case mode of
       Hidden   -> [ (ws ! index ! i) *. (pat' ! i) | i <- [0 .. p-1] ]
       Visible  -> [ (ws ! i ! index) *. (pat' ! i) | i <- [0 .. p-1] ]
-    pat' = if phase == Matching then V.cons 1 pat else pat
+    pat' = case phase of
+            Matching -> V.cons 1 pat
+            Training -> pat
     p = V.length pat'
 
 
@@ -157,14 +161,14 @@ trainBolzmann pats nr_hidden = do
   weights_without_bias <- genWeights
   -- add biases as a dimension of the matrix, in order to include them in the
   -- contrastive divergence algorithm
-  let ws = map (\x -> (0: x)) weights_without_bias
+  let ws = [0: x | x <- weights_without_bias]
       ws_start  = (replicate (nr_hidden + 1) 0) : ws
   ws <- foldM updateWeights (vector2D ws_start) pats'
   return (ws, paths_with_binary_indices)
     where
       genWeights = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
       paths_with_binary_indices = getBinaryIndices pats
-      pats' = map (\x -> ((V.++) x $ encoding x)) pats
+      pats' = [(V.++) x $ encoding x | x <- pats]
       encoding x = V.fromList . fromJust $ lookup x paths_with_binary_indices
       nr_visible = V.length $ pats' !! 0
 
@@ -181,7 +185,7 @@ activation x = 1.0 / (1.0 + exp (-x))
 -- which is checked (Visible or Hidden).
 validPattern :: Phase -> Mode -> Weights -> Pattern -> Maybe String
 validPattern phase mode ws pat
-  | checked_dim /= V.length pat        = Just ("Size of pattern must match network size in " ++ show phase)
+  | checked_dim /= V.length pat        = Just $ "Size of pattern must match network size in " ++ show phase ++ " " ++ show mode
   | V.any (\x -> notElem x [0, 1]) pat = Just "Non binary element in bolzmann pattern"
   | otherwise            = Nothing
   where checked_dim = if phase == Training then actual_dim else actual_dim - 1
@@ -202,19 +206,12 @@ normal m std = do
   r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
   return r
 
--- TODO not sure if used anymore
--- | Does one update of a visible pattern by updating the hidden layer neurons once
--- and then using the new values to obtain new values for the visible layer.
-updateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
-updateBolzmann ws pat = do
-  h <- getCounterPattern Matching Visible ws pat
-  getCounterPattern Matching Hidden ws h
-
 
 -- see http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf section 16.1
 getFreeEnergy :: Weights -> Pattern -> Double
 getFreeEnergy ws pat
-  | Just e <- validWeights ws = error e
+  | Just e <- validWeights ws                      = error e
+  | Just e <- validPattern Matching Visible ws pat = error e
   | otherwise = - biases - sum (map f xs)
     where w i j = ((ws :: Weights) ! i ! j) :: Double
           biases = sum ([ w i 0  *. (pat ! (i + 1)) | i <- [0 .. p] ])
@@ -223,10 +220,13 @@ getFreeEnergy ws pat
           p = V.length pat
 
 
-matchPatternBolzmann :: BolzmannData -> Pattern -> Pattern
+matchPatternBolzmann :: BolzmannData -> Pattern -> Int
 matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat
-  = fromJust $ lookup encoding binary_encodings_to_pats
+  = case final_pattern `elemIndex` pats of
+      Nothing -> error "unmatched pattern" -- if the code is well written this should never happen
+      Just x  -> x
     where
+      final_pattern = fromJust $ lookup encoding binary_encodings_to_pats
       trials = map (\x -> (V.++) x pat) (map (V.fromList . snd) pats_with_binary)
       enconding_size = length $ snd $ head pats_with_binary
       binary_encodings_to_pats = map swap pats_with_binary
