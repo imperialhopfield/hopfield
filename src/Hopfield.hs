@@ -1,4 +1,5 @@
 {-# LANGUAGE PatternGuards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 -- | Base Hopfield model, providing training and running.
 module Hopfield (
@@ -26,11 +27,16 @@ module Hopfield (
 import           Data.List
 import           Data.Maybe
 import           Data.Number.Erf
+import           Data.Random.Distribution.Uniform (stdUniform)
+import           Data.Random.Extras (sample)
+import           Data.RVar (runRVar)
 import           Data.Vector (Vector, (!))
 import           Data.Vector.Generic.Mutable (write)
 import qualified Data.Vector as V
+import           Data.Word (Word32)
 import           Common
 import           Control.Monad.Random (MonadRandom)
+import           Control.Monad.Random.Class (getRandom)
 import           Util
 
 
@@ -226,17 +232,14 @@ withinHammingRadius pat r = map (V.fromList . multByPat) coeffsList
 -- Percentage of sampled patterns within hamming distance 'r' from 'pat' which
 -- converge to 'pat'
 -- pre: pattern of same size as network
-samplePatternBasin :: (MonadRandom m) => HopfieldData -> Pattern -> Int -> m Double
+samplePatternBasin :: forall m . MonadRandom m => HopfieldData -> Pattern -> Int -> m Double
 samplePatternBasin hs pat r = do
-  convergedPatterns <- mapM (repeatedUpdate ws) samples
+  let rSamples      =  sample 100 $ withinHammingRadius pat r
+  samples           <- runRVar rSamples (getRandom :: m Word32)
+  convergedPatterns <- mapM (repeatedUpdate $ weights hs) samples
   let numConverging =  length $ filter (==pat) convergedPatterns
-  return $ numConverging ./. sampleSize
-    where
-      samples           = sample_temp 100 $ withinHammingRadius pat r
-      ws                = weights hs
-      sampleSize        = length samples
-      -- TODO change to use proper random sampling (sample in Data.Random.Extras)
-      sample_temp       = take
+
+  return $ numConverging ./. (length samples)
 
 
 -- Measures pattern's basin of attraction using the Storkey-Valabregue method

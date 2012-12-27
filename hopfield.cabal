@@ -31,6 +31,8 @@ library
     , erf >= 2.0.0.0
     , hmatrix >= 0.11.0.4
     , random-fu >= 0.2.3.1
+    , rvar >= 0.2.0.1
+    , random-extras >= 0.19
   c-sources:
       src/convertImage.c
   include-dirs:
