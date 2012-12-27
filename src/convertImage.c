@@ -32,10 +32,9 @@ mapToBinary(double** pattern, int width, int height){
   return binaryPattern;
 }
 
-// TODO write function which takes all the training images
-// and gets min size for all
-//  check how it will work with very different sizes
-
+/* loads a picture from the inputImg filepath, scales it to the specified 
+   width and height, and then converts it to a binary pattern, usable by 
+   the Hopfield Network */
 binary_pattern_t *
 load_picture(char* inputImg, size_t width, size_t height)
 {
@@ -54,8 +53,7 @@ load_picture(char* inputImg, size_t width, size_t height)
      ThrowWandException(mw);
 
   PixelWand** pixels;
-  // size_t width = MagickGetImageWidth(mw);
-  // size_t height = MagickGetImageHeight(mw);
+  /* rescale the image */
   int resizeSuccess = MagickResizeImage(mw, height, width, LanczosFilter, 0);
 
   if (!resizeSuccess)
@@ -84,18 +82,12 @@ load_picture(char* inputImg, size_t width, size_t height)
     }
   }
 
-  return mapToBinary(outputPattern, width, height);
-
-  /* print the vector */
-  for (y=0; y < (long) height; y++){
-    for (long x=0; x < (long) width; x++)
-      printf("%f ", outputPattern[x][y]);
-
-    printf("\n\n\n");
-  }
-
   /* Tidy up */
   if(mw) mw = DestroyMagickWand(mw);
 
   MagickWandTerminus();
+  
+  /* since outputPattern is a list of doubles, convert it to a list of
+     binary values */
+  return mapToBinary(outputPattern, width, height);
 }

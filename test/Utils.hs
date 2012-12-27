@@ -1,3 +1,5 @@
+{-# LANGUAGE ParallelListComp #-}
+
 module Utils where
 
 import           Control.Applicative
@@ -231,16 +233,17 @@ updateNeuronCheck r (pats, nr_h, pat) = do
     return $ updateNeuron' (fromIntegral r) Matching Visible (weightsB bd) pat i == (1 - r)
 
 
+-- TODO write comment and change the name to show the restrictions
 buildIntTuple :: Gen (Int, Int)
 buildIntTuple = do
-  i <- choose (0, 100)
+  i <- choose (1, 100)
   let min_size = ceiling $ logBase 2.0 $ fromIntegral i
-  j <- choose (min_size, min_size + 1)
-  return $ (i, j)
+  j <- choose (min_size + 1, min_size + 2)
+  return (i, j)
 
 
 binaryCheck :: (Int, Int) -> Bool
-binaryCheck (x, y) =  p == x
-  where p = sum $ map (\i -> 2 ^ i * (bits !! (p - i))) [0 .. size]
-        bits = toBinary x y
-        size = length bits - 1
+binaryCheck (x, y) = x == refold
+ where
+   refold = sum [ b * 2^pos | b <- reverse bits | pos <- [0..] ]
+   bits   = toBinary x y

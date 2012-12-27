@@ -7,6 +7,7 @@ module BolzmannMachine where
 
 
 import           Data.Maybe
+import           Data.Tuple
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
@@ -37,8 +38,7 @@ learningRate = 0.1 :: Double
 
 data Mode = Hidden | Visible
 
-data Phase = Training | Matching
-  deriving(Eq, Show)
+
 
 data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
@@ -50,6 +50,9 @@ data BolzmannData = BolzmannData {
       -- analysis in clustering and super attractors
 }
   deriving(Show)
+
+data Phase = Training | Matching
+ deriving(Eq, Show)
 
 -- | Gives the opposite type of layer.
 notMode :: Mode -> Mode
@@ -66,7 +69,6 @@ getDimension Visible ws = V.length $ ws
 buildBolzmannData ::  MonadRandom  m => [Pattern] ->  m BolzmannData
 buildBolzmannData []   = error "Train patterns are empty"
 buildBolzmannData pats =
-
   --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
   -- TODO replace with getRandomR with bigger range
   buildBolzmannData' pats (floor (logBase 2 nr_visible) - 3)
@@ -85,14 +87,14 @@ buildBolzmannData' pats nr_hidden
   | any (\x -> V.length x /= first_len) pats
       = error "All training patterns must have the same length"
   | otherwise = do
-      ws:: Weights <- trainBolzmann pats nr_hidden
-      return $ BolzmannData ws pats nr_hidden (getBinaryIndices pats)
+      (ws, pats_with_binary) :: (Weights, [(Pattern, [Int])]) <- trainBolzmann pats nr_hidden
+      return $ BolzmannData ws pats nr_hidden pats_with_binary
   where
     first_len = V.length (head pats)
 
 
 -- Pure version of updateNeuron for testing
-updateNeuron'::  Double -> Phase -> Mode -> Weights -> Pattern -> Int -> Int
+updateNeuron' ::  Double -> Phase -> Mode -> Weights -> Pattern -> Int -> Int
 updateNeuron' r phase mode ws pat index = if (r < a) then 1 else 0
   where a = getActivationProbability phase mode ws pat index
 
@@ -125,6 +127,7 @@ getCounterPattern phase mode ws pat
       updatedIndices = [0 .. getDimension (notMode mode) ws - diff]
       diff = if phase == Training then 1 else 2
 
+
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
@@ -149,17 +152,21 @@ updateWeights ws v = do
 -- @trainBolzmann pats nr_hidden@ where @pats@ are the training patterns
 -- and @nr_hidden@ is the number of neurons to be created in the hidden layer.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m Weights
+trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m (Weights, [(Pattern, [Int])])
 trainBolzmann pats nr_hidden = do
   weights_without_bias <- genWeights
   -- add biases as a dimension of the matrix, in order to include them in the
   -- contrastive divergence algorithm
   let ws = map (\x -> (0: x)) weights_without_bias
       ws_start  = (replicate (nr_hidden + 1) 0) : ws
-  foldM updateWeights (vector2D ws_start) pats
+  ws <- foldM updateWeights (vector2D ws_start) pats'
+  return (ws, paths_with_binary_indices)
     where
       genWeights = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
-      nr_visible = V.length $ pats !! 0
+      paths_with_binary_indices = getBinaryIndices pats
+      pats' = map (\x -> ((V.++) x $ encoding x)) pats
+      encoding x = V.fromList . fromJust $ lookup x paths_with_binary_indices
+      nr_visible = V.length $ pats' !! 0
 
 
 -- | The activation functiom for the network (the logistic sigmoid).
@@ -195,7 +202,7 @@ normal m std = do
   r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
   return r
 
-
+-- TODO not sure if used anymore
 -- | Does one update of a visible pattern by updating the hidden layer neurons once
 -- and then using the new values to obtain new values for the visible layer.
 updateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
@@ -204,3 +211,26 @@ updateBolzmann ws pat = do
   getCounterPattern Matching Hidden ws h
 
 
+-- see http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf section 16.1
+getFreeEnergy :: Weights -> Pattern -> Double
+getFreeEnergy ws pat
+  | Just e <- validWeights ws = error e
+  | otherwise = - biases - sum (map f xs)
+    where w i j = ((ws :: Weights) ! i ! j) :: Double
+          biases = sum ([ w i 0  *. (pat ! (i + 1)) | i <- [0 .. p] ])
+          xs = [ w 0 j + sum [ w (i + 1) j *.  (pat ! i)  | i <- [0 .. p] ] | j <- [1 .. V.length $ ws ! 0]]
+          f x = log (1 + exp x)
+          p = V.length pat
+
+
+matchPatternBolzmann :: BolzmannData -> Pattern -> Pattern
+matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat
+  = fromJust $ lookup encoding binary_encodings_to_pats
+    where
+      trials = map (\x -> (V.++) x pat) (map (V.fromList . snd) pats_with_binary)
+      enconding_size = length $ snd $ head pats_with_binary
+      binary_encodings_to_pats = map swap pats_with_binary
+      getPatternProbability x = exp $ getFreeEnergy ws x
+      compare_according_to_energy x y = compare (getPatternProbability x) (getPatternProbability y)
+      min_pat = maximumBy compare_according_to_energy trials
+      encoding = drop (V.length min_pat - enconding_size) (V.toList min_pat)
