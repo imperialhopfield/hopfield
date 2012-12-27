@@ -1,9 +1,8 @@
 {-# LANGUAGE PatternGuards, ScopedTypeVariables #-}
 
-module BolzmannMachine where
 -- | Base Restricted Bolzamann machine.
-
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
+module BolzmannMachine where
 
 
 import           Data.Maybe
@@ -195,8 +194,8 @@ validWeights ws
   | otherwise = Nothing
 
 
- -- | Generates a number sampled from a random distribution, given the mean and
- -- standard deviation.
+-- | Generates a number sampled from a random distribution, given the mean and
+-- standard deviation.
 normal :: forall m . MonadRandom m => Double -> Double -> m Double
 normal m std = do
   r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
