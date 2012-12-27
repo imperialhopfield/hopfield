@@ -1,0 +1,2 @@
+# recognize
+ghci -isrc apps/Recognize.hs dist/build/src/convertImage.o `pkg-config --libs MagickWand`
