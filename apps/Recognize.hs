@@ -25,19 +25,16 @@ toPattern :: Method -> CBinaryPattern -> Pattern
 toPattern m (CBinaryPattern { pattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
 
 
-recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
+recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO FilePath
 recPic method (width, height) imgPaths queryImgPath = do
   l@(queryImg:imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
   gen <- getStdGen
   let queryPat:imgPats = map (toPattern method) l
       runRand r = evalRand r gen
-      result =  case method of
-          Hopfield  -> runRand $ matchPattern (buildHopfieldData imgPats) queryPat
-          Boltzmann -> error "Boltzmann not implemented yet"
-          --runRand $ matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
-  return $ case result of
-            Left pattern -> Nothing -- TODO apply heuristic if we want (we want)
-            Right i      -> Just $ imgPaths !! i
+      i =  case method of
+          Hopfield  -> error "This is a trial for Bolzmann"
+          Boltzmann -> matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
+  return $ imgPaths !! i
 
 
 main :: IO ()
@@ -51,6 +48,4 @@ main = do
       width  = read widthStr
       height = read heightStr
   foundPath <- recPic method (width, height) filePaths queryPath
-  putStrLn $ case foundPath of
-    Nothing   -> "no pattern found"
-    Just path -> path
+  putStrLn $ foundPath
