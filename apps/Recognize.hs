@@ -25,16 +25,16 @@ toPattern :: Method -> CBinaryPattern -> Pattern
 toPattern m (CBinaryPattern { pattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
 
 
-recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO FilePath
+recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO [(FilePath, Double)]
 recPic method (width, height) imgPaths queryImgPath = do
   l@(queryImg:imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
   gen <- getStdGen
   let queryPat:imgPats = map (toPattern method) l
       runRand r = evalRand r gen
-      i =  case method of
+      res =  case method of
           Hopfield  -> error "This is a trial for Bolzmann"
           Boltzmann -> matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
-  return $ imgPaths !! i
+  return $ [ (imgPaths !! i, prob) | (i, prob)  <- res]
 
 
 main :: IO ()
@@ -48,4 +48,4 @@ main = do
       width  = read widthStr
       height = read heightStr
   foundPath <- recPic method (width, height) filePaths queryPath
-  putStrLn $ foundPath
+  putStrLn $ show foundPath

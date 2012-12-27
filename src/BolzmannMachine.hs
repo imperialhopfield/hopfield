@@ -65,7 +65,7 @@ buildBolzmannData []   = error "Train patterns are empty"
 buildBolzmannData pats =
   --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
   -- TODO replace with getRandomR with bigger range
-  buildBolzmannData' pats (floor (logBase 2 nr_visible) - 3)
+  buildBolzmannData' pats nr_visible
     where nr_visible = fromIntegral $ V.length (head pats)
 
 
@@ -194,6 +194,9 @@ validWeights ws
 
 
 -- see http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf section 16.1
+-- And stack overflow discussion
+-- http://stackoverflow.com/questions/9944568/the-free-energy-approximation-equation-in-restriction-boltzmann-machines
+-- http://www.dmi.usherb.ca/~larocheh/publications/class_set_rbms_uai.pdf
 getFreeEnergy :: Weights -> Pattern -> Double
 getFreeEnergy ws pat
   | Just e <- validWeights ws                      = error e
@@ -206,17 +209,9 @@ getFreeEnergy ws pat
           p = V.length pat
 
 
-matchPatternBolzmann :: BolzmannData -> Pattern -> Int
-matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat
-  = case final_pattern `elemIndex` pats of
-      Nothing -> error "unmatched pattern" -- if the code is well written this should never happen
-      Just x  -> x
+matchPatternBolzmann :: BolzmannData -> Pattern -> [(Int, Double)]
+matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat =
+  [(fromPatToIndex p, (getFreeEnergy ws) ((V.++) pat (V.fromList . fromJust $ lookup p pats_with_binary) ) ) | p <- pats]
     where
-      final_pattern = fromJust $ lookup encoding binary_encodings_to_pats
-      trials = map (\x -> (V.++) x pat) (map (V.fromList . snd) pats_with_binary)
-      enconding_size = length $ snd $ head pats_with_binary
-      binary_encodings_to_pats = map swap pats_with_binary
-      getPatternProbability x = exp $ getFreeEnergy ws x
-      compare_according_to_energy x y = compare (getPatternProbability x) (getPatternProbability y)
-      min_pat = maximumBy compare_according_to_energy trials
-      encoding = drop (V.length min_pat - enconding_size) (V.toList min_pat)
+      getPatternProbability x = exp $ (- getFreeEnergy ws x)
+      fromPatToIndex p = fromJust $ p `elemIndex` pats
