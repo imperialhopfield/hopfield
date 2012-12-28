@@ -134,12 +134,13 @@ updateWeights ws v = do
   let biased_v = V.cons 1 v
   h        <- getCounterPattern Training Visible ws biased_v
   v'       <- getCounterPattern Training Hidden  ws h
-  h'       <- getCounterPattern Training Visible ws v'
   let f    = fromDataVector . fmap fromIntegral
-      pos  = NC.toLists $ (f biased_v) `NC.outer` (f h)   -- "positive gradient"
-      neg  = NC.toLists $ (f v') `NC.outer` (f h') -- "negative gradient"
+      pos  = NC.toLists $ (f biased_v) `NC.outer` (fromDataVector $ getSigmaH v)   -- "positive gradient"
+      neg  = NC.toLists $ (f v') `NC.outer` (fromDataVector $ getSigmaH v') -- "negative gradient"
       d_ws = map (map (* learningRate)) $ combine (-) pos neg -- weights delta
       new_weights = combine (+) (list2D ws) d_ws
+      nr_hidden = V.length $ ws ! 0
+      getSigmaH v = V.fromList [getActivationProbability Training Visible ws v x | x <- [0.. nr_hidden - 1] ]
   return $ vector2D new_weights
 
 
