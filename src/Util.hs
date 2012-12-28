@@ -3,6 +3,7 @@
 
 module Util (
     combine
+  , combineVectors
   , (*.)
   , (./.)
   , findInList
@@ -84,6 +85,9 @@ fromDataVector v = NC.fromList $ V.toList v
 -- the caller has to ensure that the dimensions are the same
 combine:: (a-> a -> a) -> [[a]] -> [[a]] -> [[a]]
 combine f xs ys = zipWith (zipWith f) xs ys
+
+combineVectors :: (a -> b -> c) -> V.Vector a -> V.Vector b -> V.Vector c
+combineVectors f v_a v_b = V.fromList (zipWith f (V.toList v_a) (V.toList v_b) )
 
 -- Tries to find a element in a list. In case of success, returns the index
 -- of the element (the first one, in case of multiple occurences). In case of

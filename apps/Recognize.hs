@@ -33,7 +33,7 @@ recPic method (width, height) imgPaths queryImgPath = do
       runRand r = evalRand r gen
       i =  case method of
           Hopfield  -> error "This is a trial for Bolzmann"
-          Boltzmann -> matchPatternBolzmann (runRand $ buildBolzmannData imgPats) queryPat
+          Boltzmann -> matchPatternBoltzmann (runRand $ buildBoltzmannData imgPats) queryPat
   return $ imgPaths !! i
 
 
