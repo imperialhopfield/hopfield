@@ -10,42 +10,46 @@ import qualified Data.Vector as V
 import           Hopfield
 
 
+-- Degree of a pattern is the number of instances it has in a network
+type Degree = Int
+
 -- List of Hopfield networks with associated super attractor degree
-type Networks = [(Int, HopfieldData)]
+type Networks = [(Degree, HopfieldData)]
 
 
-buildSuperAttractorNetwork :: [Int] -> [Pattern] -> HopfieldData
-buildSuperAttractorNetwork ns hs
-  = buildHopfieldData $ concat $ zipWith replicate ns hs
+-- List containing each element in xs replicated by the corresponding ns value
+-- e.g. mapReplicate [2,3] "ca" = "ccaaa"
+mapReplicate :: [Degree] -> [a] -> [a]
+mapReplicate ns xs
+  = concat $ zipWith replicate ns xs
 
 
-powersOfTwo :: Int -> [Int]
+-- Produces all powers of two <= ceil
+powersOfTwo :: Degree -> [Degree]
 powersOfTwo ceil = takeWhile (<=ceil) xs
   where
   	xs = 1 : map (*2) xs
 
--- Builds networks with the first pattern acting as a super attractor
--- i-th network contains pattern 'p' having degree 2^i, with i zero-indexed
--- Outputs (k, network), where k is the degree of the first pattern
-oneSuperNetworks :: [Pattern] -> Networks
-oneSuperNetworks (p:ps) = map build $ powersOfTwo n
-  where
-  	n       = V.length p
-  	ones    = map (const 1) ps
-  	build k = ( k, buildSuperAttractorNetwork (k:ones) (p:ps) )
+
+-- For each degree in 'ds', builds a network combining the degree and the list
+-- of patterns (or some variant) 'as' using the given function 'combine'
+buildNetworks :: a -> [Degree] -> (a -> Degree -> [Pattern]) -> Networks
+buildNetworks ps ds combine = map (\d -> (d, buildHopfieldData $ combine ps d)) ds
 
 
--- Builds networks with all patterns acting as equal super attractors
--- i-th network contains patterns all having degree 2^i
-allSuperNetworks :: [Pattern] -> Networks
-allSuperNetworks ps = map build $ powersOfTwo n
-	where
-	  n       = V.length $ head ps
-	  build k = ( k, buildSuperAttractorNetwork (map (const k) ps) ps )
+-- Combine functions passed to 'buildNetworks' --
+
+-- Replicates the first pattern k times.
+oneSuperAttr :: [Pattern] -> Degree -> [Pattern]
+oneSuperAttr ps k = mapReplicate (k:cycle [1]) ps
 
 
+-- Replicates each pattern k times.
+allSuperAttr :: [Pattern] -> Degree -> [Pattern]
+allSuperAttr ps k = mapReplicate (cycle [k]) ps
 
--- Experiments to measure super attractors
+
+-- Experiments to measure super attractors --
 
 p1, p2 :: V.Vector Int
 p1 = V.fromList [1,1,1,-1,-1,1,1,-1,1,-1]
@@ -53,13 +57,19 @@ p2 = V.fromList [-1,-1,1,1,-1,-1,1,-1,-1,1] :: V.Vector Int
 
 
 -- Networks with first pattern as a super attractor
-oneSuperAttractorNets :: Networks
-oneSuperAttractorNets = oneSuperNetworks [p1, p2]
+oneSuperNets :: Networks
+oneSuperAttractorNets = buildNetworks ps degrees oneSuperAttr
+  where
+    ps      = [p1,p2]
+    degrees = powersOfTwo $ V.length $ head ps
 
 
 -- Networks with all patterns as (equal) super attractors
-allSuperAttractorsNets :: Networks
-allSuperAttractorsNets = allSuperNetworks [p1, p2]
+allSuperNets :: Networks
+oneSuperAttractorNets = buildNetworks ps degrees allSuperAttr
+  where
+    ps      = [p1,p2]
+    degrees = powersOfTwo $ V.length $ head ps
 
 
 -- Measure basin of multiple networks, with various degrees
@@ -67,7 +77,7 @@ allSuperAttractorsNets = allSuperNetworks [p1, p2]
 --
 -- Note: degree is not actually used in computation, but rather serves
 -- as a label for each network
-measureMultiBasins :: MonadRandom m => Networks -> Pattern -> m [(Int, Int)]
+measureMultiBasins :: MonadRandom m => Networks -> Pattern -> m [(Degree, Int)]
 measureMultiBasins nets p = liftM2 zip (return ks) basinSizes
   where
     (ks, hs)   = unzip nets
