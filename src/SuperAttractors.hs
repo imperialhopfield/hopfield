@@ -51,14 +51,14 @@ allSuperAttr ps k = mapReplicate (cycle [k]) ps
 
 -- Experiments to measure super attractors --
 
-p1, p2 :: V.Vector Int
+p1, p2 :: Pattern
 p1 = V.fromList [1,1,1,-1,-1,1,1,-1,1,-1]
-p2 = V.fromList [-1,-1,1,1,-1,-1,1,-1,-1,1] :: V.Vector Int
+p2 = V.fromList [-1,-1,1,1,-1,-1,1,-1,-1,1]
 
 
 -- Networks with first pattern as a super attractor
 oneSuperNets :: Networks
-oneSuperAttractorNets = buildNetworks ps degrees oneSuperAttr
+oneSuperNets = buildNetworks ps degrees oneSuperAttr
   where
     ps      = [p1,p2]
     degrees = powersOfTwo $ V.length $ head ps
