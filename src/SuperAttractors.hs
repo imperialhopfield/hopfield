@@ -17,6 +17,10 @@ type Degree = Int
 type Networks = [(Degree, HopfieldData)]
 
 
+-- A function combining some input and given degree into patterns for a network
+type PatternCombiner a = a -> Degree -> [Pattern]
+
+
 -- List containing each element in xs replicated by the corresponding ns value
 -- e.g. mapReplicate [2,3] "ca" = "ccaaa"
 mapReplicate :: [Degree] -> [a] -> [a]
@@ -33,21 +37,33 @@ powersOfTwo ceil = takeWhile (<=ceil) xs
 
 -- For each degree in 'ds', builds a network combining the degree and the list
 -- of patterns (or some variant) 'as' using the given function 'combine'
-buildNetworks :: a -> [Degree] -> (a -> Degree -> [Pattern]) -> Networks
+buildNetworks :: a -> [Degree] -> PatternCombiner a -> Networks
 buildNetworks ps ds combine = map (\d -> (d, buildHopfieldData $ combine ps d)) ds
 
 
--- Combine functions passed to 'buildNetworks' --
+-- -----------------------------------------------------------------------------
+-- Combine functions. 'buildNetworks' uses these to build super attractors
 
 -- Replicates the first pattern k times.
-oneSuperAttr :: [Pattern] -> Degree -> [Pattern]
+oneSuperAttr :: PatternCombiner [Pattern]
 oneSuperAttr ps k = mapReplicate (k:cycle [1]) ps
 
 
 -- Replicates each pattern k times.
-allSuperAttr :: [Pattern] -> Degree -> [Pattern]
+allSuperAttr :: PatternCombiner [Pattern]
 allSuperAttr ps k = mapReplicate (cycle [k]) ps
 
+
+-- Aggregate list of combiner functions of input [Pattern] into a single
+-- combiner function of input [[Pattern]]
+aggregateCombiners :: [PatternCombiner [Pattern]] -> PatternCombiner [[Pattern]]
+aggregateCombiners combiners patList degree
+  | length combiners /= length patList
+      = error "Number of [Pattern] in list must match number of functions "
+  | otherwise
+      = concat $ zipWith ($) funcs patList
+  where
+    funcs = map (($ degree) . flip) combiners
 
 -- Experiments to measure super attractors --
 
