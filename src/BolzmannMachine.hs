@@ -212,7 +212,7 @@ getFreeEnergy ws pat
 
 matchPatternBolzmann :: BolzmannData -> Pattern -> [(Int, Double)]
 matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat =
-  [(fromPatToIndex p, (getFreeEnergy ws) ((V.++) pat (V.fromList . fromJust $ lookup p pats_with_binary) ) ) | p <- pats]
+  [(fromPatToIndex p, (getPatternProbability) ((V.++) pat (V.fromList . fromJust $ lookup p pats_with_binary) ) ) | p <- pats]
     where
       getPatternProbability x = exp $ (- getFreeEnergy ws x)
       fromPatToIndex p = fromJust $ p `elemIndex` pats
