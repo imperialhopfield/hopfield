@@ -4,6 +4,7 @@
 module Util (
     combine
   , combineVectors
+  , dotProduct
   , (*.)
   , (./.)
   , findInList
@@ -88,6 +89,12 @@ combine f xs ys = zipWith (zipWith f) xs ys
 
 combineVectors :: (a -> b -> c) -> V.Vector a -> V.Vector b -> V.Vector c
 combineVectors f v_a v_b = V.fromList (zipWith f (V.toList v_a) (V.toList v_b) )
+
+-- assertion same size and move to Util
+dotProduct :: Num a => V.Vector a -> V.Vector a -> a
+dotProduct xs ys
+  = sum [ xs V.! i * (ys V.! i ) | i <- [0.. V.length xs - 1]]
+
 
 -- Tries to find a element in a list. In case of success, returns the index
 -- of the element (the first one, in case of multiple occurences). In case of

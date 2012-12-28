@@ -107,10 +107,6 @@ getActivationProbabilityVisible :: Weights -> Bias -> Pattern -> Int -> Double
 getActivationProbabilityVisible ws bias h index
   = activation $ getActivationSum ws bias h index
 
--- assertion same size and move to Util
-dotProduct :: Num a => V.Vector a -> V.Vector a -> a
-dotProduct xs ys
-  = sum [ xs ! i * (ys ! i ) | i <- [0.. V.length xs - 1]]
 
 getActivationSumHidden :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
 getActivationSumHidden ws u c v y index
@@ -191,10 +187,10 @@ oneTrainingStep (BoltzmannData ws u b c d pats nr_h pat_to_class) v = do
   let y'   = updateClassification u d h
       (h_sum' :: V.Vector Double) = getHiddenSums ws u c v' y'
   let f    = fromDataVector . fmap fromIntegral
-      pos_ws  = NC.toLists $ (f v)  `NC.outer` (fromDataVector h_sum)  -- "positive gradient"
-      neg_ws  = NC.toLists $ (f v') `NC.outer` (fromDataVector h_sum')  -- "negative gradient"
-      pos_u   = NC.toLists $ (f y)  `NC.outer` (fromDataVector h_sum)   -- "positive gradient"
-      neg_u   = NC.toLists $ (f y') `NC.outer` (fromDataVector h_sum')  -- "negative gradient"
+      pos_ws  = NC.toLists $ (fromDataVector h_sum)  `NC.outer` (f v) -- "positive gradient"
+      neg_ws  = NC.toLists $ (fromDataVector h_sum') `NC.outer` (f v') -- "negative gradient"
+      pos_u   = NC.toLists $ (fromDataVector h_sum)  `NC.outer` (f y)  -- "positive gradient"
+      neg_u   = NC.toLists $ (fromDataVector h_sum') `NC.outer` (f y') -- "negative gradient"
       d_ws    = map (map (* learningRate)) $ combine (-) pos_ws neg_ws -- weights delta
       new_ws  = vector2D $ combine (+) (list2D ws) d_ws
       d_u     = map (map (* learningRate)) $ combine (-) pos_u neg_u -- weights delta
@@ -218,8 +214,8 @@ trainBolzmann pats nr_h = do
   u  <- vector2D `liftM` genU
   foldM oneTrainingStep (BoltzmannData ws u b c d pats nr_h pats_classes) pats
     where
-      genWeights = replicateM nr_visible . replicateM nr_h $ normal 0.0 0.01
-      genU       = replicateM nr_classes . replicateM nr_h $ normal 0.0 0.01
+      genWeights = replicateM nr_h . replicateM nr_visible $ normal 0.0 0.01
+      genU       = replicateM nr_h . replicateM nr_classes $ normal 0.0 0.01
       b  = V.fromList $ replicate nr_visible 0.0
       c  = V.fromList $ replicate nr_h 0.0
       d  = V.fromList $ replicate nr_classes 0.0
