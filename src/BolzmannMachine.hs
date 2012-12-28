@@ -54,11 +54,6 @@ data BolzmannData = BolzmannData {
   deriving(Show)
 
 
--- | Gives the opposite type of layer.
-notMode :: Mode -> Mode
-notMode Hidden  = Visible
-notMode Visible = Hidden
-
 -- | Retrieves the dimension of the weights matrix corresponding to the given mode.
 -- For hidden, it is the width of the matrix, and for visible it is the height.
 getDimension :: Mode -> Weights -> Int
@@ -86,9 +81,7 @@ buildBolzmannData' pats nr_hidden
       = error "Cannot have empty patterns"
   | any (\x -> V.length x /= first_len) pats
       = error "All training patterns must have the same length"
-  | otherwise = do
-      (ws, pats_with_binary) :: (Weights, [(Pattern, [Int])]) <- trainBolzmann pats nr_hidden
-      return $ BolzmannData ws pats nr_hidden pats_with_binary
+  | otherwise = trainBolzmann pats nr_hidden
   where
     first_len = V.length (head pats)
 
@@ -117,10 +110,19 @@ getActivationProbabilityVisible ws bias h index  = if a <=1 && a >=0 then a else
 dotProduct :: Num a => Vector a -> Vector a -> a
 dotProduct xs ys = sum [ xs ! i * (ys ! i ) | i <- [0.. V.length xs - 1]]
 
+getActivationSumHidden :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
+getActivationSumHidden ws u c v y index
+  = c ! index + dotProduct (ws ! index) (to_double v) + dotProduct (u ! index) (to_double y)
+      where to_double = fmap fromIntegral
+
+
+getHiddenSums :: :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Vector Double
+getHiddenSums ws u c v y index = V. fromList [getActivationSumHidden ws u c v y i | i <- [0 .. V.length ws ! 0 - 1]]
+
+
 getActivationProbabilityHidden ::  Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
 getActivationProbabilityHidden ws u c v y index
-  = activation (c ! index + dotProduct (ws ! index) (to_double v) + dotProduct (u ! index) (to_double y))
-    where to_double = fmap fromIntegral
+  = activation (getActivationSumHidden ws u c v y index)
 
 
 -- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
@@ -130,7 +132,7 @@ updateNeuron phase ws bias h index = do
   r <- getRandomR (0.0, 1.0)
   return $ gibbsSampling r (getActivationProbabilityVisible ws bias h index)
 
-
+-- see if one can use map or list comp
 updateNeuronHidden :: MonadRandom m => Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> m Int
 updateNeuronHidden ws u c v y index = do
   r <- getRandomR (0.0, 1.0)
@@ -146,20 +148,20 @@ updateVisible ws bias h
   -- | otherwise
   = V.fromList `liftM` mapM (updateNeuronVisible ws bias h) updatedIndices
     where
-      updatedIndices = [0 .. V.length ws]
+      updatedIndices = [0 .. V.length ws - 1]
 
 
-updateHidden :: Weights -> Weights -> Weights -> Bias -> Pattern -> Pattern -> m Int
-updateNeuronHidden ws u c v y = do
+updateHidden ::  MonadRandom m => Weights -> Weights -> Weights -> Bias -> Pattern -> Pattern -> m Int
+updateHidden ws u c v y = do
   = V.fromList `liftM` mapM (updateNeuronHidden ws u c v y) updatedIndices
     where
-      updatedIndices = [0 .. V.length ws]
+      updatedIndices = [0 .. V.length $ ws ! 0 - 1 ]
 
 
 -- todo add a validClassification function which checks that there is only one
 -- 1 in the class pattern
 -- TODO replace with actual sampling using inverse method (with cdf list)
-updateClassification :: MonadRandom m => Weights -> Bias -> Pattern -> m Pattern
+updateClassification :: Weights -> Bias -> Pattern -> Pattern
 updateClassification u d h = V.fromList [ if n == new_class then 1 else 0 | n <- all_classes]
   where
     new_class   = maximumBy (exp . (getActivationSum u d h) ) all_classes
@@ -167,23 +169,37 @@ updateClassification u d h = V.fromList [ if n == new_class then 1 else 0 | n <-
     nr_classes  = V.length y
 
 
+-- TODO remove code duplication between this and above
+getClassificationVector :: Pattern -> [(Pattern, Int)] -> Int -> Pattern
+getClassificationVector pat pat_classes nr_classes =
+   = V.fromList [ if n == y_class then 1 else 0 | n <- all_classes]
+        where all_classes = [0 .. nr_classes - 1]
+              pat_class = fromJust $ lookup pat pat_classes
+
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 --@oneTrainingStep bm visible class@
-oneTrainingStep :: MonadRandom m => BoltzmannData -> Pattern -> Pattern ->  m BoltzmannData
+oneTrainingStep :: MonadRandom m => BoltzmannData -> Pattern ->  m BoltzmannData
 oneTrainingStep (BolzmannData ws u b c d pats nr_h nr_c pat_to_class) v = do
-  -- TODO lookup v in pats to binary
-  h        <- getCounterPattern Visible ws v
-  v'       <- getCounterPattern Hidden  ws h
-  h'       <- getCounterPattern Visible ws v'
+  let y = getClassificationVector v pat_to_class nr_c
+  h_sum    <- getHiddenSums ws u c v y
+  h        <- updateHidden  ws u c v y
+  let y' = updateClassification u d h
+  v'       <- updateVisible ws b h
+  h_sum'   <- getHiddenSums ws u c v' y'
   let f    = fromDataVector . fmap fromIntegral
-      pos  = NC.toLists $ (f v) `NC.outer` (f h)   -- "positive gradient"
-      neg  = NC.toLists $ (f v') `NC.outer` (f h') -- "negative gradient"
-      d_ws = map (map (* learningRate)) $ combine (-) pos neg -- weights delta
-      new_weights = combine (+) (list2D ws) d_ws
-      new_b       = b + learningRate (v - v')
-      new_c       = c + learningRate (h - h')
+      pos_ws  = NC.toLists $ (f v)  `NC.outer` (fromDataVector h_sum)   -- "positive gradient"
+      neg_ws  = NC.toLists $ (f v') `NC.outer` (fromDataVector h_sum')  -- "negative gradient"
+      pos_u   = NC.toLists $ (f u)  `NC.outer` (fromDataVector h_sum)   -- "positive gradient"
+      neg_u   = NC.toLists $ (f u') `NC.outer` (fromDataVector h_sum')  -- "negative gradient"
+      d_ws = map (map (* learningRate)) $ combine (-) pos_ws neg_ws     -- weights delta
+      new_ws = combine (+) (list2D ws) d_ws
+      d_u = map (map (* learningRate)) $ combine (-) pos_u neg_u        -- weights delta
+      new_u = combine (+) (list2D ws) d_u
+      new_b       = b + learningRate * (v - v')
+      new_c       = c + learningRate * (h_sum - h_sum')
+      new_d       = d + learningRate * (y - y')
   return $ BoltzmannData (new_ws new_u new_b new_c new_d pats nr_h nr_c pat_to_class)
 
 
@@ -194,21 +210,20 @@ oneTrainingStep (BolzmannData ws u b c d pats nr_h nr_c pat_to_class) v = do
 -- @trainBolzmann pats nr_hidden@ where @pats@ are the training patterns
 -- and @nr_hidden@ is the number of neurons to be created in the hidden layer.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m (Weights, [(Pattern, [Int])])
-trainBolzmann pats nr_hidden = do
-  weights_without_bias <- genWeights
-  -- add biases as a dimension of the matrix, in order to include them in the
-  -- contrastive divergence algorithm
-  let ws = [0: x | x <- weights_without_bias]
-      ws_start  = (replicate (nr_hidden + 1) 0) : ws
-  ws <- foldM oneTrainingStep (vector2D ws_start) pats'
-  return (ws, paths_with_binary_indices)
+trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m BolzmannData
+trainBolzmann pats nr_h = do
+  ws <- genWeights
+  u  <- genU
+  foldM oneTrainingStep (BolzmannData ws u b c d pats nr_h pats_classes nr_classes) pats
     where
-      genWeights = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
-      paths_with_binary_indices = getBinaryIndices pats
-      pats' = [(V.++) x $ encoding x | x <- pats]
-      encoding x = V.fromList . fromJust $ lookup x paths_with_binary_indices
-      nr_visible = V.length $ pats' !! 0
+      genWeights = replicateM nr_visible . replicateM nr_h $ normal 0.0 0.01
+      genU       = replicateM nr_classes . replicateM nr_h $ normal 0.0 0.01
+      b  = V.fromList $ replicate nr_visible 0
+      c  = V.fromList $ replicate nr_classes 0
+      d  = V.fromList $ replicate nr_h 0
+      nub_pats = nub pats
+      nr_classes = length nub_pats
+      pats_classes = [ p_class | p <- zip nub_pats [0 .. ] ]
 
 
 -- | The activation functiom for the network (the logistic sigmoid).
@@ -237,32 +252,3 @@ validWeights ws
   | otherwise = Nothing
 
 
--- see http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf section 16.1
-
--- TODO change this using BoltzmannData using new formulas
-getFreeEnergy :: Weights -> Pattern -> Double
-getFreeEnergy ws pat
-  | Just e <- validWeights ws                      = error e
-  | Just e <- validPattern Matching Visible ws pat = error e
-  | otherwise = - biases - sum (map f xs)
-    where w i j = ((ws :: Weights) ! i ! j) :: Double
-          biases = sum [ w (i + 1) 0  *. (pat ! i)        | i <- [0 .. p - 1] ]
-          xs = [ w 0 j + sum [ w (i + 1) j *.  (pat ! i)  | i <- [0 .. p - 1] ] | j <- [1 .. (V.length $ ws ! 0) - 1]]
-          f x = log (1 + exp x)
-          p = V.length pat
-
-
-matchPatternBolzmann :: BolzmannData -> Pattern -> Int
-matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat
-  = case final_pattern `elemIndex` pats of
-      Nothing -> error "unmatched pattern" -- if the code is well written this should never happen
-      Just x  -> x
-    where
-      final_pattern = fromJust $ lookup encoding binary_encodings_to_pats
-      trials = map (\x -> (V.++) x pat) (map (V.fromList . snd) pats_with_binary)
-      enconding_size = length $ snd $ head pats_with_binary
-      binary_encodings_to_pats = map swap pats_with_binary
-      getPatternProbability x = exp $ getFreeEnergy ws x
-      compare_according_to_energy x y = compare (getPatternProbability x) (getPatternProbability y)
-      min_pat = maximumBy compare_according_to_energy trials
-      encoding = drop (V.length min_pat - enconding_size) (V.toList min_pat)
