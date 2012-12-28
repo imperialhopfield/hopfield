@@ -65,11 +65,18 @@ aggregateCombiners combiners patList degree
   where
     funcs = map (($ degree) . flip) combiners
 
--- Experiments to measure super attractors --
+-- -----------------------------------------------------------------------------
+-- Experiments to measure super attractors
 
+-- Training (pre) patterns
 p1, p2 :: Pattern
 p1 = V.fromList [1,1,1,-1,-1,1,1,-1,1,-1]
 p2 = V.fromList [-1,-1,1,1,-1,-1,1,-1,-1,1]
+
+
+-- Retraining (post) patterns
+q1 :: Pattern
+q1 = V.fromList [1,-1,-1,-1,1,-1,-1,1,1,1]
 
 
 -- Networks with first pattern as a super attractor
@@ -82,10 +89,45 @@ oneSuperNets = buildNetworks ps degrees oneSuperAttr
 
 -- Networks with all patterns as (equal) super attractors
 allSuperNets :: Networks
-oneSuperAttractorNets = buildNetworks ps degrees allSuperAttr
+allSuperNets = buildNetworks ps degrees allSuperAttr
   where
     ps      = [p1,p2]
     degrees = powersOfTwo $ V.length $ head ps
+
+
+
+-- Convenience function for building networks with multiple training phases
+buildMultiPhaseNetwork :: [PatternCombiner [Pattern]] -> Networks
+buildMultiPhaseNetwork combFuncs = buildNetworks patList degrees aggComb
+  where
+    patList = [ [p1,p2], [q1] ]
+    degrees = powersOfTwo $ (V.length . head . head) patList
+    aggComb = aggregateCombiners combFuncs
+
+
+retrainNormalWithOneSuper   :: Networks
+retrainOneSuperWithNormal   :: Networks
+retrainOneSuperWithOneSuper :: Networks
+retrainAllSuperWithNormal   :: Networks
+retrainAllSuperWithOneSuper :: Networks
+
+-- A normal network (i.e. no super attractor) retrained with one super attractor
+retrainNormalWithOneSuper = buildMultiPhaseNetwork [const, oneSuperAttr]
+
+-- A network with one super attractor retrained with a normal pattern (i.e. a
+-- non-super attractor)
+retrainOneSuperWithNormal = buildMultiPhaseNetwork [oneSuperAttr, const]
+
+-- A network with one super attractor retrained with another super attractor
+retrainOneSuperWithOneSuper = buildMultiPhaseNetwork [oneSuperAttr, oneSuperAttr]
+
+-- A network with all super attractors retrained with a normal pattern (i.e. a
+-- non-super attractor)
+retrainAllSuperWithNormal = buildMultiPhaseNetwork [allSuperAttr, const]
+
+-- A network with all super attractors retrained with another super attractor
+retrainAllSuperWithOneSuper = buildMultiPhaseNetwork [allSuperAttr, oneSuperAttr]
+
 
 
 -- Measure basin of multiple networks, with various degrees
