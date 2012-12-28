@@ -5,6 +5,9 @@ module BolzmannMachine where
 
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
 
+-- Using RBM for recognition
+-- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
+-- http://www.dmi.usherb.ca/~larocheh/publications/drbm-mitacs-poster.pdf
 
 import           Data.Maybe
 import           Data.Tuple
@@ -39,11 +42,17 @@ data Phase = Training | Matching
 data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
   , patternsB :: [Pattern] -- ^ the patterns which were used to train it
+-- can be decuded from weights, maybe should be remove now
   , nr_hidden :: Int       -- ^ number of neurons in the hidden layer
+
   , pattern_to_binary :: [(Pattern, [Int])] -- ^ the binary representation of the pattern index
       -- the pattern_to_binary field will not replace the patternsB field as it does
       -- not contain duplicated patterns, which might be required for statistical
       -- analysis in clustering and super attractors
+  ,  b  :: Pattern
+  ,  c  :: Pattern
+  ,  d  :: Pattern
+  ,  classificationWeights :: Weights -- weigths for classification
 }
   deriving(Show)
 
@@ -129,18 +138,20 @@ getCounterPattern phase mode ws pat
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-updateWeights :: MonadRandom m => Weights -> Pattern -> m Weights
-updateWeights ws v = do
-  let biased_v = V.cons 1 v
-  h        <- getCounterPattern Training Visible ws biased_v
-  v'       <- getCounterPattern Training Hidden  ws h
-  h'       <- getCounterPattern Training Visible ws v'
+--@oneTrainingStep bm visible class@
+oneTrainingStep :: MonadRandom m => BoltzmannData -> Pattern -> Pattern ->  m BoltzmannData
+oneTrainingStep (BolzmannData ws pats nr_h pats_to_binary b c d u) v y = do
+  h        <- getCounterPattern Visible ws v
+  v'       <- getCounterPattern Hidden  ws h
+  h'       <- getCounterPattern Visible ws v'
   let f    = fromDataVector . fmap fromIntegral
-      pos  = NC.toLists $ (f biased_v) `NC.outer` (f h)   -- "positive gradient"
+      pos  = NC.toLists $ (f v) `NC.outer` (f h)   -- "positive gradient"
       neg  = NC.toLists $ (f v') `NC.outer` (f h') -- "negative gradient"
       d_ws = map (map (* learningRate)) $ combine (-) pos neg -- weights delta
       new_weights = combine (+) (list2D ws) d_ws
-  return $ vector2D new_weights
+      new_b       = b + learningRate (v - v')
+      new_c       = c + learningRate (h - h')
+  return $ BoltzmannData (vector2D new_weights )
 
 
 -- | The training function for the Bolzmann Machine.
@@ -157,7 +168,7 @@ trainBolzmann pats nr_hidden = do
   -- contrastive divergence algorithm
   let ws = [0: x | x <- weights_without_bias]
       ws_start  = (replicate (nr_hidden + 1) 0) : ws
-  ws <- foldM updateWeights (vector2D ws_start) pats'
+  ws <- foldM oneTrainingStep (vector2D ws_start) pats'
   return (ws, paths_with_binary_indices)
     where
       genWeights = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
@@ -194,6 +205,8 @@ validWeights ws
 
 
 -- see http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf section 16.1
+
+-- TODO change this using BoltzmannData using new formulas
 getFreeEnergy :: Weights -> Pattern -> Double
 getFreeEnergy ws pat
   | Just e <- validWeights ws                      = error e
