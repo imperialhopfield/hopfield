@@ -31,28 +31,25 @@ import Util
 learningRate = 0.1 :: Double
 
 
-data Mode = Hidden | Visible
- deriving(Eq, Show)
+ data Mode = Hidden | Visible
+  deriving(Eq, Show)
 
 
-data Phase = Training | Matching
- deriving(Eq, Show)
+ -- data Phase = Training | Matching
+--  deriving(Eq, Show)
 
 
 data BolzmannData = BolzmannData {
     weightsB :: Weights    -- ^ the weights of the network
+  , classificationWeights :: Weights -- weigths for classification
+  ,  b  :: Pattern -- biases
+  ,  c  :: Pattern -- biases
+  ,  d  :: Pattern -- biases
   , patternsB :: [Pattern] -- ^ the patterns which were used to train it
--- can be decuded from weights, maybe should be remove now
+  -- can be decuded from weights, maybe should be remove now
   , nr_hidden :: Int       -- ^ number of neurons in the hidden layer
-
-  , pattern_to_binary :: [(Pattern, [Int])] -- ^ the binary representation of the pattern index
-      -- the pattern_to_binary field will not replace the patternsB field as it does
-      -- not contain duplicated patterns, which might be required for statistical
-      -- analysis in clustering and super attractors
-  ,  b  :: Pattern
-  ,  c  :: Pattern
-  ,  d  :: Pattern
-  ,  classificationWeights :: Weights -- weigths for classification
+  , nr_classes :: Int
+  , pattern_to_class :: [(Pattern, Int)] -- the class of the given pattern
 }
   deriving(Show)
 
@@ -96,43 +93,78 @@ buildBolzmannData' pats nr_hidden
     first_len = V.length (head pats)
 
 
--- Pure version of updateNeuron for testing
-updateNeuron' ::  Double -> Phase -> Mode -> Weights -> Pattern -> Int -> Int
-updateNeuron' r phase mode ws pat index = if (r < a) then 1 else 0
-  where a = getActivationProbability phase mode ws pat index
+gibbsSampling :: Double -> Double -> Int
+gibbsSampling r a = if (r < a) then 1 else 0
+
+-- @getActivationProbability ws bias pat index@
+-- can be used to compute the activation probability for a neuron in the
+-- visible layer, or for parts of the sums requires for
+-- the probabilty of the classifications
+getActivationSum :: Weights -> Bias -> Pattern -> Int -> Double
+getActivationSum ws bias pat index
+-- TODO replace with dot product function by using column function for ws
+  = bias ! index + sum $ [(ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
+    where
+      p = V.length pat
 
 
-getActivationProbability :: Phase -> Mode -> Weights -> Pattern -> Int -> Double
-getActivationProbability phase mode ws pat index = if a <=1 && a >=0 then a else error (show a)
-  where
-    a = activation . sum $ case mode of
-      Hidden   -> [ (ws ! index ! i) *. (pat' ! i) | i <- [0 .. p-1] ]
-      Visible  -> [ (ws ! i ! index) *. (pat' ! i) | i <- [0 .. p-1] ]
-    pat' = case phase of
-            Matching -> V.cons 1 pat
-            Training -> pat
-    p = V.length pat'
+getActivationProbabilityVisible :: Weights -> Bias -> Pattern -> Int -> Double
+getActivationProbabilityVisible ws bias h index  = if a <=1 && a >=0 then a else error (show a)
+  where a = activation $ getActivationSum ws bias h index
+
+
+-- assertion same size and move to Util
+dotProduct :: Num a => Vector a -> Vector a -> a
+dotProduct xs ys = sum [ xs ! i * (ys ! i ) | i <- [0.. V.length xs - 1]]
+
+getActivationProbabilityHidden ::  Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
+getActivationProbabilityHidden ws u c v y index
+  = activation (c ! index + dotProduct (ws ! index) (to_double v) + dotProduct (u ! index) (to_double y))
+    where to_double = fmap fromIntegral
 
 
 -- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
 -- updates the neuron with number @index@ in the layer with opposite type.
-updateNeuron :: MonadRandom m => Phase -> Mode -> Weights -> Pattern -> Int -> m Int
-updateNeuron phase mode ws pat index = do
+updateNeuronVisible :: MonadRandom m => Weights -> Bias -> Pattern -> Int -> m Int
+updateNeuron phase ws bias h index = do
   r <- getRandomR (0.0, 1.0)
-  return $ updateNeuron' r phase mode ws pat index
+  return $ gibbsSampling r (getActivationProbabilityVisible ws bias h index)
+
+
+updateNeuronHidden :: MonadRandom m => Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> m Int
+updateNeuronHidden ws u c v y index = do
+  r <- getRandomR (0.0, 1.0)
+  return $ gibbsSampling r (getActivationProbabilityHidden ws u c v y index)
+
 
 
 -- | @getCounterPattern mode ws pat@, given a vector @pat@ of type @mode@
 -- computes the values of all the neurons in the layer of the opposite type.
-getCounterPattern :: MonadRandom m => Phase -> Mode -> Weights -> Pattern -> m Pattern
-getCounterPattern phase mode ws pat
-  | Just e <- validPattern phase mode ws pat = error e
-  | otherwise = V.fromList `liftM` mapM (updateNeuron phase mode ws pat) updatedIndices
+updateVisible :: MonadRandom m => Weights -> Bias -> Pattern -> m Pattern
+updateVisible ws bias h
+  -- | Just e <- validPattern phase mode ws pat = error e
+  -- | otherwise
+  = V.fromList `liftM` mapM (updateNeuronVisible ws bias h) updatedIndices
     where
-      updatedIndices = [0 .. getDimension (notMode mode) ws - diff]
-      diff = case phase of
-              Training -> 1
-              Matching -> 2
+      updatedIndices = [0 .. V.length ws]
+
+
+updateHidden :: Weights -> Weights -> Weights -> Bias -> Pattern -> Pattern -> m Int
+updateNeuronHidden ws u c v y = do
+  = V.fromList `liftM` mapM (updateNeuronHidden ws u c v y) updatedIndices
+    where
+      updatedIndices = [0 .. V.length ws]
+
+
+-- todo add a validClassification function which checks that there is only one
+-- 1 in the class pattern
+-- TODO replace with actual sampling using inverse method (with cdf list)
+updateClassification :: MonadRandom m => Weights -> Bias -> Pattern -> m Pattern
+updateClassification u d h = V.fromList [ if n == new_class then 1 else 0 | n <- all_classes]
+  where
+    new_class   = maximumBy (exp . (getActivationSum u d h) ) all_classes
+    all_classes = [0 .. nr_classes - 1]
+    nr_classes  = V.length y
 
 
 -- | One step which updates the weights in the CD-n training process.
@@ -140,7 +172,8 @@ getCounterPattern phase mode ws pat
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 --@oneTrainingStep bm visible class@
 oneTrainingStep :: MonadRandom m => BoltzmannData -> Pattern -> Pattern ->  m BoltzmannData
-oneTrainingStep (BolzmannData ws pats nr_h pats_to_binary b c d u) v y = do
+oneTrainingStep (BolzmannData ws u b c d pats nr_h nr_c pat_to_class) v = do
+  -- TODO lookup v in pats to binary
   h        <- getCounterPattern Visible ws v
   v'       <- getCounterPattern Hidden  ws h
   h'       <- getCounterPattern Visible ws v'
@@ -151,7 +184,7 @@ oneTrainingStep (BolzmannData ws pats nr_h pats_to_binary b c d u) v y = do
       new_weights = combine (+) (list2D ws) d_ws
       new_b       = b + learningRate (v - v')
       new_c       = c + learningRate (h - h')
-  return $ BoltzmannData (vector2D new_weights )
+  return $ BoltzmannData (new_ws new_u new_b new_c new_d pats nr_h nr_c pat_to_class)
 
 
 -- | The training function for the Bolzmann Machine.
