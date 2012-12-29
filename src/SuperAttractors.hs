@@ -4,6 +4,7 @@
 -- with varying pattern degrees
 module SuperAttractors where
 
+import           Basin
 import           Control.Monad
 import           Control.Monad.Random (MonadRandom)
 import qualified Data.Vector as V
@@ -32,7 +33,7 @@ mapReplicate ns xs
 powersOfTwo :: Degree -> [Degree]
 powersOfTwo ceil = takeWhile (<=ceil) xs
   where
-  	xs = 1 : map (*2) xs
+    xs = 1 : map (*2) xs
 
 
 -- For each degree in 'ds', builds a network combining the degree and the list
@@ -131,13 +132,13 @@ retrainAllSuperWithOneSuper = buildMultiPhaseNetwork [allSuperAttr, oneSuperAttr
 
 
 -- Measure basin of multiple networks, with various degrees
--- Returns list of tuples: (degree, basinSize)
+-- Returns list of tuples: (degree, basinMeasure)
 --
 -- Note: degree is not actually used in computation, but rather serves
 -- as a label for each network
-measureMultiBasins :: MonadRandom m => Networks -> Pattern -> m [(Degree, Int)]
-measureMultiBasins nets p = liftM2 zip (return ks) basinSizes
+measureMultiBasins :: MonadRandom m => BasinMeasure m a -> Networks -> Pattern -> m [(Degree, a)]
+measureMultiBasins measureBasin nets p = liftM2 zip (return ks) basinMeasures
   where
-    (ks, hs)   = unzip nets
-    basin h    = measurePatternBasin h p
-    basinSizes = sequence $ map basin hs
+    (ks, hs)      = unzip nets
+    basin h       = measureBasin h p
+    basinMeasures = sequence $ map basin hs

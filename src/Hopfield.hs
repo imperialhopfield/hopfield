@@ -19,24 +19,16 @@ module Hopfield (
   , matchPattern
   -- * Energy
   , energy
-  -- * Basin of attraction
-  , measurePatternBasin
   -- * Other
   , computeError
 ) where
 
 import           Control.Monad.Random (MonadRandom)
-import           Control.Monad.Random.Class (getRandom)
-import           Data.List
 import           Data.Maybe
 import           Data.Number.Erf
-import           Data.Random.Extras (sample)
-import           Data.RVar (runRVar)
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
-import           Data.Word (Word32)
-
 import           Common
 import           Util
 
@@ -220,37 +212,3 @@ validWeights ws
   | otherwise = Nothing
   where
     n = V.length ws
-
-
--- Generate list of states with hamming distance r of the given pattern
-withHammingDistance :: Pattern -> Int -> [Pattern]
-withHammingDistance pat r = map (V.fromList . multByPat) coeffsList
-  where
-    n                = V.length pat
-    perms            = sequence $ replicate n [1, -1]
-    hasDistanceR xs  = replicate r (-1) == filter (== (-1)) xs
-    coeffsList       = filter hasDistanceR perms
-    multByPat coeffs = zipWith (*) coeffs (V.toList pat)
-
-
--- Percentage of sampled patterns with hamming distance 'r' from 'pat' which
--- converge to 'pat'
--- pre: pattern of same size as network
-samplePatternBasin :: forall m . MonadRandom m => HopfieldData -> Pattern -> Int -> m Double
-samplePatternBasin hs pat r = do
-  let rSamples      =  sample 100 $ withHammingDistance pat r
-  samples           <- runRVar rSamples (getRandom :: m Word32)
-  convergedPatterns <- mapM (repeatedUpdate $ weights hs) samples
-  let numConverging =  length $ filter (==pat) convergedPatterns
-
-  return $ numConverging ./. (length samples)
-
-
--- Measures pattern's basin of attraction using the Storkey-Valabregue method
--- pre: pattern of same size as network
-measurePatternBasin :: (MonadRandom m) => HopfieldData -> Pattern -> m Int
-measurePatternBasin hs pat = do
-  t_mus <- mapM (samplePatternBasin hs pat)  [1..n]
-  return $ fromMaybe n $ findIndex (<0.9) t_mus
-    where
-      n   = V.length pat
