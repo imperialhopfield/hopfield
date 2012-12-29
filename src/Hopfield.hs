@@ -222,23 +222,23 @@ validWeights ws
     n = V.length ws
 
 
--- Generate list of states within hamming distance r of the given pattern
-withinHammingRadius :: Pattern -> Int -> [Pattern]
-withinHammingRadius pat r = map (V.fromList . multByPat) coeffsList
+-- Generate list of states with hamming distance r of the given pattern
+withHammingDistance :: Pattern -> Int -> [Pattern]
+withHammingDistance pat r = map (V.fromList . multByPat) coeffsList
   where
     n                = V.length pat
     perms            = sequence $ replicate n [1, -1]
-    withinDist       = null . (drop r) . (filter (== (-1)))
-    coeffsList       = filter withinDist perms
+    hasDistanceR xs  = replicate r (-1) == filter (== (-1)) xs
+    coeffsList       = filter hasDistanceR perms
     multByPat coeffs = zipWith (*) coeffs (V.toList pat)
 
 
--- Percentage of sampled patterns within hamming distance 'r' from 'pat' which
+-- Percentage of sampled patterns with hamming distance 'r' from 'pat' which
 -- converge to 'pat'
 -- pre: pattern of same size as network
 samplePatternBasin :: forall m . MonadRandom m => HopfieldData -> Pattern -> Int -> m Double
 samplePatternBasin hs pat r = do
-  let rSamples      =  sample 100 $ withinHammingRadius pat r
+  let rSamples      =  sample 100 $ withHammingDistance pat r
   samples           <- runRVar rSamples (getRandom :: m Word32)
   convergedPatterns <- mapM (repeatedUpdate $ weights hs) samples
   let numConverging =  length $ filter (==pat) convergedPatterns
