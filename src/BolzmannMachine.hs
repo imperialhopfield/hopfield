@@ -209,17 +209,23 @@ oneTrainingStep (BoltzmannData ws u b c d pats nr_h pat_to_class) v = do
   let y'   = updateClassification u d h
       (h_sum' :: V.Vector Double) = getHiddenSums ws u c v' y'
   let f    = fromDataVector . toDouble
-      pos_ws  = NC.toLists $ (fromDataVector h_sum)  `NC.outer` (f v) -- "positive gradient"
-      neg_ws  = NC.toLists $ (fromDataVector h_sum') `NC.outer` (f v') -- "negative gradient"
-      pos_u   = NC.toLists $ (fromDataVector h_sum)  `NC.outer` (f y)  -- "positive gradient"
-      neg_u   = NC.toLists $ (fromDataVector h_sum') `NC.outer` (f y') -- "negative gradient"
-      d_ws    = map (map (* learningRate)) $ combine (-) pos_ws neg_ws -- weights delta
-      new_ws  = vector2D $ combine (+) (list2D ws) d_ws
-      d_u     = map (map (* learningRate)) $ combine (-) pos_u neg_u -- weights delta
-      new_u   = vector2D $ combine (+) (list2D ws) d_u
-      new_b   = combineVectors (+) b $ V.map ((* learningRate) . fromIntegral) (combineVectors (-) v v')
-      new_c   = combineVectors (+) c $ V.map ((* learningRate)) (combineVectors (-) h_sum h_sum')
-      new_d   = combineVectors (+) d $ V.map ((* learningRate) . fromIntegral) (combineVectors (-) y y')
+      getOuterProduct x y = NC.toLists $ (fromDataVector x)  `NC.outer` (f y)
+      getDelta pos neg = map (map (* learningRate)) $ combine (-) pos neg
+      updateWeights w d_w = vector2D $ combine (+) (list2D w) d_w
+      deltaBias v1 v2 = V.map ((* learningRate) . fromIntegral) (combineVectors (-) v1 v2)
+      deltaBiasC v1 v2 = V.map (* learningRate) (combineVectors (-) v1 v2)
+      updateBias bias delta_bias = combineVectors (+) b delta_bias
+      pos_ws  = getOuterProduct h_sum  v  -- "positive gradient for ws"
+      neg_ws  = getOuterProduct h_sum' v' -- "negative gradient for ws"
+      pos_u   = getOuterProduct h_sum  y  -- "positive gradient for u"
+      neg_u   = getOuterProduct h_sum' v' -- "negative gradient for u"
+      d_ws    = getDelta pos_ws neg_ws    -- "delta ws"
+      new_ws  = updateWeights ws d_ws
+      d_u     = getDelta pos_u neg_u      -- "delta u"
+      new_u   = updateWeights u d_u
+      new_b   = updateBias  b (deltaBias v v')
+      new_c   = updateBiasC c (deltaBias h_sum h_sum')
+      new_d   = updateBias  d (deltaBias y y')
   return $ BoltzmannData new_ws new_u new_b new_c new_d pats nr_h pat_to_class
 
 
