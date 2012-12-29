@@ -30,7 +30,7 @@ import Debug.Trace
 
 -- | determines the rate in which the weights are changed in the training phase.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-learningRate = 0.0035 :: Double
+learningRate = 0.0038 :: Double
 
 
 data Mode = Hidden | Visible
@@ -208,24 +208,23 @@ oneTrainingStep (BoltzmannData ws u b c d pats nr_h pat_to_class) v = do
   v'       <- updateVisible ws b h
   let y'   = updateClassification u d h
       (h_sum' :: V.Vector Double) = getHiddenSums ws u c v' y'
-  let f    = fromDataVector . toDouble
-      getOuterProduct x y = NC.toLists $ (fromDataVector x)  `NC.outer` (f y)
+      getOuterProduct x y = NC.toLists $ (fromDataVector x)  `NC.outer` (fromDataVector $ toDouble y)
       getDelta pos neg = map (map (* learningRate)) $ combine (-) pos neg
       updateWeights w d_w = vector2D $ combine (+) (list2D w) d_w
       deltaBias v1 v2 = V.map ((* learningRate) . fromIntegral) (combineVectors (-) v1 v2)
       deltaBiasC v1 v2 = V.map (* learningRate) (combineVectors (-) v1 v2)
-      updateBias bias delta_bias = combineVectors (+) b delta_bias
+      updateBias bias delta_bias = combineVectors (+) bias delta_bias
       pos_ws  = getOuterProduct h_sum  v  -- "positive gradient for ws"
       neg_ws  = getOuterProduct h_sum' v' -- "negative gradient for ws"
       pos_u   = getOuterProduct h_sum  y  -- "positive gradient for u"
-      neg_u   = getOuterProduct h_sum' v' -- "negative gradient for u"
+      neg_u   = getOuterProduct h_sum' y' -- "negative gradient for u"
       d_ws    = getDelta pos_ws neg_ws    -- "delta ws"
       new_ws  = updateWeights ws d_ws
       d_u     = getDelta pos_u neg_u      -- "delta u"
       new_u   = updateWeights u d_u
-      new_b   = updateBias  b (deltaBias v v')
-      new_c   = updateBiasC c (deltaBias h_sum h_sum')
-      new_d   = updateBias  d (deltaBias y y')
+      new_b   = updateBias b (deltaBias v v')
+      new_c   = updateBias c (deltaBiasC h_sum h_sum')
+      new_d   = updateBias d (deltaBias y y')
   return $ BoltzmannData new_ws new_u new_b new_c new_d pats nr_h pat_to_class
 
 

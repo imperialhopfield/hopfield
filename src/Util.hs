@@ -94,11 +94,17 @@ fromDataVector::  (Foreign.Storable.Storable a) => V.Vector a -> NC.Vector a
 fromDataVector v = NC.fromList $ V.toList v
 
 -- the caller has to ensure that the dimensions are the same
-combine:: (a-> a -> a) -> [[a]] -> [[a]] -> [[a]]
-combine f xs ys = zipWith (zipWith f) xs ys
+combine :: (a-> b -> c) -> [[a]] -> [[b]] -> [[c]]
+combine f xs ys
+  | length xs /= length ys = error "list sizes do not match in Utils.combine"
+  | otherwise = zipWith (zipWith f) xs ys
+
 
 combineVectors :: (a -> b -> c) -> V.Vector a -> V.Vector b -> V.Vector c
-combineVectors f v_a v_b = V.fromList (zipWith f (V.toList v_a) (V.toList v_b) )
+combineVectors f v_a v_b
+  | V.length v_a /= V.length v_b = error "vector sizes do not match in dot product"
+  | otherwise = V.fromList (zipWith f (V.toList v_a) (V.toList v_b) )
+
 
 -- assertion same size and move to Util
 dotProduct :: Num a => V.Vector a -> V.Vector a -> a
