@@ -1,5 +1,4 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE Rank2Types #-}
 
 -- | Functions to measure a network's basins of attractions
 module Basin (
