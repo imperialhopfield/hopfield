@@ -22,6 +22,8 @@ import qualified Numeric.Container as NC
 import Common
 import Util
 
+import Debug.Trace
+
 -- In the case of the Bolzamann Machine the weight matrix establishes the
 -- weigths between visible and hidden neurons
 -- w i j - connection between visible neuron i and hidden neuron j
@@ -33,10 +35,6 @@ learningRate = 0.1 :: Double
 
 data Mode = Hidden | Visible
   deriving(Eq, Show)
-
-
- -- data Phase = Training | Matching
---  deriving(Eq, Show)
 
 
 data BoltzmannData = BoltzmannData {
@@ -57,8 +55,8 @@ data BoltzmannData = BoltzmannData {
 -- | Retrieves the dimension of the weights matrix corresponding to the given mode.
 -- For hidden, it is the width of the matrix, and for visible it is the height.
 getDimension :: Mode -> Weights -> Int
-getDimension Hidden ws  = V.length $ ws ! 0
-getDimension Visible ws = V.length $ ws
+getDimension Hidden ws  = V.length $ ws
+getDimension Visible ws = V.length $ ws ! 0
 
 
 buildBoltzmannData ::  MonadRandom  m => [Pattern] ->  m BoltzmannData
@@ -98,7 +96,7 @@ gibbsSampling a = do
 getActivationSum :: Weights -> Bias -> Pattern -> Int -> Double
 getActivationSum ws bias pat index
 -- TODO replace with dot product function by using column function for ws
-  = bias ! index + sum [(ws ! i ! index) *. (pat ! i) | i <- [0 .. p-1] ]
+  = bias ! index + sum [(ws ! i ! index) *. (pat ! i) | i <- [0 .. p - 1] ]
     where
       p = V.length pat
 
@@ -140,18 +138,18 @@ updateNeuronHidden ws u c v y index
 -- computes the values of all the neurons in the layer of the opposite type.
 updateVisible :: MonadRandom m => Weights -> Bias -> Pattern -> m Pattern
 updateVisible ws bias h
-  -- | Just e <- validPattern phase mode ws pat = error e
+  -- | Just e <- validPattern mode ws pat = error e
   -- | otherwise
   = V.fromList `liftM` mapM (updateNeuronVisible ws bias h) updatedIndices
     where
-      updatedIndices = [0 .. V.length ws - 1]
+      updatedIndices = [0 .. (V.length $ ws ! 0) - 1]
 
 
 updateHidden ::  MonadRandom m => Weights -> Weights -> Bias -> Pattern -> Pattern -> m Pattern
 updateHidden ws u c v y
   = V.fromList `liftM` mapM (updateNeuronHidden ws u c v y) updatedIndices
     where
-      updatedIndices = [0 .. (V.length $ ws ! 0) - 1 ]
+      updatedIndices = [0 .. (V.length ws)  - 1 ]
 
 
 -- todo add a validClassification function which checks that there is only one
@@ -165,7 +163,7 @@ updateClassification u d h
       compare_by_activation_sum x y = compare (exp_activation x) (exp_activation y)
       exp_activation = exp . (getActivationSum u d h)
       all_classes = [0 .. nr_classes - 1]
-      nr_classes  = length all_classes
+      nr_classes  = V.length d
 
 
 -- TODO remove code duplication between this and above
@@ -173,6 +171,7 @@ getClassificationVector :: [(Pattern, Int)] -> Pattern -> Pattern
 getClassificationVector pat_classes pat
   = V.fromList [ if n == pat_class then 1 else 0 | n <- map snd pat_classes]
        where pat_class = fromJust $ lookup pat pat_classes
+
 
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
@@ -221,7 +220,7 @@ trainBolzmann pats nr_h = do
       d  = V.fromList $ replicate nr_classes 0.0
       nr_classes = length nub_pats
       nub_pats = nub pats
-      pats_classes = [ p_class | p_class <- zip nub_pats [0 .. ] ]
+      pats_classes = zip nub_pats [0 .. ]
       nr_visible = V.length $ pats !! 0
 
 
@@ -254,16 +253,17 @@ validWeights ws
 
 matchPatternBoltzmann :: BoltzmannData -> Pattern -> Int
 matchPatternBoltzmann bm@(BoltzmannData ws u b c d pats nr_h pats_classes) v
-  = fromJust $ max_pat `elemIndex` pats
+  = floor $ getFreeEnergy bm maxPat cl
     where
-      patterns_with_energies = [ (p, getFreeEnergy bm v (getClassificationVector pats_classes p)) | p <- pats]
-      probability x = exp $ (- x)
-      comparePats x y = compare (probability $ snd x) (probability $ snd y)
-      max_pat = fst $ maximumBy comparePats patterns_with_energies
-
+      patternsWithClassifications = [ (p, getClassificationVector pats_classes p) | p <- pats]
+      -- probability classification = exp $ (- (getFreeEnergy bm v classification))
+      -- comparePats x y = compare (probability $ snd x) (probability $ snd y)
+      (maxPat, cl) = head patternsWithClassifications
+      -- p = head pats
+        -- getFreeEnergy bm v (getClassificationVector pats_classes p))
 
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
   = - dotProduct d (fmap fromIntegral y) - sum [ f i | i <- [0 .. nr_h - 1] ]
-    where f = softplus . (getActivationSumHidden  ws u c v y)
+      where f = softplus . (getActivationSumHidden ws u c v y)
 
