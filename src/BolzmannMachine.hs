@@ -148,7 +148,8 @@ updateNeuronHidden :: MonadRandom m => Weights -> Weights ->  Bias -> Pattern ->
 updateNeuronHidden ws u c v y index
   = gibbsSampling $ getActivationProbabilityHidden ws u c v y index
 
--- | Updates a neuron in the visible layer by using gibbsSampling, according
+
+-- | Updates the entire visible layer by using gibbsSampling, according
 -- to the activation probability
 updateVisible :: MonadRandom m => Weights -> Bias -> Pattern -> m Pattern
 updateVisible ws bias h
@@ -158,6 +159,8 @@ updateVisible ws bias h
       updatedIndices = [0 .. (V.length $ ws ! 0) - 1]
 
 
+-- | Updates the entire visible layer by using gibbsSampling, according
+-- to the activation probability
 updateHidden ::  MonadRandom m => Weights -> Weights -> Bias -> Pattern -> Pattern -> m Pattern
 updateHidden ws u c v y
    | Just e <- validPattern Visible ws v = error e
@@ -165,9 +168,8 @@ updateHidden ws u c v y
     where
       updatedIndices = [0 .. (V.length ws)  - 1 ]
 
-
--- todo add a validClassification function which checks that there is only one
--- 1 in the class pattern
+-- | Updates a classification vector given the current state of the network (
+-- the u matrix and the vector of biases d, together with a hidden vector h)
 updateClassification :: Weights -> Bias -> Pattern -> Pattern
 updateClassification u d h
   = V.fromList [ if n == new_class then 1 else 0 | n <- all_classes]
@@ -180,12 +182,24 @@ updateClassification u d h
       nr_classes  = V.length d
 
 
--- TODO remove code duplication between this and above
+-- @getClassificationVector pat_to_classes pat@ returns the classification
+-- vector of @pat@, by looking up in @pat@ in @pat_to_classes@ to obtain the
+-- class of the pattern. The classification vector is obtained by
+-- creating vector with all 0s and only 1 in the position of the class.
+-- The length of all classification vectors is the number of classes.
 getClassificationVector :: [(Pattern, Int)] -> Pattern -> Pattern
 getClassificationVector pat_classes pat
   = V.fromList [ if n == pat_class then 1 else 0 | n <- map snd pat_classes]
        where pat_class = fromJust $ lookup pat pat_classes
 
+
+-- TODO move to tests
+validClassificationVector :: Pattern -> Int -> Just String
+validClassificationVector pat size
+  | V.length pat /= size = Just "classification vector does not match expected size"
+  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in classification pattern"
+  | V.sum pat /=1 = Just "Invalid classification vector"
+  | otherwise = Nothing
 
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
@@ -261,14 +275,19 @@ validPattern mode ws pat
   | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in bolzmann pattern"
   | otherwise                            = Nothing
 
-
+-- | @validWeights ws@ checks that a weight matrix is well formed.
 validWeights :: Weights -> Maybe String
 validWeights ws
   | V.null ws = Just "The  matrix of weights is empty"
   | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "Weigths matrix ill formed"
   | otherwise = Nothing
 
-
+-- | @matchPatternBoltzmann bm pat@ given the boltzmann trained network @bm@
+-- regonizes @pat@, by classifing it to one of the patterns the network was
+-- trained with. This is done by computing the free energy of @pat@ with
+-- every possible classification, and choosing the classification with
+-- lowest energy.
+-- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
 matchPatternBoltzmann :: BoltzmannData -> Pattern -> Int
 matchPatternBoltzmann bm@(BoltzmannData ws u b c d pats nr_h pats_classes) v
   = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex`pats
@@ -280,6 +299,10 @@ matchPatternBoltzmann bm@(BoltzmannData ws u b c d pats nr_h pats_classes) v
       (maxPat, _) = maximumBy comparePats patternsWithClassifications
 
 
+-- | @getFreeEnergy bm visible classification_vector@
+-- Computes the free energy of @v@ with @classification_vector@, according
+-- to the trained boltzmann network @bm@. It is used for classifing a given
+-- visible vector according to the classes used for training the network @bm@.
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
   = - dotProduct d (fmap fromIntegral y) - sum [ f i | i <- [0 .. nr_h - 1] ]
