@@ -4,6 +4,7 @@
 module Util (
     combine
   , combineVectors
+  , columnVector
   , dotProduct
   , (*.)
   , (./.)
@@ -16,6 +17,7 @@ module Util (
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
   , toBinary
+  , toDouble
   , vector2D
 ) where
 
@@ -36,6 +38,8 @@ x ./. y = fromIntegral x / fromIntegral y
 (*.) :: (Integral a1, Num a) => a -> a1 -> a
 x *. y = x * fromIntegral y
 
+toDouble :: (Integral a, Num b) => V.Vector a -> V.Vector b
+toDouble = fmap fromIntegral
 
  -- | Generates a number sampled from a random distribution, given the mean and
  -- standard deviation.
@@ -78,6 +82,12 @@ vector2D ll = V.fromList $ map V.fromList ll
 -- | Converts a 2D vector into a list of lists
 list2D :: V.Vector (V.Vector a) -> [[a]]
 list2D vv = map V.toList $ V.toList vv
+
+-- Returns the coumn vector of a matrix
+-- Caller needs to ensure that the matrix is well formed
+columnVector :: V.Vector (V.Vector a) -> Int -> V.Vector a
+columnVector m index = V.map (V.! index) m
+
 
 -- from Data.Vector to Numeric.Container.Vector
 fromDataVector::  (Foreign.Storable.Storable a) => V.Vector a -> NC.Vector a

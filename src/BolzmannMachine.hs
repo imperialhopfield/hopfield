@@ -98,10 +98,8 @@ gibbsSampling a
 -- the probabilty of the classifications
 getActivationSum :: Weights -> Bias -> Pattern -> Int -> Double
 getActivationSum ws bias pat index
--- TODO replace with dot product function by using column function for ws
-  = bias ! index + sum [(ws ! i ! index) *. (pat ! i) | i <- [0 .. p - 1] ]
-    where
-      p = V.length pat
+  = bias ! index + dotProduct (columnVector ws index) (toDouble pat)
+
 
 -- | @getActivationProbabilityVisible ws bias h index@ returns the activation
 -- probability for a neuron @index@ in a visible pattern, given the weights
@@ -111,13 +109,14 @@ getActivationProbabilityVisible :: Weights -> Bias -> Pattern -> Int -> Double
 getActivationProbabilityVisible ws bias h index
   = activation $ getActivationSum ws bias h index
 
+
 -- | @getActivationSumHidden ws bias h index@ returns the activation
 -- sum for a neuron @index@ in a hidden pattern, given the weights
 -- matrix @ws@, the vector of biases @bias@.
 getActivationSumHidden :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
 getActivationSumHidden ws u c v y index
-  = c ! index + dotProduct (ws ! index) (to_double v) + dotProduct (u ! index) (to_double y)
-      where to_double = fmap fromIntegral
+  = c ! index + dotProduct (ws ! index) (toDouble v) + dotProduct (u ! index) (toDouble y)
+
 
 -- | @getActivationSumHidden ws bias h index@ returns the activation
 -- sum for all neurons in the hidden pattern, given the weights
@@ -125,6 +124,7 @@ getActivationSumHidden ws u c v y index
 getHiddenSums :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> V.Vector Double
 getHiddenSums ws u c v y
   = V.fromList [getActivationSumHidden ws u c v y i | i <- [0 .. (V.length ws) - 1] ]
+
 
 -- | @getActivationProbabilityVisible ws u bias v index@ returns the activation
 -- probability for a neuron @index@ in a hidden pattern, given the weights
@@ -168,6 +168,7 @@ updateHidden ws u c v y
     where
       updatedIndices = [0 .. (V.length ws)  - 1 ]
 
+
 -- | Updates a classification vector given the current state of the network (
 -- the u matrix and the vector of biases d, together with a hidden vector h)
 updateClassification :: Weights -> Bias -> Pattern -> Pattern
@@ -192,14 +193,6 @@ getClassificationVector pat_classes pat
   = V.fromList [ if n == pat_class then 1 else 0 | n <- map snd pat_classes]
        where pat_class = fromJust $ lookup pat pat_classes
 
-
--- TODO move to tests
-validClassificationVector :: Pattern -> Int -> Just String
-validClassificationVector pat size
-  | V.length pat /= size = Just "classification vector does not match expected size"
-  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in classification pattern"
-  | V.sum pat /=1 = Just "Invalid classification vector"
-  | otherwise = Nothing
 
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
@@ -254,34 +247,6 @@ trainBolzmann pats nr_h = do
       nr_visible = V.length $ head pats
 
 
--- | The activation functiom for the network (the logistic sigmoid).
--- http://en.wikipedia.org/wiki/Sigmoid_function
-activation :: Double -> Double
-activation x = 1.0 / (1.0 + exp (-x))
-
--- | The function used to compute the free energy
--- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
-softplus :: Double -> Double
-softplus x = log (1.0 + exp x)
-
-
--- | @validPattern mode weights pattern@
--- Returns an error string in a Just if the @pattern@ is not compatible
--- with @weights@ and Nothing otherwise. @mode@ gives the type of the pattern,
--- which is checked (Visible or Hidden).
-validPattern :: Mode -> Weights -> Pattern -> Maybe String
-validPattern mode ws pat
-  | getDimension mode ws /= V.length pat = Just $ "Size of pattern must match network size in " ++ show mode
-  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in bolzmann pattern"
-  | otherwise                            = Nothing
-
--- | @validWeights ws@ checks that a weight matrix is well formed.
-validWeights :: Weights -> Maybe String
-validWeights ws
-  | V.null ws = Just "The  matrix of weights is empty"
-  | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "Weigths matrix ill formed"
-  | otherwise = Nothing
-
 -- | @matchPatternBoltzmann bm pat@ given the boltzmann trained network @bm@
 -- regonizes @pat@, by classifing it to one of the patterns the network was
 -- trained with. This is done by computing the free energy of @pat@ with
@@ -307,4 +272,42 @@ getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
   = - dotProduct d (fmap fromIntegral y) - sum [ f i | i <- [0 .. nr_h - 1] ]
       where f = softplus . (getActivationSumHidden ws u c v y)
+
+
+-- | The activation functiom for the network (the logistic sigmoid).
+-- http://en.wikipedia.org/wiki/Sigmoid_function
+activation :: Double -> Double
+activation x = 1.0 / (1.0 + exp (-x))
+
+-- | The function used to compute the free energy
+-- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
+softplus :: Double -> Double
+softplus x = log (1.0 + exp x)
+
+
+-- TODO move to tests
+validClassificationVector :: Pattern -> Int -> Maybe String
+validClassificationVector pat size
+  | V.length pat /= size = Just "classification vector does not match expected size"
+  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in classification pattern"
+  | V.sum pat /=1 = Just "Invalid classification vector"
+  | otherwise = Nothing
+
+
+-- | @validPattern mode weights pattern@
+-- Returns an error string in a Just if the @pattern@ is not compatible
+-- with @weights@ and Nothing otherwise. @mode@ gives the type of the pattern,
+-- which is checked (Visible or Hidden).
+validPattern :: Mode -> Weights -> Pattern -> Maybe String
+validPattern mode ws pat
+  | getDimension mode ws /= V.length pat = Just $ "Size of pattern must match network size in " ++ show mode
+  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in bolzmann pattern"
+  | otherwise                            = Nothing
+
+-- | @validWeights ws@ checks that a weight matrix is well formed.
+validWeights :: Weights -> Maybe String
+validWeights ws
+  | V.null ws = Just "The  matrix of weights is empty"
+  | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "Weigths matrix ill formed"
+  | otherwise = Nothing
 
