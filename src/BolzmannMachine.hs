@@ -208,7 +208,7 @@ oneTrainingStep (BoltzmannData ws u b c d pats nr_h pat_to_class) v = do
   v'       <- updateVisible ws b h
   let y'   = updateClassification u d h
       (h_sum' :: V.Vector Double) = getHiddenSums ws u c v' y'
-  let f    = fromDataVector . fmap fromIntegral
+  let f    = fromDataVector . toDouble
       pos_ws  = NC.toLists $ (fromDataVector h_sum)  `NC.outer` (f v) -- "positive gradient"
       neg_ws  = NC.toLists $ (fromDataVector h_sum') `NC.outer` (f v') -- "negative gradient"
       pos_u   = NC.toLists $ (fromDataVector h_sum)  `NC.outer` (f y)  -- "positive gradient"
@@ -270,7 +270,7 @@ matchPatternBoltzmann bm@(BoltzmannData ws u b c d pats nr_h pats_classes) v
 -- visible vector according to the classes used for training the network @bm@.
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
-  = - dotProduct d (fmap fromIntegral y) - sum [ f i | i <- [0 .. nr_h - 1] ]
+  = - dotProduct d (toDouble y) - sum [ f i | i <- [0 .. nr_h - 1] ]
       where f = softplus . (getActivationSumHidden ws u c v y)
 
 
