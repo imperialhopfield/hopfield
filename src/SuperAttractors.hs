@@ -60,7 +60,7 @@ allSuperAttr ps k = mapReplicate (cycle [k]) ps
 aggregateCombiners :: [PatternCombiner [Pattern]] -> PatternCombiner [[Pattern]]
 aggregateCombiners combiners patList degree
   | length combiners /= length patList
-      = error "Number of [Pattern] in list must match number of functions "
+      = error "Number of [Pattern] in list must match number of functions"
   | otherwise
       = concat $ zipWith ($) funcs patList
   where
