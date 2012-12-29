@@ -30,7 +30,7 @@ import Debug.Trace
 
 -- | determines the rate in which the weights are changed in the training phase.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-learningRate = 0.01 :: Double
+learningRate = 0.0035 :: Double
 
 
 data Mode = Hidden | Visible
@@ -62,9 +62,7 @@ getDimension Visible ws = V.length $ ws ! 0
 buildBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
 buildBoltzmannData []   = error "Train patterns are empty"
 buildBoltzmannData pats =
-  --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
-  -- TODO replace with getRandomR with bigger range
-  buildBoltzmannData' pats (nr_visible)
+  buildBoltzmannData' pats nr_visible
     where nr_visible = V.length (head pats)
 
 
@@ -83,13 +81,18 @@ buildBoltzmannData' pats nr_hidden
   where
     first_len = V.length $ head pats
 
--- TODO add error check that we have a in 0.0 to 1
-gibbsSampling :: MonadRandom  m => Double -> m Int
-gibbsSampling a = do
-  r <- getRandomR (0.0, 0.1)
-  return $ if (r < a) then 1 else 0
 
--- @getActivationProbability ws bias pat index@
+-- | @gibbsSampling a@ Gives the binary value of a neuron (0 or 1) from the
+-- activation sum
+gibbsSampling :: MonadRandom  m => Double -> m Int
+gibbsSampling a
+  | (a < 0.0 || a > 1.0) = error "argument of gibbsSampling is not a probability"
+  | otherwise = do
+      r <- getRandomR (0.0, 1.0)
+      return $ if (r < a) then 1 else 0
+
+
+-- | @getActivationProbability ws bias pat index@
 -- can be used to compute the activation probability for a neuron in the
 -- visible layer, or for parts of the sums requires for
 -- the probabilty of the classifications
@@ -100,23 +103,33 @@ getActivationSum ws bias pat index
     where
       p = V.length pat
 
-
+-- | @getActivationProbabilityVisible ws bias h index@ returns the activation
+-- probability for a neuron @index@ in a visible pattern, given the weights
+-- matrix @ws@, the vector of biases @bias@. Applies the activation function
+-- to the activation sum, in order to obtain the probability.
 getActivationProbabilityVisible :: Weights -> Bias -> Pattern -> Int -> Double
 getActivationProbabilityVisible ws bias h index
   = activation $ getActivationSum ws bias h index
 
-
+-- | @getActivationSumHidden ws bias h index@ returns the activation
+-- sum for a neuron @index@ in a hidden pattern, given the weights
+-- matrix @ws@, the vector of biases @bias@.
 getActivationSumHidden :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
 getActivationSumHidden ws u c v y index
   = c ! index + dotProduct (ws ! index) (to_double v) + dotProduct (u ! index) (to_double y)
       where to_double = fmap fromIntegral
 
-
+-- | @getActivationSumHidden ws bias h index@ returns the activation
+-- sum for all neurons in the hidden pattern, given the weights
+-- matrix @ws@, the vector of biases @bias@.
 getHiddenSums :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> V.Vector Double
 getHiddenSums ws u c v y
   = V.fromList [getActivationSumHidden ws u c v y i | i <- [0 .. (V.length ws) - 1] ]
 
-
+-- | @getActivationProbabilityVisible ws u bias v index@ returns the activation
+-- probability for a neuron @index@ in a hidden pattern, given the weights
+-- matrices @ws@ and @u@, the vector of biases @bias@. Applies the activation function
+-- to the activation sum, in order to obtain the probability.
 getActivationProbabilityHidden ::  Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
 getActivationProbabilityHidden ws u c v y index
   = activation (getActivationSumHidden ws u c v y index)
@@ -172,7 +185,9 @@ getClassificationVector pat_classes pat
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
--- @oneTrainingStep bm visible class@
+-- @oneTrainingStep bm visible@ updates the parametrs of @bm@ (the 2 weight
+-- matrices and the biases) according to the training instance @v@
+-- and its classification, obtained by looking in the map kept in @bm@
 oneTrainingStep :: MonadRandom m => BoltzmannData -> Pattern ->  m BoltzmannData
 oneTrainingStep (BoltzmannData ws u b c d pats nr_h pat_to_class) v = do
   let y     = getClassificationVector pat_to_class v
@@ -225,6 +240,8 @@ trainBolzmann pats nr_h = do
 activation :: Double -> Double
 activation x = 1.0 / (1.0 + exp (-x))
 
+-- | The function used to compute the free energy
+-- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
 softplus :: Double -> Double
 softplus x = log (1.0 + exp x)
 
@@ -249,10 +266,11 @@ validWeights ws
 
 matchPatternBoltzmann :: BoltzmannData -> Pattern -> Int
 matchPatternBoltzmann bm@(BoltzmannData ws u b c d pats nr_h pats_classes) v
-  = fromJust $ maxPat `elemIndex`pats
+  = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex`pats
     where
       patternsWithClassifications = [ (p, getClassificationVector pats_classes p) | p <- map fst pats_classes]
       probability classification = exp $ (- (getFreeEnergy bm v classification))
+      f x = getFreeEnergy bm v $ snd x
       comparePats x y = compare (probability $ snd x) (probability $ snd y)
       (maxPat, _) = maximumBy comparePats patternsWithClassifications
 
