@@ -30,7 +30,7 @@ import Debug.Trace
 
 -- | determines the rate in which the weights are changed in the training phase.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-learningRate = 0.1 :: Double
+learningRate = 0.01 :: Double
 
 
 data Mode = Hidden | Visible
@@ -64,8 +64,8 @@ buildBoltzmannData []   = error "Train patterns are empty"
 buildBoltzmannData pats =
   --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
   -- TODO replace with getRandomR with bigger range
-  buildBoltzmannData' pats (floor (logBase 2 nr_visible))
-    where nr_visible = fromIntegral $ V.length (head pats)
+  buildBoltzmannData' pats (nr_visible)
+    where nr_visible = V.length (head pats)
 
 
 -- | @buildBolzmannData' patterns nr_hidden@: Takes a list of patterns and
