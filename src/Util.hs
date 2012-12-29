@@ -93,7 +93,8 @@ combineVectors f v_a v_b = V.fromList (zipWith f (V.toList v_a) (V.toList v_b) )
 -- assertion same size and move to Util
 dotProduct :: Num a => V.Vector a -> V.Vector a -> a
 dotProduct xs ys
-  = sum [ xs V.! i * (ys V.! i ) | i <- [0.. V.length xs - 1]]
+  | V.length xs /= V.length ys = error "vector sizes do not match in dot product"
+  | otherwise = sum [ xs V.! i * (ys V.! i ) | i <- [0.. V.length xs - 1]]
 
 
 -- Tries to find a element in a list. In case of success, returns the index

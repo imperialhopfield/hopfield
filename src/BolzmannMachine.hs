@@ -55,16 +55,16 @@ data BoltzmannData = BoltzmannData {
 -- | Retrieves the dimension of the weights matrix corresponding to the given mode.
 -- For hidden, it is the width of the matrix, and for visible it is the height.
 getDimension :: Mode -> Weights -> Int
-getDimension Hidden ws  = V.length $ ws
+getDimension Hidden  ws = V.length $ ws
 getDimension Visible ws = V.length $ ws ! 0
 
 
-buildBoltzmannData ::  MonadRandom  m => [Pattern] ->  m BoltzmannData
+buildBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
 buildBoltzmannData []   = error "Train patterns are empty"
 buildBoltzmannData pats =
   --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
   -- TODO replace with getRandomR with bigger range
-  buildBoltzmannData' pats (floor (logBase 2 nr_visible) - 3)
+  buildBoltzmannData' pats (floor (logBase 2 nr_visible))
     where nr_visible = fromIntegral $ V.length (head pats)
 
 
@@ -81,7 +81,7 @@ buildBoltzmannData' pats nr_hidden
       = error "All training patterns must have the same length"
   | otherwise = trainBolzmann pats nr_hidden
   where
-    first_len = V.length (head pats)
+    first_len = V.length $ head pats
 
 -- TODO add error check that we have a in 0.0 to 1
 gibbsSampling :: MonadRandom  m => Double -> m Int
@@ -114,7 +114,7 @@ getActivationSumHidden ws u c v y index
 
 getHiddenSums :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> V.Vector Double
 getHiddenSums ws u c v y
-  = V.fromList [getActivationSumHidden ws u c v y i | i <- [0 .. (V.length $ ws ! 0) - 1] ]
+  = V.fromList [getActivationSumHidden ws u c v y i | i <- [0 .. (V.length ws) - 1] ]
 
 
 getActivationProbabilityHidden ::  Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
@@ -122,8 +122,6 @@ getActivationProbabilityHidden ws u c v y index
   = activation (getActivationSumHidden ws u c v y index)
 
 
--- | @updateNeuron mode ws pat index@ , given a vector @pat@ of type @mode@
--- updates the neuron with number @index@ in the layer with opposite type.
 updateNeuronVisible :: MonadRandom m => Weights -> Bias -> Pattern -> Int -> m Int
 updateNeuronVisible ws bias h index
   = gibbsSampling $ getActivationProbabilityVisible ws bias h index
@@ -134,8 +132,6 @@ updateNeuronHidden ws u c v y index
   = gibbsSampling $ getActivationProbabilityHidden ws u c v y index
 
 
--- | @getCounterPattern mode ws pat@, given a vector @pat@ of type @mode@
--- computes the values of all the neurons in the layer of the opposite type.
 updateVisible :: MonadRandom m => Weights -> Bias -> Pattern -> m Pattern
 updateVisible ws bias h
   -- | Just e <- validPattern mode ws pat = error e
@@ -221,7 +217,7 @@ trainBolzmann pats nr_h = do
       nr_classes = length nub_pats
       nub_pats = nub pats
       pats_classes = zip nub_pats [0 .. ]
-      nr_visible = V.length $ pats !! 0
+      nr_visible = V.length $ head pats
 
 
 -- | The activation functiom for the network (the logistic sigmoid).
@@ -253,14 +249,13 @@ validWeights ws
 
 matchPatternBoltzmann :: BoltzmannData -> Pattern -> Int
 matchPatternBoltzmann bm@(BoltzmannData ws u b c d pats nr_h pats_classes) v
-  = floor $ getFreeEnergy bm maxPat cl
+  = fromJust $ maxPat `elemIndex`pats
     where
-      patternsWithClassifications = [ (p, getClassificationVector pats_classes p) | p <- pats]
-      -- probability classification = exp $ (- (getFreeEnergy bm v classification))
-      -- comparePats x y = compare (probability $ snd x) (probability $ snd y)
-      (maxPat, cl) = head patternsWithClassifications
-      -- p = head pats
-        -- getFreeEnergy bm v (getClassificationVector pats_classes p))
+      patternsWithClassifications = [ (p, getClassificationVector pats_classes p) | p <- map fst pats_classes]
+      probability classification = exp $ (- (getFreeEnergy bm v classification))
+      comparePats x y = compare (probability $ snd x) (probability $ snd y)
+      (maxPat, _) = maximumBy comparePats patternsWithClassifications
+
 
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
