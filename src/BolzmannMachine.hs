@@ -33,7 +33,7 @@ import Debug.Trace
 learningRate = 0.0038 :: Double
 
 
-data Mode = Hidden | Visible
+data Mode = Hidden | Visible | Classification
   deriving(Eq, Show)
 
 
@@ -57,6 +57,7 @@ data BoltzmannData = BoltzmannData {
 getDimension :: Mode -> Weights -> Int
 getDimension Hidden  ws = V.length $ ws
 getDimension Visible ws = V.length $ ws ! 0
+getDimension Classification ws = V.length $ ws ! 0
 
 
 buildBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
@@ -115,8 +116,9 @@ getActivationProbabilityVisible ws bias h index
 -- matrix @ws@, the vector of biases @bias@.
 getActivationSumHidden :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
 getActivationSumHidden ws u c v y index
-  = c ! index + dotProduct (ws ! index) (toDouble v) + dotProduct (u ! index) (toDouble y)
-
+  | Just e <- validPattern Visible ws v = error "Invalid visible pattern in getActivationSumHidden"
+  | Just e <- validPattern Classification u y = error "Invalid classification pattern in getActivationSumHidden"
+  | otherwise = c ! index + dotProduct (ws ! index) (toDouble v) + dotProduct (u ! index) (toDouble y)
 
 -- | @getActivationSumHidden ws bias h index@ returns the activation
 -- sum for all neurons in the hidden pattern, given the weights
@@ -132,7 +134,7 @@ getHiddenSums ws u c v y
 -- to the activation sum, in order to obtain the probability.
 getActivationProbabilityHidden ::  Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
 getActivationProbabilityHidden ws u c v y index
-  = activation (getActivationSumHidden ws u c v y index)
+  = activation $ getActivationSumHidden ws u c v y index
 
 
 -- | @updateNeuronVisible ws bias h index@ updates a neuron in the visible layer by using gibbsSampling, according
@@ -176,8 +178,8 @@ updateClassification u d h
   = V.fromList [ if n == new_class then 1 else 0 | n <- all_classes]
     where
       -- TODO replace with actual sampling using inverse method (with cdf list)
-      new_class   = maximumBy compare_by_activation_sum all_classes
       compare_by_activation_sum x y = compare (exp_activation x) (exp_activation y)
+      new_class   = maximumBy compare_by_activation_sum all_classes
       exp_activation = exp . (getActivationSum u d h)
       all_classes = [0 .. nr_classes - 1]
       nr_classes  = V.length d
@@ -259,12 +261,13 @@ trainBolzmann pats nr_h = do
 -- lowest energy.
 -- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
 matchPatternBoltzmann :: BoltzmannData -> Pattern -> Int
-matchPatternBoltzmann bm@(BoltzmannData ws u b c d pats nr_h pats_classes) v
-  = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex`pats
+matchPatternBoltzmann bm v
+  = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
     where
+      pats_classes = pattern_to_class bm
+      pats = patternsB bm
       patternsWithClassifications = [ (p, getClassificationVector pats_classes p) | p <- map fst pats_classes]
-      probability classification = exp $ (- (getFreeEnergy bm v classification))
-      f x = getFreeEnergy bm v $ snd x
+      probability classification = exp $ - (getFreeEnergy bm v classification)
       comparePats x y = compare (probability $ snd x) (probability $ snd y)
       (maxPat, _) = maximumBy comparePats patternsWithClassifications
 
