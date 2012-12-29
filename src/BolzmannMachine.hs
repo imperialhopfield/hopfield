@@ -135,28 +135,33 @@ getActivationProbabilityHidden ws u c v y index
   = activation (getActivationSumHidden ws u c v y index)
 
 
+-- | @updateNeuronVisible ws bias h index@ updates a neuron in the visible layer by using gibbsSampling, according
+-- to the activation probability
 updateNeuronVisible :: MonadRandom m => Weights -> Bias -> Pattern -> Int -> m Int
 updateNeuronVisible ws bias h index
   = gibbsSampling $ getActivationProbabilityVisible ws bias h index
 
 
+-- | Updates a neuron in the hidden layer by using gibbsSampling, according
+-- to the activation probability
 updateNeuronHidden :: MonadRandom m => Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> m Int
 updateNeuronHidden ws u c v y index
   = gibbsSampling $ getActivationProbabilityHidden ws u c v y index
 
-
+-- | Updates a neuron in the visible layer by using gibbsSampling, according
+-- to the activation probability
 updateVisible :: MonadRandom m => Weights -> Bias -> Pattern -> m Pattern
 updateVisible ws bias h
-  -- | Just e <- validPattern mode ws pat = error e
-  -- | otherwise
-  = V.fromList `liftM` mapM (updateNeuronVisible ws bias h) updatedIndices
+   | Just e <- validPattern Hidden ws h = error e
+   | otherwise = V.fromList `liftM` mapM (updateNeuronVisible ws bias h) updatedIndices
     where
       updatedIndices = [0 .. (V.length $ ws ! 0) - 1]
 
 
 updateHidden ::  MonadRandom m => Weights -> Weights -> Bias -> Pattern -> Pattern -> m Pattern
 updateHidden ws u c v y
-  = V.fromList `liftM` mapM (updateNeuronHidden ws u c v y) updatedIndices
+   | Just e <- validPattern Visible ws v = error e
+   | otherwise = V.fromList `liftM` mapM (updateNeuronHidden ws u c v y) updatedIndices
     where
       updatedIndices = [0 .. (V.length ws)  - 1 ]
 
