@@ -30,7 +30,7 @@ import Debug.Trace
 
 -- | determines the rate in which the weights are changed in the training phase.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-learningRate = 0.0038 :: Double
+learningRate = 0.000001:: Double
 
 
 data Mode = Hidden | Visible | Classification
@@ -63,7 +63,7 @@ getDimension Classification ws = V.length $ ws ! 0
 buildBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
 buildBoltzmannData []   = error "Train patterns are empty"
 buildBoltzmannData pats =
-  buildBoltzmannData' pats nr_visible
+  buildBoltzmannData' pats 30
     where nr_visible = V.length (head pats)
 
 
