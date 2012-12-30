@@ -1,11 +1,15 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
--- | Functions to measure a network's basins of attractions
+-- | Functions to measure various properties of a network
 module Basin (
+  -- * Basin of attraction
     BasinMeasure
   , withHammingDistance
   , samplePatternBasin
   , measurePatternBasin
+  -- * Fixed point errors
+  , checkFixed
+  , measureError
 ) where
 
 import           Control.Monad.Random (MonadRandom)
@@ -23,6 +27,9 @@ import           Util ((./.))
 -- A function computing some measure of a pattern's basin in the given network
 type BasinMeasure m a = HopfieldData -> Pattern -> m a
 
+
+-- -----------------------------------------------------------------------------
+-- Functions relating to measuring a pattern's basin of attraction
 
 -- Generate list of states with hamming distance r of the given pattern
 withHammingDistance :: Pattern -> Int -> [Pattern]
@@ -68,3 +75,25 @@ measurePatternBasin hs pat = do
   return $ fromMaybe n $ findIndex (<0.9) t_mus
     where
       n   = V.length pat
+
+
+-- -----------------------------------------------------------------------------
+-- Functions relating to measuring errors in a network
+
+compTerm :: HopfieldData -> Int -> Int -> Int
+compTerm hs index n = - (pat V.! n) * (computeH (weights hs) pat n - pat V.! n)
+                        where pat = (patterns hs) !! index
+
+
+checkFixed :: HopfieldData -> Int -> Bool
+checkFixed hs index = all (\x -> compTerm hs index x <= 1) [0.. V.length ((patterns hs) !! index) - 1]
+
+
+-- | @measureError hopfield@: Measures the percentage of patterns in the network
+-- which are NOT fixed points. That is, it measures the *actual* error
+measureError :: HopfieldData -> Double
+measureError hs = num_errors ./. num_pats
+  where
+    fixed_points = map (checkFixed hs) [0..num_pats-1]
+    num_errors   = length $ filter not fixed_points
+    num_pats     = length $ patterns hs

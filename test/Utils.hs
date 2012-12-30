@@ -14,6 +14,7 @@ import           Control.Monad
 import           Data.Number.Erf (normcdf)
 
 import           RestrictedBoltzmannMachine
+import           Basin
 import           Hopfield
 import           Util
 
@@ -135,13 +136,6 @@ crosstalk :: HopfieldData -> Int -> Int -> Int
 crosstalk hs index n = computeH (weights hs) pat n - pat V.! n
                           where pat = (patterns hs) !! index
 
-compTerm :: HopfieldData -> Int -> Int -> Int
-compTerm hs index n = - (pat V.! n) * (computeH (weights hs) pat n - pat V.! n)
-                        where pat = (patterns hs) !! index
-
-checkFixed :: HopfieldData -> Int -> Bool
-checkFixed hs index = all (\x -> compTerm hs index x <= 1) [0.. V.length ((patterns hs) !! index) - 1]
-
 
 -- | Used as a property to check that patterns which
 -- are used to create the network are stable in respect to update
@@ -154,16 +148,6 @@ trainingPatsAreFixedPoints pats =
     checkFixedPoint index = do
       i <- arbitrary
       return $ evalRand (update ws (pats !! index)) (mkStdGen i) == (pats !! index) || (not $ checkFixed hs index)
-
-
--- | @measureError hopfield@: Measures the percentage of patterns in the network
--- which are NOT fixed points. That is, it measures the *actual* error
-measureError :: HopfieldData -> Double
-measureError hs = num_errors ./. num_pats
-  where
-    fixed_points = map (checkFixed hs) [0..num_pats-1]
-    num_errors   = length $ filter not fixed_points
-    num_pats     = length $ patterns hs
 
 
 -- | Trains a network using @training_pats@ and then updates each

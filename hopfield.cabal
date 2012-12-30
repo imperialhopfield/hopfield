@@ -15,6 +15,7 @@ library
   exposed-modules:
       Hopfield
     , Analysis
+    , Basin
     , ClassificationBoltzmannMachine
     , Common
     , ConvertImage
