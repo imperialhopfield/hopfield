@@ -21,7 +21,7 @@ toPattern :: Method -> CBinaryPattern -> Pattern
 toPattern m (CBinaryPattern { cPattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
 
 
-recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO [(FilePath, Double)]
+recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
 recPic method (width, height) imgPaths queryImgPath = do
   l@(_queryImg:_imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
   gen <- getStdGen
@@ -33,7 +33,7 @@ recPic method (width, height) imgPaths queryImgPath = do
           --runRandom $ matchPatternBolzmann (runRandom $ buildBolzmannData imgPats) queryPat
   return $ case result of
              Left _pattern -> Nothing -- TODO apply heuristic if we want (we want)
-             Right i      -> Just $ imgPaths !! i
+             Right i       -> Just $ imgPaths !! i
 
 
 -- code left from trials with Boltzmann. Left here until we merge the
