@@ -54,6 +54,12 @@ patternGen H  n = toGenVector $ vectorOf n signGen
 patternGen BM n = toGenVector $ vectorOf n binaryGen
 
 
+-- | @patternRangeGen (min, max)@ Generates patterns of size ranging
+-- between min and max
+patternRangeGen :: Type -> (Int, Int) -> Gen Pattern
+patternRangeGen t bounds = choose bounds >>= patternGen t
+
+
 -- | @boundedListGen g n@: Generates lists (max length n) of the given Gen
 boundedListGen :: Gen a -> Int -> Gen [a]
 boundedListGen g n = do

@@ -5,6 +5,7 @@ module Util (
     combine
   , findInList
   , fromDataVector
+  , numDiffs
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
   , randomElem
@@ -105,3 +106,8 @@ getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
   where
     nub_xs = nub xs
     bitsNeeded = ceiling . log2 . fromIntegral . length $ nub_xs
+
+
+-- Counts the number of pairwise differences in two lists
+numDiffs :: (Eq a) => [a] -> [a] -> Int
+numDiffs xs ys = length $ filter id $ zipWith (/=) xs ys

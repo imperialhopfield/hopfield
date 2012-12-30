@@ -3,6 +3,7 @@
 -- | Functions to measure a network's basins of attractions
 module Basin (
     BasinMeasure
+  , withHammingDistance
   , samplePatternBasin
   , measurePatternBasin
 ) where
