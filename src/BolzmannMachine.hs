@@ -208,11 +208,6 @@ getFreeEnergy ws pat
           p = V.length pat
 
 
-matchPatternBolzmann :: BolzmannData -> Pattern -> Pattern
-matchPatternBolzmann (BolzmannData ws _pats _nr_h pats_with_binary) pat
-  = fromJust $ lookup encoding binary_encodings_to_pats
-
-
 matchPatternBolzmann :: BolzmannData -> Pattern -> [(Int, Double)]
 matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat =
   [(fromPatToIndex p, (getPatternProbability) ((V.++) pat (V.fromList . fromJust $ lookup p pats_with_binary) ) ) | p <- pats]
