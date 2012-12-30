@@ -14,7 +14,7 @@ import           Control.Monad
 import           Data.Number.Erf (normcdf)
 
 import           RestrictedBoltzmannMachine
-import           Basin
+import           Measurement
 import           Hopfield
 import           Util
 

@@ -1,7 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | Functions to measure various properties of a network
-module Basin (
+module Measurement (
   -- * Basin of attraction
     BasinMeasure
   , withHammingDistance

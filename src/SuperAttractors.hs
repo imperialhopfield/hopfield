@@ -4,7 +4,7 @@
 -- with varying pattern degrees
 module SuperAttractors where
 
-import           Basin
+import           Measurement
 import           Control.Monad
 import           Control.Monad.Random (MonadRandom)
 import qualified Data.Vector as V
