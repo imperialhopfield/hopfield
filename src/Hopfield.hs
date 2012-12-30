@@ -3,8 +3,8 @@
 
 -- | Base Hopfield model, providing training and running.
 module Hopfield (
-    Weights
-  , Pattern
+    Pattern
+  , Weights
   -- * Hopfield data structure
   , HopfieldData ()
   , weights
@@ -19,13 +19,10 @@ module Hopfield (
   , matchPattern
   -- * Energy
   , energy
-  -- * Other
-  , computeError
 ) where
 
 import           Control.Monad.Random (MonadRandom)
 import           Data.Maybe
-import           Data.Number.Erf
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
@@ -155,15 +152,6 @@ matchPattern (HopfieldData ws pats) pat
       return $ findInList pats converged_pattern
 
 
--- TODO I don't understand this (niklas)
--- TODO check where this function is used
--- | Computes the probability of error for one element given a hopfield data
--- structure. Note that I claim that the actuall error of probability depends
--- on this, but is not the whole term
-computeError :: HopfieldData -> Double
-computeError (HopfieldData _ pats) = 1.0 / 2.0 * (1 - (erf $ sqrt $ n ./. p))
-  where n = V.length $ pats !! 0
-        p = length pats
 
 
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield

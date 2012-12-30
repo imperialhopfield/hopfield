@@ -13,7 +13,7 @@ import           Test.QuickCheck
 import           Control.Monad
 import           Data.Number.Erf (normcdf)
 
-import           BolzmannMachine
+import           RestrictedBoltzmannMachine
 import           Hopfield
 import           Util
 
@@ -130,12 +130,12 @@ replaceAtN n r (x:xs)
 -- one should try and implement the probability error thing as
 -- that would give as a good idea of how to
 -- scale
-crosstalk:: HopfieldData -> Int -> Int -> Int
+crosstalk :: HopfieldData -> Int -> Int -> Int
 -- the cross talk term is h(xi k ) - xi k
 crosstalk hs index n = computeH (weights hs) pat n - pat V.! n
                           where pat = (patterns hs) !! index
 
-compTerm:: HopfieldData -> Int -> Int -> Int
+compTerm :: HopfieldData -> Int -> Int -> Int
 compTerm hs index n = - (pat V.! n) * (computeH (weights hs) pat n - pat V.! n)
                         where pat = (patterns hs) !! index
 
@@ -169,7 +169,7 @@ measureError hs = num_errors ./. num_pats
 -- | Trains a network using @training_pats@ and then updates each
 -- pattern in pats according to the weights of that network.
 -- The aim is to check that the energy decreases after each update.
-energyDecreasesAfterUpdate:: ([Pattern], [Pattern]) -> Gen Bool
+energyDecreasesAfterUpdate :: ([Pattern], [Pattern]) -> Gen Bool
 energyDecreasesAfterUpdate (training_pats, pats)
   = and <$> mapM energyDecreases pats
     where
@@ -182,7 +182,7 @@ energyDecreasesAfterUpdate (training_pats, pats)
         return $ evalRand (energyDecreases' pat) (mkStdGen i)
 
 
-repeatedUpdateCheck:: ([Pattern], [Pattern]) -> Gen Bool
+repeatedUpdateCheck :: ([Pattern], [Pattern]) -> Gen Bool
 repeatedUpdateCheck (training_pats, pats)
   = and <$> mapM  s pats
     where
@@ -198,8 +198,8 @@ repeatedUpdateCheck (training_pats, pats)
         return $ evalRand (stopped pat) (mkStdGen i)
 
 
-bolzmannBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
-bolzmannBuildGen m1 m2 max_hidden = do
+boltzmannBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
+boltzmannBuildGen m1 m2 max_hidden = do
   pats <- patListGen BM m1 m2
   i    <- choose (1, max_hidden)
   return $ (pats, i)
@@ -208,11 +208,12 @@ bolzmannBuildGen m1 m2 max_hidden = do
 build_BM_Check :: ([Pattern], Int) -> Gen Bool
 build_BM_Check (pats, nr_h) = do
   i <- arbitrary
-  let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen i)
-  return $ patternsB bd == pats && nr_hidden bd == nr_h
+  let bd = evalRand (buildBoltzmannData' pats nr_h) (mkStdGen i)
+  return $ patternsB bd == pats && nr_hiddenB bd == nr_h
 
-bolzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
-bolzmannAndPatGen m1 m2 max_hidden = do
+
+boltzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
+boltzmannAndPatGen m1 m2 max_hidden = do
   pats_train <- patListGen BM m1 m2
   i          <- choose (1, max_hidden)
   pats_check <- patternGen BM (V.length $ pats_train !! 0)
@@ -220,23 +221,23 @@ bolzmannAndPatGen m1 m2 max_hidden = do
 
 -- TODO do gen Mode
 
-probabilityCheck ::  ([Pattern], Int, Pattern) -> Gen Bool
-probabilityCheck (pats, nr_h, pat) = do
-  seed <- arbitrary
-  let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
-      ws = weightsB bd
-  return $ all  (\x -> c $ getActivationProbability Matching Visible ws pat x) [0 .. nr_h - 1]
-    where c x = x <= 1 && x >=0
+-- probabilityCheck ::  ([Pattern], Int, Pattern) -> Gen Bool
+-- probabilityCheck (pats, nr_h, pat) = do
+--   seed <- arbitrary
+--   let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
+--       ws = weightsB bd
+--   return $ all  (\x -> c $ getActivationProbability Matching Visible ws pat x) [0 .. nr_h - 1]
+--     where c x = x <= 1 && x >=0
 
 
--- r should only be 0 or 1 for this test
-updateNeuronCheck :: Int -> ([Pattern], Int, Pattern) -> Gen Bool
--- updateNeuronCheck r _ = if not (r == 0 || r == 1) then error "r has to be 0 or 1 for updateNeuronCheck"
-updateNeuronCheck r (pats, nr_h, pat) = do
-    i    <- choose (0, nr_h -1)
-    seed <- arbitrary
-    let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
-    return $ updateNeuron' (fromIntegral r) Matching Visible (weightsB bd) pat i == (1 - r)
+-- -- r should only be 0 or 1 for this test
+-- updateNeuronCheck :: Int -> ([Pattern], Int, Pattern) -> Gen Bool
+-- -- updateNeuronCheck r _ = if not (r == 0 || r == 1) then error "r has to be 0 or 1 for updateNeuronCheck"
+-- updateNeuronCheck r (pats, nr_h, pat) = do
+--     i    <- choose (0, nr_h -1)
+--     seed <- arbitrary
+--     let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
+--     return $ updateNeuron' (fromIntegral r) Matching Visible (weightsB bd) pat i == (1 - r)
 
 
 -- TODO write comment and change the name to show the restrictions

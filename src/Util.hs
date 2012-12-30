@@ -1,25 +1,36 @@
-{-# LANGUAGE ParallelListComp #-}
+{-# LANGUAGE ParallelListComp, ScopedTypeVariables #-}
 
 
 module Util (
     combine
+  , (*.)
+  , (./.)
+  , columnVector
+  , combineVectors
+  , compareBy
+  , dotProduct
   , findInList
   , fromDataVector
+  , getBinaryIndices
+  , getBinaryIndices
+  , list2D
+  , log2
+  , normal
   , numDiffs
+  , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
-  , randomElem
-  , vector2D
-  , list2D
   , toBinary
-  , getBinaryIndices
-  , (./.)
-  , (*.)
-  , log2
+  , toDouble
+  , vector2D
 ) where
 
+
+import           Data.Maybe
 import           Data.List
+import qualified Data.Random as DR
 import qualified Data.Vector as V
+import           Data.Word (Word32)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Foreign.Storable
@@ -33,8 +44,27 @@ x ./. y = fromIntegral x / fromIntegral y
 x *. y = x * fromIntegral y
 
 
+toDouble :: (Integral a, Num b) => V.Vector a -> V.Vector b
+toDouble = fmap fromIntegral
+
+
+compareBy :: Ord b => (a -> b) -> a -> a -> Ordering
+compareBy f x1 x2 = compare (f x1) (f x2)
+
+
+getElemOccurrences :: Ord a => [a] -> [(a, Int)]
+getElemOccurrences = map (\xs@(x:_) -> (x, length xs)) . group . sort
+
+
 log2 :: Double -> Double
 log2 = logBase 2.0
+
+ -- | Generates a number sampled from a random distribution, given the mean and
+ -- standard deviation.
+normal :: forall m . MonadRandom m => Double -> Double -> m Double
+normal m std = do
+  r <- DR.runRVar (DR.normal m std) (Random.getRandom :: MonadRandom m => m Word32)
+  return r
 
 
 randomElem :: MonadRandom m => [a] -> m a
@@ -72,13 +102,35 @@ vector2D ll = V.fromList $ map V.fromList ll
 list2D :: V.Vector (V.Vector a) -> [[a]]
 list2D vv = map V.toList $ V.toList vv
 
+-- Returns the coumn vector of a matrix
+-- Caller needs to ensure that the matrix is well formed
+columnVector :: V.Vector (V.Vector a) -> Int -> V.Vector a
+columnVector m index = V.map (V.! index) m
+
+
 -- from Data.Vector to Numeric.Container.Vector
 fromDataVector::  (Foreign.Storable.Storable a) => V.Vector a -> NC.Vector a
 fromDataVector v = NC.fromList $ V.toList v
 
 -- the caller has to ensure that the dimensions are the same
-combine:: (a-> a -> a) -> [[a]] -> [[a]] -> [[a]]
-combine f xs ys = zipWith (zipWith f) xs ys
+combine :: (a-> b -> c) -> [[a]] -> [[b]] -> [[c]]
+combine f xs ys
+  | length xs /= length ys = error "list sizes do not match in Utils.combine"
+  | otherwise = zipWith (zipWith f) xs ys
+
+
+combineVectors :: (a -> b -> c) -> V.Vector a -> V.Vector b -> V.Vector c
+combineVectors f v_a v_b
+  | V.length v_a /= V.length v_b = error "vector sizes do not match in dot product"
+  | otherwise = V.fromList (zipWith f (V.toList v_a) (V.toList v_b) )
+
+
+-- assertion same size and move to Util
+dotProduct :: Num a => V.Vector a -> V.Vector a -> a
+dotProduct xs ys
+  | V.length xs /= V.length ys = error "vector sizes do not match in dot product"
+  | otherwise = sum [ xs V.! i * (ys V.! i ) | i <- [0.. V.length xs - 1]]
+
 
 -- Tries to find a element in a list. In case of success, returns the index
 -- of the element (the first one, in case of multiple occurences). In case of
@@ -105,7 +157,7 @@ getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
 getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
   where
     nub_xs = nub xs
-    bitsNeeded = ceiling . log2 . fromIntegral . length $ nub_xs
+    bitsNeeded = 1 + (floor $ logBase 2.0 $ fromIntegral (length nub_xs)) :: Int
 
 
 -- Counts the number of pairwise differences in two lists
