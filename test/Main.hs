@@ -7,6 +7,7 @@ import Test.Hspec
 import TestBolzmann
 import TestHopfield
 import TestUtil
+import TestMeasurement
 
 main = hspec $ do
 
@@ -15,3 +16,5 @@ main = hspec $ do
   testHopfield
 
   testUtil
+
+  testMeasurement
