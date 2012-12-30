@@ -51,6 +51,10 @@ compareBy :: Ord b => (a -> b) -> a -> a -> Ordering
 compareBy f x1 x2 = compare (f x1) (f x2)
 
 
+getElemOccurrences :: Ord a => [a] -> [(a, Int)]
+getElemOccurrences = map (\xs@(x:_) -> (x, length xs)) . group . sort
+
+
 log2 :: Double -> Double
 log2 = logBase 2.0
 

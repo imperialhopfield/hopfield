@@ -124,12 +124,12 @@ replaceAtN n r (x:xs)
 -- one should try and implement the probability error thing as
 -- that would give as a good idea of how to
 -- scale
-crosstalk:: HopfieldData -> Int -> Int -> Int
+crosstalk :: HopfieldData -> Int -> Int -> Int
 -- the cross talk term is h(xi k ) - xi k
 crosstalk hs index n = computeH (weights hs) pat n - pat V.! n
                           where pat = (patterns hs) !! index
 
-compTerm:: HopfieldData -> Int -> Int -> Int
+compTerm :: HopfieldData -> Int -> Int -> Int
 compTerm hs index n = - (pat V.! n) * (computeH (weights hs) pat n - pat V.! n)
                         where pat = (patterns hs) !! index
 
