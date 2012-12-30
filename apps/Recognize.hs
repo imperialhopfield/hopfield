@@ -44,6 +44,13 @@ recPic method (width, height) imgPaths queryImgPath = do
   --        Boltzmann -> matchPatternBolzmann (runRandom $ buildBolzmannData imgPats) queryPat
   -- return $ [ (imgPaths !! i, prob) | (i, prob)  <- res]
 
+-- This code is from CRBM and it is commented until a fix for this is made
+  --    runRand r = evalRand r gen
+  --    i =  case method of
+  --        Hopfield  -> error "This is a trial for Bolzmann"
+  --        Boltzmann -> matchPatternBoltzmann (runRand $ buildBoltzmannData imgPats) queryPat
+  -- return $ imgPaths !! i
+
 
 main :: IO ()
 main = do

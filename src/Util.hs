@@ -5,17 +5,21 @@ module Util (
     combine
   , (*.)
   , (./.)
+  , columnVector
+  , combineVectors
+  , dotProduct
   , findInList
   , fromDataVector
   , getBinaryIndices
+  , getBinaryIndices
   , list2D
+  , log2
   , normal
   , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
   , toBinary
-  , getBinaryIndices
-  , log2
+  , toDouble
   , vector2D
 ) where
 
@@ -37,6 +41,8 @@ x ./. y = fromIntegral x / fromIntegral y
 (*.) :: (Integral a1, Num a) => a -> a1 -> a
 x *. y = x * fromIntegral y
 
+toDouble :: (Integral a, Num b) => V.Vector a -> V.Vector b
+toDouble = fmap fromIntegral
 
 log2 :: Double -> Double
 log2 = logBase 2.0
@@ -84,13 +90,35 @@ vector2D ll = V.fromList $ map V.fromList ll
 list2D :: V.Vector (V.Vector a) -> [[a]]
 list2D vv = map V.toList $ V.toList vv
 
+-- Returns the coumn vector of a matrix
+-- Caller needs to ensure that the matrix is well formed
+columnVector :: V.Vector (V.Vector a) -> Int -> V.Vector a
+columnVector m index = V.map (V.! index) m
+
+
 -- from Data.Vector to Numeric.Container.Vector
 fromDataVector::  (Foreign.Storable.Storable a) => V.Vector a -> NC.Vector a
 fromDataVector v = NC.fromList $ V.toList v
 
 -- the caller has to ensure that the dimensions are the same
-combine:: (a-> a -> a) -> [[a]] -> [[a]] -> [[a]]
-combine f xs ys = zipWith (zipWith f) xs ys
+combine :: (a-> b -> c) -> [[a]] -> [[b]] -> [[c]]
+combine f xs ys
+  | length xs /= length ys = error "list sizes do not match in Utils.combine"
+  | otherwise = zipWith (zipWith f) xs ys
+
+
+combineVectors :: (a -> b -> c) -> V.Vector a -> V.Vector b -> V.Vector c
+combineVectors f v_a v_b
+  | V.length v_a /= V.length v_b = error "vector sizes do not match in dot product"
+  | otherwise = V.fromList (zipWith f (V.toList v_a) (V.toList v_b) )
+
+
+-- assertion same size and move to Util
+dotProduct :: Num a => V.Vector a -> V.Vector a -> a
+dotProduct xs ys
+  | V.length xs /= V.length ys = error "vector sizes do not match in dot product"
+  | otherwise = sum [ xs V.! i * (ys V.! i ) | i <- [0.. V.length xs - 1]]
+
 
 -- Tries to find a element in a list. In case of success, returns the index
 -- of the element (the first one, in case of multiple occurences). In case of

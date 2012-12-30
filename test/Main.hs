@@ -10,7 +10,7 @@ import TestUtil
 
 main = hspec $ do
 
-  testBolzmannMachine
+  -- testBolzmannMachine
 
   testHopfield
 
