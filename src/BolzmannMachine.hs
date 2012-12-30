@@ -54,6 +54,11 @@ getDimension Hidden ws  = V.length $ ws ! 0
 getDimension Visible ws = V.length $ ws
 
 
+notMode :: Mode -> Mode
+notMode Visible = Hidden
+notMode Hidden  = Visible
+
+
 buildBolzmannData ::  MonadRandom  m => [Pattern] ->  m BolzmannData
 buildBolzmannData []   = error "Train patterns are empty"
 buildBolzmannData pats =
