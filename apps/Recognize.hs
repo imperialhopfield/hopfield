@@ -7,7 +7,7 @@ import qualified Data.Vector as V
 
 import Hopfield
 import ConvertImage
--- import BolzmannMachine
+import BolzmannMachine
 
 
 data Method = Hopfield | Boltzmann deriving (Eq, Enum, Ord, Show)
@@ -21,7 +21,7 @@ toPattern :: Method -> CBinaryPattern -> Pattern
 toPattern m (CBinaryPattern { cPattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
 
 
-recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
+recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO [(FilePath, Double)]
 recPic method (width, height) imgPaths queryImgPath = do
   l@(_queryImg:_imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
   gen <- getStdGen
@@ -36,6 +36,15 @@ recPic method (width, height) imgPaths queryImgPath = do
              Right i      -> Just $ imgPaths !! i
 
 
+-- code left from trials with Boltzmann. Left here until we merge the
+-- 2 methods using one interface (TODO)
+
+  --    res =  case method of
+  --        Hopfield  -> error "This is a trial for Bolzmann"
+  --        Boltzmann -> matchPatternBolzmann (runRandom $ buildBolzmannData imgPats) queryPat
+  -- return $ [ (imgPaths !! i, prob) | (i, prob)  <- res]
+
+
 main :: IO ()
 main = do
   -- TODO use an argument parser (cmdargs)
@@ -47,6 +56,4 @@ main = do
       width  = read widthStr
       height = read heightStr
   foundPath <- recPic method (width, height) filePaths queryPath
-  putStrLn $ case foundPath of
-    Nothing   -> "no pattern found"
-    Just path -> path
+  putStrLn $ show foundPath

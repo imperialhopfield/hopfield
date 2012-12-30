@@ -1,24 +1,30 @@
-{-# LANGUAGE ParallelListComp #-}
+{-# LANGUAGE ParallelListComp, ScopedTypeVariables #-}
 
 
 module Util (
     combine
+  , (*.)
+  , (./.)
   , findInList
   , fromDataVector
+  , getBinaryIndices
+  , list2D
+  , normal
+  , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
-  , randomElem
-  , vector2D
-  , list2D
   , toBinary
   , getBinaryIndices
-  , (./.)
-  , (*.)
   , log2
+  , vector2D
 ) where
 
+
+import           Data.Maybe
 import           Data.List
+import qualified Data.Random as DR
 import qualified Data.Vector as V
+import           Data.Word (Word32)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Foreign.Storable
@@ -34,6 +40,13 @@ x *. y = x * fromIntegral y
 
 log2 :: Double -> Double
 log2 = logBase 2.0
+
+ -- | Generates a number sampled from a random distribution, given the mean and
+ -- standard deviation.
+normal :: forall m . MonadRandom m => Double -> Double -> m Double
+normal m std = do
+  r <- DR.runRVar (DR.normal m std) (Random.getRandom :: MonadRandom m => m Word32)
+  return r
 
 
 randomElem :: MonadRandom m => [a] -> m a
@@ -104,4 +117,4 @@ getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
 getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
   where
     nub_xs = nub xs
-    bitsNeeded = ceiling . log2 . fromIntegral . length $ nub_xs
+    bitsNeeded = 1 + (floor $ logBase 2.0 $ fromIntegral (length nub_xs)) :: Int

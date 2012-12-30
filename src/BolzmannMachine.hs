@@ -10,10 +10,8 @@ import           Data.Tuple
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.List
-import qualified Data.Random as DR
 import           Data.Vector ((!))
 import qualified Data.Vector as V
-import           Data.Word (Word32)
 import qualified Numeric.Container as NC
 
 import Common
@@ -23,12 +21,6 @@ import Util
 -- weigths between visible and hidden neurons
 -- w i j - connection between visible neuron i and hidden neuron j
 
-
-
--- start with no biases initially, introduce them after (if needed)
--- if biases are used, they should be normally distributed
-
-
 -- | determines the rate in which the weights are changed in the training phase.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 learningRate :: Double
@@ -36,7 +28,11 @@ learningRate = 0.1
 
 
 data Mode = Hidden | Visible
+ deriving(Eq, Show)
 
+
+data Phase = Training | Matching
+ deriving(Eq, Show)
 
 
 data BolzmannData = BolzmannData {
@@ -50,13 +46,6 @@ data BolzmannData = BolzmannData {
 }
   deriving(Show)
 
-data Phase = Training | Matching
- deriving(Eq, Show)
-
--- | Gives the opposite type of layer.
-notMode :: Mode -> Mode
-notMode Hidden  = Visible
-notMode Visible = Hidden
 
 -- | Retrieves the dimension of the weights matrix corresponding to the given mode.
 -- For hidden, it is the width of the matrix, and for visible it is the height.
@@ -68,9 +57,7 @@ getDimension Visible ws = V.length $ ws
 buildBolzmannData ::  MonadRandom  m => [Pattern] ->  m BolzmannData
 buildBolzmannData []   = error "Train patterns are empty"
 buildBolzmannData pats =
-  --nr_hidden <- getRandomR (floor (1.0/ 10.0 * nr_visible), floor (1.0/ 9.0 * nr_visible))
-  -- TODO replace with getRandomR with bigger range
-  buildBolzmannData' pats (floor (log2 nr_visible) - 3)
+  buildBolzmannData' pats nr_visible
     where nr_visible = fromIntegral $ V.length (head pats)
 
 
@@ -104,7 +91,9 @@ getActivationProbability phase mode ws pat index = if a <=1 && a >=0 then a else
     a = activation . sum $ case mode of
       Hidden   -> [ (ws ! index ! i) *. (pat' ! i) | i <- [0 .. p-1] ]
       Visible  -> [ (ws ! i ! index) *. (pat' ! i) | i <- [0 .. p-1] ]
-    pat' = if phase == Matching then V.cons 1 pat else pat
+    pat' = case phase of
+            Matching -> V.cons 1 pat
+            Training -> pat
     p = V.length pat'
 
 
@@ -124,7 +113,9 @@ getCounterPattern phase mode ws pat
   | otherwise = V.fromList `liftM` mapM (updateNeuron phase mode ws pat) updatedIndices
     where
       updatedIndices = [0 .. getDimension (notMode mode) ws - diff]
-      diff = if phase == Training then 1 else 2
+      diff = case phase of
+              Training -> 1
+              Matching -> 2
 
 
 -- | One step which updates the weights in the CD-n training process.
@@ -135,12 +126,13 @@ updateWeights ws v = do
   let biased_v = V.cons 1 v
   h        <- getCounterPattern Training Visible ws biased_v
   v'       <- getCounterPattern Training Hidden  ws h
-  h'       <- getCounterPattern Training Visible ws v'
   let f    = fromDataVector . fmap fromIntegral
-      pos  = NC.toLists $ (f biased_v) `NC.outer` (f h)   -- "positive gradient"
-      neg  = NC.toLists $ (f v') `NC.outer` (f h') -- "negative gradient"
+      pos  = NC.toLists $ (f biased_v) `NC.outer` (fromDataVector $ getSigmaH v)   -- "positive gradient"
+      neg  = NC.toLists $ (f v') `NC.outer` (fromDataVector $ getSigmaH v') -- "negative gradient"
       d_ws = map (map (* learningRate)) $ combine (-) pos neg -- weights delta
       new_weights = combine (+) (list2D ws) d_ws
+      nr_hidden = V.length $ ws ! 0
+      getSigmaH v = V.fromList [getActivationProbability Training Visible ws v x | x <- [0.. nr_hidden - 1] ]
   return $ vector2D new_weights
 
 
@@ -156,14 +148,14 @@ trainBolzmann pats nr_hidden = do
   weights_without_bias <- genWeights
   -- add biases as a dimension of the matrix, in order to include them in the
   -- contrastive divergence algorithm
-  let ws = map (\x -> (0: x)) weights_without_bias
+  let ws = [0: x | x <- weights_without_bias]
       ws_start  = (replicate (nr_hidden + 1) 0) : ws
   updated_ws <- foldM updateWeights (vector2D ws_start) pats'
   return (updated_ws, paths_with_binary_indices)
     where
       genWeights = replicateM nr_visible . replicateM nr_hidden $ normal 0.0 0.01
       paths_with_binary_indices = getBinaryIndices pats
-      pats' = map (\x -> ((V.++) x $ encoding x)) pats
+      pats' = [(V.++) x $ encoding x | x <- pats]
       encoding x = V.fromList . fromJust $ lookup x paths_with_binary_indices
       nr_visible = V.length $ pats' !! 0
 
@@ -180,7 +172,7 @@ activation x = 1.0 / (1.0 + exp (-x))
 -- which is checked (Visible or Hidden).
 validPattern :: Phase -> Mode -> Weights -> Pattern -> Maybe String
 validPattern phase mode ws pat
-  | checked_dim /= V.length pat        = Just ("Size of pattern must match network size in " ++ show phase)
+  | checked_dim /= V.length pat        = Just $ "Size of pattern must match network size in " ++ show phase ++ " " ++ show mode
   | V.any (\x -> notElem x [0, 1]) pat = Just "Non binary element in bolzmann pattern"
   | otherwise            = Nothing
   where checked_dim = if phase == Training then actual_dim else actual_dim - 1
@@ -194,16 +186,6 @@ validWeights ws
   | otherwise = Nothing
 
 
--- | Generates a number sampled from a random distribution, given the mean and
--- standard deviation.
-normal :: forall m . MonadRandom m => Double -> Double -> m Double
-normal m std = do
-  r <- DR.runRVar (DR.normal m std) (getRandom :: MonadRandom m => m Word32)
-  return r
-
--- TODO not sure if used anymore
--- | Does one update of a visible pattern by updating the hidden layer neurons once
--- and then using the new values to obtain new values for the visible layer.
 updateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
 updateBolzmann ws pat = do
   h <- getCounterPattern Matching Visible ws pat
@@ -211,26 +193,29 @@ updateBolzmann ws pat = do
 
 
 -- see http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf section 16.1
+-- And stack overflow discussion
+-- http://stackoverflow.com/questions/9944568/the-free-energy-approximation-equation-in-restriction-boltzmann-machines
+-- http://www.dmi.usherb.ca/~larocheh/publications/class_set_rbms_uai.pdf
 getFreeEnergy :: Weights -> Pattern -> Double
 getFreeEnergy ws pat
-  | Just e <- validWeights ws = error e
+  | Just e <- validWeights ws                      = error e
+  | Just e <- validPattern Matching Visible ws pat = error e
   | otherwise = - biases - sum (map f xs)
     where w i j = ((ws :: Weights) ! i ! j) :: Double
-          biases = sum ([ w i 0  *. (pat ! (i + 1)) | i <- [0 .. p] ])
-          xs = [ w 0 j + sum [ w (i + 1) j *.  (pat ! i)  | i <- [0 .. p] ] | j <- [1 .. V.length $ ws ! 0]]
+          biases = sum [ w (i + 1) 0  *. (pat ! i)        | i <- [0 .. p - 1] ]
+          xs = [ w 0 j + sum [ w (i + 1) j *.  (pat ! i)  | i <- [0 .. p - 1] ] | j <- [1 .. (V.length $ ws ! 0) - 1]]
           f x = log (1 + exp x)
           p = V.length pat
 
 
--- TODO Mihaela two arguments not used
 matchPatternBolzmann :: BolzmannData -> Pattern -> Pattern
 matchPatternBolzmann (BolzmannData ws _pats _nr_h pats_with_binary) pat
   = fromJust $ lookup encoding binary_encodings_to_pats
+
+
+matchPatternBolzmann :: BolzmannData -> Pattern -> [(Int, Double)]
+matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat =
+  [(fromPatToIndex p, (getPatternProbability) ((V.++) pat (V.fromList . fromJust $ lookup p pats_with_binary) ) ) | p <- pats]
     where
-      trials = map (\x -> (V.++) x pat) (map (V.fromList . snd) pats_with_binary)
-      enconding_size = length $ snd $ head pats_with_binary
-      binary_encodings_to_pats = map swap pats_with_binary
-      getPatternProbability x = exp $ getFreeEnergy ws x
-      compare_according_to_energy x y = compare (getPatternProbability x) (getPatternProbability y)
-      min_pat = maximumBy compare_according_to_energy trials
-      encoding = drop (V.length min_pat - enconding_size) (V.toList min_pat)
+      getPatternProbability x = exp $ (- getFreeEnergy ws x)
+      fromPatToIndex p = fromJust $ p `elemIndex` pats
