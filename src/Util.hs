@@ -7,6 +7,7 @@ module Util (
   , (./.)
   , columnVector
   , combineVectors
+  , compareBy
   , dotProduct
   , findInList
   , fromDataVector
@@ -41,8 +42,14 @@ x ./. y = fromIntegral x / fromIntegral y
 (*.) :: (Integral a1, Num a) => a -> a1 -> a
 x *. y = x * fromIntegral y
 
+
 toDouble :: (Integral a, Num b) => V.Vector a -> V.Vector b
 toDouble = fmap fromIntegral
+
+
+compareBy :: Ord b => (a -> b) -> a -> a -> Ordering
+compareBy f x1 x2 = compare (f x1) (f x2)
+
 
 log2 :: Double -> Double
 log2 = logBase 2.0

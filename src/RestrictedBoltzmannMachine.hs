@@ -2,7 +2,7 @@
 
 -- | Base Restricted Bolzamann machine.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
-module BolzmannMachine where
+module RestrictedBoltzmannMachine where
 
 
 import           Data.Maybe
@@ -35,7 +35,7 @@ data Phase = Training | Matching
  deriving(Eq, Show)
 
 
-data BolzmannData = BolzmannData {
+data BoltzmannData = BoltzmannData {
     weightsB :: Weights    -- ^ the weights of the network
   , patternsB :: [Pattern] -- ^ the patterns which were used to train it
   , nr_hiddenB :: Int      -- ^ number of neurons in the hidden layer
@@ -59,27 +59,27 @@ notMode Visible = Hidden
 notMode Hidden  = Visible
 
 
-buildBolzmannData ::  MonadRandom  m => [Pattern] ->  m BolzmannData
-buildBolzmannData []   = error "Train patterns are empty"
-buildBolzmannData pats =
-  buildBolzmannData' pats nr_visible
+buildBoltzmannData ::  MonadRandom  m => [Pattern] ->  m BoltzmannData
+buildBoltzmannData []   = error "Train patterns are empty"
+buildBoltzmannData pats =
+  buildBoltzmannData' pats nr_visible
     where nr_visible = fromIntegral $ V.length (head pats)
 
 
--- | @buildBolzmannData' patterns nr_hidden@: Takes a list of patterns and
+-- | @buildBoltzmannData' patterns nr_hidden@: Takes a list of patterns and
 -- builds a Bolzmann network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
 -- against the network, by using 'matchPatternBolzmann'.
-buildBolzmannData' :: MonadRandom  m => [Pattern] -> Int ->  m BolzmannData
-buildBolzmannData' [] _  = error "Train patterns are empty"
-buildBolzmannData' pats nr_hidden
+buildBoltzmannData' :: MonadRandom  m => [Pattern] -> Int ->  m BoltzmannData
+buildBoltzmannData' [] _  = error "Train patterns are empty"
+buildBoltzmannData' pats nr_hidden
   | first_len == 0
       = error "Cannot have empty patterns"
   | any (\x -> V.length x /= first_len) pats
       = error "All training patterns must have the same length"
   | otherwise = do
       (ws, pats_with_binary) :: (Weights, [(Pattern, [Int])]) <- trainBolzmann pats nr_hidden
-      return $ BolzmannData ws pats nr_hidden pats_with_binary
+      return $ BoltzmannData ws pats nr_hidden pats_with_binary
   where
     first_len = V.length (head pats)
 
@@ -191,8 +191,8 @@ validWeights ws
   | otherwise = Nothing
 
 
-updateBolzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
-updateBolzmann ws pat = do
+updateBoltzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
+updateBoltzmann ws pat = do
   h <- getCounterPattern Matching Visible ws pat
   getCounterPattern Matching Hidden ws h
 
@@ -213,9 +213,10 @@ getFreeEnergy ws pat
           p = V.length pat
 
 
-matchPatternBolzmann :: BolzmannData -> Pattern -> [(Int, Double)]
-matchPatternBolzmann (BolzmannData ws pats nr_h pats_with_binary) pat =
-  [(fromPatToIndex p, (getPatternProbability) ((V.++) pat (V.fromList . fromJust $ lookup p pats_with_binary) ) ) | p <- pats]
+matchPatternBoltzmann :: BoltzmannData -> Pattern -> Int
+matchPatternBoltzmann (BoltzmannData ws pats nr_h pats_with_binary) pat =
+  fst $ maximumBy (compareBy snd) [(fromPatToIndex p, (getPatternProbability . extendWithClass) p) | p <- pats]
     where
+      extendWithClass p = ((V.++) pat (V.fromList . fromJust $ lookup p pats_with_binary) )
       getPatternProbability x = exp $ (- getFreeEnergy ws x)
       fromPatToIndex p = fromJust $ p `elemIndex` pats

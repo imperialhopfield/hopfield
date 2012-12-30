@@ -13,7 +13,7 @@ import           Test.QuickCheck
 import           Control.Monad
 import           Data.Number.Erf (normcdf)
 
-import           BolzmannMachine
+import           RestrictedBoltzmannMachine
 import           Hopfield
 import           Util
 
@@ -163,7 +163,7 @@ measureError hs = num_errors ./. num_pats
 -- | Trains a network using @training_pats@ and then updates each
 -- pattern in pats according to the weights of that network.
 -- The aim is to check that the energy decreases after each update.
-energyDecreasesAfterUpdate:: ([Pattern], [Pattern]) -> Gen Bool
+energyDecreasesAfterUpdate :: ([Pattern], [Pattern]) -> Gen Bool
 energyDecreasesAfterUpdate (training_pats, pats)
   = and <$> mapM energyDecreases pats
     where
@@ -176,7 +176,7 @@ energyDecreasesAfterUpdate (training_pats, pats)
         return $ evalRand (energyDecreases' pat) (mkStdGen i)
 
 
-repeatedUpdateCheck:: ([Pattern], [Pattern]) -> Gen Bool
+repeatedUpdateCheck :: ([Pattern], [Pattern]) -> Gen Bool
 repeatedUpdateCheck (training_pats, pats)
   = and <$> mapM  s pats
     where
@@ -192,8 +192,8 @@ repeatedUpdateCheck (training_pats, pats)
         return $ evalRand (stopped pat) (mkStdGen i)
 
 
-bolzmannBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
-bolzmannBuildGen m1 m2 max_hidden = do
+boltzmannBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
+boltzmannBuildGen m1 m2 max_hidden = do
   pats <- patListGen BM m1 m2
   i    <- choose (1, max_hidden)
   return $ (pats, i)
@@ -202,12 +202,12 @@ bolzmannBuildGen m1 m2 max_hidden = do
 build_BM_Check :: ([Pattern], Int) -> Gen Bool
 build_BM_Check (pats, nr_h) = do
   i <- arbitrary
-  let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen i)
+  let bd = evalRand (buildBoltzmannData' pats nr_h) (mkStdGen i)
   return $ patternsB bd == pats && nr_hiddenB bd == nr_h
 
 
-bolzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
-bolzmannAndPatGen m1 m2 max_hidden = do
+boltzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
+boltzmannAndPatGen m1 m2 max_hidden = do
   pats_train <- patListGen BM m1 m2
   i          <- choose (1, max_hidden)
   pats_check <- patternGen BM (V.length $ pats_train !! 0)

@@ -7,10 +7,12 @@ import qualified Data.Vector as V
 
 import Hopfield
 import ConvertImage
-import BolzmannMachine
+import RestrictedBoltzmannMachine
+import ClassificationBoltzmannMachine
 
 
-data Method = Hopfield | Boltzmann deriving (Eq, Enum, Ord, Show)
+data Method = Hopfield | Boltzmann | CBoltzmann
+  deriving (Eq, Enum, Ord, Show)
 
 
 transformFunction :: Method -> (Int -> Int)
@@ -28,28 +30,13 @@ recPic method (width, height) imgPaths queryImgPath = do
   let queryPat:imgPats = map (toPattern method) l
       runRandom r = evalRand r gen
       result =  case method of
-          Hopfield  -> runRandom $ matchPattern (buildHopfieldData imgPats) queryPat
-          Boltzmann -> error "Boltzmann not implemented yet"
-          --runRandom $ matchPatternBolzmann (runRandom $ buildBolzmannData imgPats) queryPat
+          Hopfield   -> runRandom $ matchPattern (buildHopfieldData imgPats) queryPat
+          Boltzmann  -> Right $ matchPatternBoltzmann (runRandom $ buildBoltzmannData imgPats) queryPat
+          CBoltzmann -> Right $ matchPatternCBoltzmann (runRandom $ buildCBoltzmannData imgPats) queryPat
   return $ case result of
              Left _pattern -> Nothing -- TODO apply heuristic if we want (we want)
+                                      -- only required for Hopfield
              Right i       -> Just $ imgPaths !! i
-
-
--- code left from trials with Boltzmann. Left here until we merge the
--- 2 methods using one interface (TODO)
-
-  --    res =  case method of
-  --        Hopfield  -> error "This is a trial for Bolzmann"
-  --        Boltzmann -> matchPatternBolzmann (runRandom $ buildBolzmannData imgPats) queryPat
-  -- return $ [ (imgPaths !! i, prob) | (i, prob)  <- res]
-
--- This code is from CRBM and it is commented until a fix for this is made
-  --    runRand r = evalRand r gen
-  --    i =  case method of
-  --        Hopfield  -> error "This is a trial for Bolzmann"
-  --        Boltzmann -> matchPatternBoltzmann (runRand $ buildBoltzmannData imgPats) queryPat
-  -- return $ imgPaths !! i
 
 
 main :: IO ()
@@ -57,9 +44,10 @@ main = do
   -- TODO use an argument parser (cmdargs)
   methodStr:widthStr:heightStr:queryPath:filePaths <- getArgs
   let method = case methodStr of
-                 "hopfield"  -> Hopfield
-                 "boltzmann" -> Boltzmann
-                 _           -> error "unrecognized method"
+                 "hopfield"   -> Hopfield
+                 "boltzmann"  -> Boltzmann
+                 "cboltzmann" -> CBoltzmann
+                 _            -> error "unrecognized method"
       width  = read widthStr
       height = read heightStr
   foundPath <- recPic method (width, height) filePaths queryPath

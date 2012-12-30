@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternGuards, ScopedTypeVariables #-}
 
-module BolzmannMachine where
+module ClassificationBoltzmannMachine where
 -- | Base Restricted Bolzamann machine.
 
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
@@ -60,10 +60,10 @@ getDimension Visible ws = V.length $ ws ! 0
 getDimension Classification ws = V.length $ ws ! 0
 
 
-buildBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
-buildBoltzmannData []   = error "Train patterns are empty"
-buildBoltzmannData pats =
-  buildBoltzmannData' pats 30
+buildCBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
+buildCBoltzmannData []   = error "Train patterns are empty"
+buildCBoltzmannData pats =
+  buildCBoltzmannData' pats 30
     where nr_visible = V.length (head pats)
 
 
@@ -71,9 +71,9 @@ buildBoltzmannData pats =
 -- builds a Bolzmann network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
 -- against the network, by using 'matchPatternBolzmann'.
-buildBoltzmannData' :: MonadRandom  m => [Pattern] -> Int ->  m BoltzmannData
-buildBoltzmannData' [] _  = error "Train patterns are empty"
-buildBoltzmannData' pats nr_hidden
+buildCBoltzmannData' :: MonadRandom  m => [Pattern] -> Int ->  m BoltzmannData
+buildCBoltzmannData' [] _  = error "Train patterns are empty"
+buildCBoltzmannData' pats nr_hidden
   | first_len == 0
       = error "Cannot have empty patterns"
   | any (\x -> V.length x /= first_len) pats
@@ -175,14 +175,13 @@ updateHidden ws u c v y
 -- the u matrix and the vector of biases d, together with a hidden vector h)
 updateClassification :: Weights -> Bias -> Pattern -> Pattern
 updateClassification u d h
-  = V.fromList [ if n == new_class then 1 else 0 | n <- all_classes]
+  = V.fromList [ if n == newClass then 1 else 0 | n <- allClasses]
     where
       -- TODO replace with actual sampling using inverse method (with cdf list)
-      compare_by_activation_sum x y = compare (exp_activation x) (exp_activation y)
-      new_class   = maximumBy compare_by_activation_sum all_classes
-      exp_activation = exp . (getActivationSum u d h)
-      all_classes = [0 .. nr_classes - 1]
-      nr_classes  = V.length d
+      expActivation = exp . (getActivationSum u d h)
+      newClass   = maximumBy (compareBy expActivation) allClasses
+      allClasses = [0 .. nrClasses - 1]
+      nrClasses  = V.length d
 
 
 -- @getClassificationVector pat_to_classes pat@ returns the classification
@@ -260,16 +259,15 @@ trainBolzmann pats nr_h = do
 -- every possible classification, and choosing the classification with
 -- lowest energy.
 -- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
-matchPatternBoltzmann :: BoltzmannData -> Pattern -> Int
-matchPatternBoltzmann bm v
+matchPatternCBoltzmann :: BoltzmannData -> Pattern -> Int
+matchPatternCBoltzmann bm v
   = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
     where
       pats_classes = pattern_to_class bm
       pats = patternsB bm
       patternsWithClassifications = [ (p, getClassificationVector pats_classes p) | p <- map fst pats_classes]
       probability classification = exp $ - (getFreeEnergy bm v classification)
-      comparePats x y = compare (probability $ snd x) (probability $ snd y)
-      (maxPat, _) = maximumBy comparePats patternsWithClassifications
+      (maxPat, _) = maximumBy (compareBy $ probability . snd) patternsWithClassifications
 
 
 -- | @getFreeEnergy bm visible classification_vector@

@@ -14,11 +14,12 @@ library
   default-language: Haskell2010
   exposed-modules:
       Hopfield
-    , Util
-    , BolzmannMachine
+    , ClassificationBoltzmannMachine
     , Common
     , ConvertImage
+    , RestrictedBoltzmannMachine
     , SuperAttractors
+    , Util
   other-modules:
   hs-source-dirs:
     src
