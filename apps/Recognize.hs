@@ -7,10 +7,12 @@ import qualified Data.Vector as V
 
 import Hopfield
 import ConvertImage
--- import BolzmannMachine
+import RestrictedBoltzmannMachine
+import ClassificationBoltzmannMachine
 
 
-data Method = Hopfield | Boltzmann deriving (Eq, Enum, Ord, Show)
+data Method = Hopfield | Boltzmann | CBoltzmann
+  deriving (Eq, Enum, Ord, Show)
 
 
 transformFunction :: Method -> (Int -> Int)
@@ -28,12 +30,13 @@ recPic method (width, height) imgPaths queryImgPath = do
   let queryPat:imgPats = map (toPattern method) l
       runRandom r = evalRand r gen
       result =  case method of
-          Hopfield  -> runRandom $ matchPattern (buildHopfieldData imgPats) queryPat
-          Boltzmann -> error "Boltzmann not implemented yet"
-          --runRandom $ matchPatternBolzmann (runRandom $ buildBolzmannData imgPats) queryPat
+          Hopfield   -> runRandom $ matchPattern (buildHopfieldData imgPats) queryPat
+          Boltzmann  -> Right $ matchPatternBoltzmann (runRandom $ buildBoltzmannData imgPats) queryPat
+          CBoltzmann -> Right $ matchPatternCBoltzmann (runRandom $ buildCBoltzmannData imgPats) queryPat
   return $ case result of
              Left _pattern -> Nothing -- TODO apply heuristic if we want (we want)
-             Right i      -> Just $ imgPaths !! i
+                                      -- only required for Hopfield
+             Right i       -> Just $ imgPaths !! i
 
 
 main :: IO ()
@@ -41,12 +44,11 @@ main = do
   -- TODO use an argument parser (cmdargs)
   methodStr:widthStr:heightStr:queryPath:filePaths <- getArgs
   let method = case methodStr of
-                 "hopfield"  -> Hopfield
-                 "boltzmann" -> Boltzmann
-                 _           -> error "unrecognized method"
+                 "hopfield"   -> Hopfield
+                 "boltzmann"  -> Boltzmann
+                 "cboltzmann" -> CBoltzmann
+                 _            -> error "unrecognized method"
       width  = read widthStr
       height = read heightStr
   foundPath <- recPic method (width, height) filePaths queryPath
-  putStrLn $ case foundPath of
-    Nothing   -> "no pattern found"
-    Just path -> path
+  putStrLn $ show foundPath

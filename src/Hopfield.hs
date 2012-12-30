@@ -3,8 +3,8 @@
 
 -- | Base Hopfield model, providing training and running.
 module Hopfield (
-    Weights
-  , Pattern
+    Pattern
+  , Weights
   -- * Hopfield data structure
   , HopfieldData ()
   , weights
@@ -19,24 +19,13 @@ module Hopfield (
   , matchPattern
   -- * Energy
   , energy
-  -- * Basin of attraction
-  , measurePatternBasin
-  -- * Other
-  , computeError
 ) where
 
 import           Control.Monad.Random (MonadRandom)
-import           Control.Monad.Random.Class (getRandom)
-import           Data.List
 import           Data.Maybe
-import           Data.Number.Erf
-import           Data.Random.Extras (sample)
-import           Data.RVar (runRVar)
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
-import           Data.Word (Word32)
-
 import           Common
 import           Util
 
@@ -164,15 +153,6 @@ matchPattern (HopfieldData ws pats) pat
       return $ findInList pats converged_pattern
 
 
--- TODO I don't understand this (niklas)
--- TODO check where this function is used
--- | Computes the probability of error for one element given a hopfield data
--- structure. Note that I claim that the actuall error of probability depends
--- on this, but is not the whole term
-computeError :: HopfieldData -> Double
-computeError (HopfieldData _ pats) = 1.0 / 2.0 * (1 - (erf $ sqrt $ n ./. p))
-  where n = V.length $ pats !! 0
-        p = length pats
 
 
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
@@ -221,37 +201,3 @@ validWeights ws
   | otherwise = Nothing
   where
     n = V.length ws
-
-
--- Generate list of states within hamming distance r of the given pattern
-withinHammingRadius :: Pattern -> Int -> [Pattern]
-withinHammingRadius pat r = map (V.fromList . multByPat) coeffsList
-  where
-    n                = V.length pat
-    perms            = sequence $ replicate n [1, -1]
-    withinDist       = null . (drop r) . (filter (== (-1)))
-    coeffsList       = filter withinDist perms
-    multByPat coeffs = zipWith (*) coeffs (V.toList pat)
-
-
--- Percentage of sampled patterns within hamming distance 'r' from 'pat' which
--- converge to 'pat'
--- pre: pattern of same size as network
-samplePatternBasin :: forall m . MonadRandom m => HopfieldData -> Pattern -> Int -> m Double
-samplePatternBasin hs pat r = do
-  let rSamples      =  sample 100 $ withinHammingRadius pat r
-  samples           <- runRVar rSamples (getRandom :: m Word32)
-  convergedPatterns <- mapM (repeatedUpdate $ weights hs) samples
-  let numConverging =  length $ filter (==pat) convergedPatterns
-
-  return $ numConverging ./. (length samples)
-
-
--- Measures pattern's basin of attraction using the Storkey-Valabregue method
--- pre: pattern of same size as network
-measurePatternBasin :: (MonadRandom m) => HopfieldData -> Pattern -> m Int
-measurePatternBasin hs pat = do
-  t_mus <- mapM (samplePatternBasin hs pat)  [1..n]
-  return $ fromMaybe n $ findIndex (<0.9) t_mus
-    where
-      n   = V.length pat
