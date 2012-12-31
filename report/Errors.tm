@@ -101,11 +101,9 @@
     x<rsup|k><rsub|i>>>|<row|<cell|\<gtr\> 0 otherwise>>>>>
   </equation>
 
-  - <with|math-display|true|<math|h<rsub|i><rsup|k> \<ast\>>
-  <math|x<rsup|k><rsub|<rsup|>i> >> = -
-
   <\equation>
-    - x<rsup|k><rsub|i<rsup|>> \ x<rsup|k><rsub|i<rsup|>> -
+    - h<rsup|k><rsub|i>\<ast\>x<rsup|k><rsub|<rsup|>i> =-
+    x<rsup|k><rsub|i<rsup|>> \ x<rsup|k><rsub|i<rsup|>> -
     x<rsup|k><rsub|i<rsup|>>\<ast\> <around*|(|<frac|1|N>
     <big|sum><rsup|N><rsub|j =1><rsub|><big|sum><rsup|p><rsub|l
     =1\<nocomma\>,l \<neq\>k>x<rsup|l><rsub|i<rsup|>> \<ast\>
@@ -116,7 +114,7 @@
     x<rsup|l><rsub|j>\<ast\>x<rsup|k><rsub|<rsup|>j>\<ast\>x<rsup|k><rsub|i>|)>|\<wide-underbrace\>>>>>>>
   </equation>
 
-  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <math|C<rsup|k><rsub|i>>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <math|C<rsup|k><rsub|i>>
   \ \ \ \ \ \ 
 
   From (3) and (<math|>4) we conclude that we get an error if
@@ -279,8 +277,8 @@
     \<ast\>x<rsup|k><rsub|i<rsup|>> |\<wide-underbrace\>>
   </equation*>
 
-  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <math|
-  S<rsup|k><rsub|i>> \ 
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <math|S<rsup|k><rsub|i>>
+  \ 
 
   In order to get an error, <math|minus h<rsup|k><rsub|i>
   \<ast\>x<rsup|k><rsub|i>\<leqslant\>0 \<nocomma\>> , so <math|
