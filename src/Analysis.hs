@@ -23,6 +23,7 @@ computeErrorIndependentPats hopfield = computeErrorIndependentPatsNumbers p n
         n = V.length $ pats !! 0
         p = length pats
 
+
 -- | computes the error of a super attractor of a hopfield network. The assumption
 -- is that there is only one super attractor and the other patterns are independent.
 computeErrorSuperAttractor :: HopfieldData -> Double
@@ -46,3 +47,21 @@ computeErrorSuperAttractorNumbers :: Int -> Int -> Int -> Double
 computeErrorSuperAttractorNumbers d p n
   = 1.0 / 2.0 * (1.0 - (erf $ (sqrt (n ./. (2 *. (p - d)) ) *. d)))
 
+
+-- @patternsToNeuronsRatioFromError err@. Given that the err we accept is @err@,
+-- returns the maximum ratio between the number of patterns and the number of
+-- neurons which can be used to ensure that the probability of error is just @err@.
+-- if p/n is grater than @patternsToNeuronsRatioFromError err@ then the error
+-- of a Hopfield network will be greater than err. This method is used to compute
+-- the minimum number of neurons given the number of training patterns and the
+-- maximum error accepted error.
+patternsToNeuronsRatioFromError :: Double -> Double
+patternsToNeuronsRatioFromError err = 1.0 / (2 * (inverf (1 - 2 * err)) ^ 2)
+
+
+-- @minNumberOfNeurons p err@ Given the number of patterns used to train a Hopfield
+-- network and the maximum error accepted, returns the minimum number of neurons
+-- required for the network.
+minNumberOfNeurons :: Int -> Double -> Int
+minNumberOfNeurons p err
+  = 1 + floor (fromIntegral p / (patternsToNeuronsRatioFromError err))
