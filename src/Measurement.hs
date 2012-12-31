@@ -1,10 +1,9 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
 -- | Functions to measure various properties of a network
 module Measurement (
   -- * Basin of attraction
     BasinMeasure
-  , withHammingDistance
+  , sampleHammingDistance
+  , samplePatternRing
   , samplePatternBasin
   , measurePatternBasin
   -- * Fixed point errors
@@ -12,16 +11,13 @@ module Measurement (
   , measureError
 ) where
 
+import           Control.Monad (liftM, replicateM)
 import           Control.Monad.Random (MonadRandom)
-import           Control.Monad.Random.Class (getRandom)
 import           Data.List
 import           Data.Maybe
 import qualified Data.Vector as V
-import           Data.Random.Extras (sample)
-import           Data.RVar (runRVar)
-import           Data.Word (Word32)
 import           Hopfield
-import           Util ((./.))
+import           Util ((./.), toArray, shuffle)
 
 
 -- A function computing some measure of a pattern's basin in the given network
@@ -31,15 +27,15 @@ type BasinMeasure m a = HopfieldData -> Pattern -> m a
 -- -----------------------------------------------------------------------------
 -- Functions relating to measuring a pattern's basin of attraction
 
--- Generate list of states with hamming distance r of the given pattern
-withHammingDistance :: Pattern -> Int -> [Pattern]
-withHammingDistance pat r = map (V.fromList . multByPat) coeffsList
-  where
-    n                = V.length pat
-    perms            = sequence $ replicate n [1, -1]
-    hasDistanceR xs  = replicate r (-1) == filter (== (-1)) xs
-    coeffsList       = filter hasDistanceR perms
-    multByPat coeffs = zipWith (*) coeffs (V.toList pat)
+-- Samples patterns of hamming distance r of the given pattern
+sampleHammingDistance :: MonadRandom m => Pattern -> Int -> Int -> m [Pattern]
+sampleHammingDistance pat r numSamples
+  = liftM (map (V.fromList . multByPat)) coeffSamples
+      where
+        n                = V.length pat
+        basePerm         = toArray $ replicate r (-1) ++ replicate (n-r) 1
+        coeffSamples     = replicateM numSamples $ shuffle basePerm
+        multByPat coeffs = zipWith (*) coeffs (V.toList pat)
 
 
 -- Percentage of sampled patterns in the ring of 'pat' which converge to 'pat'
@@ -47,10 +43,9 @@ withHammingDistance pat r = map (V.fromList . multByPat) coeffsList
 
 -- A pattern ring of radius 'r' around 'pat' is the set of states with hamming
 -- distance 'r' from 'pat'.
-samplePatternRing :: forall m . MonadRandom m => HopfieldData -> Pattern -> Int -> m Double
+samplePatternRing :: MonadRandom m => HopfieldData -> Pattern -> Int -> m Double
 samplePatternRing hs pat r = do
-  let rSamples      =  sample 100 $ withHammingDistance pat r
-  samples           <- runRVar rSamples (getRandom :: m Word32)
+  samples           <- sampleHammingDistance pat r 100
   convergedPatterns <- mapM (repeatedUpdate $ weights hs) samples
   let numConverging =  length $ filter (==pat) convergedPatterns
 
