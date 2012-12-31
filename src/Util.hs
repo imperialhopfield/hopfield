@@ -12,7 +12,6 @@ module Util (
   , findInList
   , fromDataVector
   , getBinaryIndices
-  , getBinaryIndices
   , list2D
   , log2
   , normal
@@ -20,20 +19,25 @@ module Util (
   , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
+  , shuffle
+  , toArray
   , toBinary
   , toDouble
   , vector2D
 ) where
 
 
+import           Data.Array.ST
 import           Data.Maybe
 import           Data.List
 import qualified Data.Random as DR
 import qualified Data.Vector as V
 import           Data.Word (Word32)
+import           Control.Monad (forM_, liftM)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Foreign.Storable
+import           GHC.Arr as Arr
 import qualified Numeric.Container as NC
 
 
@@ -163,3 +167,26 @@ getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
 -- Counts the number of pairwise differences in two lists
 numDiffs :: (Eq a) => [a] -> [a] -> Int
 numDiffs xs ys = length $ filter id $ zipWith (/=) xs ys
+
+
+-- Convert list to Array
+toArray :: [a] -> Array Int a
+toArray xs = listArray (0, l-1) xs
+  where l = length xs
+
+
+-- Efficient O(n) random shuffle of an array
+-- Modified from http://www.haskell.org/haskellwiki/Random_shuffle
+shuffle :: MonadRandom m => Array Int a -> m [a]
+shuffle xs = do
+    let len = Arr.numElements xs
+    rands <- take len `liftM` Random.getRandomRs (0, len-1)
+    let ar = runSTArray $ do
+                ar <- Arr.thawSTArray xs
+                forM_ (zip [0..(len-1)] rands) $ \(i, j) -> do
+                    vi <- Arr.readSTArray ar i
+                    vj <- Arr.readSTArray ar j
+                    Arr.writeSTArray ar j vi
+                    Arr.writeSTArray ar i vj
+                return ar
+    return (elems ar)
