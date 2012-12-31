@@ -28,11 +28,8 @@ module Util (
 ) where
 
 
-<<<<<<< HEAD
 import           Data.Array.ST
 import           Data.Maybe
-=======
->>>>>>> Rebase conflict
 import           Data.List
 import qualified Data.Random as DR
 import qualified Data.Vector as V
