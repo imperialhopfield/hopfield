@@ -238,3 +238,10 @@ binaryCheck (x, y) = x == refold
  where
    refold = sum [ b * 2^pos | b <- reverse bits | pos <- [0..] ]
    bits   = toBinary x y
+
+
+-- Runs expressions requiring random numbers (e.g. RandomMonad) in the Gen monad
+evalRandGen :: Rand StdGen a -> Gen a
+evalRandGen e = do
+  rndInt <- arbitrary
+  return $ evalRand e (mkStdGen rndInt)

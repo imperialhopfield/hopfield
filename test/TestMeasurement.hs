@@ -16,38 +16,18 @@ import           Utils
 
 testMeasurement = do
 
-  -- WARNING: Explosive complexity.
-  -- Maximum pattern size parameter '10' is very sensitive
-  describe "withHammingDistance" $ do
+  describe "sampleHammingDistance" $ do
 
-    let maxPatSize = 10
-    let pats = patternRangeGen H (1, maxPatSize) :: Gen Pattern
-
-
-    let testCount p r = length (withHammingDistance p r) == (n `B.choose` r)
-          where n = V.length p
-
-    it "has nCr (n choose r) patterns given n neurons and radius r" $
-      forAll pats $ forAllR testCount
+    let genPatternAndRadius = do
+          p <- patternRangeGen H (1, 100)
+          r <- choose (1, V.length p)
+          return (p, r)
 
 
-
-    let noDups p r = (length $ nub $ withHammingDistance p r)
-                      == (n `B.choose` r)
-          where n = V.length p
-
-    it "has no duplicate patterns" $
-      forAll pats $ forAllR noDups
-
-
-
-    let testHamming p r = all hasRDiffs $ withHammingDistance p r
-          where hasRDiffs p2 = r == numDiffs (V.toList p) (V.toList p2)
+    let testHamming (p, r) = do
+          let hasRDiffs p2 = r == numDiffs (V.toList p) (V.toList p2)
+          samples <- evalRandGen $ sampleHammingDistance p r 25
+          return $ all hasRDiffs samples
 
     it "generates patterns which are of the correct hamming distance" $
-      forAll pats $ forAllR testHamming
-
-
--- Checks predicate 'test' holds for all hamming radii of the pattern 'p'
-forAllR :: (Pattern -> Int -> Bool) -> Pattern -> Bool
-forAllR test p = all (test p) [1..V.length p]
+      forAll genPatternAndRadius testHamming

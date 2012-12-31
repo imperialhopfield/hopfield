@@ -95,7 +95,7 @@
     ><choice|<tformat|<table|<row|<cell|\<geqslant\> 0 \<nocomma\>
     \<nocomma\>\<nocomma\>if x<rsup|k><rsub|i><rprime|'> =
     x<rsup|k><rsub|i>>>|<row|<cell|\<less\>0 otherwise>>>>><rsup|><rsub| >
-    \<Rightarrow\> <rsub|>h<rsup|k><rsub|i > \<ast\> x<rsup|k ><rsub|i
+    \<Rightarrow\> -<rsub|>h<rsup|k><rsub|i > \<ast\> x<rsup|k ><rsub|i
     ><choice|<tformat|<table|<row|<cell|\<leqslant\> 0 \<nocomma\>
     \<nocomma\>\<nocomma\>if x<rsup|k><rsub|i><rprime|'> =
     x<rsup|k><rsub|i>>>|<row|<cell|\<gtr\> 0 otherwise>>>>>
@@ -105,12 +105,12 @@
   <math|x<rsup|k><rsub|<rsup|>i> >> = -
 
   <\equation>
-    minus x<rsup|k><rsub|i<rsup|>> \ x<rsup|k><rsub|i<rsup|>> minus
+    - x<rsup|k><rsub|i<rsup|>> \ x<rsup|k><rsub|i<rsup|>> -
     x<rsup|k><rsub|i<rsup|>>\<ast\> <around*|(|<frac|1|N>
     <big|sum><rsup|N><rsub|j =1><rsub|><big|sum><rsup|p><rsub|l
     =1\<nocomma\>,l \<neq\>k>x<rsup|l><rsub|i<rsup|>> \<ast\>
     x<rsup|l><rsub|j>\<ast\>x<rsup|k><rsub|<rsup|>j>|)>= 1
-    \ <stack|<tformat|<table|<row|<cell|minus <frac|1|N><wide*|<around|(|
+    \ <stack|<tformat|<table|<row|<cell|- <frac|1|N><wide*|<around|(|
     <big|sum><rsup|N><rsub|j =1><rsub|><big|sum><rsup|p><rsub|l
     =1\<nocomma\>,l \<neq\>k>x<rsup|l><rsub|i<rsup|>> \<ast\>
     x<rsup|l><rsub|j>\<ast\>x<rsup|k><rsub|<rsup|>j>\<ast\>x<rsup|k><rsub|i>|)>|\<wide-underbrace\>>>>>>>
@@ -153,38 +153,36 @@
 
   <\equation*>
     P<around*|(|C<rsup|k><rsub|i > \<gtr\> 1|)> \<simeq\>
-    <frac|1|<sqrt|2\<mathpi\>>\<sigma\>><big|int><rsup|\<infty\>><rsub|1>e<rsup|inus
+    <frac|1|<sqrt|2\<mathpi\>>\<sigma\>><big|int><rsup|\<infty\>><rsub|1>e<rsup|-
     <frac|x<rsup|2>|2 \<sigma\><rsup|2>>> dx =
     <frac|1|<sqrt|2\<mathpi\>>\<sigma\>><big|int><rsup|\<infty\>><rsub|<frac|1|<sqrt|2>
-    \<sigma\>>> e<rsup|minus y<rsup|2>> <sqrt|2 >\<sigma\>dy =\ 
+    \<sigma\>>> e<rsup|-y<rsup|2>> <sqrt|2 >\<sigma\>dy =\ 
   </equation*>
 
   <\equation*>
     = <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|\<infty\>><rsub|<frac|1|<sqrt|2>
-    \<sigma\>>> e<rsup|minus y<rsup|2>> dy=
-    <frac|1|<sqrt|\<mathpi\>>><around*|(|<big|int><rsup|\<infty\>><rsub|0>
-    e<rsup|minus y<rsup|2>> dy minus <big|int><rsup|<frac|1|<sqrt|2>
-    \<sigma\>>><rsub|0> e<rsup|minus y<rsup|2>> dy |)>=
+    \<sigma\>>> e<rsup|- y<rsup|2>> dy= <frac|1|<sqrt|\<mathpi\>>><around*|(|<big|int><rsup|\<infty\>><rsub|0>
+    e<rsup|-y<rsup|2>> dy - <big|int><rsup|<frac|1|<sqrt|2>
+    \<sigma\>>><rsub|0> e<rsup|- y<rsup|2>> dy |)>=
   </equation*>
 
   <\equation*>
-    = <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|\<infty\>><rsub|0>
-    e<rsup|minus y<rsup|2>> dy inus \ <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|<frac|1|<sqrt|2>
-    \<sigma\>>><rsub|0> e<rsup|minus y<rsup|2>> dy =
-    <frac|1|<sqrt|\<mathpi\>>> \<ast\><frac|<sqrt|\<pi\>>|2>
-    \<noplus\>\<noplus\>minus <frac|1|2>erf<around*|(|<frac|1|<sqrt|2
-    \<sigma\>>>|)>=
+    = <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|\<infty\>><rsub|0> e<rsup|-
+    y<rsup|2>> dy - \ <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|<frac|1|<sqrt|2>
+    \<sigma\>>><rsub|0> e<rsup|- y<rsup|2>> dy = <frac|1|<sqrt|\<mathpi\>>>
+    \<ast\><frac|<sqrt|\<pi\>>|2> \<noplus\>-
+    <frac|1|2>erf<around*|(|<frac|1|<sqrt|2 \<sigma\>>>|)>=
   </equation*>
 
   <\equation*>
-    = <frac|1|2><around*|(|1 \<noplus\>\<noplus\>minus
+    = <frac|1|2><around*|(|1 \<noplus\>\<noplus\>-
     erf<around*|(|<frac|1|<sqrt|2 \<sigma\>>>|)>|)> =
-    \ <frac|1|2><around*|(|1 \<noplus\>\<noplus\>minus
+    \ <frac|1|2><around*|(|1 \<noplus\>\<noplus\>-
     <with|font-shape|italic|erf><around*|(|<sqrt|<frac|N|2p>>|)>|)>\ 
   </equation*>
 
   <\equation*>
-    where err x = <frac|1|<sqrt|2\<pi\>>><big|int><rsup|x><rsub|0>e<rsup|minusx<rsup|2>
+    where err x = <frac|1|<sqrt|2\<pi\>>><big|int><rsup|x><rsub|0>e<rsup|-x<rsup|2>
     ><rsub|<rsup|<rsup|>>>dx\ 
   </equation*>
 
@@ -198,8 +196,10 @@
     \;
   </equation*>
 
-  <with|font-series|bold|Stability of a super attractor, given independence
-  of all other stored patterns>
+  <with|font-series|bold|Stability of a super attractor, given indpendence of
+  all other stored patterns>
+
+  \;
 
   By following the above way of reasoning, we compute the probability of
   error for a super attractor.
@@ -264,8 +264,8 @@
   Thus
 
   <\equation*>
-    inus h<rsup|k><rsub|i> \<ast\>x<rsup|k><rsub|i>= minus d
-    \<ast\>x<rsub|i><rsup|k>\<ast\>x<rsub|i><rsup|k> minus <frac|1|N>
+    -h<rsup|k><rsub|i> \<ast\>x<rsup|k><rsub|i>= - d
+    \<ast\>x<rsub|i><rsup|k>\<ast\>x<rsub|i><rsup|k> - <frac|1|N>
     <big|sum><rsup|N><rsub|j =1><rsub|><big|sum><rsup|p><rsub|l
     \<nin\>S>x<rsup|l><rsub|i<rsup|>> \<ast\>
     x<rsup|l><rsub|j>\<ast\>x<rsup|k><rsub|<rsup|>j>
@@ -273,13 +273,13 @@
   </equation*>
 
   <\equation*>
-    minus d \ minus<wide*| <frac|1|N> <big|sum><rsup|N><rsub|j
+    - d \ -<wide*| <frac|1|N> <big|sum><rsup|N><rsub|j
     =1><rsub|><big|sum><rsup|p><rsub|l \<nin\>S>x<rsup|l><rsub|i<rsup|>>
     \<ast\> x<rsup|l><rsub|j>\<ast\>x<rsup|k><rsub|<rsup|>j>
     \<ast\>x<rsup|k><rsub|i<rsup|>> |\<wide-underbrace\>>
   </equation*>
 
-  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <math|
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <math|
   S<rsup|k><rsub|i>> \ 
 
   In order to get an error, <math|minus h<rsup|k><rsub|i>
@@ -288,53 +288,50 @@
   reasoning as before,\ 
 
   <\equation*>
-    <frac|1|N\<ast\><around*|(|pminus d|)>><big|sum><rsub|i=1><rsup|N*\<ast\><around*|(|pinus
+    <frac|1|N\<ast\><around*|(|p- d|)>><big|sum><rsub|i=1><rsup|N*\<ast\><around*|(|p-
     d|)>>X<rsub|i> \<sim\>N <around*|(|0\<nocomma\>, <frac|1|N
-    \<ast\><around*|(|pminusd|)>>|)>
+    \<ast\><around*|(|p - d|)>>|)>
   </equation*>
 
   <\equation*>
-    <frac|1|N><big|sum><rsub|i=1><rsup|N*\<ast\><around*|(|pinus
-    d|)>>X<rsub|i> \<sim\>N <around*|(|0\<nocomma\>, <frac|p minus d|N >|)>
+    <frac|1|N><big|sum><rsub|i=1><rsup|N*\<ast\><around*|(|p-d|)>>X<rsub|i>
+    \<sim\>N <around*|(|0\<nocomma\>, <frac|p - d|N >|)>
   </equation*>
 
   <\equation*>
-    S<rsup|k><rsub|i >\<sim\>N <around*|(|0\<nocomma\>, <frac|p minus d|N
-    >|)>
+    S<rsup|k><rsub|i >\<sim\>N <around*|(|0\<nocomma\>, <frac|p -d|N >|)>
   </equation*>
 
-  By denoting <math|<frac|p minus|N>> with <math|\<sigma\>:>
+  By denoting <math|<frac|p -d|N>> with <math|\<sigma\>:>
 
   <\equation*>
     P<around*|(|S<rsup|k><rsub|i > \<gtr\> d|)> \<simeq\>
-    <frac|1|<sqrt|2\<mathpi\>>\<sigma\>><big|int><rsup|\<infty\>><rsub|d>e<rsup|inus
+    <frac|1|<sqrt|2\<mathpi\>>\<sigma\>><big|int><rsup|\<infty\>><rsub|d>e<rsup|-
     <frac|x<rsup|2>|2 \<sigma\><rsup|2>>> dx =
     <frac|1|<sqrt|2\<mathpi\>>\<sigma\>><big|int><rsup|\<infty\>><rsub|<frac|d|<sqrt|2>
-    \<sigma\>>> e<rsup|minus y<rsup|2>> <sqrt|2 >\<sigma\>dy =\ 
+    \<sigma\>>> e<rsup|-y<rsup|2>> <sqrt|2 >\<sigma\>dy =\ 
   </equation*>
 
   <\equation*>
     = <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|\<infty\>><rsub|<frac|d|<sqrt|2>
-    \<sigma\>>> e<rsup|minus y<rsup|2>> dy=
-    <frac|1|<sqrt|\<mathpi\>>><around*|(|<big|int><rsup|\<infty\>><rsub|0>
-    e<rsup|minus y<rsup|2>> dy minus <big|int><rsup|<frac|d|<sqrt|2>
-    \<sigma\>>><rsub|0> e<rsup|minus y<rsup|2>> dy |)>=
+    \<sigma\>>> e<rsup|- y<rsup|2>> dy= <frac|1|<sqrt|\<mathpi\>>><around*|(|<big|int><rsup|\<infty\>><rsub|0>
+    e<rsup|- y<rsup|2>> dy - <big|int><rsup|<frac|d|<sqrt|2>
+    \<sigma\>>><rsub|0> e<rsup|- y<rsup|2>> dy |)>=
   </equation*>
 
   <\equation*>
     = <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|\<infty\>><rsub|0>
-    e<rsup|minus y<rsup|2>> dy inus \ <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|<frac|d|<sqrt|2>
-    \<sigma\>>><rsub|0> e<rsup|minus y<rsup|2>> dy =
-    <frac|1|<sqrt|\<mathpi\>>> \<ast\><frac|<sqrt|\<pi\>>|2>
-    \<noplus\>\<noplus\>minus <frac|1|2>erf<around*|(|<frac|d|<sqrt|2
-    \<sigma\>>>|)>=
+    e<rsup|-y<rsup|2>> dy - \ <frac|1|<sqrt|\<mathpi\>>><big|int><rsup|<frac|d|<sqrt|2>
+    \<sigma\>>><rsub|0> e<rsup|-y<rsup|2>> dy = <frac|1|<sqrt|\<mathpi\>>>
+    \<ast\><frac|<sqrt|\<pi\>>|2> \<noplus\>-
+    <frac|1|2>erf<around*|(|<frac|d|<sqrt|2 \<sigma\>>>|)>=
   </equation*>
 
   <\equation*>
-    = <frac|1|2><around*|(|1 \<noplus\>\<noplus\>minus
+    = <frac|1|2><around*|(|1 \<noplus\>\<noplus\>-
     erf<around*|(|<frac|1|<sqrt|2 \<sigma\>>>|)>|)> =
-    \ <frac|1|2><around*|(|1 \<noplus\>\<noplus\>minus
-    <with|font-shape|italic|erf><around*|(|<sqrt|<frac|N|2<around*|(|p minus
+    \ <frac|1|2><around*|(|1 \<noplus\>\<noplus\>-
+    <with|font-shape|italic|erf><around*|(|<sqrt|<frac|N|2<around*|(|p -
     d|)>>>|)>|)>\ 
   </equation*>
 
@@ -356,25 +353,25 @@
   probability of error does not exceed a maximum accepted error probability.
 
   <\equation*>
-    P<rsub|error >= <frac|1|2><around*|(|1 \<noplus\>\<noplus\>minus
+    P<rsub|error >= <frac|1|2><around*|(|1 \<noplus\>\<noplus\>-
     <with|font-shape|italic|erf><around*|(|<sqrt|<frac|N|2p>>|)>|)>\ 
   </equation*>
 
   <\eqnarray*>
-    <tformat|<table|<row|<cell|\<Rightarrow\> erf<sqrt|<frac|N|2p>> = 1 minus
+    <tformat|<table|<row|<cell|\<Rightarrow\> erf<sqrt|<frac|N|2p>> = 1 -
     P<rsub|error >>|<cell|\<Rightarrow\>>|<cell|<sqrt|<frac|N|2p>> = inverr
-    <around*|(|1 minus P<rsub|error >|)>>>>>
+    <around*|(|1 - P<rsub|error >|)>>>>>
   </eqnarray*>
 
   <\equation*>
-    \<Rightarrow\> <frac|N|p> =2\<ast\><around*|(| inverr <around*|(|1 minus
+    \<Rightarrow\> <frac|N|p> =2\<ast\><around*|(| inverr <around*|(|1 -
     P<rsub|error >|)>|)><rsup|2>
   </equation*>
 
   <\eqnarray*>
     <tformat|<table|<row|<cell|<frac|p|N>=<frac|1|2\<ast\><around*|(| inverr
-    <around*|(|1 minus P<rsub|error >|)>|)><rsup|2>>>|<cell|and>|<cell|N =2p
-    \<ast\> <around*|(| inverr <around*|(|1 minus P<rsub|error
+    <around*|(|1 - P<rsub|error >|)>|)><rsup|2>>>|<cell|and>|<cell|N =2p
+    \<ast\> <around*|(| inverr <around*|(|1 - P<rsub|error
     >|)>|)><rsup|2>>>>>
   </eqnarray*>
 
