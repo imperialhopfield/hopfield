@@ -12,6 +12,7 @@ module Util (
   , findInList
   , fromDataVector
   , getBinaryIndices
+  , getElemOccurrences
   , list2D
   , log2
   , normal
@@ -27,8 +28,11 @@ module Util (
 ) where
 
 
+<<<<<<< HEAD
 import           Data.Array.ST
 import           Data.Maybe
+=======
+>>>>>>> Rebase conflict
 import           Data.List
 import qualified Data.Random as DR
 import qualified Data.Vector as V
@@ -161,7 +165,7 @@ getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
 getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
   where
     nub_xs = nub xs
-    bitsNeeded = 1 + (floor $ logBase 2.0 $ fromIntegral (length nub_xs)) :: Int
+    bitsNeeded = 1 + (floor $ log2 $ fromIntegral (length nub_xs)) :: Int
 
 
 -- Counts the number of pairwise differences in two lists
