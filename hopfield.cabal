@@ -37,6 +37,8 @@ library
     , rvar >= 0.2.0.1
     , random-extras >= 0.19
     , array >= 0.4.0.0
+    , probability >= 0.2.4
+    , exact-combinatorics >= 0.2.0.4
   c-sources:
       src/convertImage.c
   include-dirs:
