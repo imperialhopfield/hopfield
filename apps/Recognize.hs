@@ -17,7 +17,7 @@ data Method = Hopfield | Boltzmann | CBoltzmann
 
 transformFunction :: Method -> (Int -> Int)
 transformFunction Hopfield  = (\x -> 2 * x - 1)
-transformFunction Boltzmann = (\x -> x)
+transformFunction _ = id
 
 toPattern :: Method -> CBinaryPattern -> Pattern
 toPattern m (CBinaryPattern { cPattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat

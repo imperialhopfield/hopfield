@@ -54,6 +54,7 @@ data BoltzmannData = BoltzmannData {
 
 -- | Retrieves the dimension of the weights matrix corresponding to the given mode.
 -- For hidden, it is the width of the matrix, and for visible it is the height.
+-- One has to ensure that the appropiate weigth matrix is passed with this function.
 getDimension :: Mode -> Weights -> Int
 getDimension Hidden  ws = V.length $ ws
 getDimension Visible ws = V.length $ ws ! 0
@@ -261,7 +262,8 @@ trainBolzmann pats nr_h = do
 -- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
 matchPatternCBoltzmann :: BoltzmannData -> Pattern -> Int
 matchPatternCBoltzmann bm v
-  = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
+  | Just e <- validPattern Visible (weightsB bm) v = error e
+  | otherwise =  trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
     where
       pats_classes = pattern_to_class bm
       pats = patternsB bm
@@ -276,7 +278,7 @@ matchPatternCBoltzmann bm v
 -- visible vector according to the classes used for training the network @bm@.
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
-  = - dotProduct d (toDouble y) - V.sum $ V.map softplus getHiddenSums
+  = - dotProduct d (toDouble y) - (V.sum $ V.map softplus hiddenSums)
       where hiddenSums = getHiddenSums ws u c v y
 
 
