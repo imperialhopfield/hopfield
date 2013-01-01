@@ -39,7 +39,7 @@ powersOfTwo ceil = takeWhile (<=ceil) xs
 -- For each degree in 'ds', builds a network combining the degree and the list
 -- of patterns (or some variant) 'as' using the given function 'combine'
 buildNetworks :: a -> [Degree] -> PatternCombiner a -> Networks
-buildNetworks ps ds combine = map (\d -> (d, buildHopfieldData $ combine ps d)) ds
+buildNetworks ps ds combine = map (\d -> (d, buildHopfieldData Hebbian $ combine ps d)) ds
 
 
 -- -----------------------------------------------------------------------------

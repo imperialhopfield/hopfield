@@ -143,7 +143,7 @@ trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
 trainingPatsAreFixedPoints pats =
   and <$> mapM checkFixedPoint [0.. length pats - 1]
   where
-    hs = buildHopfieldData pats
+    hs = buildHopfieldData Hebbian pats
     ws = weights hs
     checkFixedPoint index = do
       i <- arbitrary
@@ -157,7 +157,7 @@ energyDecreasesAfterUpdate :: ([Pattern], [Pattern]) -> Gen Bool
 energyDecreasesAfterUpdate (training_pats, pats)
   = and <$> mapM energyDecreases pats
     where
-      ws = weights $ buildHopfieldData training_pats
+      ws = weights $ buildHopfieldData Hebbian training_pats
       energyDecreases' pat = do
         pattern_after_update <- update ws pat
         return (energy ws pat >= energy ws pattern_after_update || energy ws pattern_after_update - energy ws pat <= 0.00000001 )
@@ -170,7 +170,7 @@ repeatedUpdateCheck :: ([Pattern], [Pattern]) -> Gen Bool
 repeatedUpdateCheck (training_pats, pats)
   = and <$> mapM  s pats
     where
-      ws = weights $ buildHopfieldData training_pats
+      ws = weights $ buildHopfieldData Hebbian training_pats
       stopped pat = do
         p     <- converged_pattern
         new_p <- update ws p

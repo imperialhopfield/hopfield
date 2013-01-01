@@ -30,7 +30,7 @@ recPic method (width, height) imgPaths queryImgPath = do
   let queryPat:imgPats = map (toPattern method) l
       runRandom r = evalRand r gen
       result =  case method of
-          Hopfield   -> runRandom $ matchPattern (buildHopfieldData imgPats) queryPat
+          Hopfield   -> runRandom $ matchPattern (buildHopfieldData Storkey imgPats) queryPat
           Boltzmann  -> Right $ runRandom $ matchPatternBoltzmann (runRandom $ buildBoltzmannData imgPats) queryPat
           CBoltzmann -> Right $ matchPatternCBoltzmann (runRandom $ buildCBoltzmannData imgPats) queryPat
   return $ case result of
