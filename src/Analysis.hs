@@ -65,3 +65,8 @@ patternsToNeuronsRatioFromError err = 1.0 / (2 * (inverf (1 - 2 * err)) ^ 2)
 minNumberOfNeurons :: Int -> Double -> Int
 minNumberOfNeurons p err
   = 1 + floor (fromIntegral p / (patternsToNeuronsRatioFromError err))
+
+
+minNumberOfPatterns :: Int -> Double -> Int
+minNumberOfPatterns n err
+  = 1 + floor (fromIntegral n * (patternsToNeuronsRatioFromError err))

@@ -5,6 +5,7 @@
 module Hopfield (
     Pattern
   , Weights
+  , LearningType (Hebbian, Storkey)
   -- * Hopfield data structure
   , HopfieldData ()
   , weights
@@ -30,6 +31,10 @@ import           Common
 import           Util
 
 
+
+data LearningType = Hebbian | Storkey
+    deriving(Eq, Show)
+
 --make Hopefield data implement show
 -- | Encapsulates the network weights together with the patterns that generate
 -- it with the patterns which generate it
@@ -44,17 +49,20 @@ data HopfieldData = HopfieldData {
 -- builds a Hopfield network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
 -- against the network, by using 'matchPattern'.
-buildHopfieldData :: [Pattern] -> HopfieldData
-buildHopfieldData []   = error "Train patterns are empty"
-buildHopfieldData pats
+buildHopfieldData :: LearningType -> [Pattern] -> HopfieldData
+buildHopfieldData _ []   = error "Train patterns are empty"
+buildHopfieldData learningType pats
   | first_len == 0
       = error "Cannot have empty patterns"
   | any (\x -> V.length x /= first_len) pats
       = error "All training patterns must have the same length"
   | otherwise
-      = HopfieldData (train pats) pats
+      = HopfieldData (trainingFunction pats) pats
   where
     first_len = V.length (head pats)
+    trainingFunction = case learningType of
+                          Hebbian -> train
+                          Storkey -> trainStorkey
 
 
 -- | @train patterns@: Trains and constructs network given a list of patterns
@@ -105,7 +113,7 @@ updateViaIndex updatables index pat =
 -- | Same as 'update', without size/dimension check, for performance.
 update' :: MonadRandom m => Weights -> Pattern -> m Pattern
 update' ws pat = do
-      index <- randomElem $ map fst updatables
+      index <- if null updatables then randomElem [-1] else randomElem $ map fst updatables
       return $ updateViaIndex updatables index pat
   where
     updatables = getUpdatables ws pat
@@ -192,12 +200,37 @@ validWeights ws
     = Just "Weight matrix must be non-empty"
   | any (\x -> V.length x /= n) $ V.toList ws
     = Just "Weight matrix has to be a square matrix"
-  | any (/= 0) [ ws ! i ! i | i <- [0..n-1] ]
-    = Just "Weight matrix first diagonal must be zero"
-  | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
-    = Just "Weight matrix must be symmetric"
+  -- | any (/= 0) [ ws ! i ! i | i <- [0..n-1] ]
+  --  = Just "Weight matrix first diagonal must be zero"
+  -- | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
+  --  = Just "Weight matrix must be symmetric"
   | null ([abs (ws ! i ! j) > 1 | i <- [0..n-1], j <- [0..n-1] ])
       = Just "Weights should be between (-1, 1)"
   | otherwise = Nothing
   where
     n = V.length ws
+
+
+-- http://homepages.inf.ed.ac.uk/amos/publications/Storkey1997IncreasingtheCapacityoftheHopfieldNetworkwithoutSacrificingFunctionality.pdf
+storkeyHiddenSum :: Weights -> Pattern -> Int -> Int -> Double
+storkeyHiddenSum ws pat i j
+  = sum [ ws ! i ! k  *. (pat ! k) | k <- [0 .. n - 1] , k /= i , k /= j]
+    where n = V.length ws
+
+updateWeightsGivenIndicesStorkey :: Weights -> Pattern -> Int -> Int -> Double
+updateWeightsGivenIndicesStorkey ws pat i j
+  = ws ! i ! j + 1 ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
+    where n = V.length ws
+          h = storkeyHiddenSum ws pat
+
+updateWeightsMatrixStorkey :: Weights -> Pattern -> Weights
+updateWeightsMatrixStorkey ws pat
+  = vector2D [ [ updateWeightsGivenIndicesStorkey ws pat i j | j <- [0 ..n - 1] ] | i <- [0 ..n - 1] ]
+    where n = V.length ws
+
+trainStorkey :: [Pattern] -> Weights
+-- No need to check pats ws size, buildHopfieldData does it
+trainStorkey pats = foldl updateWeightsMatrixStorkey start_ws pats
+    where start_ws = vector2D $ replicate n $ replicate n 0
+          n = V.length $ head pats
+

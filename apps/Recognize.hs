@@ -17,7 +17,7 @@ data Method = Hopfield | Boltzmann | CBoltzmann
 
 transformFunction :: Method -> (Int -> Int)
 transformFunction Hopfield  = (\x -> 2 * x - 1)
-transformFunction Boltzmann = (\x -> x)
+transformFunction _ = id
 
 toPattern :: Method -> CBinaryPattern -> Pattern
 toPattern m (CBinaryPattern { cPattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
@@ -30,8 +30,8 @@ recPic method (width, height) imgPaths queryImgPath = do
   let queryPat:imgPats = map (toPattern method) l
       runRandom r = evalRand r gen
       result =  case method of
-          Hopfield   -> runRandom $ matchPattern (buildHopfieldData imgPats) queryPat
-          Boltzmann  -> Right $ matchPatternBoltzmann (runRandom $ buildBoltzmannData imgPats) queryPat
+          Hopfield   -> runRandom $ matchPattern (buildHopfieldData Storkey imgPats) queryPat
+          Boltzmann  -> Right $ runRandom $ matchPatternBoltzmann (runRandom $ buildBoltzmannData imgPats) queryPat
           CBoltzmann -> Right $ matchPatternCBoltzmann (runRandom $ buildCBoltzmannData imgPats) queryPat
   return $ case result of
              Left _pattern -> Nothing -- TODO apply heuristic if we want (we want)

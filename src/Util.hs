@@ -13,6 +13,7 @@ module Util (
   , fromDataVector
   , getBinaryIndices
   , getElemOccurrences
+  , gibbsSampling
   , list2D
   , log2
   , normal
@@ -20,6 +21,7 @@ module Util (
   , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
+  , runT
   , shuffle
   , toArray
   , toBinary
@@ -40,6 +42,8 @@ import qualified Control.Monad.Random as Random
 import           Foreign.Storable
 import           GHC.Arr as Arr
 import qualified Numeric.Container as NC
+import           Numeric.Probability.Random (T, runSeed)
+import           System.Random (mkStdGen)
 
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
@@ -70,6 +74,16 @@ normal :: forall m . MonadRandom m => Double -> Double -> m Double
 normal m std = do
   r <- DR.runRVar (DR.normal m std) (Random.getRandom :: MonadRandom m => m Word32)
   return r
+
+
+-- | @gibbsSampling a@ Gives the binary value of a neuron (0 or 1) from the
+-- activation sum
+gibbsSampling :: MonadRandom  m => Double -> m Int
+gibbsSampling a
+  | (a < 0.0 || a > 1.0) = error "argument of gibbsSampling is not a probability"
+  | otherwise = do
+      r <- Random.getRandomR (0.0, 1.0)
+      return $ if (r < a) then 1 else 0
 
 
 randomElem :: MonadRandom m => [a] -> m a
@@ -191,3 +205,10 @@ shuffle xs = do
                     Arr.writeSTArray ar i vj
                 return ar
     return (elems ar)
+
+
+-- Run a random generator T (Numeric.Probability.Random) in MonadRandom
+runT :: forall m a . MonadRandom m => T a -> m a
+runT dist = do
+  rndInt <- Random.getRandom
+  return $ runSeed (mkStdGen rndInt) dist

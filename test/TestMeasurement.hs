@@ -1,11 +1,8 @@
 module TestMeasurement where
 
 import           Measurement
-import           Control.Monad
-import           Data.List
 import qualified Data.Vector as V
 import           Hopfield
-import qualified Math.Combinatorics.Exact.Binomial as B (choose)
 import           Test.Hspec
 import           Test.QuickCheck
 import           Test.HUnit
