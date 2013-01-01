@@ -75,7 +75,7 @@
     \ + <frac|1|N> <big|sum><rsup|N><rsub|j
     =1><rsub|><big|sum><rsup|p><rsub|l =1\<nocomma\>,l
     \<neq\>k>x<rsup|l><rsub|i<rsup|>> \ x<rsup|l><rsub|j>*x<rsup|k><rsub|<rsup|>j>
-    </equation*>
+  </equation*>
 
   <\equation*>
     \;
@@ -249,7 +249,7 @@
     = d x<rsup|k><rsub|i<rsup|>> \<noplus\>+<frac|1|N>
     <big|sum><rsup|N><rsub|j =1><rsub|><big|sum><rsup|p><rsub|l
     \<nin\>S>x<rsup|l><rsub|i<rsup|>> \ x<rsup|l><rsub|j>*x<rsup|k><rsub|<rsup|>j>
-    </equation*>
+  </equation*>
 
   Thus
 
@@ -361,6 +361,28 @@
   </eqnarray*>
 
   where inverf is the inverse of the erf function.
+
+  minNumberOfNeurons 10 0.1 17
+
+  minNumberOfNeurons 100 0.1 165
+
+  minNumberOfNeurons 10 0.01 55
+
+  minNumberOfNeurons 100 0.01 542
+
+  \ minNumberOfNeurons 10 0.05 28
+
+  \ minNumberOfNeurons 100 0.05 271
+
+  minNumberOfNeurons 100 0.001 955
+
+  \ minNumberOfNeurons 10 0.001 96
+
+  \;
+
+  \;
+
+  \;
 </body>
 
 <\initial>
