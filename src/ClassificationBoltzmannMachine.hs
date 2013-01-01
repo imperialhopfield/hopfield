@@ -54,6 +54,7 @@ data BoltzmannData = BoltzmannData {
 
 -- | Retrieves the dimension of the weights matrix corresponding to the given mode.
 -- For hidden, it is the width of the matrix, and for visible it is the height.
+-- One has to ensure that the appropiate weigth matrix is passed with this function.
 getDimension :: Mode -> Weights -> Int
 getDimension Hidden  ws = V.length $ ws
 getDimension Visible ws = V.length $ ws ! 0
@@ -63,7 +64,7 @@ getDimension Classification ws = V.length $ ws ! 0
 buildCBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
 buildCBoltzmannData []   = error "Train patterns are empty"
 buildCBoltzmannData pats =
-  buildCBoltzmannData' pats 30
+  buildCBoltzmannData' pats nr_visible
     where nr_visible = V.length (head pats)
 
 
@@ -195,6 +196,7 @@ getClassificationVector pat_classes pat
        where pat_class = fromJust $ lookup pat pat_classes
 
 
+
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
@@ -261,7 +263,8 @@ trainBolzmann pats nr_h = do
 -- http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf
 matchPatternCBoltzmann :: BoltzmannData -> Pattern -> Int
 matchPatternCBoltzmann bm v
-  = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
+  | Just e <- validPattern Visible (weightsB bm) v = error e
+  | otherwise =  trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
     where
       pats_classes = pattern_to_class bm
       pats = patternsB bm
@@ -276,8 +279,8 @@ matchPatternCBoltzmann bm v
 -- visible vector according to the classes used for training the network @bm@.
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
-  = - dotProduct d (toDouble y) - sum [ f i | i <- [0 .. nr_h - 1] ]
-      where f = softplus . (getActivationSumHidden ws u c v y)
+  = - dotProduct d (toDouble y) - (V.sum $ V.map softplus hiddenSums)
+      where hiddenSums = getHiddenSums ws u c v y
 
 
 -- | The activation functiom for the network (the logistic sigmoid).
