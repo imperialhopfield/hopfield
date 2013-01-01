@@ -68,5 +68,5 @@ minNumberOfNeurons p err
 
 
 minNumberOfPatterns :: Int -> Double -> Int
-minNumberOfPatterns N err
-  = 1 + floor (fromIntegral N * (patternsToNeuronsRatioFromError err))
+minNumberOfPatterns n err
+  = 1 + floor (fromIntegral n * (patternsToNeuronsRatioFromError err))
