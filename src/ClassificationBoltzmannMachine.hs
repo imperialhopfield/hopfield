@@ -196,6 +196,7 @@ getClassificationVector pat_classes pat
        where pat_class = fromJust $ lookup pat pat_classes
 
 
+
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
