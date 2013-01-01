@@ -112,7 +112,7 @@ updateViaIndex updatables index pat =
 -- | Same as 'update', without size/dimension check, for performance.
 update' :: MonadRandom m => Weights -> Pattern -> m Pattern
 update' ws pat = do
-      index <- randomElem $ map fst updatables
+      index <- if null updatables then randomElem [-1] else randomElem $ map fst updatables
       return $ updateViaIndex updatables index pat
   where
     updatables = getUpdatables ws pat

@@ -21,6 +21,7 @@ module Util (
   , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
+  , runT
   , shuffle
   , toArray
   , toBinary
@@ -41,6 +42,8 @@ import qualified Control.Monad.Random as Random
 import           Foreign.Storable
 import           GHC.Arr as Arr
 import qualified Numeric.Container as NC
+import           Numeric.Probability.Random (T, runSeed)
+import           System.Random (mkStdGen)
 
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
@@ -202,3 +205,10 @@ shuffle xs = do
                     Arr.writeSTArray ar i vj
                 return ar
     return (elems ar)
+
+
+-- Run a random generator T (Numeric.Probability.Random) in MonadRandom
+runT :: forall m a . MonadRandom m => T a -> m a
+runT dist = do
+  rndInt <- Random.getRandom
+  return $ runSeed (mkStdGen rndInt) dist
