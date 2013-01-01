@@ -63,7 +63,7 @@ getDimension Classification ws = V.length $ ws ! 0
 buildCBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
 buildCBoltzmannData []   = error "Train patterns are empty"
 buildCBoltzmannData pats =
-  buildCBoltzmannData' pats 30
+  buildCBoltzmannData' pats nr_visible
     where nr_visible = V.length (head pats)
 
 
@@ -276,8 +276,8 @@ matchPatternCBoltzmann bm v
 -- visible vector according to the classes used for training the network @bm@.
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
-  = - dotProduct d (toDouble y) - sum [ f i | i <- [0 .. nr_h - 1] ]
-      where f = softplus . (getActivationSumHidden ws u c v y)
+  = - dotProduct d (toDouble y) - V.sum $ V.map softplus getHiddenSums
+      where hiddenSums = getHiddenSums ws u c v y
 
 
 -- | The activation functiom for the network (the logistic sigmoid).
