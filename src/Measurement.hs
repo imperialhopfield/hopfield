@@ -2,6 +2,8 @@
 module Measurement (
   -- * Basin of attraction
     BasinMeasure
+  , hammingDistribution
+  , sampleHammingRange
   , sampleHammingDistance
   , samplePatternRing
   , samplePatternBasin
@@ -17,7 +19,10 @@ import           Data.List
 import           Data.Maybe
 import qualified Data.Vector as V
 import           Hopfield
-import           Util ((./.), toArray, shuffle)
+import           Math.Combinatorics.Exact.Binomial (choose)
+import           Numeric.Probability.Distribution (Spread, relative)
+import           Numeric.Probability.Random (T, pick)
+import           Util ((./.), toArray, shuffle, runT)
 
 
 -- A function computing some measure of a pattern's basin in the given network
@@ -26,6 +31,24 @@ type BasinMeasure m a = HopfieldData -> Pattern -> m a
 
 -- -----------------------------------------------------------------------------
 -- Functions relating to measuring a pattern's basin of attraction
+
+
+-- Create a probability distribution for Hamming distances in the given range
+hammingDistribution :: Int -> (Int, Int) -> T Int
+hammingDistribution n (mini, maxi) = pick $ dist rs
+  where
+    dist  = relative probs :: Spread Double Int
+    probs = [ fromIntegral $ n `choose` r | r <- rs]
+    rs    = [mini..maxi]
+
+
+-- Sample a pattern in the Hamming distance range specified by dist
+sampleHammingRange :: MonadRandom m => Pattern -> T Int -> m Pattern
+sampleHammingRange pat dist = do
+  r          <- runT dist
+  (sample:_) <- sampleHammingDistance pat r 1
+  return sample
+
 
 -- Samples patterns of hamming distance r of the given pattern
 sampleHammingDistance :: MonadRandom m => Pattern -> Int -> Int -> m [Pattern]
