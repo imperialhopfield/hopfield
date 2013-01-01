@@ -84,15 +84,6 @@ buildCBoltzmannData' pats nr_hidden
     first_len = V.length $ head pats
 
 
--- | @gibbsSampling a@ Gives the binary value of a neuron (0 or 1) from the
--- activation sum
-gibbsSampling :: MonadRandom  m => Double -> m Int
-gibbsSampling a
-  | (a < 0.0 || a > 1.0) = error "argument of gibbsSampling is not a probability"
-  | otherwise = do
-      r <- getRandomR (0.0, 1.0)
-      return $ if (r < a) then 1 else 0
-
 
 -- | @getActivationProbability ws bias pat index@
 -- can be used to compute the activation probability for a neuron in the

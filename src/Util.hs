@@ -13,6 +13,7 @@ module Util (
   , fromDataVector
   , getBinaryIndices
   , getElemOccurrences
+  , gibbsSampling
   , list2D
   , log2
   , normal
@@ -70,6 +71,16 @@ normal :: forall m . MonadRandom m => Double -> Double -> m Double
 normal m std = do
   r <- DR.runRVar (DR.normal m std) (Random.getRandom :: MonadRandom m => m Word32)
   return r
+
+
+-- | @gibbsSampling a@ Gives the binary value of a neuron (0 or 1) from the
+-- activation sum
+gibbsSampling :: MonadRandom  m => Double -> m Int
+gibbsSampling a
+  | (a < 0.0 || a > 1.0) = error "argument of gibbsSampling is not a probability"
+  | otherwise = do
+      r <- Random.getRandomR (0.0, 1.0)
+      return $ if (r < a) then 1 else 0
 
 
 randomElem :: MonadRandom m => [a] -> m a
