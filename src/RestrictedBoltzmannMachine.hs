@@ -213,10 +213,12 @@ getFreeEnergy ws pat
           p = V.length pat
 
 
-matchPatternBoltzmann :: BoltzmannData -> Pattern -> Int
-matchPatternBoltzmann (BoltzmannData ws pats nr_h pats_with_binary) pat =
-  fst $ maximumBy (compareBy snd) [(fromPatToIndex p, (getPatternProbability . extendWithClass) p) | p <- pats]
-    where
-      extendWithClass p = ((V.++) pat (V.fromList . fromJust $ lookup p pats_with_binary) )
+matchPatternBoltzmann :: MonadRandom m => BoltzmannData -> Pattern -> m Int
+matchPatternBoltzmann (BoltzmannData ws pats nr_h pats_with_binary) pat = do
+  hot_pat <- repeatUntilEqualOrLimitExceeded 1000 (updateBoltzmann ws) ((V.++) pat (V.fromList $ snd $ head pats_with_binary))
+  let h = V.take (V.length $ head pats) hot_pat
+      extendWithClass p = ((V.++) h (V.fromList . fromJust $ lookup p pats_with_binary) )
       getPatternProbability x = exp $ (- getFreeEnergy ws x)
       fromPatToIndex p = fromJust $ p `elemIndex` pats
+  return $ fst $ maximumBy (compareBy snd) [(fromPatToIndex p, (getPatternProbability . extendWithClass) p) | p <- pats]
+
