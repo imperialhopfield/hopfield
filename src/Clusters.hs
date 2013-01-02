@@ -29,8 +29,8 @@ getPatternInCluster method originPat p
 
 --  @getPatternInCluster pat p@ gets a pattern in a cluster given by @pat@
 -- by flipping each bit in the pattern with probability p.
-getCluster :: MonadRandom  m => Method -> Pattern -> Double -> Int -> m [Pattern]
-getCluster method originPat p size
+getCluster :: MonadRandom  m => Method -> Pattern -> Int -> Double -> m [Pattern]
+getCluster method originPat size p
   = replicateM size (getPatternInCluster method originPat p)
 
 
@@ -64,10 +64,8 @@ getBasinsGivenProbabilityT1 :: MonadRandom m => LearningType -> Int -> Int -> Do
 getBasinsGivenProbabilityT1 learning networkSize clusterSize p
   =  do
      originPat <- randomSignVector networkSize
-     cluster   <- getCluster Hopfield originPat p clusterSize
-     let hopfield = buildHopfieldData learning cluster
-     basinSizes <- mapM (measurePatternBasin hopfield) cluster
-     return $ average basinSizes
+     cluster   <- getCluster Hopfield originPat clusterSize p
+     avgBasinsGivenPats learning cluster
 
 
 -- | @experimentUsingT1 learning networkSize clusterSize@
@@ -79,20 +77,15 @@ experimentUsingT1 learning networkSize clusterSize
     basinAvgs <- mapM (getBasinsGivenProbabilityT1 learning networkSize clusterSize) [0.0, 0.01 .. 0.5]
     return $ average basinAvgs
 
-
 -------
-
 
 getBasinsGivenProbabilityT1With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
 getBasinsGivenProbabilityT1With2Clusters learning networkSize clustersTotalSize p2 p1  =  do
      originPat1 <- randomSignVector networkSize
      originPat2 <- randomSignVector networkSize
-     cluster1   <- getCluster Hopfield originPat1 p1 (clustersTotalSize `div` 2)
-     cluster2   <- getCluster Hopfield originPat2 p2 (clustersTotalSize `div` 2)
-     let pats = cluster1 ++ cluster2
-         hopfield = buildHopfieldData learning pats
-     basinSizes <- mapM (measurePatternBasin hopfield) pats
-     return $ average basinSizes
+     cluster1   <- getCluster Hopfield originPat1 (clustersTotalSize `div` 2) p1
+     cluster2   <- getCluster Hopfield originPat2 (clustersTotalSize `div` 2) p2
+     avgBasinsGivenPats learning (cluster1 ++ cluster2)
 
 
 experimentUsingT1With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> m Double
@@ -100,6 +93,26 @@ experimentUsingT1With2Clusters learning networkSize clusterSize
   = do
     basinAvgs <- mapM (getBasinsGivenProbabilityT1With2Clusters learning networkSize clusterSize 0.45) [0.0, 0.01 .. 0.5]
     return $ average basinAvgs
+
+
+-------   Experiments using Gaussian distributed patterns
+
+getBasinsGivenStdT2 :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
+getBasinsGivenStdT2 learning networkSize clusterSize mean std
+  =  do
+     originPat <- randomSignVector networkSize
+     cluster   <- getGaussianCluster Hopfield originPat mean std clusterSize
+     avgBasinsGivenPats learning cluster
+
+
+
+--------------- General used functions, independent of method
+
+avgBasinsGivenPats :: MonadRandom m => LearningType -> [Pattern] -> m Double
+avgBasinsGivenPats learning pats = do
+  basinSizes <- mapM (measurePatternBasin hopfield) pats
+  return $ average basinSizes
+    where hopfield = buildHopfieldData learning pats
 
 
 -- Repeats an experiment for a single cluster, and averages the results obtained

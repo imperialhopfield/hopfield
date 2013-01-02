@@ -14,7 +14,6 @@ module Hopfield (
   -- * Running
   , update
   , getUpdatables
-  , updateViaIndex
   , repeatedUpdate
   , matchPattern
   , computeH
@@ -23,7 +22,6 @@ module Hopfield (
 ) where
 
 import           Control.Monad.Random (MonadRandom)
-import           Data.Maybe
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
@@ -58,7 +56,7 @@ checkWsPat f ws pat
 -- first updatable neuron given the Hopfield network (represented by @weights@).
 --
 -- Pre: @length weights == length pattern@
-update :: MonadRandom m => Weights -> Pattern -> m Pattern
+update :: MonadRandom m => Weights -> Pattern -> m (Maybe Pattern)
 update = checkWsPat update_
 
 
@@ -70,19 +68,8 @@ update = checkWsPat update_
 -- are expensive and are done in update, before update_.
 -- Any other caller should ensure that ws and pat are compatible and valid
 -- (by calling @valid@)
-getUpdatables :: Weights -> Pattern -> [(Int, Int)]
+getUpdatables :: Weights -> Pattern ->  [Int]
 getUpdatables = checkWsPat getUpdatables_
-
-
--- | @updateViaIndex updatables index pat@ Takes the new value of the neuron
--- represented by @index@ and changes its value in pat, returning the
--- changed, updated pattern.
--- The caller must ensure that index is smalupdateViaIndex updatables index patler than the length of updatables
-updateViaIndex :: [(Int, Int)] -> Int -> Pattern -> Pattern
-updateViaIndex updatables index pat
-  | Just e <- validPattern pat    = error e
-  -- TODO Mihaela this one is for you: index in updatables check
-  | otherwise                     = updateViaIndex_ updatables index pat
 
 
 -- | @repeatedUpdate weights pattern@: Performs repeated updates on the given
@@ -140,13 +127,6 @@ train pats = vector2D ws
     n = V.length (head pats)
 
 
--- | See `getUpdatables`.
-getUpdatables_ :: Weights -> Pattern -> [(Int, Int)]
-getUpdatables_ ws pat = [ (i, new) | (i, x_i) <- zip [0..] (V.toList pat)
-                                   , let new = computeH_ ws pat i
-                                   , new /= x_i ]
-
-
 -- | See `computeH`.
 computeH_ :: Weights -> Pattern -> Int -> Int
 computeH_ ws pat i = if weighted >= 0 then 1 else -1
@@ -155,26 +135,31 @@ computeH_ ws pat i = if weighted >= 0 then 1 else -1
     p = V.length pat
 
 
--- | See `updateViaIndex`.
-updateViaIndex_ :: [(Int, Int)] -> Int -> Pattern -> Pattern
-updateViaIndex_ updatables index pat =
-  case updatables of
-    [] -> pat
-    _  -> V.modify (\v -> write v index (fromJust $ lookup index updatables)) pat
+-- | See `getUpdatables`.
+getUpdatables_ :: Weights -> Pattern -> [Int]
+getUpdatables_ ws pat = [ i | (i, x_i) <- zip [0..] (V.toList pat)
+                              , let new = computeH_ ws pat i
+                              , new /= x_i ]
 
 
--- | Same as 'update', without size/dimension check, for performance.
-update_ :: MonadRandom m => Weights -> Pattern -> m Pattern
-update_ ws pat = do
-  index <- if null updatables then randomElem [-1] else randomElem $ map fst updatables
-  return $ updateViaIndex_ updatables index pat
+-- | See `update`.
+update_ :: MonadRandom m => Weights -> Pattern -> m (Maybe Pattern)
+update_ ws pat = case updatables of
+  [] -> return Nothing
+  _  -> do
+          index <- randomElem updatables
+          return $ Just $ flipAtIndex pat index
   where
-    updatables = getUpdatables_ ws pat
+     updatables = getUpdatables_ ws pat
+     flipAtIndex v index = V.fromList $ map (valueAtIndex v index) [0 .. V.length v - 1]
+     valueAtIndex v index x = if (x == index) then  - (v ! x) else v ! x
+      -- TODO Niklas fix this
+      -- V.modify (\(v:: V.Vector Int) -> write v index (- ( v ! index ) ))
 
 
 -- | See `repeatedUpdate`.
 repeatedUpdate_ :: (MonadRandom m) => Weights -> Pattern -> m Pattern
-repeatedUpdate_ ws pat = repeatUntilEqual (update_ ws) pat
+repeatedUpdate_ ws pat = repeatUntilNothing (update_ ws) pat
 
 
 -- | @matchPatterns hopfieldData pattern@:
@@ -228,16 +213,17 @@ validWeightsPatternSize ws pat
 -- * It is symmetric
 --
 -- * All diagonal elements must be zero
+-- These checks hold for both Hebbian and Storkey.
 validWeights :: Weights -> Maybe String
 validWeights ws
   | n == 0
     = Just "Weight matrix must be non-empty"
   | any (\x -> V.length x /= n) $ V.toList ws
     = Just "Weight matrix has to be a square matrix"
-  -- | any (/= 0) [ ws ! i ! i | i <- [0..n-1] ]
-  --  = Just "Weight matrix first diagonal must be zero"
-  -- | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
-  --  = Just "Weight matrix must be symmetric"
+  | any (/= 0) [ ws ! i ! i | i <- [0..n-1] ]
+    = Just "Weight matrix first diagonal must be zero"
+  | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
+    = Just "Weight matrix must be symmetric"
   | null [ abs (ws ! i ! j) > 1 | i <- [0..n-1], j <- [0..n-1] ]
       = Just "Weights should be between (-1, 1)"
   | otherwise = Nothing
@@ -264,9 +250,10 @@ storkeyHiddenSum ws pat i j
 -- pattern @pat@.
 updateWeightsGivenIndicesStorkey :: Weights -> Pattern -> Int -> Int -> Double
 updateWeightsGivenIndicesStorkey ws pat i j
-  = ws ! i ! j + (1 :: Int) ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
-    where n = V.length ws
-          h = storkeyHiddenSum ws pat
+  | i == j = 0.0
+  | otherwise = ws ! i ! j + (1 :: Int) ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
+  where n = V.length ws
+        h = storkeyHiddenSum ws pat
 
 
 -- | @updateWeightsStorkey ws pat@ updates the weigth matrix, given training
