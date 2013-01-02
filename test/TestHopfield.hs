@@ -41,16 +41,6 @@ testHopfield = do
         forAll (nonempty patListGen')
           trainingPatsAreFixedPoints
 
-    describe "updateViaIndex tests" $ do
-      it "updateViaIndex test1" $
-        updateViaIndex [(1, 1), (2, -1)] 2 (V.fromList [1, 1, 1])
-          `shouldBe` (V.fromList [1, 1, -1])
-      it "updateViaIndex test2" $
-        updateViaIndex [(0, 1), (2, -1)] 0 (V.fromList [-1, 1, 1, -1])
-          `shouldBe` (V.fromList [1, 1, 1, -1])
-      it "updateViaIndex test2" $
-        updateViaIndex [(0, 1), (2, -1), (6, -1)] 6 (V.fromList [-1, 1, 1, -1, 1, -1, 1])
-          `shouldBe` (V.fromList [-1, 1, 1, -1, 1, -1, -1])
 
     describe "test repeatedUpdate" $ do
       it "test that when repeatedUpdate has finished, no other update can occur" $
@@ -61,7 +51,7 @@ testHopfield = do
         getUpdatables (vector2D  [[0  ,0.2,0.5],
                                 [0.2,0  ,0.7],
                                 [0.5,0.7,0  ]]) (V.fromList [1, 1, -1])
-        `shouldBe` ([(0, -1), (1, -1), (2, 1)])
+        `shouldBe` ([0, 1, 2])
 
       it "getUpdatables test2" $
         getUpdatables (vector2D [[ 0  , 0.2,-0.5,0.7,-0.1],
@@ -70,7 +60,7 @@ testHopfield = do
                            [ 0.7, 0.4, 0.2,0  , 0.5],
                            [-0.1,-0.7,-0.4,0.5, 0  ]
                            ]) (V.fromList [1,-1,-1,1,-1])
-        `shouldBe` ([(1, 1), (3, -1), (4, 1)])
+        `shouldBe` ([1, 3, 4])
 
     describe "matchPattern tests" $ do
       let check pats p = evalRand (matchPattern

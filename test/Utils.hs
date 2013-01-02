@@ -146,7 +146,7 @@ trainingPatsAreFixedPoints pats =
     ws = weights hs
     checkFixedPoint index = do
       i <- arbitrary
-      return $ evalRand (update ws (pats !! index)) (mkStdGen i) == (pats !! index) || (not $ checkFixed hs index)
+      return $ evalRand (update ws (pats !! index)) (mkStdGen i) == Nothing || (not $ checkFixed hs index)
 
 
 -- | Trains a network using @training_pats@ and then updates each
@@ -157,9 +157,12 @@ energyDecreasesAfterUpdate (training_pats, pats)
   = and <$> mapM energyDecreases pats
     where
       ws = weights $ buildHopfieldData Hebbian training_pats
+      check pat afterPat = energy ws pat >= energy ws afterPat || energy ws afterPat - energy ws pat <= 0.00000001
       energyDecreases' pat = do
-        pattern_after_update <- update ws pat
-        return (energy ws pat >= energy ws pattern_after_update || energy ws pattern_after_update - energy ws pat <= 0.00000001 )
+        maybe_pat  <- update ws pat
+        case maybe_pat of
+          Nothing -> return True
+          Just updatedPattern -> return $ check pat updatedPattern
       energyDecreases pat = do
         i <- arbitrary
         return $ evalRand (energyDecreases' pat) (mkStdGen i)
@@ -172,8 +175,8 @@ repeatedUpdateCheck (training_pats, pats)
       ws = weights $ buildHopfieldData Hebbian training_pats
       stopped pat = do
         p     <- converged_pattern
-        new_p <- update ws p
-        return $ p == new_p
+        maybe_new_p <- update ws p
+        return $ maybe_new_p == Nothing
         where
           converged_pattern = repeatedUpdate ws pat
       s pat = do

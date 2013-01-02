@@ -23,6 +23,7 @@ module Util (
   , randomSignVector
   , randomElem
   , repeatUntilEqual
+  , repeatUntilNothing
   , repeatUntilEqualOrLimitExceeded
   , runT
   , shuffle
@@ -100,6 +101,14 @@ repeatUntilEqual f a =
   do
     new_a <- f a
     if a == new_a then return a else repeatUntilEqual f new_a
+
+repeatUntilNothing :: (MonadRandom m) => (a -> m (Maybe a)) -> a -> m a
+repeatUntilNothing f x =
+  do
+    new_x <- f x
+    case new_x of
+      Nothing -> return x
+      Just y  -> repeatUntilNothing f y
 
 
 repeatUntilEqualOrLimitExceeded :: (MonadRandom m, Eq a) => Int -> (a -> m a) -> a -> m a
