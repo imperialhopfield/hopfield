@@ -67,6 +67,14 @@ getElemOccurrences = map (\xs@(x:_) -> (x, length xs)) . group . sort
 log2 :: Double -> Double
 log2 = logBase 2.0
 
+
+-- flips a bit according to the method employed, as patterns
+-- take different values if they are Hopfield or RBM.
+flipBit :: Method -> Int -> Int
+flipBit Hopfield  x = - x
+flipBit _  x = 1 - x
+
+
  -- | Generates a number sampled from a random distribution, given the mean and
  -- standard deviation.
 normal :: forall m . MonadRandom m => Double -> Double -> m Double
