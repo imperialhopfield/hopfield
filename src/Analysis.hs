@@ -45,7 +45,7 @@ computeErrorIndependentPatsNumbers p n
 -- for mathematical derivation of the equation, see report.
 computeErrorSuperAttractorNumbers :: Int -> Int -> Int -> Double
 computeErrorSuperAttractorNumbers d p n
-  = 1.0 / 2.0 * (1.0 - (erf $ (sqrt (n ./. (2 *. (p - d)) ) *. d)))
+  = 1.0 / 2.0 * (1.0 - (erf $ (sqrt (n ./. (2 * (p - d)) ) *. d)))
 
 
 -- @patternsToNeuronsRatioFromError err@. Given that the err we accept is @err@,
@@ -56,7 +56,7 @@ computeErrorSuperAttractorNumbers d p n
 -- the minimum number of neurons given the number of training patterns and the
 -- maximum error accepted error.
 patternsToNeuronsRatioFromError :: Double -> Double
-patternsToNeuronsRatioFromError err = 1.0 / (2 * (inverf (1 - 2 * err)) ^ 2)
+patternsToNeuronsRatioFromError err = 1.0 / (2.0 * (inverf (1.0 - 2.0 * err)) ^ (2 :: Int))
 
 
 -- @minNumberOfNeurons p err@ Given the number of patterns used to train a Hopfield

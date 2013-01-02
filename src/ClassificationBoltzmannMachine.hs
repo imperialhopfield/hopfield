@@ -10,8 +10,6 @@ module ClassificationBoltzmannMachine where
 -- http://www.dmi.usherb.ca/~larocheh/publications/drbm-mitacs-poster.pdf
 
 import           Data.Maybe
-import           Data.Tuple
-import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.List
@@ -40,12 +38,12 @@ data Mode = Hidden | Visible | Classification
 data BoltzmannData = BoltzmannData {
     weightsB :: Weights    -- ^ the weights of the network
   , classificationWeights :: Weights -- weigths for classification
-  ,  b  :: Bias
-  ,  c  :: Bias
-  ,  d  :: Bias
+  ,  biasB  :: Bias
+  ,  biasC  :: Bias
+  ,  biasD  :: Bias
   , patternsB :: [Pattern] -- ^ the patterns which were used to train it
   -- can be decuded from weights, maybe should be remove now
-  , nr_hidden :: Int       -- ^ number of neurons in the hidden layer
+  , hiddenCount :: Int       -- ^ number of neurons in the hidden layer
   , pattern_to_class :: [(Pattern, Int)] -- the class of the given pattern
     -- classes have to be in consecutive order, from 0
 }
@@ -68,18 +66,18 @@ buildCBoltzmannData pats =
     where nr_visible = V.length (head pats)
 
 
--- | @buildBolzmannData' patterns nr_hidden@: Takes a list of patterns and
+-- | @buildBolzmannData' patterns nrHidden@: Takes a list of patterns and
 -- builds a Bolzmann network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
 -- against the network, by using 'matchPatternBolzmann'.
 buildCBoltzmannData' :: MonadRandom  m => [Pattern] -> Int ->  m BoltzmannData
 buildCBoltzmannData' [] _  = error "Train patterns are empty"
-buildCBoltzmannData' pats nr_hidden
+buildCBoltzmannData' pats nrHidden
   | first_len == 0
       = error "Cannot have empty patterns"
   | any (\x -> V.length x /= first_len) pats
       = error "All training patterns must have the same length"
-  | otherwise = trainBolzmann pats nr_hidden
+  | otherwise = trainBolzmann pats nrHidden
   where
     first_len = V.length $ head pats
 
@@ -108,8 +106,8 @@ getActivationProbabilityVisible ws bias h index
 -- matrix @ws@, the vector of biases @bias@.
 getActivationSumHidden :: Weights -> Weights ->  Bias -> Pattern -> Pattern -> Int -> Double
 getActivationSumHidden ws u c v y index
-  | Just e <- validPattern Visible ws v = error "Invalid visible pattern in getActivationSumHidden"
-  | Just e <- validPattern Classification u y = error "Invalid classification pattern in getActivationSumHidden"
+  | Just e <- validPattern Visible ws v = error e
+  | Just e <- validPattern Classification u y = error e
   | otherwise = c ! index + dotProduct (ws ! index) (toDouble v) + dotProduct (u ! index) (toDouble y)
 
 -- | @getActivationSumHidden ws bias h index@ returns the activation
@@ -202,7 +200,7 @@ oneTrainingStep (BoltzmannData ws u b c d pats nr_h pat_to_class) v = do
   v'       <- updateVisible ws b h
   let y'   = updateClassification u d h
       (h_sum' :: V.Vector Double) = getHiddenSums ws u c v' y'
-      getOuterProduct x y = NC.toLists $ (fromDataVector x)  `NC.outer` (fromDataVector $ toDouble y)
+      getOuterProduct v1 v2 = NC.toLists $ (fromDataVector v1)  `NC.outer` (fromDataVector $ toDouble v2)
       getDelta pos neg = map (map (* learningRate)) $ combine (-) pos neg
       updateWeights w d_w = vector2D $ combine (+) (list2D w) d_w
       deltaBias v1 v2 = V.map ((* learningRate) . fromIntegral) (combineVectors (-) v1 v2)
@@ -226,8 +224,8 @@ oneTrainingStep (BoltzmannData ws u b c d pats nr_h pat_to_class) v = do
 -- We are using the contrastive divergence algorithm CD-1
 -- TODO see if making the vis
 -- (we could extend to CD-n, but "In pratice,  CD-1 has been shown to work surprisingly well."
--- @trainBolzmann pats nr_hidden@ where @pats@ are the training patterns
--- and @nr_hidden@ is the number of neurons to be created in the hidden layer.
+-- @trainBolzmann pats nrHidden@ where @pats@ are the training patterns
+-- and @nrHidden@ is the number of neurons to be created in the hidden layer.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
 trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m BoltzmannData
 trainBolzmann pats nr_h = do
@@ -269,7 +267,7 @@ matchPatternCBoltzmann bm v
 -- to the trained boltzmann network @bm@. It is used for classifing a given
 -- visible vector according to the classes used for training the network @bm@.
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
-getFreeEnergy (BoltzmannData ws u b c d pats nr_h pats_classes) v y
+getFreeEnergy (BoltzmannData ws u _b c d _pats _nrH _pats_classes) v y
   = - dotProduct d (toDouble y) - (V.sum $ V.map softplus hiddenSums)
       where hiddenSums = getHiddenSums ws u c v y
 
