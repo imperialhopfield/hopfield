@@ -28,17 +28,19 @@ library
   build-tools: hsc2hs
   build-depends:
       base >= 4 && <= 5
-    , vector >= 0.9.1
-    , random >= 1.0.1.1
-    , MonadRandom >= 0.1.8
+    , array >= 0.4.0.0
     , erf >= 2.0.0.0
+    , exact-combinatorics >= 0.2.0.4
     , hmatrix >= 0.11.0.4
+    , MonadRandom >= 0.1.8
+    , pipes >= 1.0.1
+    , probability >= 0.2.4
+    , random >= 1.0.1.1
+    , random-extras >= 0.19
     , random-fu >= 0.2.3.1
     , rvar >= 0.2.0.1
-    , random-extras >= 0.19
-    , array >= 0.4.0.0
-    , probability >= 0.2.4
-    , exact-combinatorics >= 0.2.0.4
+    , transformers >= 0.2.2.0
+    , vector >= 0.9.1
   c-sources:
       src/convertImage.c
   include-dirs:
