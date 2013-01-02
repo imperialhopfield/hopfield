@@ -31,7 +31,6 @@ module Util (
 
 
 import           Data.Array.ST
-import           Data.Maybe
 import           Data.List
 import qualified Data.Random as DR
 import qualified Data.Vector as V
@@ -124,7 +123,7 @@ list2D vv = map V.toList $ V.toList vv
 -- Returns the coumn vector of a matrix
 -- Caller needs to ensure that the matrix is well formed
 columnVector :: V.Vector (V.Vector a) -> Int -> V.Vector a
-columnVector m index = V.map (V.! index) m
+columnVector m i = V.map (V.! i) m
 
 
 -- from Data.Vector to Numeric.Container.Vector
@@ -157,8 +156,8 @@ dotProduct xs ys
 findInList :: Eq a => [a] -> a -> Either a Int
 findInList xs x =
   case m_index of
-        Nothing    -> Left x
-        Just index -> Right index
+        Nothing -> Left x
+        Just i  -> Right i
   where m_index = x `elemIndex` xs
 
 
@@ -196,7 +195,7 @@ shuffle :: MonadRandom m => Array Int a -> m [a]
 shuffle xs = do
     let len = Arr.numElements xs
     rands <- take len `liftM` Random.getRandomRs (0, len-1)
-    let ar = runSTArray $ do
+    let shuffledArray = runSTArray $ do
                 ar <- Arr.thawSTArray xs
                 forM_ (zip [0..(len-1)] rands) $ \(i, j) -> do
                     vi <- Arr.readSTArray ar i
@@ -204,7 +203,7 @@ shuffle xs = do
                     Arr.writeSTArray ar j vi
                     Arr.writeSTArray ar i vj
                 return ar
-    return (elems ar)
+    return (elems shuffledArray)
 
 
 -- Run a random generator T (Numeric.Probability.Random) in MonadRandom

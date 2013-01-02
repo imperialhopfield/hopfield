@@ -9,16 +9,15 @@ import           Test.HUnit
 import           Utils
 import           Hopfield
 import           Util
-import           Control.Monad
 import           Control.Monad.Random
 import           Control.Applicative
-import           System.Random
 
 
 toV = (V.fromList <$>)
 _EPSILON = 0.001
 
 
+testHopfield :: Spec
 testHopfield = do
   describe "base model" $ do
     let maxPatListSize = 20

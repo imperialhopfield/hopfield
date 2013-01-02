@@ -2,17 +2,13 @@
 
 module TestBolzmann where
 
-import qualified Data.Vector as V
-import           Test.Hspec
-import           Test.QuickCheck
-import           Test.HUnit
-import           Utils
-import           Util
-import           Control.Monad
-import           Control.Monad.Random
-import           Control.Applicative
-import           System.Random
+import Test.Hspec
+import Test.QuickCheck
+import Test.HUnit
+import Utils
 
+
+testBolzmannMachine :: Spec
 testBolzmannMachine = do
   describe "test Boltzmann Machine" $ do
 
@@ -25,7 +21,6 @@ testBolzmannMachine = do
 
    it "tests that the patterns and nr of hidden neurons stored in the bolzmann datastructure are the same as the ones which were given as input" $
      forAll boltzmannBuildGen' build_BM_Check
-
    it "tests that the activation funcion application always gives us a probability" $
      forAll boltzmannAndPatGen' $ probabilityCheck
 

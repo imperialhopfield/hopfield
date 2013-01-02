@@ -9,6 +9,7 @@ import TestHopfield
 import TestUtil
 import TestMeasurement
 
+main :: IO ()
 main = hspec $ do
 
   testBolzmannMachine

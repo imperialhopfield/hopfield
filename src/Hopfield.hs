@@ -253,7 +253,7 @@ storkeyHiddenSum ws pat i j
 
 updateWeightsGivenIndicesStorkey :: Weights -> Pattern -> Int -> Int -> Double
 updateWeightsGivenIndicesStorkey ws pat i j
-  = ws ! i ! j + 1 ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
+  = ws ! i ! j + (1 :: Int) ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
     where n = V.length ws
           h = storkeyHiddenSum ws pat
 

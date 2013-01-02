@@ -3,10 +3,8 @@
 module Utils where
 
 import           Control.Applicative
-import           Control.Exception
 import           Control.Monad
 import           Control.Monad.Random
-import           Data.List
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Test.QuickCheck
