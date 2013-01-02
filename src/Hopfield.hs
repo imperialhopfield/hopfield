@@ -228,6 +228,7 @@ validWeightsPatternSize ws pat
 -- * It is symmetric
 --
 -- * All diagonal elements must be zero
+-- These checks hold for both Hebbian and Storkey.
 validWeights :: Weights -> Maybe String
 validWeights ws
   | n == 0

@@ -79,7 +79,6 @@ experimentUsingT1 learning networkSize clusterSize
 
 -------
 
-
 getBasinsGivenProbabilityT1With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
 getBasinsGivenProbabilityT1With2Clusters learning networkSize clustersTotalSize p2 p1  =  do
      originPat1 <- randomSignVector networkSize
