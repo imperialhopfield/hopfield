@@ -107,8 +107,6 @@ getBasinsGivenStdT2 learning networkSize clusterSize mean std
 
 
 
-
-
 --------------- General used functions, independent of method
 
 avgBasinsGivenPats :: MonadRandom m => LearningType -> [Pattern] -> m Double

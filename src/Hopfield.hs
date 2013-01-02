@@ -234,10 +234,10 @@ validWeights ws
     = Just "Weight matrix must be non-empty"
   | any (\x -> V.length x /= n) $ V.toList ws
     = Just "Weight matrix has to be a square matrix"
-  -- | any (/= 0) [ ws ! i ! i | i <- [0..n-1] ]
-  --  = Just "Weight matrix first diagonal must be zero"
-  -- | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
-  --  = Just "Weight matrix must be symmetric"
+  | any (/= 0) [ ws ! i ! i | i <- [0..n-1] ]
+    = Just "Weight matrix first diagonal must be zero"
+  | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
+    = Just "Weight matrix must be symmetric"
   | null [ abs (ws ! i ! j) > 1 | i <- [0..n-1], j <- [0..n-1] ]
       = Just "Weights should be between (-1, 1)"
   | otherwise = Nothing
@@ -264,9 +264,10 @@ storkeyHiddenSum ws pat i j
 -- pattern @pat@.
 updateWeightsGivenIndicesStorkey :: Weights -> Pattern -> Int -> Int -> Double
 updateWeightsGivenIndicesStorkey ws pat i j
-  = ws ! i ! j + (1 :: Int) ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
-    where n = V.length ws
-          h = storkeyHiddenSum ws pat
+  | i == j = 0.0
+  | otherwise = ws ! i ! j + (1 :: Int) ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
+  where n = V.length ws
+        h = storkeyHiddenSum ws pat
 
 
 -- | @updateWeightsStorkey ws pat@ updates the weigth matrix, given training
