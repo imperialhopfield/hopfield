@@ -35,7 +35,7 @@ import           Data.List
 import qualified Data.Random as DR
 import qualified Data.Vector as V
 import           Data.Word (Word32)
-import           Control.Monad (forM_, liftM)
+import           Control.Monad (forM_, liftM, replicateM)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Foreign.Storable
@@ -213,3 +213,7 @@ runT :: forall m a . MonadRandom m => T a -> m a
 runT dist = do
   rndInt <- Random.getRandom
   return $ runSeed (mkStdGen rndInt) dist
+
+
+getBinaryVector :: MonadRandom m => Int -> m (V.Vector Int)
+getBinaryVector size = liftM V.fromList $ replicateM size $ Random.getRandomR (0, 1)

@@ -256,8 +256,8 @@ validWeights ws
 -- given the training pattern @pat@.
 storkeyHiddenSum :: Weights -> Pattern -> Int -> Int -> Double
 storkeyHiddenSum ws pat i j
-    sum [ ws ! i ! k  *. (pat ! k) | k <- [0 .. n - 1] , k /= i , k /= j]
-    where n = V.length ws
+    = sum [ ws ! i ! k  *. (pat ! k) | k <- [0 .. n - 1] , k /= i , k /= j]
+      where n = V.length ws
 
 -- | @updateWeightsGivenIndicesStorkey ws pat i j@ computes the new value at
 -- indices @i@ @j@  of the weigth matrix for the training iteration of
