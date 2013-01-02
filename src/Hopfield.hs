@@ -43,25 +43,27 @@ data HopfieldData = HopfieldData {
 } deriving (Show)
 
 
+-- | Checks if weights and pattern given to the function satisfy their constraints,
+-- if yes, calling the function, otherwise erroring out.
+-- Usage: `checkWsPat (functionTakingWeightsAndPattern)`.
+checkWsPat :: (Weights -> Pattern -> a) -> Weights -> Pattern -> a
+checkWsPat f ws pat
+  | Just e <- validWeights ws                = error e
+  | Just e <- validPattern pat               = error e
+  | Just e <- validWeightsPatternSize ws pat = error e
+  | otherwise                                = f ws pat
+
 
 -- | @update weights pattern@: Applies the update rule on @pattern@ for the
 -- first updatable neuron given the Hopfield network (represented by @weights@).
 --
 -- Pre: @length weights == length pattern@
 update :: MonadRandom m => Weights -> Pattern -> m Pattern
-update ws pat
-  | Just e <- validWeights ws                = error e
-  | Just e <- validPattern pat               = error e
-  | Just e <- validWeightsPatternSize ws pat = error e
-  | otherwise                                = update_ ws pat
+update = checkWsPat update_
 
 
 getUpdatables :: Weights -> Pattern -> [(Int, Int)]
-getUpdatables ws pat
-  | Just e <- validWeights ws                = error e
-  | Just e <- validPattern pat               = error e
-  | Just e <- validWeightsPatternSize ws pat = error e
-  | otherwise                                = getUpdatables_ ws pat
+getUpdatables = checkWsPat getUpdatables_
 
 
 updateViaIndex :: [(Int, Int)] -> Int -> Pattern -> Pattern
@@ -72,27 +74,15 @@ updateViaIndex updatables index pat
 
 
 repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
-repeatedUpdate ws pat
-  | Just e <- validWeights ws                = error e
-  | Just e <- validPattern pat               = error e
-  | Just e <- validWeightsPatternSize ws pat = error e
-  | otherwise                                = repeatedUpdate_ ws pat
+repeatedUpdate = checkWsPat repeatedUpdate_
 
 
 computeH :: Weights -> Pattern -> Int -> Int
-computeH ws pat i
-  | Just e <- validWeights ws                = error e
-  | Just e <- validPattern pat               = error e
-  | Just e <- validWeightsPatternSize ws pat = error e
-  | otherwise                                = computeH_ ws pat i
+computeH ws pat i = checkWsPat (\w p -> computeH_ w p i) ws pat
 
 
 energy :: Weights -> Pattern -> Double
-energy ws pat
-  | Just e <- validWeights ws                = error e
-  | Just e <- validPattern pat               = error e
-  | Just e <- validWeightsPatternSize ws pat = error e
-  | otherwise                                = energy_ ws pat
+energy = checkWsPat energy_
 
 
 
