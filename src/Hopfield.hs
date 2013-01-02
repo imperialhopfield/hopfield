@@ -62,10 +62,22 @@ update :: MonadRandom m => Weights -> Pattern -> m Pattern
 update = checkWsPat update_
 
 
+-- TODO Mihaela what valid?
+-- | @getUpdatables ws pat@. Given a Hopfield network represented by ws, returns
+-- a list of pairs comprising of the updatable neurons (represented by the index
+-- in the pattern) and their new, changed value.
+-- No check is performed in this function for efficiency reasons: the checks
+-- are expensive and are done in update, before update_.
+-- Any other caller should ensure that ws and pat are compatible and valid
+-- (by calling @valid@)
 getUpdatables :: Weights -> Pattern -> [(Int, Int)]
 getUpdatables = checkWsPat getUpdatables_
 
 
+-- | @updateViaIndex updatables index pat@ Takes the new value of the neuron
+-- represented by @index@ and changes its value in pat, returning the
+-- changed, updated pattern.
+-- The caller must ensure that index is smalupdateViaIndex updatables index patler than the length of updatables
 updateViaIndex :: [(Int, Int)] -> Int -> Pattern -> Pattern
 updateViaIndex updatables index pat
   | Just e <- validPattern pat    = error e
@@ -73,14 +85,22 @@ updateViaIndex updatables index pat
   | otherwise                     = updateViaIndex_ updatables index pat
 
 
+-- | @repeatedUpdate weights pattern@: Performs repeated updates on the given
+-- pattern until it reaches a stable state with respect to the Hopfield network
+-- (represented by @weights@).
+-- Pre: @length weights == length pattern@
 repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
 repeatedUpdate = checkWsPat repeatedUpdate_
 
 
+-- TODO Mihaela what is "computeH"? Docs please
 computeH :: Weights -> Pattern -> Int -> Int
 computeH ws pat i = checkWsPat (\w p -> computeH_ w p i) ws pat
 
 
+-- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
+-- network (represented by @weights@).
+-- Pre: @length weights == length pattern@
 energy :: Weights -> Pattern -> Double
 energy = checkWsPat energy_
 
@@ -120,21 +140,14 @@ train pats = vector2D ws
     n = V.length (head pats)
 
 
--- TODO Mihaela what valid?
--- | @getUpdatables ws pat@. Given a Hopfield network represented by ws, returns
--- a list of pairs comprising of the updatable neurons (represented by the index
--- in the pattern) and their new, changed value.
--- No check is performed in this function for efficiency reasons: the checks
--- are expensive and are done in update, before update_.
--- Any other caller should ensure that ws and pat are compatible and valid
--- (by calling @valid@)
+-- | See `getUpdatables`.
 getUpdatables_ :: Weights -> Pattern -> [(Int, Int)]
 getUpdatables_ ws pat = [ (i, new) | (i, x_i) <- zip [0..] (V.toList pat)
                                    , let new = computeH_ ws pat i
                                    , new /= x_i ]
 
 
--- TODO Mihaela what is "computeH"? Docs please
+-- | See `computeH`.
 computeH_ :: Weights -> Pattern -> Int -> Int
 computeH_ ws pat i = if weighted >= 0 then 1 else -1
   where
@@ -142,10 +155,7 @@ computeH_ ws pat i = if weighted >= 0 then 1 else -1
     p = V.length pat
 
 
--- | @updateViaIndex updatables index pat@ Takes the new value of the neuron
--- represented by @index@ and changes its value in pat, returning the
--- changed, updated pattern.
--- The caller must ensure that index is smalupdateViaIndex updatables index patler than the length of updatables
+-- | See `updateViaIndex`.
 updateViaIndex_ :: [(Int, Int)] -> Int -> Pattern -> Pattern
 updateViaIndex_ updatables index pat =
   case updatables of
@@ -162,10 +172,7 @@ update_ ws pat = do
     updatables = getUpdatables_ ws pat
 
 
--- | @repeatedUpdate weights pattern@: Performs repeated updates on the given
--- pattern until it reaches a stable state with respect to the Hopfield network
--- (represented by @weights@).
--- Pre: @length weights == length pattern@
+-- | See `repeatedUpdate`.
 repeatedUpdate_ :: (MonadRandom m) => Weights -> Pattern -> m Pattern
 repeatedUpdate_ ws pat = repeatUntilEqual (update_ ws) pat
 
@@ -186,9 +193,7 @@ matchPattern (HopfieldData ws pats) pat = do
   return $ findInList pats converged_pattern
 
 
--- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
--- network (represented by @weights@).
--- Pre: @length weights == length pattern@
+-- | See `energy`.
 energy_ :: Weights -> Pattern -> Double
 energy_ ws pat = s / (-2.0)
   where
