@@ -76,4 +76,4 @@ experimentUsingT1 networkSize clusterSize
 
 repeatExperimentT1 :: MonadRandom m => Int -> Int -> Int -> m Double
 repeatExperimentT1 nrExperiments networkSize clusterSize
-  = liftM average repeatM nrExperiments
+  = liftM average $ replicateM nrExperiments (experimentUsingT1 networkSize clusterSize)
