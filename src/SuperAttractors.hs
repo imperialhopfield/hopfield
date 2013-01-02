@@ -29,13 +29,6 @@ powersOfTwo ceil = takeWhile (<=ceil) xs
   where
     xs = 1 : map (*2) xs
 
-
--- For each param in 'params', builds a network combining the parameter and the
--- list of patterns (or some variant) 'as' using the given function 'combine'
-buildNetworks :: i -> [p] -> PatternCombiner i p -> Networks p
-buildNetworks ins params combine = map (\d -> (d, buildHopfieldData Hebbian $ combine ins d)) params
-
-
 -- -----------------------------------------------------------------------------
 -- Combine functions. 'buildNetworks' uses these to build super attractors
 

@@ -1,9 +1,11 @@
 -- | Functions to measure various properties of a network
 module Measurement (
-  -- * Basin of attraction
-    BasinMeasure
-  , Networks
+  -- * Network construction
+    Networks
   , PatternCombiner
+  , buildNetworks
+  -- * Basin of attraction
+  , BasinMeasure
   , hammingDistribution
   , sampleHammingRange
   , sampleHammingDistance
@@ -26,10 +28,8 @@ import           Numeric.Probability.Distribution (Spread, relative)
 import           Numeric.Probability.Random (T, pick)
 import           Util ((./.), toArray, shuffle, runT)
 
-
--- A function computing some measure of a pattern's basin in the given network
-type BasinMeasure m a = HopfieldData -> Pattern -> Producer a m ()
-
+-- -----------------------------------------------------------------------------
+-- Network construction
 
 -- List of Hopfield networks with an associated label
 type Networks l = [(l, HopfieldData)]
@@ -39,8 +39,18 @@ type Networks l = [(l, HopfieldData)]
 -- into patterns for a network
 type PatternCombiner input param = input -> param -> [Pattern]
 
+
+-- For each param in 'params', builds a network combining the parameter and the
+-- list of patterns (or some variant) 'as' using the given function 'combine'
+buildNetworks :: i -> [p] -> PatternCombiner i p -> Networks p
+buildNetworks ins params combine = map (\d -> (d, buildHopfieldData Hebbian $ combine ins d)) params
+
+
 -- -----------------------------------------------------------------------------
 -- Functions relating to measuring a pattern's basin of attraction
+
+-- A function computing some measure of a pattern's basin in the given network
+type BasinMeasure m a = HopfieldData -> Pattern -> Producer a m ()
 
 
 -- Create a probability distribution for Hamming distances in the given range
