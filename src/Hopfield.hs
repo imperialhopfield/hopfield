@@ -251,16 +251,19 @@ storkeyHiddenSum ws pat i j
   = sum [ ws ! i ! k  *. (pat ! k) | k <- [0 .. n - 1] , k /= i , k /= j]
     where n = V.length ws
 
+
 updateWeightsGivenIndicesStorkey :: Weights -> Pattern -> Int -> Int -> Double
 updateWeightsGivenIndicesStorkey ws pat i j
   = ws ! i ! j + (1 :: Int) ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
     where n = V.length ws
           h = storkeyHiddenSum ws pat
 
+
 updateWeightsMatrixStorkey :: Weights -> Pattern -> Weights
 updateWeightsMatrixStorkey ws pat
   = vector2D [ [ updateWeightsGivenIndicesStorkey ws pat i j | j <- [0 ..n - 1] ] | i <- [0 ..n - 1] ]
     where n = V.length ws
+
 
 trainStorkey :: [Pattern] -> Weights
 -- No need to check pats ws size, buildHopfieldData does it
