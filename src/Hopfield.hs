@@ -214,6 +214,7 @@ validWeightsPatternSize ws pat
   | V.length ws /= V.length pat = Just "Pattern size must match network size"
   | otherwise                   = Nothing
 
+
 -- Checks the validity of a weight matrix by ensuring:
 -- * It is non-empty
 --
@@ -232,7 +233,7 @@ validWeights ws
   --  = Just "Weight matrix first diagonal must be zero"
   -- | not $ and [ (ws ! i ! j) == (ws ! j ! i) | i <- [0..n-1], j <- [0..n-1] ]
   --  = Just "Weight matrix must be symmetric"
-  | null ([abs (ws ! i ! j) > 1 | i <- [0..n-1], j <- [0..n-1] ])
+  | null [ abs (ws ! i ! j) > 1 | i <- [0..n-1], j <- [0..n-1] ]
       = Just "Weights should be between (-1, 1)"
   | otherwise = Nothing
   where
