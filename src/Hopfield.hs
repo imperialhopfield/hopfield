@@ -13,11 +13,11 @@ module Hopfield (
   , buildHopfieldData
   -- * Running
   , update
-  , computeH
   , getUpdatables
   , updateViaIndex
   , repeatedUpdate
   , matchPattern
+  , computeH
   -- * Energy
   , energy
 ) where
@@ -32,8 +32,7 @@ import           Util
 
 
 
-data LearningType = Hebbian | Storkey
-    deriving(Eq, Show)
+data LearningType = Hebbian | Storkey deriving (Eq, Show)
 
 --make Hopefield data implement show
 -- | Encapsulates the network weights together with the patterns that generate
@@ -41,8 +40,55 @@ data LearningType = Hebbian | Storkey
 data HopfieldData = HopfieldData {
     weights :: Weights    -- ^ the weights of the network
   , patterns :: [Pattern] -- ^ the patterns which were used to train it
-}
-  deriving(Show)
+} deriving (Show)
+
+
+
+-- | @update weights pattern@: Applies the update rule on @pattern@ for the
+-- first updatable neuron given the Hopfield network (represented by @weights@).
+--
+-- Pre: @length weights == length pattern@
+update :: MonadRandom m => Weights -> Pattern -> m Pattern
+update ws pat
+  | Just e <- validWeightsPatternSize ws pat = error e
+  | Just e <- validWeights ws                = error e
+  | otherwise                                = update_ ws pat
+
+
+getUpdatables :: Weights -> Pattern -> [(Int, Int)]
+getUpdatables ws pat
+  | Just e <- validWeights ws                = error e
+  | Just e <- validWeightsPatternSize ws pat = error e
+  | otherwise                                = getUpdatables_ ws pat
+
+
+updateViaIndex :: [(Int, Int)] -> Int -> Pattern -> Pattern
+updateViaIndex updatables index pat
+  | Just e <- validPattern pat    = error e
+  -- TODO Mihaela this one is for you: index in updatables check
+  | otherwise                     = updateViaIndex_ updatables index pat
+
+
+repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
+repeatedUpdate ws pat
+  | Just e <- validWeightsPatternSize ws pat = error e
+  | Just e <- validWeights ws                = error e
+  | otherwise                                = repeatedUpdate_ ws pat
+
+
+computeH :: Weights -> Pattern -> Int -> Int
+computeH ws pat i
+  | Just e <- validWeights ws                = error e
+  | Just e <- validWeightsPatternSize ws pat = error e
+  | otherwise                                = computeH_ ws pat i
+
+
+energy :: Weights -> Pattern -> Double
+energy ws pat
+  | Just e <- validWeights ws                = error e
+  | Just e <- validWeightsPatternSize ws pat = error e
+  | otherwise                                = energy_ ws pat
+
 
 
 -- | @buildHopfieldData patterns@: Takes a list of patterns and
@@ -84,61 +130,49 @@ train pats = vector2D ws
 -- a list of pairs comprising of the updatable neurons (represented by the index
 -- in the pattern) and their new, changed value.
 -- No check is performed in this function for efficiency reasons: the checks
--- are expensive and are done in update, before update'.
+-- are expensive and are done in update, before update_.
 -- Any other caller should ensure that ws and pat are compatible and valid
 -- (by calling @valid@)
-getUpdatables:: Weights -> Pattern -> [(Int, Int)]
-getUpdatables ws pat = updatables
+getUpdatables_ :: Weights -> Pattern -> [(Int, Int)]
+getUpdatables_ ws pat = [ (i, new) | (i, x_i) <- zip [0..] (V.toList pat)
+                                   , let new = computeH_ ws pat i
+                                   , new /= x_i ]
+
+
+-- TODO Mihaela what is "computeH"? Docs please
+computeH_ :: Weights -> Pattern -> Int -> Int
+computeH_ ws pat i = if weighted >= 0 then 1 else -1
   where
-    updatables = [ (i, computeH ws pat i) | (i, x_i) <- zip [0..] (V.toList pat), computeH ws pat i /= x_i ]
-
-
-computeH :: Weights -> Pattern -> Int -> Int
-computeH ws pat i = if sum [ (ws ! i ! j) *. (pat ! j)
-                     | j <- [0 .. p-1] ] >= 0 then 1 else -1
-              where   p = V.length pat
+    weighted = sum [ (ws ! i ! j) *. (pat ! j) | j <- [0 .. p-1] ]
+    p = V.length pat
 
 
 -- | @updateViaIndex updatables index pat@ Takes the new value of the neuron
 -- represented by @index@ and changes its value in pat, returning the
 -- changed, updated pattern.
 -- The caller must ensure that index is smalupdateViaIndex updatables index patler than the length of updatables
-updateViaIndex :: [(Int, Int)] -> Int -> Pattern -> Pattern
-updateViaIndex updatables index pat =
+updateViaIndex_ :: [(Int, Int)] -> Int -> Pattern -> Pattern
+updateViaIndex_ updatables index pat =
   case updatables of
     [] -> pat
     _  -> V.modify (\v -> write v index (fromJust $ lookup index updatables)) pat
 
 
 -- | Same as 'update', without size/dimension check, for performance.
-update' :: MonadRandom m => Weights -> Pattern -> m Pattern
-update' ws pat = do
-      index <- if null updatables then randomElem [-1] else randomElem $ map fst updatables
-      return $ updateViaIndex updatables index pat
+update_ :: MonadRandom m => Weights -> Pattern -> m Pattern
+update_ ws pat = do
+  index <- if null updatables then randomElem [-1] else randomElem $ map fst updatables
+  return $ updateViaIndex_ updatables index pat
   where
-    updatables = getUpdatables ws pat
-
-
--- | @update weights pattern@: Applies the update rule on @pattern@ for the
--- first updatable neuron given the Hopfield network (represented by @weights@).
---
--- Pre: @length weights == length pattern@
-update :: MonadRandom m => Weights -> Pattern -> m Pattern
-update ws pat
-  | Just e <- validPattern ws pat = error e
-  | Just e <- validWeights ws     = error e
-  | otherwise                     = update' ws pat
+    updatables = getUpdatables_ ws pat
 
 
 -- | @repeatedUpdate weights pattern@: Performs repeated updates on the given
 -- pattern until it reaches a stable state with respect to the Hopfield network
 -- (represented by @weights@).
 -- Pre: @length weights == length pattern@
-repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
-repeatedUpdate ws pat
-  | Just e <- validPattern ws pat = error e
-  | Just e <- validWeights ws     = error e
-  | otherwise                     = repeatUntilEqual (update' ws) pat
+repeatedUpdate_ :: (MonadRandom m) => Weights -> Pattern -> m Pattern
+repeatedUpdate_ ws pat = repeatUntilEqual (update_ ws) pat
 
 
 -- | @matchPatterns hopfieldData pattern@:
@@ -151,38 +185,37 @@ repeatedUpdate ws pat
 --    The converged pattern (the stable state), otherwise
 --
 -- Pre: @length weights == length pattern@
-matchPattern :: MonadRandom m => HopfieldData -> Pattern
-                                 -> m (Either Pattern Int)
-matchPattern (HopfieldData ws pats) pat
-  | Just e <- validWeights ws     = error e
-  | Just e <- validPattern ws pat = error e
-  | otherwise = do
-      converged_pattern <- repeatedUpdate ws pat
-      return $ findInList pats converged_pattern
-
-
+matchPattern :: MonadRandom m => HopfieldData -> Pattern -> m (Either Pattern Int)
+matchPattern (HopfieldData ws pats) pat = do
+  converged_pattern <- repeatedUpdate_ ws pat
+  return $ findInList pats converged_pattern
 
 
 -- | @energy weights pattern@: Computes the energy of a pattern given a Hopfield
 -- network (represented by @weights@).
 -- Pre: @length weights == length pattern@
-energy :: Weights -> Pattern -> Double
-energy ws pat
-  | Just e <- validWeights ws     = error e
-  | Just e <- validPattern ws pat = error e
-  | otherwise                     = s / (-2.0)
-    where
-      p     = V.length pat
-      w i j = ws ! i ! j
-      x i   = pat ! i
-      s = sum [ w i j *. (x i * x j) | i <- [0 .. p-1], j <- [0 .. p-1] ]
+energy_ :: Weights -> Pattern -> Double
+energy_ ws pat = s / (-2.0)
+  where
+    p     = V.length pat
+    w i j = ws ! i ! j
+    x i   = pat ! i
+    s     = sum [ w i j *. (x i * x j) | i <- [0 .. p-1], j <- [0 .. p-1] ]
 
 
--- | @validPattern weights pattern@
+-- | Checks if a pattern consists of only 1s and -1s.
+-- Returns @Nothing@ on success, an error string on failure.
+validPattern :: Pattern -> Maybe String
+validPattern pat = case [ x | x <- V.toList pat, not (x == 1 || x == -1) ] of
+  []  -> Nothing
+  x:_ -> Just $ "Pattern contains invalid value " ++ show x
+
+
+-- | @validWeightsPatternSize weights pattern@
 -- Returns an error string in a Just if the @pattern@ is not compatible
 -- with @weights@ and Nothing otherwise.
-validPattern :: Weights -> Pattern -> Maybe String
-validPattern ws pat
+validWeightsPatternSize :: Weights -> Pattern -> Maybe String
+validWeightsPatternSize ws pat
   | V.length ws /= V.length pat = Just "Pattern size must match network size"
   | otherwise                   = Nothing
 
