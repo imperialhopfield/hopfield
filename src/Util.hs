@@ -12,7 +12,6 @@ module Util (
   , dotProduct
   , findInList
   , fromDataVector
-  , randomBinaryVector
   , getBinaryIndices
   , getElemOccurrences
   , gibbsSampling
@@ -20,6 +19,8 @@ module Util (
   , log2
   , normal
   , numDiffs
+  , randomBinaryVector
+  , randomSignVector
   , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
@@ -219,6 +220,12 @@ runT dist = do
 
 randomBinaryVector :: MonadRandom m => Int -> m (V.Vector Int)
 randomBinaryVector size = liftM V.fromList $ replicateM size $ Random.getRandomR (0, 1)
+
+
+randomSignVector :: MonadRandom m => Int -> m (V.Vector Int)
+randomSignVector size = do
+  binaryVec <- randomBinaryVector size
+  return $ V.map (\x -> 2 * x - 1) binaryVec
 
 
 average :: (Real a, Fractional b) => [a] -> b

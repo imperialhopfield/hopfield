@@ -61,7 +61,7 @@ getGaussianCluster method originPat mean stdDev size
 getBasinsGivenProbabilityT1 :: MonadRandom m => Int -> Int -> Double -> m Double
 getBasinsGivenProbabilityT1 networkSize clusterSize p
   =  do
-     originPat <- randomBinaryVector networkSize
+     originPat <- randomSignVector networkSize
      cluster   <- getCluster Hopfield originPat p clusterSize
      let hopfield = buildHopfieldData Hebbian cluster
      basinSizes <- mapM (measurePatternBasin hopfield) cluster
