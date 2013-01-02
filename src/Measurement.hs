@@ -2,6 +2,8 @@
 module Measurement (
   -- * Basin of attraction
     BasinMeasure
+  , Networks
+  , PatternCombiner
   , hammingDistribution
   , sampleHammingRange
   , sampleHammingDistance
@@ -28,6 +30,14 @@ import           Util ((./.), toArray, shuffle, runT)
 -- A function computing some measure of a pattern's basin in the given network
 type BasinMeasure m a = HopfieldData -> Pattern -> Producer a m ()
 
+
+-- List of Hopfield networks with an associated label
+type Networks l = [(l, HopfieldData)]
+
+
+-- A function combining some fixed input (i) and the given parameter (p)
+-- into patterns for a network
+type PatternCombiner input param = input -> param -> [Pattern]
 
 -- -----------------------------------------------------------------------------
 -- Functions relating to measuring a pattern's basin of attraction
