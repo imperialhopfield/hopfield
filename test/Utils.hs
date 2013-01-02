@@ -19,6 +19,7 @@ import           Util
 
 
 data Type = H | BM
+
 -- | Defines an arbitrary vector
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
   arbitrary = fmap V.fromList arbitrary

@@ -245,13 +245,23 @@ validWeights ws
     n = V.length ws
 
 
+-- Storkey training provides advantages for the Hopfield network as
+-- it gives it bigger capacity and higher basins of attraction.
+-- For more details see:
 -- http://homepages.inf.ed.ac.uk/amos/publications/Storkey1997IncreasingtheCapacityoftheHopfieldNetworkwithoutSacrificingFunctionality.pdf
+
+
+-- | @storkeyHiddenSum  ws pat i j@ computes the value at indices @i@ @j@  in the
+-- hidden matrix which is used for updating in the weight matrix during trainig
+-- given the training pattern @pat@.
 storkeyHiddenSum :: Weights -> Pattern -> Int -> Int -> Double
 storkeyHiddenSum ws pat i j
-  = sum [ ws ! i ! k  *. (pat ! k) | k <- [0 .. n - 1] , k /= i , k /= j]
+    sum [ ws ! i ! k  *. (pat ! k) | k <- [0 .. n - 1] , k /= i , k /= j]
     where n = V.length ws
 
-
+-- | @updateWeightsGivenIndicesStorkey ws pat i j@ computes the new value at
+-- indices @i@ @j@  of the weigth matrix for the training iteration of
+-- pattern @pat@.
 updateWeightsGivenIndicesStorkey :: Weights -> Pattern -> Int -> Int -> Double
 updateWeightsGivenIndicesStorkey ws pat i j
   = ws ! i ! j + (1 :: Int) ./. n * ( fromIntegral (pat ! i * (pat ! j)) - h j i *. (pat ! i) - h i j *. (pat ! j))
@@ -259,15 +269,20 @@ updateWeightsGivenIndicesStorkey ws pat i j
           h = storkeyHiddenSum ws pat
 
 
-updateWeightsMatrixStorkey :: Weights -> Pattern -> Weights
-updateWeightsMatrixStorkey ws pat
+-- | @updateWeightsStorkey ws pat@ updates the weigth matrix, given training
+-- instance @pat@.
+updateWeightsStorkey :: Weights -> Pattern -> Weights
+updateWeightsStorkey ws pat
   = vector2D [ [ updateWeightsGivenIndicesStorkey ws pat i j | j <- [0 ..n - 1] ] | i <- [0 ..n - 1] ]
     where n = V.length ws
 
 
+-- | @trainStorkey pats@ trains the Hopfield network by computing the weights
+-- matrix by iterating trough all training instances (@pats@) and updating the
+-- weigths according to the Storkey learning rule.
 trainStorkey :: [Pattern] -> Weights
 -- No need to check pats ws size, buildHopfieldData does it
-trainStorkey pats = foldl updateWeightsMatrixStorkey start_ws pats
+trainStorkey pats = foldl updateWeightsStorkey start_ws pats
     where start_ws = vector2D $ replicate n $ replicate n 0
           n = V.length $ head pats
 
