@@ -11,7 +11,7 @@ import TestMeasurement
 
 main = hspec $ do
 
-  -- testBolzmannMachine
+  testBolzmannMachine
 
   testHopfield
 
