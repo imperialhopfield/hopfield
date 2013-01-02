@@ -203,25 +203,25 @@ boltzmannAndPatGen m1 m2 max_hidden = do
   pats_check <- patternGen BM (V.length $ pats_train !! 0)
   return $ (pats_train, i, pats_check)
 
--- TODO do gen Mode
 
--- probabilityCheck ::  ([Pattern], Int, Pattern) -> Gen Bool
--- probabilityCheck (pats, nr_h, pat) = do
---   seed <- arbitrary
---   let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
---       ws = weightsB bd
---   return $ all  (\x -> c $ getActivationProbability Matching Visible ws pat x) [0 .. nr_h - 1]
---     where c x = x <= 1 && x >=0
+probabilityCheck ::  ([Pattern], Int, Pattern) -> Gen Bool
+probabilityCheck (pats, nr_h, pat) = do
+  seed <- arbitrary
+  let bd = evalRand (buildBoltzmannData' pats nr_h) (mkStdGen seed)
+      ws = weightsB bd
+  return $ all  (\x -> c $ getActivationProbability Matching Visible ws pat x) [0 .. nr_h - 1]
+    where c x = x <= 1 && x >=0
 
 
 -- -- r should only be 0 or 1 for this test
--- updateNeuronCheck :: Int -> ([Pattern], Int, Pattern) -> Gen Bool
--- -- updateNeuronCheck r _ = if not (r == 0 || r == 1) then error "r has to be 0 or 1 for updateNeuronCheck"
--- updateNeuronCheck r (pats, nr_h, pat) = do
---     i    <- choose (0, nr_h -1)
---     seed <- arbitrary
---     let bd = evalRand (buildBolzmannData' pats nr_h) (mkStdGen seed)
---     return $ updateNeuron' (fromIntegral r) Matching Visible (weightsB bd) pat i == (1 - r)
+updateNeuronCheck :: Int -> ([Pattern], Int, Pattern) -> Gen Bool
+updateNeuronCheck r (pats, nr_h, pat)
+    | not (r == 0 || r == 1) = error "r has to be 0 or 1 for updateNeuronCheck"
+    | otherwise = do
+        i    <- choose (0, nr_h -1)
+        seed <- arbitrary
+        let bd = evalRand (buildBoltzmannData' pats nr_h) (mkStdGen seed)
+        return $ updateNeuron' (fromIntegral r) Matching Visible (weightsB bd) pat i == (1 - r)
 
 
 -- TODO write comment and change the name to show the restrictions
