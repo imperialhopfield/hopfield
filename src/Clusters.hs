@@ -11,6 +11,8 @@ import           Control.Monad.Random (MonadRandom)
 import           Control.Monad (liftM, replicateM)
 
 import Common
+import Hopfield
+import Measurement
 import Util
 
 
@@ -56,14 +58,14 @@ getGaussianCluster method originPat mean stdDev size
 
 -- TODO pass in LearningType parameter to compare Hebb with S
 
--- getBasinsGivenProbabilityT1 :: MonadRandom m -> Double -> Int -> Int -> m Int
--- getBasinsGivenProbabilityT1 p networkSize clusterSize
---  =  do
---     originPat <-
---     cluster   <- getCluster Hopfield originPat p clusterSize
---     let hopfield = buildHopfieldData Hebbian cluster
-
-
+getBasinsGivenProbabilityT1 :: MonadRandom m => Double -> Int -> Int -> m Double
+getBasinsGivenProbabilityT1 p networkSize clusterSize
+  =  do
+     originPat <- randomBinaryVector networkSize
+     cluster   <- getCluster Hopfield originPat p clusterSize
+     let hopfield = buildHopfieldData Hebbian cluster
+     basinSizes <- mapM (measurePatternBasin hopfield) cluster
+     return $ average basinSizes
 
 -- experimentUsingT1 :: MonadRandom m => m [Double]
 -- experimentUsingT1

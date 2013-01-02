@@ -2,7 +2,8 @@
 
 
 module Util (
-    combine
+    average
+  , combine
   , (*.)
   , (./.)
   , columnVector
@@ -11,6 +12,7 @@ module Util (
   , dotProduct
   , findInList
   , fromDataVector
+  , randomBinaryVector
   , getBinaryIndices
   , getElemOccurrences
   , gibbsSampling
@@ -215,5 +217,9 @@ runT dist = do
   return $ runSeed (mkStdGen rndInt) dist
 
 
-getBinaryVector :: MonadRandom m => Int -> m (V.Vector Int)
-getBinaryVector size = liftM V.fromList $ replicateM size $ Random.getRandomR (0, 1)
+randomBinaryVector :: MonadRandom m => Int -> m (V.Vector Int)
+randomBinaryVector size = liftM V.fromList $ replicateM size $ Random.getRandomR (0, 1)
+
+
+average :: (Real a, Fractional b) => [a] -> b
+average xs = realToFrac (sum xs) / genericLength xs
