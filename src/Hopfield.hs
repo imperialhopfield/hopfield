@@ -50,14 +50,16 @@ data HopfieldData = HopfieldData {
 -- Pre: @length weights == length pattern@
 update :: MonadRandom m => Weights -> Pattern -> m Pattern
 update ws pat
-  | Just e <- validWeightsPatternSize ws pat = error e
   | Just e <- validWeights ws                = error e
+  | Just e <- validPattern pat               = error e
+  | Just e <- validWeightsPatternSize ws pat = error e
   | otherwise                                = update_ ws pat
 
 
 getUpdatables :: Weights -> Pattern -> [(Int, Int)]
 getUpdatables ws pat
   | Just e <- validWeights ws                = error e
+  | Just e <- validPattern pat               = error e
   | Just e <- validWeightsPatternSize ws pat = error e
   | otherwise                                = getUpdatables_ ws pat
 
@@ -71,14 +73,16 @@ updateViaIndex updatables index pat
 
 repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
 repeatedUpdate ws pat
-  | Just e <- validWeightsPatternSize ws pat = error e
   | Just e <- validWeights ws                = error e
+  | Just e <- validPattern pat               = error e
+  | Just e <- validWeightsPatternSize ws pat = error e
   | otherwise                                = repeatedUpdate_ ws pat
 
 
 computeH :: Weights -> Pattern -> Int -> Int
 computeH ws pat i
   | Just e <- validWeights ws                = error e
+  | Just e <- validPattern pat               = error e
   | Just e <- validWeightsPatternSize ws pat = error e
   | otherwise                                = computeH_ ws pat i
 
@@ -86,6 +90,7 @@ computeH ws pat i
 energy :: Weights -> Pattern -> Double
 energy ws pat
   | Just e <- validWeights ws                = error e
+  | Just e <- validPattern pat               = error e
   | Just e <- validWeightsPatternSize ws pat = error e
   | otherwise                                = energy_ ws pat
 
