@@ -33,16 +33,22 @@ getCluster method originPat p size
 
 
 
--- TODO (Mihaela) test this
 -- Caller has to take care with setting the mean and stdDev such that
 -- the sampled numbers tend to be in the interval [0 .. size -1]
+-- Implements the T2 method descirbed by Federico
+-- Sample a Gaussia distribution with given mean and std dev
+-- Round sampled numbers to integers
+-- Use the integers to generate patters of the form 1 1 1... 1 -1 -1 -1
+-- which will have their Hamming distance normally distributed
 getGaussianCluster :: MonadRandom  m => Method -> Pattern -> Double -> Double -> Int -> m [Pattern]
-getGaussianCluster method originPat mean stdDev size = do
-   normal_values   <- replicateM size (normal mean stdDev)
-   return $ map encoding $ map round normal_values
-     where encoding x = V.fromList [ valueAtIndex y x | y <- [0 .. patSize - 1]]
-           patSize = V.length originPat
-           valueAtIndex y x = if (y <=x) then 1 else (smallerValue method)
-           smallerValue x = case x of
-                                Hopfield -> -1
-                                _        -> 0
+getGaussianCluster method originPat mean stdDev size =
+  | mean > patSize = error "the mean cannot be greater than the size of the pattern in getGaussianCluster"
+  | otherwise = do
+      normal_values   <- replicateM size (normal mean stdDev)
+      return $ map encoding $ map round normal_values
+        where encoding x = V.fromList [ valueAtIndex y x | y <- [0 .. patSize - 1]]
+          patSize = V.length originPat
+          valueAtIndex y x = if (y <=x) then 1 else (smallerValue method)
+          smallerValue x = case x of
+                            Hopfield -> -1
+                            _        -> 0
