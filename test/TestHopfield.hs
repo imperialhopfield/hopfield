@@ -9,16 +9,15 @@ import           Test.HUnit
 import           Utils
 import           Hopfield
 import           Util
-import           Control.Monad
 import           Control.Monad.Random
 import           Control.Applicative
-import           System.Random
 
 
 toV = (V.fromList <$>)
 _EPSILON = 0.001
 
 
+testHopfield :: Spec
 testHopfield = do
   describe "base model" $ do
     let maxPatListSize = 20
@@ -98,8 +97,8 @@ testHopfield = do
 
     describe "energy tests" $ do
       it "energy is computed ok for a system with 2 neurons" $
-        energy (vector2D [[0,0.5],[0.5,0]]) (V.fromList [1,0])
-          `shouldBe` 0
+        energy (vector2D [[0,0.5],[0.5,0]]) (V.fromList [1, -1])
+          `shouldBe` 0.5
 
       it "energy is computed ok for a system of 3 neurons, positive weights" $
         abs (energy (vector2D [[0  ,0.2,0.5],

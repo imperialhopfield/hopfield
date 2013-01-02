@@ -2,38 +2,33 @@
 
 module TestBolzmann where
 
-import qualified Data.Vector as V
-import           Test.Hspec
-import           Test.QuickCheck
-import           Test.HUnit
-import           Utils
-import           Util
-import           Control.Monad
-import           Control.Monad.Random
-import           Control.Applicative
-import           System.Random
+import Test.Hspec
+import Test.QuickCheck
+import Test.HUnit
+import Utils
 
--- testBolzmannMachine = do
---  describe "test Boltzmann Machine" $ do
 
---    let maxPatListSize = 20
---    let maxPatSize     = 70
---    let maxNrHidden  = 20
+testBolzmannMachine :: Spec
+testBolzmannMachine = do
+  describe "test Boltzmann Machine" $ do
 
---    let boltzmannBuildGen' = boltzmannBuildGen maxPatListSize maxPatSize maxNrHidden
---    let boltzmannAndPatGen' = boltzmannAndPatGen maxPatListSize maxPatSize maxNrHidden
+   let maxPatListSize = 20
+   let maxPatSize     = 70
+   let maxNrHidden  = 20
 
---    it "tests that the patterns and nr of hidden neurons stored in the bolzmann datastructure are the same as the ones which were given as input" $
---      forAll boltzmannBuildGen' build_BM_Check
+   let boltzmannBuildGen' = boltzmannBuildGen maxPatListSize maxPatSize maxNrHidden
+   let boltzmannAndPatGen' = boltzmannAndPatGen maxPatListSize maxPatSize maxNrHidden
 
---    it "tests that the activation funcion application always gives us a probability" $
---      forAll boltzmannAndPatGen' $ probabilityCheck
+   it "tests that the patterns and nr of hidden neurons stored in the bolzmann datastructure are the same as the ones which were given as input" $
+     forAll boltzmannBuildGen' build_BM_Check
+   it "tests that the activation funcion application always gives us a probability" $
+     forAll boltzmannAndPatGen' $ probabilityCheck
 
---    it "tests that if r is 0 then the neuron always gets value 1" $
---      forAll boltzmannAndPatGen' $ updateNeuronCheck 0
+   it "tests that if r is 0 then the neuron always gets value 1" $
+     forAll boltzmannAndPatGen' $ updateNeuronCheck 0
 
---    it "tests that if r is 1 then the neuron always gets value 0" $
---      forAll boltzmannAndPatGen' $ updateNeuronCheck 1
+   it "tests that if r is 1 then the neuron always gets value 0" $
+     forAll boltzmannAndPatGen' $ updateNeuronCheck 1
 
 
 

@@ -5,14 +5,12 @@ import           Control.Monad.Random
 import           System.Environment
 import qualified Data.Vector as V
 
+import Common
 import Hopfield
 import ConvertImage
 import RestrictedBoltzmannMachine
 import ClassificationBoltzmannMachine
 
-
-data Method = Hopfield | Boltzmann | CBoltzmann
-  deriving (Eq, Enum, Ord, Show)
 
 
 transformFunction :: Method -> (Int -> Int)

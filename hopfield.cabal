@@ -17,6 +17,7 @@ library
     , Analysis
     , Measurement
     , ClassificationBoltzmannMachine
+    , Clusters
     , Common
     , ConvertImage
     , RestrictedBoltzmannMachine

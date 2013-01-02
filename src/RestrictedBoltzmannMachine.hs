@@ -6,7 +6,6 @@ module RestrictedBoltzmannMachine where
 
 
 import           Data.Maybe
-import           Data.Tuple
 import           Control.Monad
 import           Control.Monad.Random
 import           Data.List
@@ -136,8 +135,8 @@ updateWeights ws v = do
       neg  = NC.toLists $ (f v') `NC.outer` (fromDataVector $ getSigmaH v') -- "negative gradient"
       d_ws = map (map (* learningRate)) $ combine (-) pos neg -- weights delta
       new_weights = combine (+) (list2D ws) d_ws
-      nr_hidden = V.length $ ws ! 0
-      getSigmaH v = V.fromList [getActivationProbability Training Visible ws v x | x <- [0.. nr_hidden - 1] ]
+      nr_hidden   = V.length $ ws ! 0
+      getSigmaH y = V.fromList [getActivationProbability Training Visible ws y x | x <- [0.. nr_hidden - 1] ]
   return $ vector2D new_weights
 
 
@@ -214,7 +213,7 @@ getFreeEnergy ws pat
 
 
 matchPatternBoltzmann :: MonadRandom m => BoltzmannData -> Pattern -> m Int
-matchPatternBoltzmann (BoltzmannData ws pats nr_h pats_with_binary) pat = do
+matchPatternBoltzmann (BoltzmannData ws pats _ pats_with_binary) pat = do
   hot_pat <- repeatUntilEqualOrLimitExceeded 1000 (updateBoltzmann ws) ((V.++) pat (V.fromList $ snd $ head pats_with_binary))
   let h = V.take (V.length $ head pats) hot_pat
       extendWithClass p = ((V.++) h (V.fromList . fromJust $ lookup p pats_with_binary) )

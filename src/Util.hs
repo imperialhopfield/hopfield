@@ -2,7 +2,8 @@
 
 
 module Util (
-    combine
+    average
+  , combine
   , (*.)
   , (./.)
   , columnVector
@@ -13,10 +14,13 @@ module Util (
   , fromDataVector
   , getBinaryIndices
   , getElemOccurrences
+  , gibbsSampling
   , list2D
   , log2
   , normal
   , numDiffs
+  , randomBinaryVector
+  , randomSignVector
   , randomElem
   , repeatUntilEqual
   , repeatUntilEqualOrLimitExceeded
@@ -30,12 +34,11 @@ module Util (
 
 
 import           Data.Array.ST
-import           Data.Maybe
 import           Data.List
 import qualified Data.Random as DR
 import qualified Data.Vector as V
 import           Data.Word (Word32)
-import           Control.Monad (forM_, liftM)
+import           Control.Monad (forM_, liftM, replicateM)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Foreign.Storable
@@ -67,12 +70,24 @@ getElemOccurrences = map (\xs@(x:_) -> (x, length xs)) . group . sort
 log2 :: Double -> Double
 log2 = logBase 2.0
 
+
+
  -- | Generates a number sampled from a random distribution, given the mean and
  -- standard deviation.
 normal :: forall m . MonadRandom m => Double -> Double -> m Double
 normal m std = do
   r <- DR.runRVar (DR.normal m std) (Random.getRandom :: MonadRandom m => m Word32)
   return r
+
+
+-- | @gibbsSampling a@ Gives the binary value of a neuron (0 or 1) from the
+-- activation sum
+gibbsSampling :: MonadRandom  m => Double -> m Int
+gibbsSampling a
+  | (a < 0.0 || a > 1.0) = error "argument of gibbsSampling is not a probability"
+  | otherwise = do
+      r <- Random.getRandomR (0.0, 1.0)
+      return $ if (r < a) then 1 else 0
 
 
 randomElem :: MonadRandom m => [a] -> m a
@@ -113,7 +128,7 @@ list2D vv = map V.toList $ V.toList vv
 -- Returns the coumn vector of a matrix
 -- Caller needs to ensure that the matrix is well formed
 columnVector :: V.Vector (V.Vector a) -> Int -> V.Vector a
-columnVector m index = V.map (V.! index) m
+columnVector m i = V.map (V.! i) m
 
 
 -- from Data.Vector to Numeric.Container.Vector
@@ -146,8 +161,8 @@ dotProduct xs ys
 findInList :: Eq a => [a] -> a -> Either a Int
 findInList xs x =
   case m_index of
-        Nothing    -> Left x
-        Just index -> Right index
+        Nothing -> Left x
+        Just i  -> Right i
   where m_index = x `elemIndex` xs
 
 
@@ -185,7 +200,7 @@ shuffle :: MonadRandom m => Array Int a -> m [a]
 shuffle xs = do
     let len = Arr.numElements xs
     rands <- take len `liftM` Random.getRandomRs (0, len-1)
-    let ar = runSTArray $ do
+    let shuffledArray = runSTArray $ do
                 ar <- Arr.thawSTArray xs
                 forM_ (zip [0..(len-1)] rands) $ \(i, j) -> do
                     vi <- Arr.readSTArray ar i
@@ -193,7 +208,7 @@ shuffle xs = do
                     Arr.writeSTArray ar j vi
                     Arr.writeSTArray ar i vj
                 return ar
-    return (elems ar)
+    return (elems shuffledArray)
 
 
 -- Run a random generator T (Numeric.Probability.Random) in MonadRandom
@@ -201,3 +216,17 @@ runT :: forall m a . MonadRandom m => T a -> m a
 runT dist = do
   rndInt <- Random.getRandom
   return $ runSeed (mkStdGen rndInt) dist
+
+
+randomBinaryVector :: MonadRandom m => Int -> m (V.Vector Int)
+randomBinaryVector size = liftM V.fromList $ replicateM size $ Random.getRandomR (0, 1)
+
+
+randomSignVector :: MonadRandom m => Int -> m (V.Vector Int)
+randomSignVector size = do
+  binaryVec <- randomBinaryVector size
+  return $ V.map (\x -> 2 * x - 1) binaryVec
+
+
+average :: (Real a, Fractional b) => [a] -> b
+average xs = realToFrac (sum xs) / genericLength xs
