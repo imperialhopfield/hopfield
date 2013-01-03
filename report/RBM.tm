@@ -130,8 +130,8 @@
   The training rule then becomes:
 
   <\equation*>
-    \<Delta\>w<rsub|ij>= \<less\>v<rsub|i>*h<rsub|i>\<gtr\>
-    <rsub|data>-\<less\>v<rsub|i>*h<rsub|i>\<gtr\><rsub|reconstruction>
+    \<Delta\>w<rsub|ij>= \<lambda\><around*|(|\<less\>v<rsub|i>*h<rsub|i>\<gtr\>
+    <rsub|data>-\<less\>v<rsub|i>*h<rsub|i>\<gtr\><rsub|reconstruction>|)>
   </equation*>
 
   We note that the above training rule has the desired properties for
@@ -192,22 +192,22 @@
   The distribution used for the Classification Boltzmann Machine are the
   following:
 
-  <\equation*>
+  <\equation>
     p<around*|(|h<rsub|i>=1 <around*|\||v,y|\<nobracket\>>|)>=
     \<sigma\><around*|(|c<rsub|j>+ \ \<noplus\>\<noplus\>W<rsub|j>*v\<noplus\>+U<rsub|j>*y
     |)>
-  </equation*>
+  </equation>
 
-  <\equation*>
+  <\equation>
     p<around*|(|v<rsub|i>=1 <around*|\||h|\<nobracket\>>|)>=
     \<sigma\><around*|(|b<rsub|j>+ \ \<noplus\>\<noplus\>h<rsup|T>*W<rsup|i>*
     |)>
-  </equation*>
+  </equation>
 
-  <\equation*>
+  <\equation>
     p<around*|(|y = e<rsub|c><around*|\||h |\<nobracket\>>|)>=
     <frac|e<rsup|d<rsup|T>*e<rsub|c>\<noplus\>+h<rsup|T>*U*e<rsub|c>>|N>
-  </equation*>
+  </equation>
 
   where N is the normalizing constant <math|<big|sum><rsub|c>>
   <math|e<rsup|d<rsup|T>*e<rsub|c>\<noplus\>+h<rsup|T>*U*e<rsub|c>>>.
@@ -217,6 +217,57 @@
   Valuable reference for this was given to us from
   [http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf and,
   http://www.dmi.usherb.ca/~larocheh/publications/drbm-mitacs-poster.pdf].
+
+  <with|font-series|bold|Learning>
+
+  Contrastive divergence can be used to train the network, giving rise to the
+  following update rules:
+
+  \ 
+
+  <\eqnarray*>
+    <tformat|<table|<row|<cell|b<rprime|'> \ >|<cell|=>|<cell|b +
+    \<lambda\><around*|(|v- v<rsub|sampled>|)>>>|<row|<cell|c<rprime|'>
+    >|<cell|=>|<cell|c + \<lambda\><around*|(|h<rsub|\<sigma\>>-
+    h<rsub|\<sigma\>sampled>|)>>>|<row|<cell|d<rprime|'> >|<cell|=>|<cell| d
+    + \<lambda\><around*|(|y- y<rsub|sampled>|)>>>|<row|<cell| W<rprime|'>
+    >|<cell|=>|<cell|W + \<lambda\><around*|(|h<rsub|\<sigma\>>*v<rsup|T>-h<rsub|\<sigma\>sampled>
+    v<rsub|sampled><rsup|T>|)>>>|<row|<cell|U<rprime|'>>|<cell|=>|<cell| U +
+    \<lambda\><around*|(|<around*|\<nobracket\>|h<rsub|\<sigma\>>*y<rsup|T>-h<rsub|\<sigma\>sampled>*y<rsub|sampled><rsup|T>|)>|\<nobracket\>>>>>>
+  </eqnarray*>
+
+  where we denote by <math|x<rprime|'>> the new value of parameter x.
+  <math|v<rsub|sampled> >and <math|y<rsub|sampled> >are obtained by sampling
+  the distributions in (5) and (6).\ 
+
+  <\eqnarray*>
+    <tformat|<table|<row|<cell|h<rsub|\<sigma\>>>|<cell|=>|<cell|\<sigma\><around*|(|c<rsub|j>+
+    \ \<noplus\>\<noplus\>W<rsub|j>*v\<noplus\>+U<rsub|j>*y
+    |)>>>|<row|<cell|h<rsub|\<sigma\>sampled>>|<cell|=>|<cell|\<sigma\><around*|(|c<rsub|j>+
+    \ \<noplus\>\<noplus\>W<rsub|j>*v<rsub|sampled>\<noplus\>+U<rsub|j>*y<rsub|sampled>
+    |)>>>>>
+  </eqnarray*>
+
+  \ <with|font-series|bold|Classification>
+
+  <\equation*>
+    p<around*|(|y=e<rsub|c><around*|\||v|\<nobracket\>>|)>=
+    <frac|e<rsup|-F<around*|(|v\<nocomma\>,e<rsub|c>|)>>|<big|sum><rsub|d>e<rsup|-F<around*|(|v\<nocomma\>,e<rsub|d>|)>>>
+  </equation*>
+
+  where <math|F<around*|(|v\<nocomma\>,e<rsub|c>|)> >is the
+  <with|font-shape|italic|free energy function>
+
+  <\equation*>
+    F<around*|(|v\<nocomma\>,e<rsub|c>|)>=
+    -d<rsup|T>*y-<big|sum><rsup|H><rsub|j=1>
+    <with|font-shape|italic|<with|font-shape|italic|s>><around*|(|c<rsub|j>+
+    \ \<noplus\>\<noplus\>W<rsub|j>*v\<noplus\>+U<rsub|j>*y |)>\<nocomma\>
+  </equation*>
+
+  <\equation*>
+    s<around*|(|x|)>= log<around*|(|1+e<rsup|x>|)>\ 
+  </equation*>
 </body>
 
 <\initial>
