@@ -18,13 +18,6 @@ type Degree = Int
 type PatternCombiner a = a -> Degree -> [Pattern]
 
 
--- List containing each element in xs replicated by the corresponding ns value
--- e.g. mapReplicate [2,3] "ca" = "ccaaa"
-mapReplicate :: [Degree] -> [a] -> [a]
-mapReplicate ns xs
-  = concat $ zipWith replicate ns xs
-
-
 -- Produces all powers of two <= ceil
 powersOfTwo :: Degree -> [Degree]
 powersOfTwo ceil = takeWhile (<=ceil) xs
@@ -44,12 +37,12 @@ buildNetworks ps ds combine
 
 -- Replicates the first pattern k times.
 oneSuperAttr :: PatternCombiner [Pattern]
-oneSuperAttr ps k = mapReplicate (k:cycle [1]) ps
+oneSuperAttr ps k = replicate k x ++ xs
 
 
 -- Replicates each pattern k times.
 allSuperAttr :: PatternCombiner [Pattern]
-allSuperAttr ps k = mapReplicate (cycle [k]) ps
+allSuperAttr ps k = concatMap (replicate k) ps
 
 
 -- Aggregate list of combiner functions of input [Pattern] into a single
