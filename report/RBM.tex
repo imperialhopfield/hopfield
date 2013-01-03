@@ -1,0 +1,192 @@
+\documentclass{letter}
+\usepackage{amsmath,graphicx}
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\nocomma}{}
+\newcommand{\noplus}{}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+\newcommand{\tmtextbf}[1]{{\bfseries{#1}}}
+\newcommand{\tmtextit}[1]{{\itshape{#1}}}
+%%%%%%%%%% End TeXmacs macros
+
+\begin{document}
+
+\tmtextbf{Restrictive Boltzmann Machines}
+
+In this chapter we will describe the theory behind Boltzmann Machines, as well
+as their advantages and how they can be used for classification.
+
+Hopfield networks are deterministc: training a network with the same patterns
+will yield the same weights, and matching a pattern against the network will
+always give the same result. This has the advantage of simplicity and ease of
+testing. However, as mentioned before, there are spirous attractors in the
+Hopfields network (liniear combination of an odd number of training patterns).
+Using stochastic updating rules will decrease the probability of being 'stuck'
+in such a state. This resembles simulated annealing, but ensuring we are not
+caught in a local minima (in the energy landscape).
+
+Restricted Boltzmann Machines have been used for various purposes in recent
+years (TODO add to bib see
+http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf,
+http://www.csri.utoronto.ca/\~{ }hinton/absps/nips00-ywt.pdf,
+http://www.csri.utoronto.ca/\~{ }hinton/absps/reluICML.pdf), most of it
+conducted by Geoffrey E. Hinton at university of Toronto, Canada. They have a
+simple structure: one layer of visible units and one layer of hidden units,
+which form a bipartite graph, as in Figure. The patterns used to train the
+network correspond to the visible (exposed units), while the hidden units
+correspond to the attributes of the features we would like to learn. It is
+worth mentioning that in the most common and simple form, both the visible and
+hidden units take binary values. This is the approach we also adopted for our
+implementation.
+
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\resizebox{240px}{240px}{\includegraphics{RBM-1.eps}}
+
+
+
+The connections between the neurons in the two layers is symmetrical, so it
+can be represented as a weight matrix which keeps the connection beween hidden
+and visible layers. A state of a Restricted Boltzmann machins is given by the
+values of both the visibile and given state. The corresponding Hopfield energy
+formula for a state is given by :
+\[ E (v, h) = - \sum_{i \in V} a_i v_i - \sum_{j \in H} b_j h_i - \sum_{i \in
+   V, \nocomma j \in H \nocomma} v_i h_j w_{\tmtextit{\tmtextit{\tmop{ij}}}}
+\]
+
+
+where, $w_{\tmtextit{\tmtextit{}}}$is the weight matrix, $a$ and $b$are the
+vectors of biases corresponding to the visbile, respectibly hidden layers. As
+expected, $v$is vector of visible units and \tmtextit{h} is the vector of
+hidden units.
+
+We denote by \tmtextit{V} = \{1, .. \tmtextit{length} \tmtextit{v}\} , the
+indices of a visible vector and by \tmtextit{H} = \{1, .. \tmtextit{length}
+\tmtextit{h}\} the indices of a hidden vector.
+
+
+
+\tmtextbf{Probability of a state}
+
+After traning, the network assigns a probability to each possible state, as
+follows:
+\[ p \left( v, h \right) = \frac{1}{Z} e^{- E \left( v, h \right)} \]
+where Z is used to normalize the probabilities
+\[ Z = \sum_{v, h} e^{- E \left( v, h \right)} \]
+Thus, the porbability the network assings for a visibile vector \tmtextit{v}:
+\begin{equation}
+  p \left( v \right) = \sum_h \frac{1}{Z} e^{- E \left( v, h \right)}
+\end{equation}
+\tmtextbf{Training the network}
+
+The network can be trained such that one maximizes the probabilty of a traning
+pattern. The derivative of the log probability of a trainig vector (given by
+(1)), is simple, as follows:
+\[ \frac{\delta \log p \left( v \right)}{\delta w_{\tmop{ij}}} = < v_i h_i
+   >_{\tmop{data}} - < v_i h_i >_{\tmop{model}} \]
+Due to the bipartitate nature of the Restricted Boltzmann Machine, it is easy
+to attain an \tmtextit{unabiased} sample of the hidden units, given the
+visible units.
+\begin{equation}
+  p \left( h_j = 1 \left|  \right. v \right) = \sigma \left( b_j + \sum_{i \in
+  V} v_i w_{\tmop{ij}} \right)
+\end{equation}
+For the visible units, the same formula gives a \tmtextit{biased} sample of
+the visible units.
+\begin{equation}
+  p \left( v_i = 1 \left|  \right. h \right) = \sigma \left( a_i + \sum_{j \in
+  H} h_j w_{\tmop{ij}} \right)
+\end{equation}
+
+
+where $\sigma = \frac{1}{1 \noplus + e^{- x}}^{}$, is the logistic sigmoid
+function.
+
+There are ways of getting an unbiased sample of the visible units, but they
+are very time consuming. In practice, the contrastive divergence algorithm is
+used as a faster substitute. The visibile units are set to a training vector
+and the binary states of the hidden vector are computed using (2). These
+binary units are used to \tmtextit{reconstruct} the states of the visible
+vector using (3).
+
+The training rule then becomes:
+\[ \Delta w_{\tmop{ij}} = \lambda \left( < v_i h_i >_{\tmop{data}} - < v_i h_i
+   >_{\tmop{reconstruction}} \right) \]
+We note that the above training rule has the desired properties for modelling
+the biological brain: it is both \tmtextit{local} and \tmtextit{incremental}.
+
+
+
+\tmtextbf{Using Restricted Boltzmann Machines for classification}
+
+As suggested by Hinton in section 16 http://www.cs.toronto.edu/\~{
+}hinton/absps/guideTR.pdf, there are various ways of using Restricted
+Boltzmann Machines for classification. We have employed two methods, one which
+we developed ourselves and one third one descriebed in the paper, by adding
+another set of visible units, the classification units.
+
+
+
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\resizebox{360px}{360px}{\includegraphics{RBM-2.eps}}
+
+The vector hidden units is used to model the joint distribution between a
+vector of inputs v and a target (classification) vector y. The classification
+vector y corresponds to a class. It's length is given by the number of
+classes. $y = e_c$, where c is the class the vector is modelling ($e_c$ is a
+vector with all zeros, expect from the position c, where it is 1).
+
+As seen from Figure 2, one now needs to weight matrices, which we will denote
+by \tmtextit{W}(the weight matrix between the visbile units and hidden ones) \
+and U (the weight matrix and between the classification units and hidden
+ones). Vectors \tmtextit{b}, \tmtextit{c}, \tmtextit{d} correspond to the
+vector of biases for the visible units (training patterns), hidden units and
+classification units, respectively.
+
+The energy function for this model is:
+\[ E \left( v \nocomma, y, h \right) = - d^T y - c^T h - b^T v - h^T W v - h^T
+   U y \]
+Which gives rise to the following formula for the probility of a configuration
+\tmtextit{v}, \tmtextit{y}.
+\[ p \left( v, y, h \right) = \frac{e^{- E \left( v \nocomma, y, h
+   \right)}}{Z} \]
+where \tmtextit{Z} is the normalizing constant. Thus,
+\[ p \left( v, y \right) = \sum_h p \left( v, y, h \right) = \sum_h \frac{e^{-
+   E \left( v \nocomma, y, h \right)}}{Z} \]
+The distribution used for the Classification Boltzmann Machine are the
+following:
+\[ p \left( h_i = 1 \left| v, y \right. \right) = \sigma \left( c_j + \noplus
+   \noplus W_j v \noplus + U_j y \right) \]
+\[ p \left( v_i = 1 \left| h \right. \right) = \sigma \left( b_j + \noplus
+   \noplus h^T W^i  \right) \]
+\[ p \left( y = e_c \left| h \right. \right) = \frac{e^{d^T e_c \noplus + h^T
+   Ue_c}}{N} \]
+where N is the normalizing constant $\sum_c$ $e^{d^T e_c \noplus + h^T Ue_c}$.
+
+
+
+Valuable reference for this was given to us from
+[http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf and,
+http://www.dmi.usherb.ca/\~{ }larocheh/publications/drbm-mitacs-poster.pdf].
+
+\tmtextbf{Learning}
+
+Contrastive divergence can be used to train the network, giving rise to the
+following update rules:
+
+
+\begin{eqnarray*}
+  b'  & = & b + \lambda \left( v - \tmop{vsampled} \right)\\
+  c'  & = & c + \lambda \left( h - \tmop{hsampled} \right)\\
+  d'  & = & d + \lambda \left( y - \tmop{ysampled} \right)\\
+  W'  & = & W + \lambda \left( y - \tmop{ysampled} \right)\\
+  U' & = & U + \lambda \left( y - \tmop{ysampled} \right)
+\end{eqnarray*}
+where we denote by $x'$ the new value of parameter x and
+\begin{eqnarray*}
+  & = & 
+\end{eqnarray*}
+
+
+
+
+\end{document}
