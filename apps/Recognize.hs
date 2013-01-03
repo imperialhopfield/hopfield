@@ -1,9 +1,11 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Main where
 
 import           Control.Monad
 import           Control.Monad.Random
-import           System.Environment
 import qualified Data.Vector as V
+import           Options.Applicative
 
 import Common
 import Hopfield
@@ -37,16 +39,65 @@ recPic method (width, height) imgPaths queryImgPath = do
              Right i       -> Just $ imgPaths !! i
 
 
+data RecognizeArgs = RunOptions
+                       { method :: String
+                       , width :: Int
+                       , height :: Int
+                       , queryPath :: String
+                       , filePaths :: [String]
+                       }
+                   | BenchmarkOptions
+                       { benchmarkPaths :: [String]
+                       }
+                   deriving (Show)
+
+
+runOptions :: Parser RecognizeArgs
+runOptions = RunOptions <$> argument str  ( metavar "METHOD"     <> help "hopfield, boltzmann or cboltzmann" )
+                        <*> argument auto ( metavar "WIDTH"      <> help "width images are resized to" )
+                        <*> argument auto ( metavar "HEIGHT"     <> help "height images are resized to" )
+                        <*> argument str  ( metavar "QUERY_PATH" <> help "image to match" )
+                        <*> arguments str ( metavar "FILE_PATHS" <> help "images to match against (training set)" )
+
+
+benchmarkOptions :: Parser RecognizeArgs
+benchmarkOptions = BenchmarkOptions <$> arguments str ( metavar "FILE_PATHS" <> help "Target for the greeting" )
+
+
+recognizeOptions :: Parser RecognizeArgs
+recognizeOptions = subparser
+  ( command "run" ( info (helper <*> runOptions)
+                    ( progDesc "Add a file to the repository" ))
+  <> command "bench" (info (helper <*> benchmarkOptions)
+                      ( progDesc "run benchmark" ))
+  )
+
+
+recognizeArgParser :: ParserInfo RecognizeArgs
+recognizeArgParser = info (helper <*> recognizeOptions)
+  ( fullDesc <> progDesc "Print a greeting for TARGET"
+             <> header "hello - a test for optparse-applicative" )
+
+
 main :: IO ()
 main = do
-  -- TODO use an argument parser (cmdargs)
-  methodStr:widthStr:heightStr:queryPath:filePaths <- getArgs
-  let method = case methodStr of
-                 "hopfield"   -> Hopfield
-                 "boltzmann"  -> Boltzmann
-                 "cboltzmann" -> CBoltzmann
-                 _            -> error "unrecognized method"
-      width  = read widthStr
-      height = read heightStr
-  foundPath <- recPic method (width, height) filePaths queryPath
-  putStrLn $ show foundPath
+  recArgs <- execParser recognizeArgParser
+
+  case recArgs of
+
+    RunOptions { method, width, height, queryPath, filePaths }
+      | width < 1       -> error "width must be > 1"
+      | height < 1      -> error "height must be > 1"
+      | queryPath == "" -> error "empty query path"
+      | filePaths == [] -> error "empty query path"
+      | otherwise -> do
+
+        let recMethod = case method of
+                          "hopfield"   -> Hopfield
+                          "boltzmann"  -> Boltzmann
+                          "cboltzmann" -> CBoltzmann
+                          _            -> error "unrecognized method"
+
+        print =<< recPic recMethod (width, height) filePaths queryPath
+
+    BenchmarkOptions { benchmarkPaths = _bp } -> error "benchmark not implemented"
