@@ -26,16 +26,16 @@ testHopfield = do
     -- Pattern list generator
     let patListGen'     = patListGen H maxPatSize maxPatListSize
 
-    describe "buildHopfieldData Hebbian" $ do
+    describe "buildHopfieldData Storkey" $ do
     -- Patterns must not be empty
       let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
 
       it "trains a single all-positive pattern correctly" $
         forAll patternGenAll1
-          (\pat -> (list2D . weights) (buildHopfieldData Hebbian [pat]) == allWeightsSame (V.length pat))
+          (\pat -> (list2D . weights) (buildHopfieldData Storkey [pat]) == allWeightsSame (V.length pat))
 
       it "tests that the patterns stored in the hopfield datastructure are the same as the ones which were given as input" $
-        forAll patListGen' (\pats -> (patterns $ buildHopfieldData Hebbian pats) == pats)
+        forAll patListGen' (\pats -> (patterns $ buildHopfieldData Storkey pats) == pats)
 
       it "tests that patterns we trained on are fixed points" $
         forAll (nonempty patListGen')
@@ -64,7 +64,7 @@ testHopfield = do
 
     describe "matchPattern tests" $ do
       let check pats p = evalRand (matchPattern
-                                     (buildHopfieldData Hebbian $ V.fromList <$> pats)
+                                     (buildHopfieldData Storkey $ V.fromList <$> pats)
                                      (V.fromList p))
                                   (mkStdGen 1)
           y `givesIndex` x = y `shouldBe` (Right x)

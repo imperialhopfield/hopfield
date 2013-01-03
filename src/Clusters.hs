@@ -42,8 +42,8 @@ getCluster method originPat size p
 -- Round sampled numbers to integers
 -- Use the integers to generate patters of the form 1 1 1... 1 -1 -1 -1
 -- which will have their Hamming distance normally distributed
-getGaussianCluster :: MonadRandom  m => Method -> Pattern -> Double -> Double -> Int -> m [Pattern]
-getGaussianCluster method originPat mean stdDev size
+getGaussianCluster :: MonadRandom  m => Method -> Pattern -> Int -> Double -> Double -> m [Pattern]
+getGaussianCluster method originPat size mean stdDev
   | mean > fromIntegral patSize = error "the mean cannot be greater than the size of the pattern in getGaussianCluster"
   | otherwise = do
       normal_values   <- replicateM size (normal mean stdDev)
@@ -55,13 +55,13 @@ getGaussianCluster method originPat mean stdDev size
                                 Hopfield -> -1
                                 _        -> 0
 
--- | @getBasinsGivenProbabilityT1 learning networkSize clusterSize p@
+-- | @basinsGivenProbabilityT1 learning networkSize clusterSize p@
 -- Gets the average basin of attraction of a cluster of size @clusterSize@
 -- constructed using the T1 method given the flip probability @p@.
 -- A hopfield network is trained (the type of training (Hebbian or Storkey) is
 -- given by @learning@).
-getBasinsGivenProbabilityT1 :: MonadRandom m => LearningType -> Int -> Int -> Double -> m Double
-getBasinsGivenProbabilityT1 learning networkSize clusterSize p
+basinsGivenProbabilityT1 :: MonadRandom m => LearningType -> Int -> Int -> Double -> m Double
+basinsGivenProbabilityT1 learning networkSize clusterSize p
   =  do
      originPat <- randomSignVector networkSize
      cluster   <- getCluster Hopfield originPat clusterSize p
@@ -74,35 +74,76 @@ getBasinsGivenProbabilityT1 learning networkSize clusterSize p
 experimentUsingT1 :: MonadRandom m => LearningType -> Int -> Int -> m Double
 experimentUsingT1 learning networkSize clusterSize
   = do
-    basinAvgs <- mapM (getBasinsGivenProbabilityT1 learning networkSize clusterSize) [0.0, 0.01 .. 0.5]
+    basinAvgs <- mapM (basinsGivenProbabilityT1 learning networkSize clusterSize) [0.0, 0.01 .. 0.5]
     return $ average basinAvgs
 
 -------
 
-getBasinsGivenProbabilityT1With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
-getBasinsGivenProbabilityT1With2Clusters learning networkSize clustersTotalSize p2 p1  =  do
+basinsGivenProbabilityT1With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
+basinsGivenProbabilityT1With2Clusters learning networkSize clusterSize p2 p1  =  do
      originPat1 <- randomSignVector networkSize
      originPat2 <- randomSignVector networkSize
-     cluster1   <- getCluster Hopfield originPat1 (clustersTotalSize `div` 2) p1
-     cluster2   <- getCluster Hopfield originPat2 (clustersTotalSize `div` 2) p2
+     cluster1   <- getCluster Hopfield originPat1 clusterSize p1
+     cluster2   <- getCluster Hopfield originPat2 clusterSize p2
      avgBasinsGivenPats learning (cluster1 ++ cluster2)
 
 
 experimentUsingT1With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> m Double
 experimentUsingT1With2Clusters learning networkSize clusterSize
   = do
-    basinAvgs <- mapM (getBasinsGivenProbabilityT1With2Clusters learning networkSize clusterSize 0.45) [0.0, 0.01 .. 0.5]
+    basinAvgs <- mapM (basinsGivenProbabilityT1With2Clusters learning networkSize clusterSize 0.45) [0.0, 0.01 .. 0.5]
     return $ average basinAvgs
 
 
 -------   Experiments using Gaussian distributed patterns
 
-getBasinsGivenStdT2 :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
-getBasinsGivenStdT2 learning networkSize clusterSize mean std
+basinsGivenStdT2 :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
+basinsGivenStdT2 learning networkSize clusterSize mean std
   =  do
      originPat <- randomSignVector networkSize
-     cluster   <- getGaussianCluster Hopfield originPat mean std clusterSize
+     cluster   <- getGaussianCluster Hopfield originPat clusterSize mean std
      avgBasinsGivenPats learning cluster
+
+
+experimentUsingT2 :: MonadRandom m => LearningType -> Int -> Int -> m Double
+experimentUsingT2 learning networkSize clusterSize
+  = do
+    let mean = networkSize ./. 2
+        deviations = [0.0, 2.0, networkSize ./. 8]
+    basinAvgs <- mapM (basinsGivenStdT2 learning networkSize clusterSize mean) deviations
+    return $ average basinAvgs
+
+
+basinsGivenProbabilityT2With2Clusters :: MonadRandom m => LearningType -> Int -> Int ->
+                                            Double -> Double -> Double -> Double -> m Double
+basinsGivenProbabilityT2With2Clusters learning networkSize clusterSize mean1 mean2 std1 std2  =  do
+     originPat1 <- randomSignVector networkSize
+     originPat2 <- randomSignVector networkSize
+     cluster1   <- getGaussianCluster Hopfield originPat1 clusterSize mean1 std1
+     cluster2   <- getGaussianCluster Hopfield originPat2 clusterSize mean2 std2
+     avgBasinsGivenPats learning (cluster1 ++ cluster2)
+
+
+experimentUsingT2With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
+experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2 = do
+  let deviation1 =  networkSize ./. 10
+      deviations = [0.0, 2.0 .. 2.0 * deviation1]
+  basinAvgs <- mapM (basinsGivenProbabilityT2With2Clusters learning networkSize clusterSize mean2 mean1 deviation1) deviations
+  return $ average basinAvgs
+
+
+type1T2 :: MonadRandom m => LearningType -> Int -> Int -> m Double
+type1T2 learning networkSize clusterSize
+  = experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2
+    where mean1 = networkSize ./. 4
+          mean2 = (networkSize * 3)./. 4
+
+
+type2T2 :: MonadRandom m => LearningType -> Int -> Int -> m Double
+type2T2 learning networkSize clusterSize
+  = experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2
+  where mean1 = (networkSize * 5) ./. 12
+        mean2 = (networkSize * 7) ./. 12
 
 
 
