@@ -82,7 +82,7 @@ executable recognize
     , random >= 1.0.1.1
     , MonadRandom >= 0.1.8
     , vector >= 0.9.1
-    , optparse-applicative >= 0.5.2.1
+    , optparse-applicative >= 0.5.0.0
   ghc-options:
 
     -Wall -fwarn-unused-imports
