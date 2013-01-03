@@ -1,0 +1,19 @@
+\begin{thebibliography}{1}
+
+\bibitem{lectureslides}
+Abbas Edalat.
+\newblock Hopfield networks.
+\newblock Part of Complex Systems course at Imperial College London, 2012.
+
+\bibitem{storkey1999basins}
+A.J. Storkey and R.~Valabregue.
+\newblock The basins of attraction of a new {Hopfield} learning rule.
+\newblock {\em Neural Networks}, 12(6):869--876, 1999.
+
+\bibitem{net_model_neuroses}
+R. S. Wedemann, R. Donangelo, and L. a. V. de Carvalho, 
+
+\newblock Generalized memory associativity in a network model for the neuroses.,
+\newblock Chaos (Woodbury, N.Y.), vol. 19, p. 015116, Mar. 2009.
+
+\end{thebibliography}
