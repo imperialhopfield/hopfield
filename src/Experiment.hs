@@ -22,9 +22,21 @@ genIO g = do
     return $ unGen g stdGen rndInt
 
 
-attachLabels :: (Show a, Show b) => [a] -> [b] -> [Char]
-attachLabels labels items
-  = concat [ concat [show l, ": ", show i, "\n"] | l <- labels | i <- items ]
+attachLabels :: (Show a, Show b) => [Char] -> [a] -> [b] -> [Char]
+attachLabels header labels items
+  = header ++ concat list
+  where
+    list  = [ concat [show l, "\t", show i, "\n"] | l <- labels | i <- items ]
+
+
+errorHeader :: [Char]
+errorHeader = "Degree\tExpected error\n"
+
+
+basinHeader :: [Char]
+basinHeader = "Degree\tBasin size\n"
+
+
 
 
 main :: IO ()
@@ -50,7 +62,7 @@ main = do
 
     putStrLn $ "Expected network errors: "
     let expErrs = [ computeErrorSuperAttractorNumbers d (length pats) n | d <- degrees ]
-    putStrLn $ attachLabels degrees expErrs
+    putStrLn $ attachLabels errorHeader degrees expErrs
 
 
     -- Original pattern as the sole pattern in the network
@@ -59,10 +71,9 @@ main = do
 
 
     --Check if pattern is fixed.
-    let patErrs = [ n | n <- nets, checkFixed n 0]
+    let patErrs = [ d | d <- degrees | net <- nets , not $ checkFixed net originIndex]
     if not $ null patErrs
         then putStrLn $
-        -- TODO FIX TO RETURN DEGREES NOT NETWORKS
             "WARNING: The following degrees have produced networks where the pattern is NOT a fixed point:\n" ++
               show patErrs ++ "\n"
         else putStrLn "Pattern is always a fixed point\n"
@@ -71,4 +82,4 @@ main = do
     putStrLn "Measuring basins of attraction"
     results <- measureMultiBasins measurePatternBasin nets originPat
 
-    putStrLn $ attachLabels degrees results
+    putStrLn $ attachLabels basinHeader degrees results
