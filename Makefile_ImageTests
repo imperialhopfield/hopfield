@@ -1,0 +1,2 @@
+high1:
+	dist/build/recognize/recognize hopfield 20 20 images/HighContrast/48x48/stock/gtk-disconnect.png images/HighContrast/48x48/stock/*
