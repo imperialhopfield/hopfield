@@ -1,11 +1,7 @@
 -- | Functions to measure various properties of a network
 module Measurement (
-  -- * Network construction
-    Networks
-  , PatternCombiner
-  , buildNetworks
   -- * Basin of attraction
-  , BasinMeasure
+    BasinMeasure
   , hammingDistribution
   , sampleHammingRange
   , sampleHammingDistance
@@ -19,8 +15,8 @@ module Measurement (
 
 import           Control.Monad (liftM, replicateM)
 import           Control.Monad.Random (MonadRandom)
-import           Control.Monad.Trans.Class (lift)
-import           Control.Pipe
+import           Data.List
+import           Data.Maybe
 import qualified Data.Vector as V
 import           Hopfield
 import           Math.Combinatorics.Exact.Binomial (choose)
@@ -28,29 +24,13 @@ import           Numeric.Probability.Distribution (Spread, relative)
 import           Numeric.Probability.Random (T, pick)
 import           Util ((./.), toArray, shuffle, runT)
 
--- -----------------------------------------------------------------------------
--- Network construction
 
--- List of Hopfield networks with an associated label
-type Networks l = [(l, HopfieldData)]
-
-
--- A function combining some fixed input (i) and the given parameter (p)
--- into patterns for a network
-type PatternCombiner input param = input -> param -> [Pattern]
-
-
--- For each param in 'params', builds a network combining the parameter and the
--- list of patterns (or some variant) 'as' using the given function 'combine'
-buildNetworks :: i -> [p] -> PatternCombiner i p -> Networks p
-buildNetworks ins params combine = map (\d -> (d, buildHopfieldData Hebbian $ combine ins d)) params
+-- A function computing some measure of a pattern's basin in the given network
+type BasinMeasure m a = HopfieldData -> Pattern -> m a
 
 
 -- -----------------------------------------------------------------------------
 -- Functions relating to measuring a pattern's basin of attraction
-
--- A function computing some measure of a pattern's basin in the given network
-type BasinMeasure m a = HopfieldData -> Pattern -> Producer a m ()
 
 
 -- Create a probability distribution for Hamming distances in the given range
@@ -99,26 +79,20 @@ samplePatternRing hs pat r = do
 --
 -- Percentage convergence for each ring of 'pat' (excluding the trivial ring 0)
 -- pre: pattern of same size as network
-samplePatternBasin :: (MonadRandom m) => BasinMeasure m Double
-samplePatternBasin hs pat = mapM_ toPipe sampleRings
+samplePatternBasin :: (MonadRandom m) => BasinMeasure m [Double]
+samplePatternBasin hs pat = mapM (samplePatternRing hs pat)  [1..n]
   where
-    n           = V.length pat
-    sampleRings = map (samplePatternRing hs pat) $ [1..n]
-    toPipe mDbl = do
-      dbl <- lift mDbl
-      yield dbl
+    n = V.length pat
 
 
 -- Measures pattern's basin of attraction using the Storkey-Valabregue method
 -- pre: pattern of same size as network
 measurePatternBasin :: (MonadRandom m) => BasinMeasure m Int
-measurePatternBasin hs pat = count 0 <+< samplePatternBasin hs pat
-  where
-    count n = do
-      value <- await
-      if value < 0.9
-        then yield n
-        else count $ succ n
+measurePatternBasin hs pat = do
+  t_mus <- samplePatternBasin hs pat
+  return $ fromMaybe n $ findIndex (<0.9) t_mus
+    where
+      n   = V.length pat
 
 
 -- -----------------------------------------------------------------------------
