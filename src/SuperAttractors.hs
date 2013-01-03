@@ -7,13 +7,19 @@ module SuperAttractors where
 import           Measurement
 import           Control.Monad
 import           Control.Monad.Random (MonadRandom)
-import           Control.Pipe
 import qualified Data.Vector as V
 import           Hopfield
 
 
 -- Degree of a pattern is the number of instances it has in a network
 type Degree = Int
+
+-- List of Hopfield networks with associated super attractor degree
+type Networks = [(Degree, HopfieldData)]
+
+
+-- A function combining some input and given degree into patterns for a network
+type PatternCombiner a = a -> Degree -> [Pattern]
 
 
 -- List containing each element in xs replicated by the corresponding ns value
@@ -29,22 +35,29 @@ powersOfTwo ceil = takeWhile (<=ceil) xs
   where
     xs = 1 : map (*2) xs
 
+
+-- For each degree in 'ds', builds a network combining the degree and the list
+-- of patterns (or some variant) 'as' using the given function 'combine'
+buildNetworks :: a -> [Degree] -> PatternCombiner a -> Networks
+buildNetworks ps ds combine = map (\d -> (d, buildHopfieldData Hebbian $ combine ps d)) ds
+
+
 -- -----------------------------------------------------------------------------
 -- Combine functions. 'buildNetworks' uses these to build super attractors
 
 -- Replicates the first pattern k times.
-oneSuperAttr :: PatternCombiner [Pattern] Degree
+oneSuperAttr :: PatternCombiner [Pattern]
 oneSuperAttr ps k = mapReplicate (k:cycle [1]) ps
 
 
 -- Replicates each pattern k times.
-allSuperAttr :: PatternCombiner [Pattern] Degree
+allSuperAttr :: PatternCombiner [Pattern]
 allSuperAttr ps k = mapReplicate (cycle [k]) ps
 
 
 -- Aggregate list of combiner functions of input [Pattern] into a single
 -- combiner function of input [[Pattern]]
-aggregateCombiners :: [PatternCombiner [Pattern] Degree] -> PatternCombiner [[Pattern]] Degree
+aggregateCombiners :: [PatternCombiner [Pattern]] -> PatternCombiner [[Pattern]]
 aggregateCombiners combiners patList degree
   | length combiners /= length patList
       = error "Number of [Pattern] in list must match number of functions"
@@ -68,7 +81,7 @@ q1 = V.fromList [1,-1,-1,-1,1,-1,-1,1,1,1]
 
 
 -- Networks with first pattern as a super attractor
-oneSuperNets :: Networks Degree
+oneSuperNets :: Networks
 oneSuperNets = buildNetworks ps degrees oneSuperAttr
   where
     ps      = [p1,p2]
@@ -76,7 +89,7 @@ oneSuperNets = buildNetworks ps degrees oneSuperAttr
 
 
 -- Networks with all patterns as (equal) super attractors
-allSuperNets :: Networks Degree
+allSuperNets :: Networks
 allSuperNets = buildNetworks ps degrees allSuperAttr
   where
     ps      = [p1,p2]
@@ -85,19 +98,19 @@ allSuperNets = buildNetworks ps degrees allSuperAttr
 
 
 -- Convenience function for building networks with multiple training phases
-buildMultiPhaseNetwork :: [PatternCombiner [Pattern] Degree] -> Networks Degree
-buildMultiPhaseNetwork combFuncs = buildNetworks patList params aggComb
+buildMultiPhaseNetwork :: [PatternCombiner [Pattern]] -> Networks
+buildMultiPhaseNetwork combFuncs = buildNetworks patList degrees aggComb
   where
     patList = [ [p1,p2], [q1] ]
-    params  = powersOfTwo $ (V.length . head . head) patList
+    degrees = powersOfTwo $ (V.length . head . head) patList
     aggComb = aggregateCombiners combFuncs
 
 
-retrainNormalWithOneSuper   :: Networks Degree
-retrainOneSuperWithNormal   :: Networks Degree
-retrainOneSuperWithOneSuper :: Networks Degree
-retrainAllSuperWithNormal   :: Networks Degree
-retrainAllSuperWithOneSuper :: Networks Degree
+retrainNormalWithOneSuper   :: Networks
+retrainOneSuperWithNormal   :: Networks
+retrainOneSuperWithOneSuper :: Networks
+retrainAllSuperWithNormal   :: Networks
+retrainAllSuperWithOneSuper :: Networks
 
 -- A normal network (i.e. no super attractor) retrained with one super attractor
 retrainNormalWithOneSuper = buildMultiPhaseNetwork [const, oneSuperAttr]
@@ -118,21 +131,14 @@ retrainAllSuperWithOneSuper = buildMultiPhaseNetwork [allSuperAttr, oneSuperAttr
 
 
 
--- Measure basin of multiple networks, with various params
--- Returns list of tuples: (param, basinMeasure)
+-- Measure basin of multiple networks, with various degrees
+-- Returns list of tuples: (degree, basinMeasure)
 --
--- Note: param is not actually used in computation, but rather serves
+-- Note: degree is not actually used in computation, but rather serves
 -- as a label for each network
-measureMultiBasins :: MonadRandom m => BasinMeasure m i -> Networks p -> Pattern -> Producer (p, i) m ()
-measureMultiBasins measureBasin nets pat = label params <+< inPipes
+measureMultiBasins :: MonadRandom m => BasinMeasure m a -> Networks -> Pattern -> m [(Degree, a)]
+measureMultiBasins measureBasin nets p = liftM2 zip (return ks) basinMeasures
   where
-    (params, hs)  = unzip nets
-    basin h       = measureBasin h pat
-    basinMeasures = map basin hs
-    inPipes       = foldl1 (>>) $ basinMeasures
-
-    label []     = forever await
-    label (d:ds) = do
-      value <- await
-      yield (d, value)
-      label ds
+    (ks, hs)      = unzip nets
+    basin h       = measureBasin h p
+    basinMeasures = sequence $ map basin hs
