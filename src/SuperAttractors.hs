@@ -37,7 +37,8 @@ buildNetworks ps ds combine
 
 -- Replicates the first pattern k times.
 oneSuperAttr :: PatternCombiner [Pattern]
-oneSuperAttr ps k = replicate k x ++ xs
+oneSuperAttr [] _      = []
+oneSuperAttr (p: ps) k = replicate k p ++ ps
 
 
 -- Replicates each pattern k times.
