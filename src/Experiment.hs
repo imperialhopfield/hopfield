@@ -4,14 +4,15 @@ module Main where
 
 import Analysis
 import Control.Monad (replicateM)
-import Data.List
+import Control.Monad.Random
 import Hopfield
 import Measurement
 import Test.QuickCheck
 import Test.QuickCheck.Gen (unGen)
 import SuperAttractors
-import System.Random
 import Utils (Type(H), patternGen)
+
+import Clusters
 
 
 
@@ -83,3 +84,6 @@ main = do
     results <- measureMultiBasins measurePatternBasin nets originPat
 
     putStrLn $ attachLabels basinHeader degrees results
+
+    putStrLn "T1 experiment with 1 cluster"
+    putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Hebbian 20 100 10) (mkStdGen 1)
