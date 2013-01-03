@@ -7,7 +7,6 @@ module SuperAttractors where
 import           Measurement
 import           Control.Monad
 import           Control.Monad.Random (MonadRandom)
-import           Control.Pipe
 import qualified Data.Vector as V
 import           Hopfield
 
@@ -137,16 +136,9 @@ retrainAllSuperWithOneSuper = buildMultiPhaseNetwork [allSuperAttr, oneSuperAttr
 --
 -- Note: degree is not actually used in computation, but rather serves
 -- as a label for each network
-measureMultiBasins :: MonadRandom m => BasinMeasure m a -> Networks -> Pattern -> Producer (Degree, a) m ()
-measureMultiBasins measureBasin nets p = label ks <+< inPipes
+measureMultiBasins :: MonadRandom m => BasinMeasure m a -> Networks -> Pattern -> m [(Degree, a)]
+measureMultiBasins measureBasin nets p = liftM2 zip (return ks) basinMeasures
   where
     (ks, hs)      = unzip nets
     basin h       = measureBasin h p
-    basinMeasures = map basin hs
-    inPipes         = foldl1 (>>) $ basinMeasures
-
-    label []     = forever await
-    label (d:ds) = do
-      value <- await
-      yield (d, value)
-      label ds
+    basinMeasures = sequence $ map basin hs

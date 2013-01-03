@@ -1,8 +1,6 @@
 module Main where
 
-import Control.Monad (replicateM, replicateM_, forever)
-import Control.Monad.Trans.Class (lift)
-import Control.Pipe
+import Control.Monad (replicateM)
 import Hopfield
 import Measurement
 import Test.QuickCheck
@@ -18,20 +16,6 @@ genIO g = do
 	rndInt <- randomIO
 	stdGen <- getStdGen
 	return $ unGen g stdGen rndInt
-
-
-take' :: Int -> Pipe a a IO ()
-take' n = do
-    replicateM_ n $ do
-        x <- await
-        yield x
-    lift $ putStrLn "You shall not pass!"
-
-
-printer :: (Show a) => Consumer a IO b
-printer = forever $ do
-    x <- await
-    lift $ print x
 
 
 main :: IO ()
@@ -69,11 +53,11 @@ main = do
 	print ex
 
 	putStrLn "Sampling basin"
-	let measures = samplePatternBasin n1 originPat
-	runPipe $ printer <+< take' 5 <+< measures
+	measures <- samplePatternBasin n1 originPat
+	print measures
 
 	putStrLn "Measuring basins of attraction"
-	let pipeline = measureMultiBasins measurePatternBasin nets originPat
+	result <- measureMultiBasins measurePatternBasin nets originPat
 
 	-- Output: (Degree of super attractor, basin of attraction size)
-	runPipe $ printer <+< pipeline
+	print result

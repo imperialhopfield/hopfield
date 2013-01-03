@@ -3,7 +3,7 @@
 module Clusters where
 
 
--- Module which deals with pattern cluster generation and realted functions.
+-- Module which deals with pattern cluster generation and related functions.
 -- Implements probabilistic rewiring using Hamming distance.
 
 import qualified Data.Vector as V
@@ -37,8 +37,8 @@ getCluster method originPat size p
 
 -- Caller has to take care with setting the mean and stdDev such that
 -- the sampled numbers tend to be in the interval [0 .. size -1]
--- Implements the T2 method descirbed by Federico
--- Sample a Gaussia distribution with given mean and std dev
+-- Implements the T2 method described by Federico
+-- Sample a Gaussian distribution with given mean and std dev
 -- Round sampled numbers to integers
 -- Use the integers to generate patters of the form 1 1 1... 1 -1 -1 -1
 -- which will have their Hamming distance normally distributed
