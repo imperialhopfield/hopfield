@@ -274,6 +274,41 @@
   <\equation*>
     s<around*|(|x|)>= log<around*|(|1+e<rsup|x>|)>\ 
   </equation*>
+
+  \;
+
+  The implementation of the Classification Boltzmann Machine can be found in
+  ClassficationBoltzmannMachine.hs in our project.\ 
+
+  \;
+
+  <with|font-series|bold|New method>
+
+  Another method we have employed using Boltzmann Machines was created by us.
+  We have never seen this approach used somewhere else. Instead of creating 2
+  types of visible units, we use the simple Restricted Boltzmann Machine,
+  with one type of visible units (and hence one single matrix). For each
+  training vector we append the classification at the end. The classification
+  is represented as a binary vector, either as above, by using
+  <math|e<rsub|c>>, where c is the classification of the current pattern, or
+  even in a more compressed manner, by creating the binary vector using the
+  representation in base 2 of class c.\ 
+
+  \;
+
+  Figure.
+
+  \;
+
+  The training is done in the usual way, but with the complete vectors
+  (actual pattern and classification). In our case, as different patterns
+  ought to have different classifcations, we use as class the index of the
+  pattern in the list (with removed duplicates) of training patterns.
+
+  When a pattern needs to be matched to one of the training patterns for
+  recognition, one uses the log probability (given using ...) to compute the
+  probability of each of the classifications, and choses the one with maximum
+  probability. The matching process is described in figure.
 </body>
 
 <\initial>
