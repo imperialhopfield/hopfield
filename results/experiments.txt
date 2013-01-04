@@ -35,16 +35,18 @@ basinsGivenStdT2 Storkey 50 5 25 5
 4.8
 
 basinsGivenStdT2 Hebbian 50 5 25 5
+4.4
+
 
 
 "T1 experiment with 1 cluster"
   putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Hebbian 1 50 8) (mkStdGen 1)
 2.5686274509803924
 
+"T1 experiment with 1 cluster"
+  putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Storkey 1 50 8) (mkStdGen 1)
 
-putStrLn "T1 experiment with 1 cluster"
 7.522058823529412
-
 
 
 
