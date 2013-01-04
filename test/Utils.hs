@@ -138,11 +138,11 @@ crosstalk hs index n = computeH (weights hs) pat n - pat V.! n
 
 -- | Used as a property to check that patterns which
 -- are used to create the network are stable in respect to update
-trainingPatsAreFixedPoints:: [Pattern] -> Gen Bool
-trainingPatsAreFixedPoints pats =
+trainingPatsAreFixedPoints :: LearningType -> [Pattern] -> Gen Bool
+trainingPatsAreFixedPoints method pats =
   and <$> mapM checkFixedPoint [0.. length pats - 1]
   where
-    hs = buildHopfieldData Storkey pats
+    hs = buildHopfieldData method pats
     ws = weights hs
     checkFixedPoint index = do
       i <- arbitrary
@@ -152,27 +152,29 @@ trainingPatsAreFixedPoints pats =
 -- | Trains a network using @training_pats@ and then updates each
 -- pattern in pats according to the weights of that network.
 -- The aim is to check that the energy decreases after each update.
-energyDecreasesAfterUpdate :: ([Pattern], [Pattern]) -> Gen Bool
-energyDecreasesAfterUpdate (training_pats, pats)
-  = and <$> mapM energyDecreases pats
+energyDecreasesAfterUpdate :: LearningType -> ([Pattern], [Pattern]) -> Gen Bool
+energyDecreasesAfterUpdate method (training_pats, pats)
+  = and <$> (forM pats $ \pat -> do
+              i <- arbitrary
+              return $ evalRand (energyDecreases pat) (mkStdGen i)
+            )
     where
-      ws = weights $ buildHopfieldData Storkey training_pats
+      ws = weights $ buildHopfieldData method training_pats
       check pat afterPat = energy ws pat >= energy ws afterPat || energy ws afterPat - energy ws pat <= 0.00000001
-      energyDecreases' pat = do
+      energyDecreases :: (MonadRandom m) => Pattern -> m Bool
+      energyDecreases pat = do
         maybe_pat  <- update ws pat
         case maybe_pat of
           Nothing -> return True
           Just updatedPattern -> return $ check pat updatedPattern
-      energyDecreases pat = do
-        i <- arbitrary
-        return $ evalRand (energyDecreases' pat) (mkStdGen i)
 
 
-repeatedUpdateCheck :: ([Pattern], [Pattern]) -> Gen Bool
-repeatedUpdateCheck (training_pats, pats)
+-- TODO mihaela unused?
+repeatedUpdateCheck :: LearningType -> ([Pattern], [Pattern]) -> Gen Bool
+repeatedUpdateCheck method (training_pats, pats)
   = and <$> mapM  s pats
     where
-      ws = weights $ buildHopfieldData Storkey training_pats
+      ws = weights $ buildHopfieldData method training_pats
       stopped pat = do
         p     <- converged_pattern
         maybe_new_p <- update ws p
