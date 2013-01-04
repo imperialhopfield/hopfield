@@ -28,7 +28,6 @@ import           Data.Vector.Generic.Mutable (write)
 import           Common
 import           Util
 
-import Debug.Trace
 
 data LearningType = Hebbian | Storkey deriving (Eq, Show)
 
