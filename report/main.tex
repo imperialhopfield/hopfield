@@ -137,18 +137,37 @@ One practical application of the attractor neural networks, such as the Bolzman 
 \section{Hopfield Networks}
 The Hopfield Networks are a form of recurrent artificial neural netowrks invented by John Hopfield in 1982 \cite{hopfield_wiki}. It aims to store and retrieve information like the human brain. It basically consists of a complete graph of N neurons, each having a value of +1 or -1 associated to it. Since the graph is complete, each pair of neurons (i,j) is connected by an edge, having an associtated weight. 
 
+\subsection{Updating the Hopfield Network}
+
 The network is able to update the values associated to neurons by adhering to certain simple rules. Updating can be performed in two different manners:
 \begin{itemize}
  \item Synchronous: All nodes are updated at a time. This requires a central clock to the system in order to maintain synchronization. This method is less realistic, since biological or physical systems lack a global clock that keeps track of time. 
  \item Asynchronous: Only one node is updated at a time. A random node can be chosen as the next one to get updated, or otherwise a sequence of nodes can be imposed a-priori.
 \end{itemize}
 
+Assume N neurons = 1.. N, with values \(x_{i} = \pm1\). The updating of an individual node i is performed by first calculating the effect h of the neighbouring nodes, and then applying the sign function. \\
+
+\begin{math}
+ x_{i} = sgn(\sum_{j=1}^{N}W_{ij}x_{j} + b_{i})
+\end{math}\\
+
+where \( b_{i} \) is a bias that we will consider to be equal to 0 for the purpose of this project.
+
+\subsection{Training using the Hebbian Rule}
+
+The Hebbian theory has been introduced by Donald Hebb in 1949, in order to explain "associative learning", in which simultaneous activation of neuron cells leads to pronounced increases in synaptic strenght between those cells \cite{hebb_wiki}. It is ofter summarized as "Cells that fire together, wire together". 
+
+For the Hopfield Networks, this is implemented in the following manner, when learning p patterns:
+
+\( w_{ij}=frac{1}{N}\sum{\nu=1}{p}\epsilon \)
+
+\subsection{Training using the Pseudo-Inverse Rule}
+
+\subsection{Training using the Storkey Rule}
 
 \subsection{Correlated Patterns}
 
 \subsection{Super-Attractors}
-
-\section{Hopfield Networks}
 
 
 \chapter{Design and Implementation}
