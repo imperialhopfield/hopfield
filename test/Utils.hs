@@ -154,18 +154,19 @@ trainingPatsAreFixedPoints method pats =
 -- The aim is to check that the energy decreases after each update.
 energyDecreasesAfterUpdate :: LearningType -> ([Pattern], [Pattern]) -> Gen Bool
 energyDecreasesAfterUpdate method (training_pats, pats)
-  = and <$> mapM energyDecreases pats
+  = and <$> (forM pats $ \pat -> do
+              i <- arbitrary
+              return $ evalRand (energyDecreases pat) (mkStdGen i)
+            )
     where
       ws = weights $ buildHopfieldData method training_pats
       check pat afterPat = energy ws pat >= energy ws afterPat || energy ws afterPat - energy ws pat <= 0.00000001
-      energyDecreases' pat = do
+      energyDecreases :: (MonadRandom m) => Pattern -> m Bool
+      energyDecreases pat = do
         maybe_pat  <- update ws pat
         case maybe_pat of
           Nothing -> return True
           Just updatedPattern -> return $ check pat updatedPattern
-      energyDecreases pat = do
-        i <- arbitrary
-        return $ evalRand (energyDecreases' pat) (mkStdGen i)
 
 
 -- TODO mihaela unused?
