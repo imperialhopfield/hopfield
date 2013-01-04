@@ -11,11 +11,11 @@ import Util
 main :: IO ()
 main = do
 
-  putStrLn "basinsGivenStdT2 Hebbian 50 6 25 10"
+  putStrLn "basinsGivenStdT2 Hebbian 50 6 25 5"
   avg1 <- liftM average $ replicateM 10 (basinsGivenStdT2 Hebbian 50 6 25 5)
   print avg1
 
-  putStrLn "basinsGivenStdT2 Storkey 50 6 25 10"
+  putStrLn "basinsGivenStdT2 Storkey 50 6 25 5"
   avg2 <- liftM average $ replicateM 10 (basinsGivenStdT2 Storkey 50 6 25 5)
   print avg2
 
