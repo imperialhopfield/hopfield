@@ -253,7 +253,7 @@ trainBolzmann pats nr_h = do
 matchPatternCBoltzmann :: BoltzmannData -> Pattern -> Int
 matchPatternCBoltzmann bm v
   | Just e <- validPattern Visible (weightsB bm) v = error e
-  | otherwise =  trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
+  | otherwise = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
     where
       pats_classes = pattern_to_class bm
       pats = patternsB bm
