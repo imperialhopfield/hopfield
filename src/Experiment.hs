@@ -86,4 +86,4 @@ main = do
     putStrLn $ attachLabels basinHeader degrees results
 
     putStrLn "T1 experiment with 1 cluster"
-    putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Hebbian 20 100 10) (mkStdGen 1)
+    putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Hebbian 1 50 8) (mkStdGen 1)

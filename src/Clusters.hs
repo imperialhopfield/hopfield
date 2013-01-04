@@ -108,8 +108,8 @@ basinsGivenStdT2 learning networkSize clusterSize mean std
 experimentUsingT2 :: MonadRandom m => LearningType -> Int -> Int -> m Double
 experimentUsingT2 learning networkSize clusterSize
   = do
-    let mean = networkSize ./. 2
-        deviations = [0.0, 2.0, networkSize ./. 8]
+    let mean = networkSize ./. (2 :: Int)
+        deviations = [0.0, 2.0, networkSize ./. (8 :: Int)]
     basinAvgs <- mapM (basinsGivenStdT2 learning networkSize clusterSize mean) deviations
     return $ average basinAvgs
 
@@ -126,7 +126,7 @@ basinsGivenProbabilityT2With2Clusters learning networkSize clusterSize mean1 mea
 
 experimentUsingT2With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
 experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2 = do
-  let deviation1 =  networkSize ./. 10
+  let deviation1 =  networkSize ./. (10 :: Int)
       deviations = [0.0, 2.0 .. 2.0 * deviation1]
   basinAvgs <- mapM (basinsGivenProbabilityT2With2Clusters learning networkSize clusterSize mean2 mean1 deviation1) deviations
   return $ average basinAvgs
@@ -135,15 +135,15 @@ experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2 = do
 type1T2 :: MonadRandom m => LearningType -> Int -> Int -> m Double
 type1T2 learning networkSize clusterSize
   = experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2
-    where mean1 = networkSize ./. 4
-          mean2 = (networkSize * 3)./. 4
+    where mean1 = networkSize ./. (4 :: Int)
+          mean2 = (networkSize * 3)./. (4 :: Int)
 
 
 type2T2 :: MonadRandom m => LearningType -> Int -> Int -> m Double
 type2T2 learning networkSize clusterSize
   = experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2
-  where mean1 = (networkSize * 5) ./. 12
-        mean2 = (networkSize * 7) ./. 12
+  where mean1 = (networkSize * 5) ./. (12 :: Int)
+        mean2 = (networkSize * 7) ./. (12 :: Int)
 
 
 
