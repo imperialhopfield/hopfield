@@ -74,8 +74,16 @@ basinsGivenProbabilityT1 learning networkSize clusterSize p
 experimentUsingT1 :: MonadRandom m => LearningType -> Int -> Int -> m Double
 experimentUsingT1 learning networkSize clusterSize
   = do
-    basinAvgs <- mapM (basinsGivenProbabilityT1 learning networkSize clusterSize) [0.0, 0.01 .. 0.5]
+    basinAvgs <- mapM (basinsGivenProbabilityT1 learning networkSize clusterSize) [0.0, 0.1 .. 0.5]
     return $ average basinAvgs
+
+experimentUsingT1NoAvg :: MonadRandom m => LearningType -> Int -> Int -> m [(Double, Double)]
+experimentUsingT1NoAvg learning networkSize clusterSize
+  = do
+  results <- mapM (basinsGivenProbabilityT1 learning networkSize clusterSize) probabilities
+  return $ zip probabilities results
+  where probabilities = [0.0, 0.1 .. 0.5]
+
 
 -------
 
