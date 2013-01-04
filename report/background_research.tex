@@ -1,0 +1,57 @@
+\chapter{Background Research}
+This chapter details the background research we have done in order to understand the Hopfield Neural Networks, realise their importance in various applications and to inverstigate the feasability of our project. 
+
+\section{Attachment Theory}
+
+One of the most interesting applications of the Hopfield Networks and Bolzman Machines is related to modelling the Attachment Theory. This is a psychological study that describes the dynamics of long-term relationships between humans\cite{website:attachment_theory_wiki}. It focuses primarily on the type of attachment that an infant develops with the primary caregiver. There exist 2 main types of attachment: secure and insecure. Insecure patterns are furhter divided into insecure-avoidant, insecure-disorganized and insecure-resistant. The type of attachment developed by infants depends on the quality of care they have received\cite{website:attachment_theory_wiki}.
+
+\subsection{Strange Situation Procedure}
+
+The classification of infants into the corresponding attachment type is formulated in the Strange Situation Procedure. The child is observed playing for 20 minutes while caregivers and strangers enter and leave the room, recreating the environment of the familiar and unfamiliar presence in most of the children's lives.\cite{website:attachment_patterns_wiki}
+
+\section{Practical applications of Attractor Neural Networks}
+
+Neural Networks have been successfully used in medical computing, in order to diagnose Parkinson's disease\cite{nets_parkinsons}. Other applications include facial recognition, which we have implemented for the purpose of this project, combinatirial problems such as the Traveling Salesman\cite{hopfield_laferriere}. 
+One practical application of the attractor neural networks, such as the Bolzman machine, is the performance improvement of speech recognition software\cite{speech_nets}.
+
+\section{Hopfield Networks}
+The Hopfield Networks are a form of recurrent artificial neural netowrks invented by John Hopfield in 1982 \cite{hopfield_wiki}. It aims to store and retrieve information like the human brain. It basically consists of a complete graph of N neurons, each having a value of +1 or -1 associated to it. Since the graph is complete, each pair of neurons (i,j) is connected by an edge, having an associtated weight \( w_{ij}\). 
+
+\subsection{Updating the Hopfield Network}
+
+The network is able to update the values associated to neurons by adhering to certain simple rules. Updating can be performed in two different manners:
+\begin{itemize}
+ \item Synchronous: All nodes are updated at a time. This requires a central clock to the system in order to maintain synchronization. This method is less realistic, since biological or physical systems lack a global clock that keeps track of time. 
+ \item Asynchronous: Only one node is updated at a time. A random node can be chosen as the next one to get updated, or otherwise a sequence of nodes can be imposed a-priori.
+\end{itemize}
+
+Assume N neurons = 1.. N, with values \(x_{i} = \pm1\). The updating of an individual node i is performed by first calculating a weighted sum of the neighbouring nodes, and then applying the sign function. \\
+
+\begin{math}
+ x_{i} = sgn(\sum_{j=1}^{N}w_{ij}x_{j} + b_{i})
+\end{math}\\
+
+where \( b_{i} \) is a bias that we will consider to be equal to 0 for the purpose of this project.
+
+Suppose the weight \( w_{ij}\) between neurons i and j is positive. Then, if the value of \( x_{j} \) is positive, then the term \( w_{ij}x_{j} \) will also be positive, and will drag the linear sum value to a positive value. This would mean that the neuron \( x_{i} \) would also be dragged towards a positive value. 
+
+\subsection{Training using the Hebbian Rule}
+
+The Hebbian theory has been introduced by Donald Hebb in 1949, in order to explain "associative learning", in which simultaneous activation of neuron cells leads to pronounced increases in synaptic strenght between those cells \cite{hebb_wiki}. It is ofter summarized as "Neurons that fire together, wire together". 
+
+For the Hopfield Networks, this is implemented in the following manner, when learning p patterns:
+
+\( w_{ij}=\frac{1}{N}\sum_{\mu=1}^{p}\epsilon_{i}^\mu \epsilon_{j}^\mu \)
+
+For pattern \(\mu\), if the bits corresponding to neurons i and j are equal, then the product  \( \epsilon_{i}^\mu \epsilon_{j}^\mu \) will be positive. This would, in turn, have a positive effect on the weight \(w_{ij} \) and the values of i and j will tend to become equal. The opposite happends if the bits corresponding to neurons i and j are different.
+
+\subsection{Training using the Pseudo-Inverse Rule}
+
+
+
+\subsection{Training using the Storkey Rule}
+
+\subsection{Correlated Patterns}
+
+\subsection{Super-Attractors}
+
