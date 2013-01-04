@@ -25,7 +25,6 @@ import           Control.Monad.Random (MonadRandom)
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
-import qualified Data.Vector.Generic.Mutable as VM
 import           Common
 import           Util
 
@@ -151,7 +150,7 @@ update_ ws pat = case updatables of
           return $ Just $ flipAtIndex pat index
   where
      updatables = getUpdatables_ ws pat
-     flipAtIndex vec index = let val = vec ! index
+     flipAtIndex vec index = let val = vec ! index -- seq only brings small saving here
                               in val `seq` V.modify (\v -> write v index (-val)) vec
 
 
