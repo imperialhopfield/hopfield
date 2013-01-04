@@ -1,0 +1,18 @@
+Some basic results
+
+basinsGivenProbabilityT1 Storkey 36 2 0.1
+10.5
+
+basinsGivenProbabilityT1 Storkey 36 2 0.2
+11
+
+basinsGivenProbabilityT1 Storkey 36 2 0.3
+11
+
+basinsGivenProbabilityT1 Storkey 36 2 0.4
+12
+
+
+"T1 experiment with 1 cluster"
+  putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Hebbian 1 50 8) (mkStdGen 1)
+2.5686274509803924
