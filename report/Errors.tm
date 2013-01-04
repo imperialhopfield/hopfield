@@ -386,7 +386,18 @@
   <big-table|<tabular*|<tformat|<cwith|1|-1|1|-1|cell-lborder|1px>|<cwith|1|-1|1|-1|cell-rborder|1px>|<cwith|1|-1|1|-1|cell-bborder|1px>|<cwith|1|-1|1|-1|cell-tborder|1px>|<cwith|1|-1|3|3|cell-background|<pattern|/usr/share/texmacs/TeXmacs/misc/patterns/ridged-brushed-dark.png||>>|<cwith|5|5|3|3|cell-background|<pattern|/usr/share/texmacs/TeXmacs/misc/patterns/ridged-brushed-medium.png||>>|<cwith|1|4|3|3|cell-background|<pattern|/usr/share/texmacs/TeXmacs/misc/patterns/ridged-brushed-medium.png||>>|<table|<row|<cell|<with|font-series|bold|N>>|<cell|<with|font-series|bold|error>>|<cell|<with|font-series|bold|p>>>|<row|<cell|1000>|<cell|0.1>|<cell|608>>|<row|<cell|1000>|<cell|0.01>|<cell|184>>|<row|<cell|1000>|<cell|0.05>|<cell|359>>|<row|<cell|1000>|<cell|0.001>|<cell|104>>>>><with|font-series|bold|>|Getting
   the capacity of a network by fixing the error and the size of a network.>
 
-  \;
+  The above results can be reproduced by using the Analysis module. For
+  example, by using <code*|ghci>:
+
+  <kbd|<code*|>*Analysis \<gtr\> computeErrorSuperAttractor 10 100>
+
+  The first argument of the function is <math|p> (the number of training
+  patterns), and the second one is <math|N> (the size of the network). A
+  similar function can be used for a given network
+  <code*|computeErrorSuperAttractor>, that given a network computes the
+  probability of error of the superattractor. The caller of the function has
+  to ensure that the training patterns contain a super attractor and that the
+  other patterns are independent.
 
   <with|font-series|bold|Deascresing the error by using one super attractor>
 
@@ -408,6 +419,20 @@
   Note that in the second table we are intentionally stressing the network so
   that we can notice how super attractors also affect the capacity of the
   network.
+
+  The above results can be reproduced by using the Analysis module. For
+  example, by using <code*|ghci>:
+
+  <kbd|<code*|>*Analysis \<gtr\> computeErrorSuperAttractorNumbers 40 50 100>
+
+  The first argument of the function is the degree of the attractor, the
+  second one is <math|p> and the third one is <math|N>. A similar function
+  can be used for a given network <code*|computeErrorSuperAttractor>, that
+  given a network computes the probability of error of the superattractor.
+  The caller of the function has to ensure that the training patterns contain
+  a super attractor and that the other patterns are independent.
+
+  \;
 </body>
 
 <\initial>
@@ -419,10 +444,10 @@
 
 <\references>
   <\collection>
-    <associate|auto-1|<tuple|1|?>>
-    <associate|auto-2|<tuple|2|?>>
-    <associate|auto-3|<tuple|3|?>>
-    <associate|auto-4|<tuple|4|?>>
+    <associate|auto-1|<tuple|1|4>>
+    <associate|auto-2|<tuple|2|4>>
+    <associate|auto-3|<tuple|3|5>>
+    <associate|auto-4|<tuple|4|5>>
     <associate|footnote-1|<tuple|1|?>>
     <associate|footnote-2|<tuple|2|?>>
     <associate|footnr-1|<tuple|1|?>>
