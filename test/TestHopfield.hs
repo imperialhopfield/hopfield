@@ -26,25 +26,25 @@ testHopfield = do
     -- Pattern list generator
     let patListGen'     = patListGen H maxPatSize maxPatListSize
 
-    describe "buildHopfieldData Storkey" $ do
+    describe "buildHopfieldData Hebbian" $ do
     -- Patterns must not be empty
       let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
 
       it "trains a single all-positive pattern correctly" $
         forAll patternGenAll1
-          (\pat -> (list2D . weights) (buildHopfieldData Storkey [pat]) == allWeightsSame (V.length pat))
+          (\pat -> (list2D . weights) (buildHopfieldData Hebbian [pat]) == allWeightsSame (V.length pat))
 
       it "tests that the patterns stored in the hopfield datastructure are the same as the ones which were given as input" $
-        forAll patListGen' (\pats -> (patterns $ buildHopfieldData Storkey pats) == pats)
+        forAll patListGen' (\pats -> (patterns $ buildHopfieldData Hebbian pats) == pats)
 
       it "tests that patterns we trained on are fixed points" $
         forAll (nonempty patListGen') $
-          trainingPatsAreFixedPoints Storkey
+          trainingPatsAreFixedPoints Hebbian
 
 
     describe "test repeatedUpdate" $ do
       it "test that when repeatedUpdate has finished, no other update can occur" $
-        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate Storkey
+        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate Hebbian
 
     describe "getUpdatables" $ do
       it "getUpdatables test1" $
@@ -64,7 +64,7 @@ testHopfield = do
 
     describe "matchPattern tests" $ do
       let check pats p = evalRand (matchPattern
-                                     (buildHopfieldData Storkey $ V.fromList <$> pats)
+                                     (buildHopfieldData Hebbian $ V.fromList <$> pats)
                                      (V.fromList p))
                                   (mkStdGen 1)
           y `givesIndex` x = y `shouldBe` (Right x)
@@ -106,4 +106,4 @@ testHopfield = do
                                 (V.fromList [1,-1,-1,1,-1]) - 0.8) < _EPSILON
 
       it "energy decreases after doing one step" $
-        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate Storkey
+        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate Hebbian
