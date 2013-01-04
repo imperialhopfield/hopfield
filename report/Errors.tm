@@ -363,27 +363,49 @@
 
   where inverf is the inverse of the erf function.
 
-  minNumberOfNeurons 10 0.1 17
+  <with|font-series|bold|Measurements using the error of a network>
+  <with|font-series|bold|for independent patterns>
 
-  minNumberOfNeurons 100 0.1 165
+  We will now give the reader an idea of how one should accomodate a fixed
+  number of patterns depending on the error accepted by the application, by
+  creating networks of appropriate size.
 
-  minNumberOfNeurons 10 0.01 55
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 
 
-  minNumberOfNeurons 100 0.01 542
+  <\big-table|<tabular*|<tformat|<cwith|1|-1|1|-1|cell-lborder|1px>|<cwith|1|-1|1|-1|cell-rborder|1px>|<cwith|1|-1|1|-1|cell-bborder|1px>|<cwith|1|-1|1|-1|cell-tborder|1px>|<table|<row|<cell|<with|font-series|bold|p>>|<cell|<with|font-series|bold|error>>|<cell|<with|font-series|bold|N>>>|<row|<cell|100>|<cell|0.1>|<cell|165>>|<row|<cell|100>|<cell|0.01>|<cell|542>>|<row|<cell|100>|<cell|0.05>|<cell|271>>|<row|<cell|100>|<cell|0.001>|<cell|955>>>>>>
+    Getting the minimum numbers of neurons required by the network by fixing
+    the error
 
-  \ minNumberOfNeurons 10 0.05 28
+    \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ and the
+    number of patterns used to train the network.
+  </big-table>
 
-  \ minNumberOfNeurons 100 0.05 271
+  The following table describes the capacity of the network in terms of the
+  error accepted, by fixing the size of the network.
 
-  minNumberOfNeurons 100 0.001 955
-
-  \ minNumberOfNeurons 10 0.001 96
+  <big-table|<tabular*|<tformat|<cwith|1|-1|1|-1|cell-lborder|1px>|<cwith|1|-1|1|-1|cell-rborder|1px>|<cwith|1|-1|1|-1|cell-bborder|1px>|<cwith|1|-1|1|-1|cell-tborder|1px>|<table|<row|<cell|<with|font-series|bold|N>>|<cell|<with|font-series|bold|error>>|<cell|<with|font-series|bold|p>>>|<row|<cell|1000>|<cell|0.1>|<cell|608>>|<row|<cell|1000>|<cell|0.01>|<cell|184>>|<row|<cell|1000>|<cell|0.05>|<cell|359>>|<row|<cell|1000>|<cell|0.001>|<cell|104>>>>><with|font-series|bold|>|Getting
+  the capacity of a network by fixing the error and the size of a network.>
 
   \;
 
-  \;
+  <with|font-series|bold|Deascresing the error by using one super attractor>
+
+  Above we descirbed the derivation for obtaining the error of a super
+  attractor, given its degree. We remind the reader that we did this under
+  the assumption that all other traning patterns are independent. We will now
+  show how the error of a pattern decreases if it is made a super attractor,
+  by varying the number of times it is presented to the network during
+  training.
 
   \;
+
+  <small-table|<tabular*|<tformat|<cwith|1|-1|1|-1|cell-lborder|1px>|<cwith|1|-1|1|-1|cell-rborder|1px>|<cwith|1|-1|1|-1|cell-bborder|1px>|<cwith|1|-1|1|-1|cell-tborder|1px>|<table|<row|<cell|<with|font-series|bold|degree>>|<cell|<with|font-series|bold|p>>|<cell|<with|font-series|bold|N>>|<cell|<with|font-series|bold|error>>>|<row|<cell|1>|<cell|20>|<cell|100>|<cell|1.27
+  *<math|10<rsup|-2>>>>|<row|<cell|2>|<cell|20>|<cell|100>|<cell|1.25*<math|10<rsup|-6>>>>|<row|<cell|3>|<cell|20>|<cell|100>|<cell|1.71*<math|10<rsup|-13>>>>|<row|<cell|4>|<cell|20>|<cell|100>|<cell|<math|\<varepsilon\>>>>>>>|>
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <small-table|<tabular*|<tformat|<cwith|1|-1|1|-1|cell-lborder|1px>|<cwith|1|-1|1|-1|cell-rborder|1px>|<cwith|1|-1|1|-1|cell-bborder|1px>|<cwith|1|-1|1|-1|cell-tborder|1px>|<table|<row|<cell|<with|font-series|bold|degree>>|<cell|<with|font-series|bold|p>>|<cell|<with|font-series|bold|N>>|<cell|<with|font-series|bold|error>>>|<row|<cell|1>|<cell|50>|<cell|100>|<cell|<math|7.65
+  \<ast\>10<rsup|<rsup|-2>>>>>|<row|<cell|2>|<cell|50>|<cell|100>|<cell|1.95*<math|10<rsup|-3>>>>|<row|<cell|3>|<cell|50>|<cell|100>|<cell|6.05*10<math|<rsup|-6>>>>|<row|<cell|4>|<cell|50>|<cell|100>|<cell|4.54*<math|10<rsup|-14>>>>|<row|<cell|5>|<cell|50>|<cell|100>|<cell|<math|\<varepsilon\>>>>>>>|>
+
+  where <math|\<varepsilon\> >is so small that is represented as <math|0.0>
+  using floating point arithmetic.
 </body>
 
 <\initial>
@@ -396,5 +418,12 @@
 <\references>
   <\collection>
     <associate|auto-1|<tuple|1|?>>
+    <associate|auto-2|<tuple|2|?>>
+    <associate|auto-3|<tuple|3|?>>
+    <associate|auto-4|<tuple|4|?>>
+    <associate|footnote-1|<tuple|1|?>>
+    <associate|footnote-2|<tuple|2|?>>
+    <associate|footnr-1|<tuple|1|?>>
+    <associate|footnr-2|<tuple|2|?>>
   </collection>
 </references>

@@ -53,29 +53,3 @@ basinsGivenStdT2 Hebbian 50 5 25 5
 -------------------
 
 
-*Analysis> computeErrorIndependentPatsNumbers 18 100
-9.211062727049524e-3
-*Analysis> computeErrorIndependentPatsNumbers 20 100
-1.26736593387341e-2
-*Analysis> computeErrorSuperAttractorNumbers 2 20 100
-1.2142337365017575e-6
-*Analysis> computeErrorSuperAttractorNumbers 3 20 100
-1.7186252421197423e-13
-*Analysis> computeErrorSuperAttractorNumbers 4 20 100
-0.0
-
-----------------
-
-
-*Analysis> computeErrorSuperAttractorNumbers 1 50 100
-7.656372550983476e-2
-*Analysis> computeErrorSuperAttractorNumbers 2 50 100
-1.9462085613893287e-3
-*Analysis> computeErrorSuperAttractorNumbers 3 50 100
-6.045243527208477e-6
-*Analysis> computeErrorSuperAttractorNumbers 4 50 100
-1.8432597115314309e-9
-*Analysis> computeErrorSuperAttractorNumbers 5 50 100
-4.54081217071689e-14
-*Analysis> computeErrorSuperAttractorNumbers 10 50 100
-0.0
