@@ -39,6 +39,20 @@ basinsGivenStdT2 Hebbian 50 5 25 5
 
 
 
+basinsGivenStdT2 Hebbian 50 4 25 5
+8.275
+basinsGivenStdT2 Storkey 50 4 25 5
+6.975
+basinsGivenStdT2 Hebbian 50 6 25 10
+4.45
+basinsGivenStdT2 Storkey 50 6 25 10
+5.616666666666666
+dist/build/smallexp/small
+
+
+
+
+
 "T1 experiment with 1 cluster"
   putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Hebbian 1 50 8) (mkStdGen 1)
 2.5686274509803924

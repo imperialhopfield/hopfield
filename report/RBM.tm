@@ -136,7 +136,8 @@
 
   We note that the above training rule has the desired properties for
   modelling the biological brain: it is both <with|font-shape|italic|local>
-  and <with|font-shape|italic|incremental>.
+  and <with|font-shape|italic|incremental>. Angle brackets \ denote the
+  expected value under the given distribution by the following subscript.
 
   \;
 
@@ -274,16 +275,13 @@
     \ \<noplus\>\<noplus\>W<rsub|j>*v\<noplus\>+U<rsub|j>*y |)>\<nocomma\>
   </equation*>
 
-  \;
-
-  <\equation*>
-    s<around*|(|x|)>= log<around*|(|1+e<rsup|x>|)>\ 
-  </equation*>
+  where <math|s<around*|(|x|)>= log<around*|(|1+e<rsup|x>|)> >
 
   \;
 
   The implementation of the Classification Boltzmann Machine can be found in
-  ClassficationBoltzmannMachine.hs.\ 
+
+  <code*|ClassficationBoltzmannMachine.hs. >
 
   \;
 
@@ -331,6 +329,28 @@
     \ \ \ \ \ \ \ \ <item*|Representation of the process employed for
     recognition>
   </description>
+
+  As given in http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf, the log
+  probability is given by:
+
+  <\equation*>
+    <with|font-shape|italic|log><around*|(|class=c<around*|\||v|\<nobracket\>>|)>=
+    <frac|e<rsup|-F<rsub|c><around*|(|v|)>>|<big|sum><rsub|c<rprime|'>>e<rsup|-F<rsub|c<rsup|><rprime|'>><around*|(|v|)>>>
+  </equation*>
+
+  <\equation*>
+    F<around*|(|v|)>= -<big|sum><rsub|i\<in\>V>v<rsub|i>a<rsub|i>
+    -<big|sum><rsub|j\<in\>H>log<around*|(|1 \<noplus\>+e<rsup|x<rsub|j>>|)>
+  </equation*>
+
+  \;
+
+  where <math|x<rsub|j> =b<rsub|j>+<big|sum><rsub|i>w<rsub|i*j*<rsub|>>*v<rsub|j>>
+
+  \;
+
+  The implementation of this procedure can be found in
+  <code*|RestrictedBoltzmannMachine.hs.>
 </body>
 
 <\initial>
