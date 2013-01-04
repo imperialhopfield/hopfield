@@ -332,7 +332,8 @@
   case of image recognition, this can provide to be useful as it can give a
   guideline towards how to resize the images in order to bring them to the
   same size (patterns which are stored in a Hopfield network need to have
-  equal lengths).
+  equal lengths). It also enables us to compute the capacity of a network of
+  given size, in order to minimze errors.
 
   Given p and N, we decuded the probability of error for the network. Thus,
   conversly, we can compute the maximum ratio of p and N to ensure that the
@@ -344,20 +345,20 @@
   </equation*>
 
   <\eqnarray*>
-    <tformat|<table|<row|<cell|\<Rightarrow\> erf<sqrt|<frac|N|2p>> = 1 -
+    <tformat|<table|<row|<cell|\<Rightarrow\> erf<sqrt|<frac|N|2p>> = 1 -2
     P<rsub|error >>|<cell|\<Rightarrow\>>|<cell|<sqrt|<frac|N|2p>> = inverf
-    <around*|(|1 - P<rsub|error >|)>>>>>
+    <around*|(|1 - 2*P<rsub|error >|)>>>>>
   </eqnarray*>
 
   <\equation*>
     \<Rightarrow\> <frac|N|p> =2*<around*|(| inverf <around*|(|1 -
-    P<rsub|error >|)>|)><rsup|2>
+    2*P<rsub|error >|)>|)><rsup|2>
   </equation*>
 
   <\eqnarray*>
     <tformat|<table|<row|<cell|<frac|p|N>=<frac|1|2*<around*|(| inverf
-    <around*|(|1 - P<rsub|error >|)>|)><rsup|2>>>|<cell|and>|<cell|N =2*p
-    <around*|(| inverf <around*|(|1 - P<rsub|error >|)>|)><rsup|2>>>>>
+    <around*|(|1 - 2*P<rsub|error >|)>|)><rsup|2>>>|<cell|and>|<cell|N =2*p
+    <around*|(| inverf <around*|(|1 - 2*P<rsub|error >|)>|)><rsup|2>>>>>
   </eqnarray*>
 
   where inverf is the inverse of the erf function.

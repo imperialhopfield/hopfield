@@ -211,7 +211,7 @@ getFreeEnergy ws pat
           f x = log (1 + exp x)
           p = V.length pat
 
-
+-- TODO Mihaela. See if we need to do repeated or just simple update
 matchPatternBoltzmann :: MonadRandom m => BoltzmannData -> Pattern -> m Int
 matchPatternBoltzmann (BoltzmannData ws pats _ pats_with_binary) pat = do
   hot_pat <- repeatUntilEqualOrLimitExceeded 1000 (updateBoltzmann ws) ((V.++) pat (V.fromList $ snd $ head pats_with_binary))

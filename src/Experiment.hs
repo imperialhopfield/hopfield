@@ -85,5 +85,10 @@ main = do
 
     putStrLn $ attachLabels basinHeader degrees results
 
-    putStrLn "T1 experiment with 1 cluster"
-    putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Hebbian 20 100 10) (mkStdGen 1)
+    -- putStrLn "T1 experiment with 1 cluster"
+    -- putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Storkey 1 50 8) (mkStdGen 1)
+
+
+    putStrLn "T1 experiment with 1 cluster with no average but lists"
+    print $ evalRand (replicateM 10 $ experimentUsingT1NoAvg Hebbian 100 10) (mkStdGen 1)
+
