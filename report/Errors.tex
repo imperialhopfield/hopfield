@@ -1,0 +1,343 @@
+\documentclass{letter}
+\usepackage{amsmath,amssymb,calc,ifthen,capt-of}
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\mathpi}{\pi}
+\newcommand{\nin}{\not\in}
+\newcommand{\nocomma}{}
+\newcommand{\noplus}{}
+\newcommand{\nosymbol}{}
+\newcommand{\tmem}[1]{{\em #1\/}}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+\newcommand{\tmtextbf}[1]{{\bfseries{#1}}}
+\newcommand{\tmtextit}[1]{{\itshape{#1}}}
+\newcommand{\tmfloatcontents}{}
+\newlength{\tmfloatwidth}
+\newcommand{\tmfloat}[5]{
+  \renewcommand{\tmfloatcontents}{#4}
+  \setlength{\tmfloatwidth}{\widthof{\tmfloatcontents}+1in}
+  \ifthenelse{\equal{#2}{small}}
+    {\ifthenelse{\lengthtest{\tmfloatwidth > \linewidth}}
+      {\setlength{\tmfloatwidth}{\linewidth}}{}}
+    {\setlength{\tmfloatwidth}{\linewidth}}
+  \begin{minipage}[#1]{\tmfloatwidth}
+    \begin{center}
+      \tmfloatcontents
+      \captionof{#3}{#5}
+    \end{center}
+  \end{minipage}}
+%%%%%%%%%% End TeXmacs macros
+
+\begin{document}
+
+\tmtextbf{Errors in Hopfield networks}
+
+When a Hopfield network is trained using a list of patterns, it is desired
+that those patterns are attractors, which requires that they are fixed points.
+In case one of the patterns is not a fixed point, it is said that the network
+has an error.
+
+{\tmem{}}We will now derive the equations for errors in Hopfield networks.
+Firstly, we shall derive the probabilty of error for a pattern which was used
+for training, given that all the patterns were independent. Secondly, we will
+derive the equation of error for a super attractor: a pattern which was used
+to train the network, but which appeared in the training multiple times. The
+assumption for this derivation is that the other training patterns are
+independent. In the context of attachment types, we can assume that the super
+attractor is the primary care giver, which was consistent in his/her
+behaviour, and that the other encounters of the child were independent.
+
+\tmtextbf{Stability of stored states, given independence of all stored
+patterns}
+
+Consider a pattern stored in the network \tmtextit{x$^k$}. We want to find out
+the probability of error for that pattern: how probable is that given that
+\tmtextit{x$^k$} is stored in the network it is not a fixed point?
+
+Given the update formulae for neuron $i$ in pattern \tmtextit{k } $\left( 1
+\left) \right. \right.$ and the formulae for the weights, according to the
+training of the network ($2$):
+\[ h_i^k = \sum^N_{j = 1} w_{\tmop{ij}} x_j^k  \]
+
+\begin{equation}
+  w_{\tmop{ij}} = \frac{1}{N} \sum^p_{l = 1} x^l_{i^{}} x_j^l
+\end{equation}
+we obtain by substitution:
+\[ h_i^k = \sum^N_{j = 1} \left(^{} \frac{1}{N} \sum^p_{l = 1} x^l_{i^{}}
+   x^l_j \right)_{} \cdot x_j^k = \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l = 1}
+   x^l_{i^{}} x^l_j x^k_{^{} j} = \]
+\[ = \frac{1}{N}  \sum^N_{j = 1}^{} x^k_{i^{}} x^k_j x^k_{^{} j} \noplus
+   \noplus + \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l = 1 \nocomma, l \neq k}
+   x^l_{i^{}} x^l_j x^k_{^{} j} \]
+\[ = \frac{1}{N}  \sum^N_{j = 1}^{} x^k_{i^{}} + \frac{1}{N}  \sum^N_{j = 1}
+   \sum^p_{l = 1 \nocomma, l \neq k} x^l_{i^{}} x^l_j x^k_{^{} j} = x^k_{i^{}}
+   + \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l = 1 \nocomma, l \neq k} x^l_{i^{}}
+   x^l_j x^k_{^{} j} \]
+\[  \]
+$\tmop{The} \tmop{new} \tmop{value} \tmop{of}$ neuron i $x^{k'}_i $is given by
+the sign of $h_i^k $, so:
+
+
+
+
+\begin{equation}
+  h^k_i x^k_i \left\{ \begin{array}{l}
+    \geqslant 0 \nocomma \nocomma \nocomma \tmop{if} x^k_i' = x^k_i\\
+    < 0 \tmop{otherwise}
+  \end{array} \right.^{}_{} \Rightarrow -_{} h^k_i x^k_i \left\{
+  \begin{array}{l}
+    \leqslant 0 \nocomma \nocomma \nocomma \tmop{if} x^k_i' = x^k_i\\
+    > 0 \tmop{otherwise}
+  \end{array} \right.
+\end{equation}
+\begin{equation}
+  - h^k_i x^k_{^{} i} = - x^k_{i^{}} x^k_{i^{}} - x^k_{i^{}} \cdot \left(
+  \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l = 1 \nocomma, l \neq k} x^l_{i^{}}
+  x^l_j x^k_{^{} j} \right) = 1 \begin{array}{c}
+    - \underbrace{\frac{1}{N} \sum^N_{j = 1} \sum^p_{l = 1 \nocomma, l \neq k}
+    x^l_{i^{}} x^l_j x^k_{^{} j} x^k_i}_{C^k_i}
+  \end{array}
+\end{equation}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+
+From (3) and (4) we conclude that we get an error if $C_i^k > 1$ , so the
+probability of getting an error is the given by the probability of \ $C_i^k >
+1$.
+
+We model $C_i^k $ as follows. Each $x^l_{i^{}} x^l_j x^k_{^{} j} x^k$ can be
+modeled as a sample drawn from a random variable X with $\tmem{E (X) = 0}$ and
+$\tmop{Var} (X) = E (x^2) - E (x)^2 = 1.$
+
+By using the central limit theorem and by approximating $N \left( p \right.$ -
+$1$) to $Np$ :
+\[ \frac{1}{Np} \sum_{i = 1}^{Np} X_i \sim N \left( 0 \nocomma, \frac{1}{N p}
+   \right) \]
+
+
+Thus,
+\[ \frac{1}{N} \sum_{i = 1}^{Np} X_i \sim N \left( 0 \nocomma, \frac{p}{N}
+   \right) \]
+\[ C^k_i \sim N \left( 0 \nocomma, \frac{p}{N} \right) \]
+By denoting $\frac{p}{N}$ with $\sigma :$
+\[ P \left( C^k_i > 1 \right) \simeq \frac{1}{\sqrt{2 \mathpi} \sigma}
+   \int^{\infty}_1 e^{- \frac{x^2}{2 \sigma^2}} \tmop{dx} = \frac{1}{\sqrt{2
+   \mathpi} \sigma} \int^{\infty}_{\frac{1}{\sqrt{2} \sigma}} e^{- y^2} 
+   \sqrt{2} \sigma \tmop{dy} = \]
+\[ = \frac{1}{\sqrt{\mathpi}} \int^{\infty}_{\frac{1}{\sqrt{2} \sigma}} e^{-
+   y^2} \tmop{dy} = \frac{1}{\sqrt{\mathpi}} \left( \int^{\infty}_0 e^{- y^2}
+   \tmop{dy} - \int^{\frac{1}{\sqrt{2} \sigma}}_0 e^{- y^2} \tmop{dy} \right)
+   = \]
+\[ = \frac{1}{\sqrt{\mathpi}} \int^{\infty}_0 e^{- y^2} \tmop{dy} -
+   \frac{1}{\sqrt{\mathpi}} \int^{\frac{1}{\sqrt{2} \sigma}}_0 e^{- y^2}
+   \tmop{dy} = \frac{1}{\sqrt{\mathpi}} \ast \frac{\sqrt{\pi}}{2} \noplus -
+   \frac{1}{2} \tmop{erf} \left( \frac{1}{\sqrt{2 \sigma}} \right) = \]
+\[ = \frac{1}{2} \left( 1 \noplus \noplus - \tmop{erf} \left( \frac{1}{\sqrt{2
+   \sigma}} \right) \right) = \frac{1}{2} \left( 1 \noplus \noplus -
+   \tmtextit{\tmop{erf}} \left( \sqrt{\frac{N}{2 p}} \right) \right)  \]
+\[ \tmop{where} \tmop{err} x = \frac{1}{\sqrt{2 \pi}} \int^x_0 e^{- x^2
+   }_{^{^{}}} \tmop{dx} \]
+
+\[  \]
+\[  \]
+\tmtextbf{Stability of a super attractor, given indpendence of all other
+stored patterns}
+
+
+
+By following the above way of reasoning, we compute the probability of error
+for a super attractor.
+
+Given that the super attractor has degree d (it appears d times in the list of
+patterns used to train the network), we compute the probability that it is not
+a fixed point.
+
+Let $x^k_{}$ be the supper attractor with degree d.
+
+Let S = $\left\{ i \left|  \right. \right. x^i_{} = x^k$ , i {\tmem{$\in
+\left\{ 1 \ldots p \right\} $}}\}, be the set of indexes of occurences of the
+supper attractor $x^k_{}$.
+
+$\tmop{We} \tmop{assumed} \tmop{that} \tmop{the} \tmop{super} \tmop{attractor}
+\tmop{has} \tmop{degree} d \nocomma \nocomma \nocomma \Rightarrow \left| S
+\left| = d \nosymbol \right. \right.$.
+
+
+\[ h_i^k = \sum^N_{j = 1} \left(^{} \frac{1}{N} \sum^p_{l = 1} x^l_{i^{}}
+   x^l_j \right)_{} \cdot x_j^k = \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l = 1}
+   x^l_{i^{}} x^l_j x^k_{^{} j} = \]
+\begin{eqnarray*}
+  \frac{1}{N}  \sum^N_{j = 1}^{} \sum_{l \in S}^p x^k_{i^{}} x^k_j x^l_{^{}
+  j} \noplus \noplus + \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l \nin S}
+  x^l_{i^{}} x^l_j x^k_{^{} j}  & = &  \frac{1}{N}  \sum^N_{j = 1}^{} \sum_{l
+  \in S}^p x^k_{i^{}} x^k_j x^k_{^{} j} \noplus \noplus + \frac{1}{N} 
+  \sum^N_{j = 1} \sum^p_{l \nin S} x^l_{i^{}} x^l_j x^k_{^{} j} =\\
+  &  & \\
+  \frac{1}{N}  \sum^N_{j = 1}^{} \sum_{l \in S}^p x^k_{i^{}} \noplus + \noplus
+  \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l \nin S} x^l_{i^{}} x^l_j x^k_{^{} j} 
+  & = &  \frac{1}{N}_{}^{} N d x^k_{i^{}} \noplus + \frac{1}{N}  \sum^N_{j =
+  1} \sum^p_{l \nin S} x^l_{i^{}} x^l_j x^k_{^{} j} =
+\end{eqnarray*}
+\[ = d x^k_{i^{}} \noplus + \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l \nin S}
+   x^l_{i^{}} x^l_j x^k_{^{} j} \]
+Thus
+\[ - h^k_i x^k_i = - d x_i^k x_i^k - \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l
+   \nin S} x^l_{i^{}} x^l_j x^k_{^{} j} x^k_{i^{}} = \]
+\[ - d - \underbrace{ \frac{1}{N}  \sum^N_{j = 1} \sum^p_{l \nin S} x^l_{i^{}}
+   x^l_j x^k_{^{} j} x^k_{i^{}} }_{S^k_i} \]
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+
+In order to get an error, $\tmop{minus} h^k_i x^k_i \leqslant 0 \nocomma$ ,
+so $S^k_i$ $\geqslant d \nosymbol$. By using the same reasoning as before,
+\[ \frac{1}{N \left( p - d \right)} \sum_{i = 1}^{N \left( p - d \right)} X_i
+   \sim N \left( 0 \nocomma, \frac{1}{N \left( p - d \right)} \right) \]
+\[ \frac{1}{N} \sum_{i = 1}^{N \left( p - d \right)} X_i \sim N \left( 0
+   \nocomma, \frac{p - d}{N} \right) \]
+\[ S^k_i \sim N \left( 0 \nocomma, \frac{p - d}{N} \right) \]
+By denoting $\frac{p - d}{N}$ with $\sigma :$
+\[ P \left( S^k_i > d \right) \simeq \frac{1}{\sqrt{2 \mathpi} \sigma}
+   \int^{\infty}_d e^{- \frac{x^2}{2 \sigma^2}} \tmop{dx} = \frac{1}{\sqrt{2
+   \mathpi} \sigma} \int^{\infty}_{\frac{d}{\sqrt{2} \sigma}} e^{- y^2} 
+   \sqrt{2} \sigma \tmop{dy} = \]
+\[ = \frac{1}{\sqrt{\mathpi}} \int^{\infty}_{\frac{d}{\sqrt{2} \sigma}} e^{-
+   y^2} \tmop{dy} = \frac{1}{\sqrt{\mathpi}} \left( \int^{\infty}_0 e^{- y^2}
+   \tmop{dy} - \int^{\frac{d}{\sqrt{2} \sigma}}_0 e^{- y^2} \tmop{dy} \right)
+   = \]
+\[ = \frac{1}{\sqrt{\mathpi}} \int^{\infty}_0 e^{- y^2} \tmop{dy} -
+   \frac{1}{\sqrt{\mathpi}} \int^{\frac{d}{\sqrt{2} \sigma}}_0 e^{- y^2}
+   \tmop{dy} = \frac{1}{\sqrt{\mathpi}}  \frac{\sqrt{\pi}}{2} \noplus -
+   \frac{1}{2} \tmop{erf} \left( \frac{d}{\sqrt{2 \sigma}} \right) = \]
+\[ = \frac{1}{2} \left( 1 \noplus \noplus - \tmop{erf} \left( \frac{1}{\sqrt{2
+   \sigma}} \right) \right) = \frac{1}{2} \left( 1 \noplus \noplus -
+   \tmtextit{\tmop{erf}} \left( \sqrt{\frac{N}{2 \left( p - d \right)}}
+   \right) \right)  \]
+-- insert tables with errors here, given various values
+
+\tmtextbf{Computing network parameters given maximum accepted error}
+
+Assuming all training patterns are independent, we can use the above results
+to determine the minimum number of neurons which should be used for the
+network given the number of training patterns we want to store. In the case of
+image recognition, this can provide to be useful as it can give a guideline
+towards how to resize the images in order to bring them to the same size
+(patterns which are stored in a Hopfield network need to have equal lengths).
+It also enables us to compute the capacity of a network of given size, in
+order to minimze errors.
+
+Given p and N, we decuded the probability of error for the network. Thus,
+conversly, we can compute the maximum ratio of p and N to ensure that the
+probability of error does not exceed a maximum accepted error probability.
+\[ P_{\tmop{error}} = \frac{1}{2}  \left( 1 \noplus \noplus -
+   \tmtextit{\tmop{erf}} \left( \sqrt{\frac{N}{2 p}} \right) \right)  \]
+\begin{eqnarray*}
+  \Rightarrow \tmop{erf} \sqrt{\frac{N}{2 p}} = 1 - 2 P_{\tmop{error}} &
+  \Rightarrow & \sqrt{\frac{N}{2 p}} = \tmop{inverf} \left( 1 - 2
+  P_{\tmop{error}} \right)
+\end{eqnarray*}
+\[ \Rightarrow \frac{N}{p} = 2 \left( \tmop{inverf} \left( 1 - 2
+   P_{\tmop{error}} \right) \right)^2 \]
+\begin{eqnarray*}
+  \frac{p}{N} = \frac{1}{2 \left( \tmop{inverf} \left( 1 - 2 P_{\tmop{error}}
+  \right) \right)^2} & \tmop{and} & N = 2 p \left( \tmop{inverf} \left( 1 - 2
+  P_{\tmop{error}} \right) \right)^2
+\end{eqnarray*}
+where inverf is the inverse of the erf function.
+
+\tmtextbf{Measurements using the error of a network} \tmtextbf{for independent
+patterns}
+
+We will now give the reader an idea of how one should accomodate a fixed
+number of patterns depending on the error accepted by the application, by
+creating networks of appropriate size.
+
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+
+\begin{table}[h]
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \tmtextbf{p} & \tmtextbf{error} & \tmtextbf{N}\\
+    \hline
+    100 & 0.1 & 165\\
+    \hline
+    100 & 0.01 & 542\\
+    \hline
+    100 & 0.05 & 271\\
+    \hline
+    100 & 0.001 & 955\\
+    \hline
+  \end{tabular}
+  \caption{Getting the minimum numbers of neurons required by the network by
+  fixing the error
+  
+  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ and the number of
+  patterns used to train the network.}
+\end{table}
+
+The following table describes the capacity of the network in terms of the
+error accepted, by fixing the size of the network.
+
+\begin{table}[h]
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \tmtextbf{N} & \tmtextbf{error} & \tmtextbf{p}\\
+    \hline
+    1000 & 0.1 & 608\\
+    \hline
+    1000 & 0.01 & 184\\
+    \hline
+    1000 & 0.05 & 359\\
+    \hline
+    1000 & 0.001 & 104\\
+    \hline
+  \end{tabular}\tmtextbf{}
+  \caption{Getting the capacity of a network by fixing the error and the size
+  of a network.}
+\end{table}
+
+
+
+\tmtextbf{Deascresing the error by using one super attractor}
+
+Above we descirbed the derivation for obtaining the error of a super
+attractor, given its degree. We remind the reader that we did this under the
+assumption that all other traning patterns are independent. We will now show
+how the error of a pattern decreases if it is made a super attractor, by
+varying the number of times it is presented to the network during training.
+
+
+
+\tmfloat{h}{small}{table}{\begin{tabular}{|c|c|c|c|}
+  \hline
+  \tmtextbf{degree} & \tmtextbf{p} & \tmtextbf{N} & \tmtextbf{error}\\
+  \hline
+  1 & 20 & 100 & 1.27 *$10^{- 2}$\\
+  \hline
+  2 & 20 & 100 & 1.25*$10^{- 6}$\\
+  \hline
+  3 & 20 & 100 & 1.71*$10^{- 13}$\\
+  \hline
+  4 & 20 & 100 & $\varepsilon$\\
+  \hline
+\end{tabular}}{} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\tmfloat{h}{small}{table}{\begin{tabular}{|c|c|c|c|}
+  \hline
+  \tmtextbf{degree} & \tmtextbf{p} & \tmtextbf{N} & \tmtextbf{error}\\
+  \hline
+  1 & 50 & 100 & $7.65 \ast 10^{^{- 2}}$\\
+  \hline
+  2 & 50 & 100 & 1.95*$10^{- 3}$\\
+  \hline
+  3 & 50 & 100 & 6.05*10$^{- 6}$\\
+  \hline
+  4 & 50 & 100 & 4.54*$10^{- 14}$\\
+  \hline
+  5 & 50 & 100 & $\varepsilon$\\
+  \hline
+\end{tabular}}{}
+
+where $\varepsilon$is so small that is represented as $0.0$ using floating
+point arithmetic.
+
+\end{document}
