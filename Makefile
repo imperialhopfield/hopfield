@@ -12,4 +12,4 @@ test:
 	dist/build/tests/tests
 
 continuous_integration: init
-	cabal test
+	time cabal test
