@@ -3,12 +3,14 @@
 
 module Util (
     average
-  , combine
   , (*.)
-  , (./.)
+  , (.*)
   , (./)
+  , (./.)
   , (/.)
+  , attachLabels
   , columnVector
+  , combine
   , combineVectors
   , compareBy
   , dotProduct
@@ -17,21 +19,24 @@ module Util (
   , getBinaryIndices
   , getElemOccurrences
   , gibbsSampling
+  , hammingDistance
   , list2D
   , log2
   , normal
   , numDiffs
+  , prettyList
   , randomBinaryVector
-  , randomSignVector
   , randomElem
+  , randomSignVector
   , repeatUntilEqual
-  , repeatUntilNothing
   , repeatUntilEqualOrLimitExceeded
+  , repeatUntilNothing
   , runT
   , shuffle
   , toArray
   , toBinary
   , toDouble
+  , toPercents
   , vector2D
 ) where
 
@@ -62,6 +67,9 @@ x /. y = x / fromIntegral y
 
 (*.) :: (Integral a1, Num a) => a -> a1 -> a
 x *. y = x * fromIntegral y
+
+(.*) :: (Fractional a, Integral a1) => a1 -> a -> a
+x .* y = fromIntegral x * y
 
 
 toDouble :: (Integral a, Num b) => V.Vector a -> V.Vector b
@@ -247,3 +255,26 @@ randomSignVector size = do
 
 average :: (Real a, Fractional b) => [a] -> b
 average xs = realToFrac (sum xs) / genericLength xs
+
+
+hammingDistance :: V.Vector Int -> V.Vector Int -> Int
+hammingDistance p1 p2 = length $ filter (== -1) $ zipWith (*) l1 l2
+  where [l1, l2] = map V.toList [p1, p2]
+
+
+-- Convert lists of double to a pretty string of (rounded) percentages
+-- e.g. toPercents [0.123, 0.999] = "12% 99%"
+toPercents :: [Double] -> String
+toPercents ns = unwords [ show (round $ n * 100.0 :: Int) ++ "%" | n <- ns]
+
+
+-- Tabulates the two given lists as columns
+attachLabels :: (Show a, Show b) => String -> [a] -> [b] -> String
+attachLabels header lbls items
+  = header ++ concat list
+  where list  = [ concat [show l, "\t", show i, "\n"] | l <- lbls | i <- items ]
+
+
+-- Format list for output
+prettyList :: Show a => [a] -> String
+prettyList xs = unwords $ map show xs
