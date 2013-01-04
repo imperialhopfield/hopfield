@@ -3,3 +3,6 @@
 report/*.log
 report/*.aux
 report/*.pdf
+report/*.tex*
+report/*.toc
+report/*.blg
