@@ -395,9 +395,9 @@
   patterns), and the second one is <math|N> (the size of the network). A
   similar function can be used for a given network
   <code*|computeErrorSuperAttractor>, that given a network computes the
-  probability of error of the superattractor. The caller of the function has
-  to ensure that the training patterns contain a super attractor and that the
-  other patterns are independent.
+  probability of error of the superattractor. The caller has to ensure that
+  training patterns are independent in order for the computation to be
+  correct.
 
   <with|font-series|bold|Deascresing the error by using one super attractor>
 
@@ -430,7 +430,7 @@
   can be used for a given network <code*|computeErrorSuperAttractor>, that
   given a network computes the probability of error of the superattractor.
   The caller of the function has to ensure that the training patterns contain
-  a super attractor and that the other patterns are independent.
+  a super attractor and that the other patterns are independent.\ 
 
   \;
 </body>
