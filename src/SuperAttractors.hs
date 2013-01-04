@@ -20,9 +20,7 @@ type PatternCombiner a = a -> Degree -> [Pattern]
 
 -- Produces all powers of two <= ceil
 powersOfTwo :: Degree -> [Degree]
-powersOfTwo ceil = takeWhile (<=ceil) xs
-  where
-    xs = 1 : map (*2) xs
+powersOfTwo ceil = takeWhile (<= ceil) $ iterate (*2) 1
 
 
 -- For each degree in 'ds', builds a network combining the degree and the list

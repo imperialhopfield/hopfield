@@ -5,7 +5,7 @@ all: init
 init:
 # Required packages: libgsl0-dev, liblapack-dev
 	cabal install --enable-tests --only-dependencies
-	cabal configure --enable-tests
+	cabal configure --enable-tests $(CABAL_CONFIGURE_FLAGS)
 	cabal build
 
 test:
