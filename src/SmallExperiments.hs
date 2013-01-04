@@ -17,14 +17,16 @@ import Clusters
 main :: IO ()
 main = do
 
+  g <- getStdGenx
+
   putStrLn "basinsGivenStdT2 Hebbian 50 4 25 5"
-  print $ evalRand (basinsGivenStdT2 Hebbian 50 4 25 5) (mkStdGen 1)
+  print $ evalRand (basinsGivenStdT2 Hebbian 50 4 25 5) g
 
   putStrLn "basinsGivenStdT2 Storkey 50 4 25 5"
-  print $ evalRand (basinsGivenStdT2 Storkey 50 4 25 5) (mkStdGen 1)
+  print $ evalRand (basinsGivenStdT2 Storkey 50 4 25 5) g
 
   putStrLn "basinsGivenStdT2 Hebbian 50 4 25 10"
-  print $ evalRand (basinsGivenStdT2 Hebbian 50 4 25 10) (mkStdGen 1)
+  print $ evalRand (basinsGivenStdT2 Hebbian 50 4 25 10) g
 
   putStrLn "basinsGivenStdT2 Storkey 50 4 25 10"
-  print $ evalRand (basinsGivenStdT2 Storkey 50 4 25 10) (mkStdGen 1)
+  print $ evalRand (basinsGivenStdT2 Storkey 50 4 25 10) g
