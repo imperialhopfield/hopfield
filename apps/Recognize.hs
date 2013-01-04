@@ -75,8 +75,8 @@ recognizeOptions = subparser
 
 recognizeArgParser :: ParserInfo RecognizeArgs
 recognizeArgParser = info (helper <*> recognizeOptions)
-  ( fullDesc <> progDesc "Print a greeting for TARGET"
-             <> header "hello - a test for optparse-applicative" )
+  ( fullDesc <> header "Performs Hopfield/Boltzmann recognition"
+             <> progDesc "To see help on individual commands, run --help on them, e.g. recognize run --help." )
 
 
 main :: IO ()

@@ -1,50 +1,68 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables, NamedFieldPuns #-}
 
 module TestHopfield where
 
+import           Control.Applicative
+import           Control.Monad
+import           Control.Monad.Random
 import qualified Data.Vector as V
 import           Test.Hspec
-import           Test.QuickCheck
 import           Test.HUnit
+import           Test.QuickCheck
 import           Utils
 import           Hopfield
 import           Util
-import           Control.Monad.Random
-import           Control.Applicative
 
 
 toV = (V.fromList <$>)
 _EPSILON = 0.001
 
 
+data Config = Config {
+  method :: LearningType
+, maxPatSize :: Int
+}
+
+configs = [ Config Hebbian 100
+          , Config Storkey 30
+          ]
+
+forAllMethods testFun = forM_ configs $ \conf@Config {method, maxPatSize} ->
+                          describe (show method ++ " " ++ show maxPatSize) $ do
+                            testFun conf
+
+
 testHopfield :: Spec
 testHopfield = do
   describe "base model" $ do
     let maxPatListSize = 20
-    let maxPatSize     = 100
+    -- let maxPatSize     = 100
 
-    -- Pattern list generator
-    let patListGen'     = patListGen H maxPatSize maxPatListSize
+    describe "buildHopfieldData " $ forAllMethods $ \(Config method maxPatSize) -> do
 
-    describe "buildHopfieldData Storkey" $ do
-    -- Patterns must not be empty
+      -- Pattern list generator
+      let patListGen'     = patListGen H maxPatSize maxPatListSize
+
+      -- Patterns must not be empty
       let patternGenAll1 = toV . nonempty $ boundedReplicateGen maxPatSize (return 1)
 
       it "trains a single all-positive pattern correctly" $
         forAll patternGenAll1
-          (\pat -> (list2D . weights) (buildHopfieldData Storkey [pat]) == allWeightsSame (V.length pat))
+          (\pat -> (list2D . weights) (buildHopfieldData method [pat]) == allWeightsSame (V.length pat))
 
       it "tests that the patterns stored in the hopfield datastructure are the same as the ones which were given as input" $
-        forAll patListGen' (\pats -> (patterns $ buildHopfieldData Storkey pats) == pats)
+        forAll patListGen' (\pats -> (patterns $ buildHopfieldData method pats) == pats)
 
       it "tests that patterns we trained on are fixed points" $
-        forAll (nonempty patListGen')
-          trainingPatsAreFixedPoints
+        forAll (nonempty patListGen') $
+          trainingPatsAreFixedPoints method
 
 
-    describe "test repeatedUpdate" $ do
+    describe "test repeatedUpdate" $ forAllMethods $ \(Config method maxPatSize) -> do
+
       it "test that when repeatedUpdate has finished, no other update can occur" $
-        forAll (patternsTupleGen H maxPatSize maxPatListSize) energyDecreasesAfterUpdate
+        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate method
+
 
     describe "getUpdatables" $ do
       it "getUpdatables test1" $
@@ -64,7 +82,7 @@ testHopfield = do
 
     describe "matchPattern tests" $ do
       let check pats p = evalRand (matchPattern
-                                     (buildHopfieldData Storkey $ V.fromList <$> pats)
+                                     (buildHopfieldData Hebbian $ V.fromList <$> pats)
                                      (V.fromList p))
                                   (mkStdGen 1)
           y `givesIndex` x = y `shouldBe` (Right x)
@@ -105,5 +123,7 @@ testHopfield = do
                                ])
                                 (V.fromList [1,-1,-1,1,-1]) - 0.8) < _EPSILON
 
-      it "energy decreases after doing one step" $
-        forAll (patternsTupleGen H maxPatSize maxPatListSize) energyDecreasesAfterUpdate
+      forAllMethods $ \(Config method maxPatSize) -> do
+
+        it "energy decreases after doing one step" $
+          forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate method
