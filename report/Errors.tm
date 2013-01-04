@@ -321,7 +321,7 @@
     d|)>>>|)>|)>\ 
   </equation*>
 
-  -- insert tables with errors here, given various values
+  \;
 
   <with|font-series|bold|Computing network parameters given maximum accepted
   error>
@@ -399,13 +399,15 @@
 
   \;
 
-  <small-table|<tabular*|<tformat|<cwith|1|-1|1|-1|cell-lborder|1px>|<cwith|1|-1|1|-1|cell-rborder|1px>|<cwith|1|-1|1|-1|cell-bborder|1px>|<cwith|1|-1|1|-1|cell-tborder|1px>|<cwith|1|-1|4|4|cell-background|<pattern|/usr/share/texmacs/TeXmacs/misc/patterns/ridged-brushed-medium.png||>>|<table|<row|<cell|<with|font-series|bold|degree>>|<cell|<with|font-series|bold|p>>|<cell|<with|font-series|bold|N>>|<cell|<with|font-series|bold|error>>>|<row|<cell|1>|<cell|20>|<cell|100>|<cell|1.27
-  *<math|10<rsup|-2>>>>|<row|<cell|2>|<cell|20>|<cell|100>|<cell|1.25*<math|10<rsup|-6>>>>|<row|<cell|3>|<cell|20>|<cell|100>|<cell|1.71*<math|10<rsup|-13>>>>|<row|<cell|4>|<cell|20>|<cell|100>|<cell|<math|\<varepsilon\>>>>>>>|>
+  <small-table|<tabular*|<tformat|<cwith|1|-1|1|-1|cell-lborder|1px>|<cwith|1|-1|1|-1|cell-rborder|1px>|<cwith|1|-1|1|-1|cell-bborder|1px>|<cwith|1|-1|1|-1|cell-tborder|1px>|<cwith|1|-1|4|4|cell-background|<pattern|/usr/share/texmacs/TeXmacs/misc/patterns/ridged-brushed-medium.png||>>|<table|<row|<cell|<with|font-series|bold|degree>>|<cell|<with|font-series|bold|p>>|<cell|<with|font-series|bold|N>>|<cell|<with|font-series|bold|error>>>|<row|<cell|1>|<cell|20>|<cell|100>|<cell|1.08
+  *<math|10<rsup|-2>>>>|<row|<cell|2>|<cell|20>|<cell|100>|<cell|7.64*<math|10<rsup|-3>>>>|<row|<cell|5>|<cell|20>|<cell|100>|<cell|4.91*<math|10<rsup|-3>>>>|<row|<cell|8>|<cell|20>|<cell|100>|<cell|<math|1.95\<ast\>10<rsup|-3>>>>|<row|<cell|11>|<cell|20>|<cell|100>|<cell|<math|4.29
+  *\<ast\>10<rsup|-4>>>>|<row|<cell|15>|<cell|20>|<cell|100>|<cell|<math|3.87\<ast\>10<rsup|-6>>>>>>>|>
   \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <small-table|<tabular*|<tformat|<cwith|1|-1|1|-1|cell-lborder|1px>|<cwith|1|-1|1|-1|cell-rborder|1px>|<cwith|1|-1|1|-1|cell-bborder|1px>|<cwith|1|-1|1|-1|cell-tborder|1px>|<cwith|1|-1|4|4|cell-background|<pattern|/usr/share/texmacs/TeXmacs/misc/patterns/ridged-brushed-medium.png||>>|<table|<row|<cell|<with|font-series|bold|degree>>|<cell|<with|font-series|bold|p>>|<cell|<with|font-series|bold|N>>|<cell|<with|font-series|bold|error>>>|<row|<cell|1>|<cell|50>|<cell|100>|<cell|<math|7.65
-  \<ast\>10<rsup|<rsup|-2>>>>>|<row|<cell|2>|<cell|50>|<cell|100>|<cell|1.95*<math|10<rsup|-3>>>>|<row|<cell|3>|<cell|50>|<cell|100>|<cell|6.05*10<math|<rsup|-6>>>>|<row|<cell|4>|<cell|50>|<cell|100>|<cell|4.54*<math|10<rsup|-14>>>>|<row|<cell|5>|<cell|50>|<cell|100>|<cell|<math|\<varepsilon\>>>>>>>|>
+  \<ast\>10<rsup|<rsup|-2>>>>>|<row|<cell|5>|<cell|50>|<cell|100>|<cell|6.80*<math|10<rsup|-2>>>>|<row|<cell|10>|<cell|50>|<cell|100>|<cell|5.69*10<math|<rsup|-2>>>>|<row|<cell|20>|<cell|50>|<cell|100>|<cell|3.39*<math|10<rsup|-2>>>>|<row|<cell|30>|<cell|50>|<cell|100>|<cell|<math|1.26\<ast\>10<rsup|-2>>>>|<row|<cell|40>|<cell|50>|<cell|100>|<cell|<math|7.82\<ast\>10<rsup|-4>>>>>>>|>
 
-  where <math|\<varepsilon\> >is so small that is represented as <math|0.0>
-  using floating point arithmetic.
+  Note that in the second table we are intentionally stressing the network so
+  that we can notice how super attractors also affect the capacity of the
+  network.
 </body>
 
 <\initial>
