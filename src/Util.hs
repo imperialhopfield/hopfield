@@ -8,6 +8,7 @@ module Util (
   , (./)
   , (./.)
   , (/.)
+  , attachLabel
   , attachLabels
   , columnVector
   , combine
@@ -25,6 +26,7 @@ module Util (
   , normal
   , numDiffs
   , prettyList
+  , printMList
   , randomBinaryVector
   , randomElem
   , randomSignVector
@@ -268,13 +270,31 @@ toPercents :: [Double] -> String
 toPercents ns = unwords [ show (round $ n * 100.0 :: Int) ++ "%" | n <- ns]
 
 
+-- Prints given elements separated by a tab
+attachLabel :: (Show a, Show b) => a -> b -> String
+attachLabel a b = concat [show a, "\t", show b]
+
+
 -- Tabulates the two given lists as columns
 attachLabels :: (Show a, Show b) => String -> [a] -> [b] -> String
 attachLabels header lbls items
-  = header ++ concat list
-  where list  = [ concat [show l, "\t", show i, "\n"] | l <- lbls | i <- items ]
+  = header ++ "\n" ++ concat list
+  where list  = [ attachLabel l i ++ "\n" | l <- lbls | i <- items ]
 
 
 -- Format list for output
 prettyList :: Show a => [a] -> String
 prettyList xs = unwords $ map show xs
+
+
+-- Prints a list of IO actions, applying a corresponding function to it
+-- e.g. printMList [IO a1, IO a2] [f1, f2]
+-- Outputs the equivalent of:
+-- show f1 a1 ++ show f2 a2
+printMList :: (Show a) => [IO a] -> [a -> String] -> IO ()
+printMList [] _          = return ()
+printMList _ []          = error "Function list shorter than IO action list"
+printMList (x:xs) (f:fs) = do
+    value <- x
+    putStrLn $ f value
+    printMList xs fs

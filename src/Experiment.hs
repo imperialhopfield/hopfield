@@ -25,11 +25,11 @@ genIO g = do
 
 
 errorHeader :: String
-errorHeader = "Degree\tExpected error\n"
+errorHeader = "Degree\tExpected error"
 
 
 basinHeader :: String
-basinHeader = "Degree\tBasin size\n"
+basinHeader = "Degree\tBasin size"
 
 
 
@@ -62,6 +62,8 @@ main = do
         patCombiner = oneSuperAttr
 
 
+    putStrLn $ unwords [show n, "neurons.", "Attractor plus", show numRandoms, "random patterns.\n"]
+
     putStrLn $ "Expected network errors: "
     let expErrs = [ computeErrorSuperAttractorNumbers d p n | d <- degrees ]
     putStrLn $ attachLabels errorHeader degrees expErrs
@@ -88,9 +90,11 @@ main = do
 
 
     putStrLn "Measuring basins of attraction"
-    results <- measureMultiBasins measurePatternBasin nets originPat
+    let results = measureMultiBasins measurePatternBasin nets originPat
 
-    putStrLn $ attachLabels basinHeader degrees results
+    putStrLn basinHeader
+    printMList results [ \r -> attachLabel d r | d <- degrees ]
+
 
     -- putStrLn "T1 experiment with 1 cluster"
     -- putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Storkey 1 50 8) (mkStdGen 1)

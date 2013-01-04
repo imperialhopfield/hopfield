@@ -121,13 +121,6 @@ retrainAllSuperWithOneSuper = buildMultiPhaseNetwork [allSuperAttr, oneSuperAttr
 
 
 -- Measure basin of multiple networks
-measureMultiBasins :: MonadRandom m => BasinMeasure m a -> [HopfieldData] -> Pattern -> m [a]
-measureMultiBasins measureBasin hs p = mapM (\h -> measureBasin h p) hs
+measureMultiBasins :: MonadRandom m => BasinMeasure m a -> [HopfieldData] -> Pattern -> [m a]
+measureMultiBasins measureBasin hs p = map (\h -> measureBasin h p) hs
 
-
-
-f:: MonadRandom m => PatternCombiner a -> BasinMeasure m b -> a -> [Degree] -> Pattern -> m [b]
-f combine measure input ds p = measureMultiBasins measure hs p
-  where
-    patsList = [ combine input d | d <- ds ]
-    hs       = [ buildHopfieldData Hebbian pats | pats <- patsList]
