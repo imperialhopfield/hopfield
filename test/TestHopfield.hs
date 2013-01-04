@@ -38,13 +38,13 @@ testHopfield = do
         forAll patListGen' (\pats -> (patterns $ buildHopfieldData Storkey pats) == pats)
 
       it "tests that patterns we trained on are fixed points" $
-        forAll (nonempty patListGen')
-          trainingPatsAreFixedPoints
+        forAll (nonempty patListGen') $
+          trainingPatsAreFixedPoints Storkey
 
 
     describe "test repeatedUpdate" $ do
       it "test that when repeatedUpdate has finished, no other update can occur" $
-        forAll (patternsTupleGen H maxPatSize maxPatListSize) energyDecreasesAfterUpdate
+        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate Storkey
 
     describe "getUpdatables" $ do
       it "getUpdatables test1" $
@@ -106,4 +106,4 @@ testHopfield = do
                                 (V.fromList [1,-1,-1,1,-1]) - 0.8) < _EPSILON
 
       it "energy decreases after doing one step" $
-        forAll (patternsTupleGen H maxPatSize maxPatListSize) energyDecreasesAfterUpdate
+        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate Storkey
