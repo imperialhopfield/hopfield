@@ -25,6 +25,7 @@ import           Control.Monad.Random (MonadRandom)
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
+import qualified Data.Vector.Generic.Mutable as VM
 import           Common
 import           Util
 
@@ -150,10 +151,8 @@ update_ ws pat = case updatables of
           return $ Just $ flipAtIndex pat index
   where
      updatables = getUpdatables_ ws pat
-     flipAtIndex v index = V.fromList $ map (valueAtIndex v index) [0 .. V.length v - 1]
-     valueAtIndex v index x = if (x == index) then  - (v ! x) else v ! x
-      -- TODO Niklas fix this
-      -- V.modify (\(v:: V.Vector Int) -> write v index (- ( v ! index ) ))
+     flipAtIndex vec index = let val = vec ! index
+                              in val `seq` V.modify (\v -> write v index (-val)) vec
 
 
 -- | See `repeatedUpdate`.
