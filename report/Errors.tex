@@ -8,9 +8,11 @@
 \newcommand{\noplus}{}
 \newcommand{\nosymbol}{}
 \newcommand{\tmem}[1]{{\em #1\/}}
+\newcommand{\tmkbd}[1]{\texttt{#1}}
 \newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
 \newcommand{\tmtextbf}[1]{{\bfseries{#1}}}
 \newcommand{\tmtextit}[1]{{\itshape{#1}}}
+\newcommand{\tmtexttt}[1]{{\ttfamily{#1}}}
 \newcommand{\tmfloatcontents}{}
 \newlength{\tmfloatwidth}
 \newcommand{\tmfloat}[5]{
@@ -213,7 +215,7 @@ By denoting $\frac{p - d}{N}$ with $\sigma :$
    \sigma}} \right) \right) = \frac{1}{2} \left( 1 \noplus \noplus -
    \tmtextit{\tmop{erf}} \left( \sqrt{\frac{N}{2 \left( p - d \right)}}
    \right) \right)  \]
--- insert tables with errors here, given various values
+
 
 \tmtextbf{Computing network parameters given maximum accepted error}
 
@@ -296,7 +298,17 @@ error accepted, by fixing the size of the network.
   of a network.}
 \end{table}
 
+The above results can be reproduced by using the Analysis module. For example,
+by using \tmtexttt{ghci}:
 
+{\tmkbd{\tmtexttt{}*Analysis > computeErrorSuperAttractor 10 100}}
+
+The first argument of the function is $p$ (the number of training patterns),
+and the second one is $N$ (the size of the network). A similar function can be
+used for a given network \tmtexttt{computeErrorSuperAttractor}, that given a
+network computes the probability of error of the superattractor. The caller
+has to ensure that training patterns are independent in order for the
+computation to be correct.
 
 \tmtextbf{Deascresing the error by using one super attractor}
 
@@ -312,13 +324,17 @@ varying the number of times it is presented to the network during training.
   \hline
   \tmtextbf{degree} & \tmtextbf{p} & \tmtextbf{N} & \tmtextbf{error}\\
   \hline
-  1 & 20 & 100 & 1.27 *$10^{- 2}$\\
+  1 & 20 & 100 & 1.08 *$10^{- 2}$\\
   \hline
-  2 & 20 & 100 & 1.25*$10^{- 6}$\\
+  2 & 20 & 100 & 7.64*$10^{- 3}$\\
   \hline
-  3 & 20 & 100 & 1.71*$10^{- 13}$\\
+  5 & 20 & 100 & 4.91*$10^{- 3}$\\
   \hline
-  4 & 20 & 100 & $\varepsilon$\\
+  8 & 20 & 100 & $1.95 \ast 10^{- 3}$\\
+  \hline
+  11 & 20 & 100 & $4.29 \ast 10^{- 4}$\\
+  \hline
+  15 & 20 & 100 & $3.87 \ast 10^{- 6}$\\
   \hline
 \end{tabular}}{} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
 \tmfloat{h}{small}{table}{\begin{tabular}{|c|c|c|c|}
@@ -327,17 +343,34 @@ varying the number of times it is presented to the network during training.
   \hline
   1 & 50 & 100 & $7.65 \ast 10^{^{- 2}}$\\
   \hline
-  2 & 50 & 100 & 1.95*$10^{- 3}$\\
+  5 & 50 & 100 & 6.80*$10^{- 2}$\\
   \hline
-  3 & 50 & 100 & 6.05*10$^{- 6}$\\
+  10 & 50 & 100 & 5.69*10$^{- 2}$\\
   \hline
-  4 & 50 & 100 & 4.54*$10^{- 14}$\\
+  20 & 50 & 100 & 3.39*$10^{- 2}$\\
   \hline
-  5 & 50 & 100 & $\varepsilon$\\
+  30 & 50 & 100 & $1.26 \ast 10^{- 2}$\\
+  \hline
+  40 & 50 & 100 & $7.82 \ast 10^{- 4}$\\
   \hline
 \end{tabular}}{}
 
-where $\varepsilon$is so small that is represented as $0.0$ using floating
-point arithmetic.
+Note that in the second table we are intentionally stressing the network so
+that we can notice how super attractors also affect the capacity of the
+network.
+
+The above results can be reproduced by using the Analysis module. For example,
+by using \tmtexttt{ghci}:
+
+{\tmkbd{\tmtexttt{}*Analysis > computeErrorSuperAttractorNumbers 40 50 100}}
+
+The first argument of the function is the degree of the attractor, the second
+one is $p$ and the third one is $N$. A similar function can be used for a
+given network \tmtexttt{computeErrorSuperAttractor}, that given a network
+computes the probability of error of the superattractor. The caller of the
+function has to ensure that the training patterns contain a super attractor
+and that the other patterns are independent.
+
+
 
 \end{document}
