@@ -35,19 +35,66 @@ where \( b_{i} \) is a bias that we will consider to be equal to 0 for the purpo
 
 Suppose the weight \( w_{ij}\) between neurons i and j is positive. Then, if the value of \( x_{j} \) is positive, then the term \( w_{ij}x_{j} \) will also be positive, and will drag the linear sum value to a positive value. This would mean that the neuron \( x_{i} \) would also be dragged towards a positive value. 
 
+If updating is repeatedly performed, the network would eventually may converge to an attractor pattern under asynchronous updating, or it might sometimes cycle under synchronous updating. 
+
 \subsection{Training using the Hebbian Rule}
 
 The Hebbian theory has been introduced by Donald Hebb in 1949, in order to explain "associative learning", in which simultaneous activation of neuron cells leads to pronounced increases in synaptic strenght between those cells \cite{hebb_wiki}. It is ofter summarized as "Neurons that fire together, wire together". 
 
-For the Hopfield Networks, this is implemented in the following manner, when learning p patterns:
+For the Hopfield Networks, this is implemented in the following manner, when learning p patterns:\\
 
-\( w_{ij}=\frac{1}{N}\sum_{\mu=1}^{p}\epsilon_{i}^\mu \epsilon_{j}^\mu \)
+\( w_{ij}=\frac{1}{N}\sum_{\mu=1}^{p}\epsilon_{i}^\mu \epsilon_{j}^\mu \)\\
 
 For pattern \(\mu\), if the bits corresponding to neurons i and j are equal, then the product  \( \epsilon_{i}^\mu \epsilon_{j}^\mu \) will be positive. This would, in turn, have a positive effect on the weight \(w_{ij} \) and the values of i and j will tend to become equal. The opposite happends if the bits corresponding to neurons i and j are different.
 
+\subsection{Spurious Patterns}
+
+Patterns that the network uses for training, called retrieval states, become attractors of the system. Repeated updates would eventually lead to convergence to one of the retrieval states. However, sometimes the network will converge to spurious patterns, that are different from the training patterns. 
+
+A a linear combination of an odd number of stored patterns, in this case 3 patterns, would give us a spurious state:\\
+
+\( \epsilon_{i}^{mix} = \pm sgn(\pm \epsilon_{i}^{\mu_{1}} 
+			       \pm \epsilon_{i}^{\mu_{2}}
+			       \pm \epsilon_{i}^{\mu_{3}}) \)\\
+
+However, we shall later on see that the probability of the network converging to these states is small, becase of the tiny basin size. Furthermore, the Bolzman Machine has the capacity of getting out of these spurious states, because of the probabilistic updating of the nodes.			       
+
+\subsection{Energy Landscape}
+
+One of Hopfield's most important contributions was to associate a Lyapunov, or energy function to the neural network. This is calculated as:\\
+
+\( E = -\frac{1}{2} \sum_{i,j=1}^{N}w_{ij}x_{i}x_{j} \)\\
+
+The function decreases as the system gets updated until it reaches a local minimum, corresponding to an attractor. 
+
+\subsection{Stability and Capacity}
+
+Concepts of stability and capacity are important in the analysis of Hopfield Networks. A neuron unit \( \epsilon_{i}^{\mu}\) is said to be stable if the update rule will not change its state. The mathematical condition for this is:
+
+ \(x_{i} = sgn(\sum_{j=1}^{N}w_{ij}x_{j}) \)
+
+Since we are using the Hebbian Rule, we can replace \(w_{ij} with \sum_{\nu}\epsilon_{i}^{\nu}\epsilon_{j}^{\nu}\), resulting in:
+
+\( h_{i}^{\mu} = \frac{1}{N}\sum_{j} \sum_{\nu} \epsilon_{i}^{\nu}
+						 \epsilon_{j}^{\nu}
+						 \epsilon_{j}^{\mu}\)
+ 
 \subsection{Training using the Pseudo-Inverse Rule}
 
+The pseudo-inverse rule makes use of the inverse of a matrix in order to perform the learning process. In contrast to the Hebbian Learning, it offers a higher capacity and performs better with correlated, linearly independent patterns. The weight matrix is computed as:\\
 
+\( w_{ij} = \frac{1}{N} \sum_{\mu\nu}\epsilon_{i}^\mu Q^{-1} \epsilon_{j}^\mu \)\\
+
+In this case, Q is the overlap matrix:
+\(  Q_{\mu\nu} = \frac{1}{N}\sum_{i}\epsilon_{i}^\mu \epsilon_{i}^\nu \)
+
+Now that we have introduced a second learning rule, it is worth mentioning a few desirable properties that neural network learning rules should aim to have:
+\begin{itemize}
+ \item Local: each weight is updated using information available to neurons on either side of the connection. 
+ \item Incremental: new patterns can be learned without using information from the older patterns. When a new pattern is used for training, the new values for the weights only depend on the old values and on the bits of the pattern.
+\end{itemize}
+
+There properties are desirable in order for the rules to become more biologically plausible. It is important to mention that Hebbian Learning is both local and incremental, whereas the Pseudo-inverse learning rule is neither of them, since it depends upon the computation of an inverse matrix that contains information about all the patterns together.
 
 \subsection{Training using the Storkey Rule}
 
