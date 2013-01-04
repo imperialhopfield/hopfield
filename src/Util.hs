@@ -52,6 +52,12 @@ import           System.Random (mkStdGen)
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
 x ./. y = fromIntegral x / fromIntegral y
 
+(./) :: (Fractional a, Integral a1) => a1 -> a2 -> a
+x ./ y = fromIntegral x / y
+
+(/.) :: (Fractional a, Integral a2) => a1 -> a2 -> a
+x /. y = x / fromIntegral y
+
 (*.) :: (Integral a1, Num a) => a -> a1 -> a
 x *. y = x * fromIntegral y
 

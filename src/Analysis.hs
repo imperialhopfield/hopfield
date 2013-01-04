@@ -64,9 +64,9 @@ patternsToNeuronsRatioFromError err = 1.0 / (2.0 * (inverf (1.0 - 2.0 * err)) ^ 
 -- required for the network.
 minNumberOfNeurons :: Int -> Double -> Int
 minNumberOfNeurons p err
-  = 1 + floor (fromIntegral p / (patternsToNeuronsRatioFromError err))
+  = 1 + floor (p ./ (patternsToNeuronsRatioFromError err))
 
 
-minNumberOfPatterns :: Int -> Double -> Int
-minNumberOfPatterns n err
-  = 1 + floor (fromIntegral n * (patternsToNeuronsRatioFromError err))
+maxNumberOfPatterns :: Int -> Double -> Int
+maxNumberOfPatterns n err
+  = floor (patternsToNeuronsRatioFromError err *. n)
