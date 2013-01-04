@@ -39,8 +39,8 @@ worth mentioning that in the most common and simple form, both the visible and
 hidden units take binary values. This is the approach we also adopted for our
 implementation.
 
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
-\resizebox{240px}{240px}{\includegraphics{RBM-1.eps}}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\resizebox{300px}{300px}{\includegraphics{RBM-1.eps}}
 
 
 
@@ -126,8 +126,8 @@ another set of visible units, the classification units.
 
 
 
-\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
-\resizebox{360px}{360px}{\includegraphics{RBM-2.eps}}
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\resizebox{350px}{350px}{\includegraphics{RBM-2.eps}}
 
 The vector hidden units is used to model the joint distribution between a
 vector of inputs v and a target (classification) vector y. The classification
@@ -154,13 +154,22 @@ where \tmtextit{Z} is the normalizing constant. Thus,
    E \left( v \nocomma, y, h \right)}}{Z} \]
 The distribution used for the Classification Boltzmann Machine are the
 following:
-\[ p \left( h_i = 1 \left| v, y \right. \right) = \sigma \left( c_j + \noplus
-   \noplus W_j v \noplus + U_j y \right) \]
-\[ p \left( v_i = 1 \left| h \right. \right) = \sigma \left( b_j + \noplus
-   \noplus h^T W^i  \right) \]
-\[ p \left( y = e_c \left| h \right. \right) = \frac{e^{d^T e_c \noplus + h^T
-   Ue_c}}{N} \]
+\begin{equation}
+  p \left( h_i = 1 \left| v, y \right. \right) = \sigma \left( c_j + \noplus
+  \noplus W_j v \noplus + U_j y \right)
+\end{equation}
+\begin{equation}
+  p \left( v_i = 1 \left| h \right. \right) = \sigma \left( b_j + \noplus
+  \noplus h^T W^i  \right)
+\end{equation}
+\begin{equation}
+  p \left( y = e_c \left| h \right. \right) = \frac{e^{d^T e_c \noplus + h^T
+  Ue_c}}{N}
+\end{equation}
 where N is the normalizing constant $\sum_c$ $e^{d^T e_c \noplus + h^T Ue_c}$.
+
+Note that we denote by $W_i$ the row \tmtextit{i} of matrix \tmtextit{W}, and
+by $W^i_{}$ the column \tmtextit{i} of matrix \tmtextit{W}.
 
 
 
@@ -175,18 +184,70 @@ following update rules:
 
 
 \begin{eqnarray*}
-  b'  & = & b + \lambda \left( v - \tmop{vsampled} \right)\\
-  c'  & = & c + \lambda \left( h - \tmop{hsampled} \right)\\
-  d'  & = & d + \lambda \left( y - \tmop{ysampled} \right)\\
-  W'  & = & W + \lambda \left( y - \tmop{ysampled} \right)\\
-  U' & = & U + \lambda \left( y - \tmop{ysampled} \right)
+  b'  & = & b + \lambda \left( v - v_{\tmop{sampled}} \right)\\
+  c'  & = & c + \lambda \left( h_{\sigma} - h_{\sigma \tmop{sampled}}
+  \right)\\
+  d'  & = & d + \lambda \left( y - y_{\tmop{sampled}} \right)\\
+  W'  & = & W + \lambda \left( h_{\sigma} v^T - h_{\sigma \tmop{sampled}}
+  v_{\tmop{sampled}}^T \right)\\
+  U' & = & U + \lambda \left( \left. h_{\sigma} y^T - h_{\sigma
+  \tmop{sampled}} y_{\tmop{sampled}}^T \right) \right.
 \end{eqnarray*}
-where we denote by $x'$ the new value of parameter x and
+where we denote by $x'$ the new value of parameter x. $v_{\tmop{sampled}} $and
+$y_{\tmop{sampled}} $are obtained by sampling the distributions in (5) and
+(6).
 \begin{eqnarray*}
-  & = & 
+  h_{\sigma} & = & \sigma \left( c_j + \noplus \noplus W_j v \noplus + U_j y
+  \right)\\
+  h_{\sigma \tmop{sampled}} & = & \sigma \left( c_j + \noplus \noplus W_j
+  v_{\tmop{sampled}} \noplus + U_j y_{\tmop{sampled}}  \right)
 \end{eqnarray*}
+\tmtextbf{Classification}
+\[ p \left( y = e_c \left| v \right. \right) = \frac{e^{- F \left( v \nocomma,
+   e_c \right)}}{\sum_d e^{- F \left( v \nocomma, e_d \right)}} \]
+where $F \left( v \nocomma, e_c \right) $is the \tmtextit{free energy
+function}
+\[ F \left( v \nocomma, e_c \right) = - d^T y - \sum^H_{j = 1} 
+   \tmtextit{\tmtextit{s}} \left( c_j + \noplus \noplus W_j v \noplus + U_j y
+   \right) \nocomma \]
+
+\[ s \left( x \right) = \log \left( 1 + e^x \right)  \]
+
+
+The implementation of the Classification Boltzmann Machine can be found in
+ClassficationBoltzmannMachine.hs in our project.
 
 
 
+\tmtextbf{New method}
+
+Another method we have employed using Boltzmann Machines was created by us. We
+have never seen this approach used somewhere else. Instead of creating 2 types
+of visible units, we use the simple Restricted Boltzmann Machine, with one
+type of visible units (and hence one single matrix). For each training vector
+we append the classification at the end. The classification is represented as
+a binary vector, either as above, by using $e_c$, where c is the
+classification of the current pattern, or even in a more compressed manner, by
+creating the binary vector using the representation in base 2 of class c.
+
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+\ \ \ \resizebox{350px}{350px}{\includegraphics{RBM-3.eps}} \ \ \ \ \ \ \ \ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+
+The training is done in the usual way, but with the complete vectors (actual
+pattern and classification). In our case, as different patterns ought to have
+different classifcations, we use as class the index of the pattern in the list
+(with removed duplicates) of training patterns.
+
+When a pattern needs to be matched to one of the training patterns for
+recognition, one uses the log probability (given using ...) to compute the
+probability of each of the classifications, and choses the one with maximum
+probability. The matching process is described in figure.
+
+
+
+\ \ \resizebox{622px}{182px}{\includegraphics{RBM-4.eps}}
 
 \end{document}
