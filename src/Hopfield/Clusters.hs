@@ -9,6 +9,9 @@ module Hopfield.Clusters where
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import           Control.Monad (liftM, replicateM)
+import           Control.Parallel.Strategies
+
+
 
 import Hopfield.Common
 import Hopfield.Hopfield
@@ -74,8 +77,9 @@ basinsGivenProbabilityT1 learning networkSize clusterSize p
 experimentUsingT1 :: MonadRandom m => LearningType -> Int -> Int -> m Double
 experimentUsingT1 learning networkSize clusterSize
   = do
-    basinAvgs <- mapM (basinsGivenProbabilityT1 learning networkSize clusterSize) [0.0, 0.1 .. 0.5]
+    basinAvgs <- mapM (basinsGivenProbabilityT1 learning networkSize clusterSize) probabilities
     return $ average basinAvgs
+    where probabilities = [0.0, 0.1 .. 0.5]
 
 experimentUsingT1NoAvg :: MonadRandom m => LearningType -> Int -> Int -> m [(Double, Double)]
 experimentUsingT1NoAvg learning networkSize clusterSize
@@ -121,6 +125,15 @@ experimentUsingT2 learning networkSize clusterSize
     basinAvgs <- mapM (basinsGivenStdT2 learning networkSize clusterSize mean) deviations
     return $ average basinAvgs
 
+experimentUsingT2NoAvg :: MonadRandom m => LearningType -> Int -> Int -> m [(Double, Double)]
+experimentUsingT2NoAvg learning networkSize clusterSize
+  = do
+    let mean = networkSize ./. (2 :: Int)
+        deviations = [0.0, 2.0, networkSize ./. (8 :: Int)]
+    basinAvgs <- mapM (basinsGivenStdT2 learning networkSize clusterSize mean) deviations
+    return $ zip deviations basinAvgs
+
+
 
 basinsGivenProbabilityT2With2Clusters :: MonadRandom m => LearningType -> Int -> Int ->
                                             Double -> Double -> Double -> Double -> m Double
@@ -138,15 +151,6 @@ experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2 = do
       deviations = [0.0, 2.0 .. 2.0 * deviation1]
   basinAvgs <- mapM (basinsGivenProbabilityT2With2Clusters learning networkSize clusterSize mean2 mean1 deviation1) deviations
   return $ average basinAvgs
-
-
-experimentUsingT2NoAvg :: MonadRandom m => LearningType -> Int -> Int -> m [(Double, Double)]
-experimentUsingT2NoAvg learning networkSize clusterSize
-  = do
-    let mean = networkSize ./. (2 :: Int)
-        deviations = [0.0, 2.0, networkSize ./. (8 :: Int)]
-    basinAvgs <- mapM (basinsGivenStdT2 learning networkSize clusterSize mean) deviations
-    return $ zip deviations basinAvgs
 
 
 type1T2 :: MonadRandom m => LearningType -> Int -> Int -> m Double
