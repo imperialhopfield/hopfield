@@ -6,6 +6,13 @@
 
 \section{First experiments}
 
+In this section we shall introduce the expriments that we used to analyse various properties of the Hopfield Network. We remind the reader about the two methods that we are going to use for generating clusters of attractors:
+\begin{itemize}
+ \item T1: We start with a root pattern \(\mu\), and generate patterns by flipping each bit from \(\mu\) with probability \(p\).
+ \item T2: This method is generating gaussian-distributed patterns. We sample several numbers from a normal distribution with a certain mean and variance, and then encode each number into patterns of the form [1,1,1,-1,-1]. 
+\end{itemize}
+
+
 \subsection{Basin Size in One Cluster using T1}
 
 Our first experiment is showing us the basin sizes for increasing values of p, the probability of flipping a bit. Method T1 is used, for a Hopfield Network of N neurons.
@@ -23,4 +30,4 @@ Our first experiment is showing us the basin sizes for increasing values of p, t
 
 
 \subsubsection{Comments}
-
+\hilight{Insert graph here}
