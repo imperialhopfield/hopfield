@@ -24,10 +24,11 @@ main :: IO ()
 main = do
 
   -- Commented for efficiency reasons
-  -- putStrLn "T2 experiment with 1 cluster with no average but lists"
   -- let avgs =  replicate 10 $ experimentUsingT2NoAvg Hebbian 100 10
   -- printMList avgs (replicate 10 prettyList)
 
+
+  putStrLn "T2 in IO() to be able to use parallel map"
 
   g <- getStdGen
 
