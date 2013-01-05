@@ -35,8 +35,8 @@ oneIterationT1 networkSize clusterSize p_step i = zip cs probabilities
         probabilities = [0.0, p_step .. 0.6]
 
 
-performAndPrint :: ExpType -> Int -> Int -> Int -> Double -> IO ()
-performAndPrint expType neurons clusterSize iterations step = do
+performAndPrint :: ExpType -> Int -> Int -> Double -> Int ->IO ()
+performAndPrint expType neurons clusterSize step iterations = do
     putStrLn $ "T2 neurons  " ++ show neurons ++ "  cluster " ++ show clusterSize
     mapM_ print $ map (iterationFunc neurons clusterSize step) [0.. iterations]
     where iterationFunc = case expType of
@@ -50,7 +50,5 @@ main = do
   args <- getArgs
 
   case args of
-    ("big":t: _)   -> performAndPrint (read t) 100 10 10 3.0
-    ("small":t: _) -> performAndPrint (read t) 60  6  10 1.0
-    otherwise     -> putStrLn "Invalid argument"
-
+    (t : n : c : iterations : step: _)-> performAndPrint (read t) (read n) (read c) (read step) (read iterations)
+    _ -> error "invalid arguments"
