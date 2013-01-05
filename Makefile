@@ -11,5 +11,9 @@ init:
 test:
 	dist/build/tests/tests
 
+profile:
+	cabal configure --enable-tests --enable-library-profiling --enable-executable-profiling
+	cabal build
+
 continuous_integration: init
 	time cabal test

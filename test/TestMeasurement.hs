@@ -1,14 +1,14 @@
 module TestMeasurement where
 
-import           Measurement
 import qualified Data.Vector as V
-import           Hopfield
 import           Test.Hspec
 import           Test.QuickCheck
 import           Test.HUnit
-import           Util
-import           Utils
 
+import           Hopfield.Hopfield
+import           Hopfield.Measurement
+import           Hopfield.Util
+import           Hopfield.TestUtil
 
 
 testMeasurement = do

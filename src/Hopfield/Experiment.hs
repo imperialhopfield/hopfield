@@ -1,22 +1,21 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Main where
+module Hopfield.Experiment where
 
-import Analysis
-import Common
 import Control.Monad (replicateM)
 import Control.Monad.Random
-import ExpUtil
-import Hopfield
-import Measurement
 import Test.QuickCheck
 import Test.QuickCheck.Gen (unGen)
-import SuperAttractors
-import Util
-import Utils (Type(H), patternGen)
 
-import Clusters
-
+import Hopfield.Analysis
+import Hopfield.Clusters
+import Hopfield.Common
+import Hopfield.ExpUtil
+import Hopfield.Hopfield
+import Hopfield.Measurement
+import Hopfield.SuperAttractors
+import Hopfield.TestUtil (Type(H), patternGen)
+import Hopfield.Util
 
 
 genIO :: Gen a -> IO a
@@ -89,11 +88,10 @@ main = do
     putStrLn basinHeader
     printMList results [ \r -> attachLabel [pack d, pack r] | d <- degrees ]
 
-
     -- putStrLn "T1 experiment with 1 cluster"
     -- putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Storkey 1 50 8) (mkStdGen 1)
 
     putStrLn "T1 experiment with 1 cluster with no average but lists"
+
     let avgs =  replicate 10 $ experimentUsingT1NoAvg Hebbian 100 10
     printMList avgs (replicate 10 show)
-

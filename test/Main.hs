@@ -4,7 +4,7 @@ module Main where
 
 import Test.Hspec
 
-import TestBolzmann
+import TestBoltzmann
 import TestHopfield
 import TestUtil
 import TestMeasurement
@@ -12,7 +12,7 @@ import TestMeasurement
 main :: IO ()
 main = hspec $ do
 
-  testBolzmannMachine
+  testBoltzmannMachine
 
   testHopfield
 

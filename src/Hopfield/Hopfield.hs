@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | Base Hopfield model, providing training and running.
-module Hopfield (
+module Hopfield.Hopfield (
     Pattern
   , Weights
   , LearningType (Hebbian, Storkey)
@@ -22,13 +22,15 @@ module Hopfield (
 ) where
 
 import           Control.Monad.Random (MonadRandom)
+import           Control.Parallel.Strategies
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
-import           Common
-import           Util
 
-import Debug.Trace
+import           Hopfield.Common
+import           Hopfield.Util
+
+
 
 data LearningType = Hebbian | Storkey deriving (Eq, Show)
 
@@ -129,9 +131,10 @@ train pats = vector2D ws
 
 -- | See `computeH`.
 computeH_ :: Weights -> Pattern -> Int -> Int
-computeH_ ws pat i = if weighted >= 0 then 1 else -1
+computeH_ ws pat i = if (sum cs) >= 0 then 1 else -1
   where
-    weighted = sum [ (ws ! i ! j) *. (pat ! j) | j <- [0 .. p-1] ]
+    weighted = map (\j -> (ws ! i ! j) *. (pat ! j) ) [0 .. p-1]
+    cs = weighted `using` parList rdeepseq
     p = V.length pat
 
 
@@ -151,10 +154,8 @@ update_ ws pat = case updatables of
           return $ Just $ flipAtIndex pat index
   where
      updatables = getUpdatables_ ws pat
-     flipAtIndex v index = V.fromList $ map (valueAtIndex v index) [0 .. V.length v - 1]
-     valueAtIndex v index x = if (x == index) then  - (v ! x) else v ! x
-      -- TODO Niklas fix this
-      -- V.modify (\(v:: V.Vector Int) -> write v index (- ( v ! index ) ))
+     flipAtIndex vec index = let val = vec ! index -- seq only brings small saving here
+                              in val `seq` V.modify (\v -> write v index (-val)) vec
 
 
 -- | See `repeatedUpdate`.
@@ -246,7 +247,7 @@ storkeyHiddenSum ws pat i j
       where n = V.length ws
 
 -- | @updateWeightsGivenIndicesStorkey ws pat i j@ computes the new value at
--- indices @i@ @j@  of the weigth matrix for the training iteration of
+-- indices @i@ @j@  of the weights matrix for the training iteration of
 -- pattern @pat@.
 updateWeightsGivenIndicesStorkey :: Weights -> Pattern -> Int -> Int -> Double
 updateWeightsGivenIndicesStorkey ws pat i j
@@ -256,7 +257,7 @@ updateWeightsGivenIndicesStorkey ws pat i j
         h = storkeyHiddenSum ws pat
 
 
--- | @updateWeightsStorkey ws pat@ updates the weigth matrix, given training
+-- | @updateWeightsStorkey ws pat@ updates the weights matrix, given training
 -- instance @pat@.
 updateWeightsStorkey :: Weights -> Pattern -> Weights
 updateWeightsStorkey ws pat
@@ -266,7 +267,7 @@ updateWeightsStorkey ws pat
 
 -- | @trainStorkey pats@ trains the Hopfield network by computing the weights
 -- matrix by iterating trough all training instances (@pats@) and updating the
--- weigths according to the Storkey learning rule.
+-- weights according to the Storkey learning rule.
 trainStorkey :: [Pattern] -> Weights
 -- No need to check pats ws size, buildHopfieldData does it
 trainStorkey pats = foldl updateWeightsStorkey start_ws pats

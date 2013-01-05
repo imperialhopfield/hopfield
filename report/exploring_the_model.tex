@@ -1,6 +1,7 @@
 \chapter{Exploring The Model}
 % This is where we describe our experiments. We insert plots, images, ....
 
+
 Our initial aim was to explore various properties of the attractors in a Hopfield Network. We are interested in studying, testing or challenging several ideas about the neural network:
 \begin{itemize}
  \item Clusters of attractors: We are interested to see how the Hopfield network behaves when learning simmilarly correlated patterns. This implies training the network with a cluster of attractors, which will lower the capacity of the network. We believe that basin sizes will get smaller as the patterns get closer to each other. 
@@ -58,3 +59,7 @@ Although the method has a big advantage for simplicity, we can only obtain N dif
 Another idea would be to extend our distribution to a multi-variate distribution. In this case, the capacity of the network would increase from \(N\) to \(\frac{n}{k}^k\), where k is the number of dimensions. 
 
 Unfortunatelly, we did not have enough time to implement these ideas, so we only experimented with the naive encoding of patterns described above. 
+
+\section{Super Attractors}
+In the context of learning models such as the Hopfield model,
+

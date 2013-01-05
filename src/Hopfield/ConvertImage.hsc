@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP, ForeignFunctionInterface #-}
 
-module ConvertImage (
+module Hopfield.ConvertImage (
   loadPicture
 , CBinaryPattern (..)
 ) where

@@ -13,23 +13,27 @@ cabal-version: >= 1.10
 library
   default-language: Haskell2010
   exposed-modules:
-      Hopfield
-    , Analysis
-    , Measurement
-    , ClassificationBoltzmannMachine
-    , Clusters
-    , Common
-    , ConvertImage
-    , RestrictedBoltzmannMachine
-    , SuperAttractors
-    , Util
-    , ExpUtil
+      Hopfield.Hopfield
+    , Hopfield.Analysis
+    , Hopfield.Measurement
+    , Hopfield.ClassificationBoltzmannMachine
+    , Hopfield.Clusters
+    , Hopfield.Common
+    , Hopfield.ConvertImage
+    , Hopfield.RestrictedBoltzmannMachine
+    , Hopfield.SuperAttractors
+    , Hopfield.Util
+    , Hopfield.Experiment
+    , Hopfield.TestUtil
+    , Hopfield.ExpUtil
+    , Hopfield.Benchmark
   other-modules:
   hs-source-dirs:
     src
   build-tools: hsc2hs
   build-depends:
       base >= 4 && <= 5
+    , parallel >= 3.1.0.1
     , array >= 0.4.0.0
     , erf >= 2.0.0.0
     , exact-combinatorics >= 0.2.0.4
@@ -40,10 +44,12 @@ library
     , random-fu >= 0.2.3.1
     , rvar >= 0.2.0.1
     , vector >= 0.9.1
+    , QuickCheck >= 2.4.2
+    , deepseq >= 1.3.0.0
   c-sources:
-      src/convertImage.c
+      src/Hopfield/convertImage.c
   include-dirs:
-      src
+      src/Hopfield
     , /usr/include/ImageMagick
   includes:
       wand/magick_wand.h
@@ -51,61 +57,36 @@ library
     -- Can't use "-Wextra -Werror" here due to hsc2hs generating unused main() parameters
     -g -std=c99 -O0 -Wall -Wextra
   ghc-options:
-    -Wall -fwarn-unused-imports
+    -Wall -fwarn-unused-imports -auto-all -rtsopts
   extra-libraries:
     MagickWand MagickCore
 
 
-executable hopfield
+executable experiments
   default-language: Haskell2010
   hs-source-dirs:
     apps
   main-is:
-    Main.hs
+    ExperimentMain.hs
   other-modules:
   build-depends:
       base >= 4 && <= 5
     , hopfield
   ghc-options:
-    -Wall -fwarn-unused-imports
-
-executable experiments
-  default-language: Haskell2010
-  hs-source-dirs:
-    src, test
-  main-is:
-    Experiment.hs
-  other-modules:
-  build-depends:
-      base >= 4 && <= 5
-    , hopfield
-    , random >= 1.0.1.1
-    , probability >= 0.2.4
-    , hmatrix >= 0.11.0.4
-    , MonadRandom >= 0.1.8
-    , vector >= 0.9.1
-    , random-fu >= 0.2.3.1
-    , array >= 0.4.0.0
-    , erf >= 2.0.0.0
-    , exact-combinatorics >= 0.2.0.4
-    , rvar >= 0.2.0.1
-    , hspec >= 1.3.0.1
-    , HUnit >= 1.2.4.2
-    , QuickCheck >= 2.4.2
-  ghc-options:
-    -Wall -fwarn-unused-imports
+    -Wall -fwarn-unused-imports -auto-all -rtsopts
 
 
 executable experiment-super2
   default-language: Haskell2010
   hs-source-dirs:
-    src, test
+    apps
   main-is:
     ExperimentSuper2.hs
   other-modules:
   build-depends:
       base >= 4 && <= 5
     , hopfield
+    , parallel >= 3.1.0.1
     , random >= 1.0.1.1
     , probability >= 0.2.4
     , hmatrix >= 0.11.0.4
@@ -126,13 +107,14 @@ executable experiment-super2
 executable smallexp
   default-language: Haskell2010
   hs-source-dirs:
-    src, test
+    apps
   main-is:
     SmallExperiments.hs
   other-modules:
   build-depends:
       base >= 4 && <= 5
     , hopfield
+    , parallel >= 3.1.0.1
     , random >= 1.0.1.1
     , probability >= 0.2.4
     , hmatrix >= 0.11.0.4
@@ -147,7 +129,36 @@ executable smallexp
     , HUnit >= 1.2.4.2
     , QuickCheck >= 2.4.2
   ghc-options:
-    -Wall -fwarn-unused-imports
+    -Wall -fwarn-unused-imports -auto-all -rtsopts
+
+
+executable clusterexp
+  default-language: Haskell2010
+  hs-source-dirs:
+    apps
+  main-is:
+    ClusterExperiments.hs
+  other-modules:
+  build-depends:
+      base >= 4 && <= 5
+    , hopfield
+    , parallel >= 3.1.0.1
+    , random >= 1.0.1.1
+    , probability >= 0.2.4
+    , hmatrix >= 0.11.0.4
+    , MonadRandom >= 0.1.8
+    , vector >= 0.9.1
+    , random-fu >= 0.2.3.1
+    , array >= 0.4.0.0
+    , erf >= 2.0.0.0
+    , exact-combinatorics >= 0.2.0.4
+    , rvar >= 0.2.0.1
+    , hspec >= 1.3.0.1
+    , HUnit >= 1.2.4.2
+    , QuickCheck >= 2.4.2
+  ghc-options:
+    -Wall -fwarn-unused-imports -threaded
+
 
 
 executable recognize
@@ -164,9 +175,10 @@ executable recognize
     , MonadRandom >= 0.1.8
     , vector >= 0.9.1
     , optparse-applicative >= 0.5.0.0
+    , parallel >= 3.1.0.1
   ghc-options:
 
-    -Wall -fwarn-unused-imports
+    -Wall -fwarn-unused-imports -auto-all -rtsopts
 
 
 Test-Suite tests
@@ -187,3 +199,6 @@ Test-Suite tests
     , MonadRandom >= 0.1.8
     , random >= 1.0.1.1
     , exact-combinatorics >= 0.2.0.4
+    , parallel >= 3.1.0.1
+  ghc-options:
+    -Wall -fwarn-unused-imports -auto-all -rtsopts

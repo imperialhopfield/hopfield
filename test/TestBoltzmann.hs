@@ -1,15 +1,15 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module TestBolzmann where
+module TestBoltzmann where
 
 import Test.Hspec
 import Test.QuickCheck
-import Test.HUnit
-import Utils
+
+import Hopfield.TestUtil
 
 
-testBolzmannMachine :: Spec
-testBolzmannMachine = do
+testBoltzmannMachine :: Spec
+testBoltzmannMachine = do
   describe "test Boltzmann Machine" $ do
 
    let maxPatListSize = 20
@@ -19,9 +19,9 @@ testBolzmannMachine = do
    let boltzmannBuildGen' = boltzmannBuildGen maxPatListSize maxPatSize maxNrHidden
    let boltzmannAndPatGen' = boltzmannAndPatGen maxPatListSize maxPatSize maxNrHidden
 
-   it "tests that the patterns and nr of hidden neurons stored in the bolzmann datastructure are the same as the ones which were given as input" $
+   it "tests that the patterns and nr of hidden neurons stored in the Boltzmann data structure are the same as the ones which were given as input" $
      forAll boltzmannBuildGen' build_BM_Check
-   it "tests that the activation funcion application always gives us a probability" $
+   it "tests that the activation function application always gives us a probability" $
      forAll boltzmannAndPatGen' $ probabilityCheck
 
    it "tests that if r is 0 then the neuron always gets value 1" $

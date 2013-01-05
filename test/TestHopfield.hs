@@ -9,9 +9,10 @@ import qualified Data.Vector as V
 import           Test.Hspec
 import           Test.HUnit
 import           Test.QuickCheck
-import           Utils
-import           Hopfield
-import           Util
+
+import           Hopfield.Hopfield
+import           Hopfield.Util
+import           Hopfield.TestUtil
 
 
 toV = (V.fromList <$>)

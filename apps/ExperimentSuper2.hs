@@ -2,17 +2,17 @@
 
 module Main where
 
-import Common
 import Control.Monad (replicateM)
 import Control.Monad.Random
-import ExpUtil
-import Measurement
 import Test.QuickCheck
 import Test.QuickCheck.Gen (unGen)
-import SuperAttractors
-import Util
-import Utils (Type(H), patternGen)
 
+import Hopfield.Common
+import Hopfield.ExpUtil
+import Hopfield.Measurement
+import Hopfield.SuperAttractors
+import Hopfield.Util
+import Hopfield.TestUtil (Type(H), patternGen)
 
 
 genIO :: Gen a -> IO a
@@ -54,7 +54,7 @@ main = do
 
     let pats        = originPat:newPat:randomPats
         originIndex = 0                         -- index of main pattern
-        newIndex    = 1                         -- index of new pattern
+        newIndex    = fstDegree + 1             -- index of new pattern
         degrees     = powersOfTwo maxDegree
         patCombiner = twoSuperAttrOneFixed fstDegree
 

@@ -1,14 +1,15 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module ExpUtil where
+module Hopfield.ExpUtil where
 
-import           Analysis (computeErrorSuperAttractorNumbers)
-import           Common
-import           Hopfield
-import           Measurement
-import           SuperAttractors (Degree)
-import           Util
 import qualified Data.Vector as V
+
+import           Hopfield.Analysis (computeErrorSuperAttractorNumbers)
+import           Hopfield.Common
+import           Hopfield.Hopfield
+import           Hopfield.Measurement
+import           Hopfield.SuperAttractors (Degree)
+import           Hopfield.Util
 
 
 -- Measure hamming distance from p to each of ps

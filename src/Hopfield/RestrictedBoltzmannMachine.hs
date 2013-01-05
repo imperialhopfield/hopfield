@@ -1,8 +1,8 @@
 {-# LANGUAGE PatternGuards, ScopedTypeVariables #-}
 
--- | Base Restricted Bolzamann machine.
+-- | Base Restricted Boltzmann machine.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
-module RestrictedBoltzmannMachine where
+module Hopfield.RestrictedBoltzmannMachine where
 
 
 import           Data.Maybe
@@ -13,11 +13,12 @@ import           Data.Vector ((!))
 import qualified Data.Vector as V
 import qualified Numeric.Container as NC
 
-import Common
-import Util
+import Hopfield.Common
+import Hopfield.Util
 
--- In the case of the Bolzamann Machine the weight matrix establishes the
--- weigths between visible and hidden neurons
+
+-- In the case of the Boltzmann Machine the weight matrix establishes the
+-- weights between visible and hidden neurons
 -- w i j - connection between visible neuron i and hidden neuron j
 
 -- | determines the rate in which the weights are changed in the training phase.
@@ -66,9 +67,9 @@ buildBoltzmannData pats =
 
 
 -- | @buildBoltzmannData' patterns nr_hidden@: Takes a list of patterns and
--- builds a Bolzmann network (by training) in which these patterns are
+-- builds a Boltzmann network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
--- against the network, by using 'matchPatternBolzmann'.
+-- against the network, by using 'matchPatternBoltzmann'.
 buildBoltzmannData' :: MonadRandom  m => [Pattern] -> Int ->  m BoltzmannData
 buildBoltzmannData' [] _  = error "Train patterns are empty"
 buildBoltzmannData' pats nr_hidden
@@ -77,7 +78,7 @@ buildBoltzmannData' pats nr_hidden
   | any (\x -> V.length x /= first_len) pats
       = error "All training patterns must have the same length"
   | otherwise = do
-      (ws, pats_with_binary) :: (Weights, [(Pattern, [Int])]) <- trainBolzmann pats nr_hidden
+      (ws, pats_with_binary) :: (Weights, [(Pattern, [Int])]) <- trainBoltzmann pats nr_hidden
       return $ BoltzmannData ws pats nr_hidden pats_with_binary
   where
     first_len = V.length (head pats)
@@ -140,15 +141,15 @@ updateWeights ws v = do
   return $ vector2D new_weights
 
 
--- | The training function for the Bolzmann Machine.
+-- | The training function for the Boltzmann Machine.
 -- We are using the contrastive divergence algorithm CD-1
 -- TODO see if making the vis
--- (we could extend to CD-n, but "In pratice,  CD-1 has been shown to work surprisingly well."
--- @trainBolzmann pats nr_hidden@ where @pats@ are the training patterns
+-- (we could extend to CD-n, but "In practice,  CD-1 has been shown to work surprisingly well."
+-- @trainBoltzmann pats nr_hidden@ where @pats@ are the training patterns
 -- and @nr_hidden@ is the number of neurons to be created in the hidden layer.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m (Weights, [(Pattern, [Int])])
-trainBolzmann pats nr_hidden = do
+trainBoltzmann :: MonadRandom m => [Pattern] -> Int -> m (Weights, [(Pattern, [Int])])
+trainBoltzmann pats nr_hidden = do
   weights_without_bias <- genWeights
   -- add biases as a dimension of the matrix, in order to include them in the
   -- contrastive divergence algorithm
@@ -164,7 +165,7 @@ trainBolzmann pats nr_hidden = do
       nr_visible = V.length $ pats' !! 0
 
 
--- | The activation functiom for the network (the logistic sigmoid).
+-- | The activation function for the network (the logistic sigmoid).
 -- http://en.wikipedia.org/wiki/Sigmoid_function
 activation :: Double -> Double
 activation x = 1.0 / (1.0 + exp (-x))
@@ -177,7 +178,7 @@ activation x = 1.0 / (1.0 + exp (-x))
 validPattern :: Phase -> Mode -> Weights -> Pattern -> Maybe String
 validPattern phase mode ws pat
   | checked_dim /= V.length pat        = Just $ "Size of pattern must match network size in " ++ show phase ++ " " ++ show mode
-  | V.any (\x -> notElem x [0, 1]) pat = Just "Non binary element in bolzmann pattern"
+  | V.any (\x -> notElem x [0, 1]) pat = Just "Non binary element in Boltzmann pattern"
   | otherwise            = Nothing
   where checked_dim = if phase == Training then actual_dim else actual_dim - 1
         actual_dim  = getDimension mode ws
@@ -186,7 +187,7 @@ validPattern phase mode ws pat
 validWeights :: Weights -> Maybe String
 validWeights ws
   | V.null ws = Just "The  matrix of weights is empty"
-  | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "Weigths matrix ill formed"
+  | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "weights matrix ill formed"
   | otherwise = Nothing
 
 
