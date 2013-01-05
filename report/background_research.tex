@@ -40,7 +40,7 @@ If updating is repeatedly performed, the network would eventually may converge t
 
 \subsection{Training using the Hebbian Rule}
 
-The Hebbian theory has been introduced by Donald Hebb in 1949, in order to explain "associative learning", in which simultaneous activation of neuron cells leads to pronounced increases in synaptic strength between those cells \cite{hebb_wiki}. It is ofter summarised as "Neurons that fire together, wire together".
+The Hebbian theory has been introduced by Donald Hebb in 1949, in order to explain "associative learning", in which simultaneous activation of neuron cells leads to pronounced increases in synaptic strength between those cells \cite{hebb_wiki}. It is often summarised as "Neurons that fire together, wire together".
 
 For the Hopfield Networks, this is implemented in the following manner, when learning p patterns:
 
@@ -133,5 +133,5 @@ This rule is local, since the synapses take into account only neurons at their s
 
 \subsection{Basins of Attraction}
 
-A basin of attraction for a particular attractor a is defined as the set of all states that will eventually converge to a, under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A big basin size would provide stability for the attractor, since the states in the neighbourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor.
+A basin of attraction for a particular attractor a is defined as the set of all states that will eventually converge to a, under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A large basin size would provide stability for the attractor, since the states in the neighbourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor.
 
