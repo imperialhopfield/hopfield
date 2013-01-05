@@ -46,6 +46,17 @@ basinsGivenStdT2 Hebbian 50 6 25 10
 4.45
 basinsGivenStdT2 Storkey 50 6 25 10
 5.616666666666666
+
+basinsGivenStdT2 Hebbian 50 6 25 5
+6.783333333333333
+basinsGivenStdT2 Storkey 50 6 25 5
+4.633333333333334
+basinsGivenStdT2 Hebbian 50 4 25 10
+7.325
+basinsGivenStdT2 Storkey 50 4 25 10
+9.2
+
+
 dist/build/smallexp/small
 
 

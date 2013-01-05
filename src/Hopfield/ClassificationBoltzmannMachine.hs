@@ -28,7 +28,7 @@ import Debug.Trace
 
 -- | determines the rate in which the weights are changed in the training phase.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-learningRate = 0.000001:: Double
+learningRate = 0.001:: Double
 
 
 data Mode = Hidden | Visible | Classification
