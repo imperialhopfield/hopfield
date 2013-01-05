@@ -93,7 +93,7 @@ main = do
     -- putStrLn "T1 experiment with 1 cluster"
     -- putStrLn $ show $ evalRand (repeatExperiment experimentUsingT1 Storkey 1 50 8) (mkStdGen 1)
 
-
     putStrLn "T1 experiment with 1 cluster with no average but lists"
-    print $ evalRand (replicateM 10 $ experimentUsingT1NoAvg Hebbian 100 10) (mkStdGen 1)
+    let avgs =  replicate 10 $ experimentUsingT1NoAvg Hebbian 100 10
+    printMList avgs (replicate 10 show)
 
