@@ -247,7 +247,7 @@ storkeyHiddenSum ws pat i j
       where n = V.length ws
 
 -- | @updateWeightsGivenIndicesStorkey ws pat i j@ computes the new value at
--- indices @i@ @j@  of the weigth matrix for the training iteration of
+-- indices @i@ @j@  of the weights matrix for the training iteration of
 -- pattern @pat@.
 updateWeightsGivenIndicesStorkey :: Weights -> Pattern -> Int -> Int -> Double
 updateWeightsGivenIndicesStorkey ws pat i j
@@ -257,7 +257,7 @@ updateWeightsGivenIndicesStorkey ws pat i j
         h = storkeyHiddenSum ws pat
 
 
--- | @updateWeightsStorkey ws pat@ updates the weigth matrix, given training
+-- | @updateWeightsStorkey ws pat@ updates the weights matrix, given training
 -- instance @pat@.
 updateWeightsStorkey :: Weights -> Pattern -> Weights
 updateWeightsStorkey ws pat
@@ -267,7 +267,7 @@ updateWeightsStorkey ws pat
 
 -- | @trainStorkey pats@ trains the Hopfield network by computing the weights
 -- matrix by iterating trough all training instances (@pats@) and updating the
--- weigths according to the Storkey learning rule.
+-- weights according to the Storkey learning rule.
 trainStorkey :: [Pattern] -> Weights
 -- No need to check pats ws size, buildHopfieldData does it
 trainStorkey pats = foldl updateWeightsStorkey start_ws pats
