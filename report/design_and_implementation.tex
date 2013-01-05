@@ -2,13 +2,25 @@
 % Justify design decisions, tools used, etc.
 % NO CODE!!! (except for skeleton of algorithms maybe)
 
+
+
 \section{First experiments}
 
 \subsection{Basin Size in One Cluster using T1}
 
 Our first experiment is showing us the basin sizes for increasing values of p, the probability of flipping a bit. Method T1 is used, for a Hopfield Network of N neurons.
 
-\begin{enumerate}
- \item For 20 iterations
-\end{enumerate}
+\begin{easylist}[enumerate]                                                                            
+\ListProperties(Style2*=,Numbers=a,Numbers1=R,FinalMark=.)
+& We generate a random pattern \(\mu\)
+
+& For all values of probability p from 0 to 0.5
+
+    && Starting from \(\mu\) we generate P patterns using T1, and give them to the Hopfield network in order to be learned according to Hebb or Storkey rule.
+ 
+    && We measure the basin size for all the patterns learned using the Storkey-Valabregue measurement and take their mean. 
+\end{easylist}
+
+
+\subsubsection{Comments}
 
