@@ -19,12 +19,12 @@ Our initial aim was to explore various properties of the attractors in a Hopfiel
  \begin{enumerate}
   \item Initially n = 1
   \item Choose an initial fixed point corresponding to a stored pattern \(\mu\)
-  \item Choose some initial normalized Hamming radius \(r=r_{0}\)
+  \item \label{itm:choose radius} Choose some initial normalized Hamming radius \(r=r_{0}\)
   \item Let the set A be all the states Hamming-distant \( nr \) from the fixed point
   \item Sample 100 states from A
   \item Calculate how many of these states are attracted to the fixed point. Denote this number \( t_{\mu}(r) \)
   \item If \( t_{\mu}(r) \) is smaller than 90, stop and return \(nr\)
-  \item Increment \(n\) by a suitable ammount and repeat from (3)
+  \item Increment \(n\) by a suitable amount and repeat from (\ref{itm:choose radius})
   \item Repeat fo each attractor.
  \end{enumerate}
 
@@ -86,7 +86,7 @@ In the context of modelling Attachment theory, a super attractor may represent r
 
 \item Measure the basin of attraction of \psuper using the Storkey-Valabregue method. \hilight{CROSS REFERENCE THIS}
 
-\item Repeat from step ~\ref{itm:choose degree} with a different degree.
+\item Repeat from (\ref{itm:choose degree}) with a different degree.
 
 \end{enumerate}
 
