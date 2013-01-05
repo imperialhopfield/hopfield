@@ -6,6 +6,7 @@ module Main where
 import Control.Monad (replicateM)
 import Control.Monad.Random
 import Control.Parallel.Strategies
+import System.Environment
 
 import Hopfield.Analysis
 import Hopfield.Clusters
@@ -26,14 +27,19 @@ oneIteration networkSize clusterSize i = zip cs deviations
         deviations = [0.0, 1.0 .. networkSize ./ 8.0]
 
 
+performAndPrintT2 :: Int -> Int -> Int -> IO ()
+performAndPrintT2 neurons clusterSize iterations = do
+    putStrLn $ "T2 neurons  " ++ show neurons ++ "  cluster " ++ show clusterSize
+    mapM_ print $ map (oneIteration neurons clusterSize) [0.. iterations]
+
+
 main :: IO ()
 main = do
 
-  -- Commented for efficiency reasons
-  -- let avgs =  replicate 10 $ experimentUsingT2NoAvg Hebbian 100 10
-  -- printMList avgs (replicate 10 prettyList)
-  let neurons = 60
-      cluster = 5
-  putStrLn $ "T2" ++ show neurons ++ show cluster
-  mapM_ print $ map (oneIteration neurons cluster) [0.. 5]
+  args <- getArgs
+
+  case args of
+    ("big": _)    -> performAndPrintT2 100 10 10
+    ("simple": _) -> performAndPrintT2 100 10 10
+    otherwise     -> putStrLn "Invalid argument"
 
