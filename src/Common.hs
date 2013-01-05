@@ -1,4 +1,4 @@
-{-# LANGUAGE PatternGuards #-}
+{-# LANGUAGE PatternGuards, ExistentialQuantification #-}
 
 module Common where
 
@@ -12,6 +12,20 @@ type Bias    = Vector Double
 
 data Method = Hopfield | Boltzmann | CBoltzmann
   deriving (Eq, Enum, Ord, Show)
+
+
+-- http://www.haskell.org/haskellwiki/Heterogenous_collections
+data Showable = forall a . Show a => MkShowable a
+
+instance Show Showable
+  where showsPrec p (MkShowable a) = showsPrec p a
+
+pack :: Show a => a -> Showable
+pack = MkShowable
+
+
+packL :: Show a => [a] -> [Showable]
+packL = map pack
 
 
 -- flips a bit according to the method employed, as patterns

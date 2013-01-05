@@ -39,6 +39,12 @@ oneSuperAttr [] _      = []
 oneSuperAttr (p: ps) k = replicate k p ++ ps
 
 
+-- Replicates the first pattern j times, and the second pattern k times
+twoSuperAttrOneFixed :: Degree -> PatternCombiner [Pattern]
+twoSuperAttrOneFixed j (pa:pb: ps) k = replicate j pa ++ replicate k pb ++ ps
+twoSuperAttrOneFixed _ _ _           = []
+
+
 -- Replicates each pattern k times.
 allSuperAttr :: PatternCombiner [Pattern]
 allSuperAttr ps k = concatMap (replicate k) ps
