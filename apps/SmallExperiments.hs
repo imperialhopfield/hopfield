@@ -2,28 +2,24 @@
 
 module Main where
 
-import Control.Monad (replicateM, liftM)
+import Control.Applicative
+import Control.Monad
 
-import Hopfield.Hopfield
 import Hopfield.Clusters
+import Hopfield.Hopfield
 import Hopfield.Util
 
 
+_REPETITIONS = 10
+
+runs = [ (Hebbian, 50, 6, 25, 5)
+       , (Storkey, 50, 6, 25, 5)
+       , (Hebbian, 50, 4, 25, 10)
+       , (Storkey, 50, 4, 25, 10)
+       ]
+
 main :: IO ()
 main = do
+ forM_ runs $ \(method, a, b, c, d) ->
+  print =<< average <$> replicateM _REPETITIONS (basinsGivenStdT2 method a b c d)
 
-  putStrLn "basinsGivenStdT2 Hebbian 50 6 25 5"
-  avg1 <- liftM average $ replicateM 10 (basinsGivenStdT2 Hebbian 50 6 25 5)
-  print avg1
-
-  putStrLn "basinsGivenStdT2 Storkey 50 6 25 5"
-  avg2 <- liftM average $ replicateM 10 (basinsGivenStdT2 Storkey 50 6 25 5)
-  print avg2
-
-  putStrLn "basinsGivenStdT2 Hebbian 50 4 25 10"
-  avg3 <- liftM average $ replicateM 10 (basinsGivenStdT2 Hebbian 50 4 25 10)
-  print avg3
-
-  putStrLn "basinsGivenStdT2 Storkey 50 4 25 10"
-  avg4 <- liftM average $ replicateM 10 (basinsGivenStdT2 Storkey 50 4 25 10)
-  print avg4

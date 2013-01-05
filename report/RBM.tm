@@ -1,6 +1,6 @@
 <TeXmacs|1.0.7.14>
 
-<style|generic>
+<style|bibliography>
 
 <\body>
   <with|font-series|bold|Restrictive Boltzmann Machines>

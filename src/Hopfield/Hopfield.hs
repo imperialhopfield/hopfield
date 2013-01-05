@@ -22,6 +22,7 @@ module Hopfield.Hopfield (
 ) where
 
 import           Control.Monad.Random (MonadRandom)
+import           Control.Parallel.Strategies
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
@@ -29,8 +30,6 @@ import           Data.Vector.Generic.Mutable (write)
 import           Hopfield.Common
 import           Hopfield.Util
 
-
-import Control.DeepSeq
 
 
 data LearningType = Hebbian | Storkey deriving (Eq, Show)
@@ -132,9 +131,10 @@ train pats = vector2D ws
 
 -- | See `computeH`.
 computeH_ :: Weights -> Pattern -> Int -> Int
-computeH_ ws pat i = if weighted >= 0 then 1 else -1
+computeH_ ws pat i = if (sum cs) >= 0 then 1 else -1
   where
-    weighted = force $ sum [ (ws ! i ! j) *. (pat ! j) | j <- [0 .. p-1] ]
+    weighted = map (\j -> (ws ! i ! j) *. (pat ! j) ) [0 .. p-1]
+    cs = weighted `using` parList rdeepseq
     p = V.length pat
 
 

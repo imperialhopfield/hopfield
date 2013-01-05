@@ -38,7 +38,6 @@ basinsGivenStdT2 Hebbian 50 5 25 5
 4.4
 
 
-
 basinsGivenStdT2 Hebbian 50 4 25 5
 8.275
 basinsGivenStdT2 Storkey 50 4 25 5
@@ -47,6 +46,17 @@ basinsGivenStdT2 Hebbian 50 6 25 10
 4.45
 basinsGivenStdT2 Storkey 50 6 25 10
 5.616666666666666
+
+basinsGivenStdT2 Hebbian 50 6 25 5
+6.783333333333333
+basinsGivenStdT2 Storkey 50 6 25 5
+4.633333333333334
+basinsGivenStdT2 Hebbian 50 4 25 10
+7.325
+basinsGivenStdT2 Storkey 50 4 25 10
+9.2
+
+
 dist/build/smallexp/small
 
 
@@ -63,7 +73,43 @@ dist/build/smallexp/small
 7.522058823529412
 
 
+T2 experiment with 1 cluster with no average but lists
+(0.0,49.0) (2.0,14.4) (12.5,3.3)
 
--------------------
 
 
+mcr10@pixel04 ~/gp/imperialhopfield (git)-[parallel] % dist/build/clusterexp/cluster
+T2 in IO() to be able to use parallel map with 50 neurons cluster of size 5
+[(24.0,0.0),(9.2,2.0),(9.2,4.0),(4.8,6.0)]
+[(24.0,0.0),(9.4,2.0),(9.2,4.0),(9.0,6.0)]
+[(24.0,0.0),(4.6,2.0),(4.4,4.0),(4.4,6.0)]
+[(24.0,0.0),(4.6,2.0),(9.2,4.0),(4.6,6.0)]
+[(24.0,0.0),(4.6,2.0),(4.4,4.0),(4.4,6.0)]
+[(24.0,0.0),(13.8,2.0),(4.6,4.0),(4.6,6.0)]
+[(24.0,0.0),(4.6,2.0),(4.6,4.0),(4.0,6.0)]
+[(24.0,0.0),(4.6,2.0),(4.6,4.0),(5.8,6.0)]
+[(24.0,0.0),(9.2,2.0),(4.4,4.0),(4.4,6.0)]
+[(24.0,0.0),(9.6,2.0),(4.6,4.0),(4.6,6.0)]
+[(24.0,0.0),(4.6,2.0),(4.6,4.0),(4.2,6.0)]
+
+T2 in IO() to be able to use parallel map with 50 neurons cluster of size 5
+[(13.8,1.0),(9.2,3.0),(4.4,5.0),(5.2,7.0)]
+[(9.2,1.0),(4.6,3.0),(9.2,5.0),(8.8,7.0)]
+[(9.4,1.0),(4.6,3.0),(3.4,5.0),(5.8,7.0)]
+[(14.4,1.0),(9.2,3.0),(9.2,5.0),(4.4,7.0)]
+[(9.4,1.0),(4.6,3.0),(4.4,5.0),(3.6,7.0)]
+[(9.2,1.0),(4.6,3.0),(4.6,5.0),(4.6,7.0)]
+[(9.2,1.0),(4.6,3.0),(4.4,5.0),(3.4,7.0)]
+[(14.4,1.0),(4.6,3.0),(1.4,5.0),(4.8,7.0)]
+[(13.8,1.0),(4.6,3.0),(4.6,5.0),(0.8,7.0)]
+[(9.2,1.0),(4.6,3.0),(4.6,5.0),(4.4,7.0)]
+[(4.6,1.0),(4.6,3.0),(4.4,5.0),(2.8,7.0)]
+
+
+T2 in IO() to be able to use parallel map std dev 0.0 2.0 and 12.5
+[49.0,9.6,9.2]
+
+
+T2 in IO() to be able to use parallel map with 50 neurons cluster of size 6
+[29.0,14.0,9.333333333333334,14.0,9.333333333333334]
+dist/build/clusterexp/clusterexp  503.22s user 5.29s system 99% cpu 8:30.08 total
