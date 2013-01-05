@@ -28,7 +28,7 @@ main = do
   -- printMList avgs (replicate 10 prettyList)
 
 
-  putStrLn "T2 in IO() to be able to use parallel map"
+  putStrLn "T2 in IO() to be able to use parallel map with 50 neurons cluster of size 5"
 
   g <- getStdGen
 
