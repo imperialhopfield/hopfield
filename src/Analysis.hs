@@ -45,7 +45,7 @@ computeErrorIndependentPatsNumbers p n
 -- for mathematical derivation of the equation, see report.
 computeErrorSuperAttractorNumbers :: Int -> Int -> Int -> Double
 computeErrorSuperAttractorNumbers d p n
-  = 1.0 / 2.0 * (1.0 - (erf $ (sqrt (n ./. (2 * (p - d)) ) *. d)))
+  = 1.0 / 2.0 * (1.0 - (erf $ (sqrt (n ./. (2 * (p - d)) ))))
 
 
 -- @patternsToNeuronsRatioFromError err@. Given that the err we accept is @err@,

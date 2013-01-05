@@ -2,24 +2,27 @@
 
 module Main where
 
-import Control.Monad.Random
-import Hopfield
+import Control.Monad (replicateM, liftM)
 
 import Clusters
+import Hopfield
+import Util
 
 main :: IO ()
 main = do
 
-  g <- getStdGen
+  putStrLn "basinsGivenStdT2 Hebbian 50 6 25 5"
+  avg1 <- liftM average $ replicateM 10 (basinsGivenStdT2 Hebbian 50 6 25 5)
+  print avg1
 
-  putStrLn "basinsGivenStdT2 Hebbian 50 4 25 5"
-  print $ evalRand (basinsGivenStdT2 Hebbian 50 4 25 5) g
-
-  putStrLn "basinsGivenStdT2 Storkey 50 4 25 5"
-  print $ evalRand (basinsGivenStdT2 Storkey 50 4 25 5) g
+  putStrLn "basinsGivenStdT2 Storkey 50 6 25 5"
+  avg2 <- liftM average $ replicateM 10 (basinsGivenStdT2 Storkey 50 6 25 5)
+  print avg2
 
   putStrLn "basinsGivenStdT2 Hebbian 50 4 25 10"
-  print $ evalRand (basinsGivenStdT2 Hebbian 50 4 25 10) g
+  avg3 <- liftM average $ replicateM 10 (basinsGivenStdT2 Hebbian 50 4 25 10)
+  print avg3
 
   putStrLn "basinsGivenStdT2 Storkey 50 4 25 10"
-  print $ evalRand (basinsGivenStdT2 Storkey 50 4 25 10) g
+  avg4 <- liftM average $ replicateM 10 (basinsGivenStdT2 Storkey 50 4 25 10)
+  print avg4
