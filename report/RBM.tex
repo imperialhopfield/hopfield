@@ -15,11 +15,11 @@
 
 500px
 
-Hopfield networks are deterministc: training a network with the same patterns
+Hopfield networks are deterministic: training a network with the same patterns
 will yield the same weights, and matching a pattern against the network will
 always give the same result. This has the advantage of simplicity and ease of
-testing. However, as mentioned before, there are spirous attractors in the
-Hopfields network (liniear combination of an odd number of training patterns).
+testing. However, as mentioned before, there are spurious attractors in the
+Hopfield network (linear combination of an odd number of training patterns).
 Using stochastic updating rules will decrease the probability of being 'stuck'
 in such a state. This resembles simulated annealing, but ensuring we are not
 caught in a local minima (in the energy landscape).
@@ -45,8 +45,8 @@ implementation.
 
 The connections between the neurons in the two layers is symmetrical, so it
 can be represented as a weight matrix which keeps the connection beween hidden
-and visible layers. A state of a Restricted Boltzmann machins is given by the
-values of both the visibile and given state. The corresponding Hopfield energy
+and visible layers. A state of a Restricted Boltzmann machine is given by the
+values of both the visible and given state. The corresponding Hopfield energy
 formula for a state is given by :
 \[ E (v, h) = - \sum_{i \in V} a_i v_i - \sum_{j \in H} b_j h_i - \sum_{i \in
    V, \nocomma j \in H \nocomma} v_i h_j w_{\tmtextit{\tmtextit{\tmop{ij}}}}
@@ -54,7 +54,7 @@ formula for a state is given by :
 
 
 where, $w_{\tmtextit{\tmtextit{}}}$is the weight matrix, $a$ and $b$are the
-vectors of biases corresponding to the visbile, respectibly hidden layers. As
+vectors of biases corresponding to the visible, respectively hidden layers. As
 expected, $v$is vector of visible units and \tmtextit{h} is the vector of
 hidden units.
 
@@ -66,24 +66,24 @@ indices of a visible vector and by \tmtextit{H} = \{1, .. \tmtextit{length}
 
 \tmtextbf{Probability of a state}
 
-After traning, the network assigns a probability to each possible state, as
+After training, the network assigns a probability to each possible state, as
 follows:
 \[ p \left( v, h \right) = \frac{1}{Z} e^{- E \left( v, h \right)} \]
-where Z is used to normalize the probabilities
+where Z is used to normalise the probabilities
 \[ Z = \sum_{v, h} e^{- E \left( v, h \right)} \]
-Thus, the porbability the network assings for a visibile vector \tmtextit{v}:
+Thus, the probability the network assigns for a visible vector \tmtextit{v}:
 \begin{equation}
   p \left( v \right) = \sum_h \frac{1}{Z} e^{- E \left( v, h \right)}
 \end{equation}
 \tmtextbf{Training the network}
 
-The network can be trained such that one maximizes the probabilty of a traning
-pattern. The derivative of the log probability of a trainig vector (given by
+The network can be trained such that one maximises the probability of a training
+pattern. The derivative of the log probability of a training vector (given by
 (1)), is simple, as follows:
 \[ \frac{\delta \log p \left( v \right)}{\delta w_{\tmop{ij}}} = < v_i h_i
    >_{\tmop{data}} - < v_i h_i >_{\tmop{model}} \]
-Due to the bipartitate nature of the Restricted Boltzmann Machine, it is easy
-to attain an \tmtextit{unabiased} sample of the hidden units, given the
+Due to the bipartite nature of the Restricted Boltzmann Machine, it is easy
+to attain an \tmtextit{unbiased} sample of the hidden units, given the
 visible units.
 \begin{equation}
   p \left( h_j = 1 \left|  \right. v \right) = \sigma \left( b_j + \sum_{i \in
@@ -102,7 +102,7 @@ function.
 
 There are ways of getting an unbiased sample of the visible units, but they
 are very time consuming. In practice, the contrastive divergence algorithm is
-used as a faster substitute. The visibile units are set to a training vector
+used as a faster substitute. The visible units are set to a training vector
 and the binary states of the hidden vector are computed using (2). These
 binary units are used to \tmtextit{reconstruct} the states of the visible
 vector using (3).
@@ -120,7 +120,7 @@ the biological brain: it is both \tmtextit{local} and \tmtextit{incremental}.
 As suggested by Hinton in section 16 http://www.cs.toronto.edu/\~{
 }hinton/absps/guideTR.pdf, there are various ways of using Restricted
 Boltzmann Machines for classification. We have employed two methods, one which
-we developed ourselves and one third one descriebed in the paper, by adding
+we developed ourselves and one third one described in the paper, by adding
 another set of visible units, the classification units.
 
 
@@ -135,7 +135,7 @@ classes. $y = e_c$, where c is the class the vector is modelling ($e_c$ is a
 vector with all zeros, expect from the position c, where it is 1).
 
 As seen from Figure 2, one now needs to weight matrices, which we will denote
-by \tmtextit{W}(the weight matrix between the visbile units and hidden ones) \
+by \tmtextit{W}(the weight matrix between the visible units and hidden ones) \
 and U (the weight matrix and between the classification units and hidden
 ones). Vectors \tmtextit{b}, \tmtextit{c}, \tmtextit{d} correspond to the
 vector of biases for the visible units (training patterns), hidden units and
@@ -144,11 +144,11 @@ classification units, respectively.
 The energy function for this model is:
 \[ E \left( v \nocomma, y, h \right) = - d^T y - c^T h - b^T v - h^T W v - h^T
    U y \]
-Which gives rise to the following formula for the probility of a configuration
+Which gives rise to the following formula for the probability of a configuration
 \tmtextit{v}, \tmtextit{y}.
 \[ p \left( v, y, h \right) = \frac{e^{- E \left( v \nocomma, y, h
    \right)}}{Z} \]
-where \tmtextit{Z} is the normalizing constant. Thus,
+where \tmtextit{Z} is the normalising constant. Thus,
 \[ p \left( v, y \right) = \sum_h p \left( v, y, h \right) = \sum_h \frac{e^{-
    E \left( v \nocomma, y, h \right)}}{Z} \]
 The distribution used for the Classification Boltzmann Machine are the
@@ -165,7 +165,7 @@ following:
   p \left( y = e_c \left| h \right. \right) = \frac{e^{d^T e_c \noplus + h^T
   Ue_c}}{N}
 \end{equation}
-where N is the normalizing constant $\sum_c$ $e^{d^T e_c \noplus + h^T Ue_c}$.
+where N is the normalising constant $\sum_c$ $e^{d^T e_c \noplus + h^T Ue_c}$.
 
 Note that we denote by $W_i$ the row \tmtextit{i} of matrix \tmtextit{W}, and
 by $W^i_{}$ the column \tmtextit{i} of matrix \tmtextit{W}.
@@ -237,12 +237,12 @@ creating the binary vector using the representation in base 2 of class c.
 
 The training is done in the usual way, but with the complete vectors (actual
 pattern and classification). In our case, as different patterns ought to have
-different classifcations, we use as class the index of the pattern in the list
+different classifications, we use as class the index of the pattern in the list
 (with removed duplicates) of training patterns.
 
 When a pattern needs to be matched to one of the training patterns for
 recognition, one uses the log probability (given using ...) to compute the
-probability of each of the classifications, and choses the one with maximum
+probability of each of the classifications, and chooses the one with maximum
 probability. The matching process is described in figure.
 
 
