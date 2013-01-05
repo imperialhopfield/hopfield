@@ -4,62 +4,98 @@
 
 Our initial aim was to explore various properties of the attractors in a Hopfield Network. We are interested in studying, testing or challenging several ideas about the neural network:
 \begin{itemize}
- \item Clusters of attractors: We are interested to see how the Hopfield network behaves when learning simmilarly correlated patterns. This implies training the network with a cluster of attractors, which will lower the capacity of the network. We believe that basin sizes will get smaller as the patterns get closer to each other. 
+ \item Clusters of attractors: We are interested to see how the Hopfield network behaves when learning simmilarly correlated patterns. This implies training the network with a cluster of attractors, which will lower the capacity of the network. We believe that basin sizes will get smaller as the patterns get closer to each other.
  \item Super-Attractors: Find out what happends if the network is trained several times with the same pattern. We believe this super-attractor will have a larger basin size compared to the other attractors.
- \item Convergence: We plan to train the network with different types of attractors and find out to which ones patterns tend to converge.  
+ \item Convergence: We plan to train the network with different types of attractors and find out to which ones patterns tend to converge.
 \end{itemize}
 
 
 \section{Measuring the Basin Size}
 
- A large part of our experiments were thus dedicated to measuring basin sizes of different attractors, clusters of attractors and a newly introduced concept of \emph{Super-Attractors}. 
- 
+ A large part of our experiments were thus dedicated to measuring basin sizes of different attractors, clusters of attractors and a newly introduced concept of \emph{Super-Attractors}.
+
  A recognized scientific method for calculating the basin size is the Storkey-Valabregue measurement:
- 
+
  \begin{enumerate}
   \item Initially n = 1
   \item Choose an initial fixed point corresponding to a stored pattern \(\mu\)
-  \item Choose some initial normalized Hamming radius \(r=r_{0}\)
+  \item \label{itm:choose radius} Choose some initial normalized Hamming radius \(r=r_{0}\)
   \item Let the set A be all the states Hamming-distant \( nr \) from the fixed point
   \item Sample 100 states from A
   \item Calculate how many of these states are attracted to the fixed point. Denote this number \( t_{\mu}(r) \)
   \item If \( t_{\mu}(r) \) is smaller than 90, stop and return \(nr\)
-  \item Increment \(n\) by a suitable ammount and repeat from (3)
+  \item Increment \(n\) by a suitable amount and repeat from (\ref{itm:choose radius})
   \item Repeat fo each attractor.
  \end{enumerate}
 
-% TODO: This algorithm is implemented in the Haskell function ... 
- 
+% TODO: This algorithm is implemented in the Haskell function ...
+
 
 \section{Generating Clusters of Attractors}
 
-There are various ways of generating clusters of attractors (i.e. attractors that have a low Hamming distance between each other). We shall present two different metodologies that can be used to generate them. 
+There are various ways of generating clusters of attractors (i.e. attractors that have a low Hamming distance between each other). We shall present two different metodologies that can be used to generate them.
 
 One way is to start with a root pattern and then reverse each bit with a probability p. The new patterns can be interpreted as noisy versions of the root pattern. We shall denote this procedure T1.
 
 \subsection{Generating Gaussian-Distributed Clusters}
 
-Another objective of this work was to analyse patterns that are extracted according to a Gaussian distribution with a specific mean and variance. 
+Another objective of this work was to analyse patterns that are extracted according to a Gaussian distribution with a specific mean and variance.
 
 
-Since the state space is \( 2^N \) for a network of N neurons, the Gaussian Distribution will have to be defined over a huge set of states. This is highly non-trivial, since we are dealing with binary patterns, that cannot be ordered in an easy way. 
+Since the state space is \( 2^N \) for a network of N neurons, the Gaussian Distribution will have to be defined over a huge set of states. This is highly non-trivial, since we are dealing with binary patterns, that cannot be ordered in an easy way.
 
 In this case, we will use Federico's method for sampling Gaussian distributed patterns \cite[p.~33]{federico}. We tackle this issue using the simplest possible approach: to draw numbers from a Normal Distribution and then translate them into patterns that will preserve the distance between them. Formally, if \(x\) and \(y\) were drawn and \( |x-y|=\delta\), then the Hamming distance between the encoded patterns \(x'\) and \(y'\) would also be \( d(x',y')=\delta\).
 
 \subsubsection{Encoding of the patterns}
 
-In order to encode a number into a binary pattern, we first round the number to the nearest integer. Let k be the integer obtained as such. Now, from left to right, we set to 1 all the bits in locations 1..k of our pattern. The remaining bits are set to -1. 
+In order to encode a number into a binary pattern, we first round the number to the nearest integer. Let k be the integer obtained as such. Now, from left to right, we set to 1 all the bits in locations 1..k of our pattern. The remaining bits are set to -1.
 
-For example, if the pattern size is 7 and the integer obtained is 4, we get the following pattern: [1,1,1,1,-1,-1,-1]. 
+For example, if the pattern size is 7 and the integer obtained is 4, we get the following pattern: [1,1,1,1,-1,-1,-1].
 
 \subsubsection{Limitations of the encoding}
 
 Although the method has a big advantage for simplicity, we can only obtain N different patterns out of all \( 2^N\) patterns available in the state space. However, we can regain capacity if we start flipping bits, while at the same time keeping constant the hamming distance to some certain mean pattern \(\mu\).
 
-Another idea would be to extend our distribution to a multi-variate distribution. In this case, the capacity of the network would increase from \(N\) to \(\frac{n}{k}^k\), where k is the number of dimensions. 
+Another idea would be to extend our distribution to a multi-variate distribution. In this case, the capacity of the network would increase from \(N\) to \(\frac{n}{k}^k\), where k is the number of dimensions.
 
-Unfortunatelly, we did not have enough time to implement these ideas, so we only experimented with the naive encoding of patterns described above. 
+Unfortunatelly, we did not have enough time to implement these ideas, so we only experimented with the naive encoding of patterns described above.
 
 \section{Super Attractors}
-In the context of learning models such as the Hopfield model,
+In the context of learning models such as the Hopfield model, a super attractor is defined as an attractor resulting from training a model with multiple occurrences or instances of some training pattern. The degree of a super attractor denotes the number of occurrences of its corresponding pattern in the training set.
 
+
+In the context of modelling Attachment theory, a super attractor may represent repeated interactions with the primary care giver. Clearly, it is of interest to investigate the properties of such an attractor; in particular establishing the existence and, if existent, the type of relationship between the degree of the super attractor and the extent of its dominance, or stability, over the space of patterns.
+
+
+\subsection{Single super attractor}
+
+\hilight{WHAT SHALL WE DO ABOUT NON-FIXED POINTS???? DO WE DISCARD THEM OR INCLUDE THEM??}
+\begin{enumerate}
+
+% Define variables
+\newcommand{\psuper}{$p_{super}$}
+\newcommand{\prandom}{$\overrightarrow{p}_{random}$}
+
+\item Fix N, the number of neurons.
+
+\item Choose a random pattern \psuper, which signifies the primary care giver.
+
+\item Choose a number of random patterns \prandom, such that the Hamming distance between \psuper and each of \prandom is between 25\% and 75\%. The range forms a ball centred at 50\% Hamming distance\footnote{The percentage Hamming distance is simply the Hamming distance divided by the number of bits N} with an arbitrary radius, chosen such that the probability of a \prandom falling into \psuper's basin of attraction is small. This is done to avoid forming clusters of attractors, which we deal with separately in \hilight{a later section. TODO insert cross reference to section!!!!!} Recall that the Hopfield network is sign blind, and as a result the inverse of \psuper, $p_{super}^{-1}$, forms a symmetric super attractor. It is for this reason that a symmetric range about 50\% is chosen.
+
+\item \label{itm:choose degree} Fix a degree $d$ for \psuper and train a Hopfield network using $\overrightarrow{p}^d_{super}$ ($d$ instances of \psuper) and \prandom
+
+\item Measure the basin of attraction of \psuper using the Storkey-Valabregue method. \hilight{CROSS REFERENCE THIS}
+
+\item Repeat from (\ref{itm:choose degree}) with a different degree.
+
+\end{enumerate}
+
+
+% undefine variables
+\let\psuper\undefined
+\let\prandom\undefined
+
+
+\hilight{Describe our specific parameters, our results, evaluate, how to reproduce in code, etc}
+
+\input{plot-one-super}
