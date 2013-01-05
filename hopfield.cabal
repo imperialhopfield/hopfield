@@ -26,6 +26,7 @@ library
     , Hopfield.Experiment
     , Hopfield.TestUtil
     , Hopfield.ExpUtil
+    , Hopfield.Benchmark
   other-modules:
   hs-source-dirs:
     src

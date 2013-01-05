@@ -12,6 +12,7 @@ import Hopfield.Hopfield
 import Hopfield.ConvertImage
 import Hopfield.RestrictedBoltzmannMachine
 import Hopfield.ClassificationBoltzmannMachine
+import Hopfield.Benchmark (bench1)
 
 
 
@@ -49,6 +50,9 @@ data RecognizeArgs = RunOptions
                    | BenchmarkOptions
                        { benchmarkPaths :: [String]
                        }
+                   | InbuiltBenchmarkOptions
+                       { benchmarkName :: String
+                       }
                    deriving (Show)
 
 
@@ -64,12 +68,18 @@ benchmarkOptions :: Parser RecognizeArgs
 benchmarkOptions = BenchmarkOptions <$> arguments str ( metavar "FILE_PATHS" <> help "Target for the greeting" )
 
 
+inbuiltBenchmarkOptions :: Parser RecognizeArgs
+inbuiltBenchmarkOptions = InbuiltBenchmarkOptions <$> argument str ( metavar "NAME" <> help "Name of the inbuilt benchmark" )
+
+
 recognizeOptions :: Parser RecognizeArgs
 recognizeOptions = subparser
   ( command "run" ( info (helper <*> runOptions)
                     ( progDesc "Add a file to the repository" ))
   <> command "bench" (info (helper <*> benchmarkOptions)
                       ( progDesc "run benchmark" ))
+  <> command "inbuiltbench" (info (helper <*> inbuiltBenchmarkOptions)
+                      ( progDesc "run inbuilt benchmark" ))
   )
 
 
@@ -101,3 +111,6 @@ main = do
         print =<< recPic recMethod (width, height) filePaths queryPath
 
     BenchmarkOptions { benchmarkPaths = _bp } -> error "benchmark not implemented"
+
+    InbuiltBenchmarkOptions { benchmarkName } -> case benchmarkName of
+      "bench1" -> bench1
