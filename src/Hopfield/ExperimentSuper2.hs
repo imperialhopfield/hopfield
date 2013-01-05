@@ -1,6 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Main where
+module Hopfield.ExperimentSuper2 where
 
 import Control.Monad (replicateM)
 import Control.Monad.Random

@@ -37,10 +37,9 @@ performAndPrint expType neurons clusterSize start stop step iterations = do
   mapM_ print $ map (oneIteration expType neurons clusterSize start stop step) [0.. iterations]
 
 
-main :: IO ()
-main = do
+run :: [String] -> IO ()
+run args = do
 
-  args <- getArgs
   case args of
     (t : n : c : iterations : start : stop : step: _)-> performAndPrint (read t) (read n) (read c) (read start) (read stop) (read step) (read iterations)
     _ -> error "invalid arguments"
