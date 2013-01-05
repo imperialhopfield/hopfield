@@ -110,11 +110,11 @@ In this case, Q is the overlap matrix:
 
 Now that we have introduced a second learning rule, it is worth mentioning a few desirable properties that neural network learning rules should aim to have:
 \begin{itemize}
- \item Local: each weight is updated using information available to neurons on either side of the connection. 
+ \item Locality: each weight is updated using information available to neurons on either side of the connection. 
  \item Incremental: new patterns can be learned without using information from the older patterns. When a new pattern is used for training, the new values for the weights only depend on the old values and on the bits of the pattern.
 \end{itemize}
 
-These properties are desirable in order for the rules to become more biologically plausible. It is important to mention that Hebbian Learning is both local and incremental, whereas the Pseudo-inverse learning rule is neither of them, since it depends upon the computation of an inverse matrix that contains information about all the patterns together.
+These properties are desirable, since learning becomes more biologically plausible. It is important to mention that Hebbian Learning is both local and incremental, whereas the Pseudo-inverse learning rule is neither local nor incremental, since it depends upon the computation of an inverse matrix that contains information about all the patterns together.
 
 \subsection{Training using the Storkey Rule}
 
