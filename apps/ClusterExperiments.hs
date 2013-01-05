@@ -23,9 +23,10 @@ import Hopfield.TestUtil (Type(H), patternGen)
 main :: IO ()
 main = do
 
-  putStrLn "T2 experiment with 1 cluster with no average but lists"
-  let avgs =  replicate 10 $ experimentUsingT2NoAvg Hebbian 100 10
-  printMList avgs (replicate 10 prettyList)
+  -- Commented for efficiency reasons
+  -- putStrLn "T2 experiment with 1 cluster with no average but lists"
+  -- let avgs =  replicate 10 $ experimentUsingT2NoAvg Hebbian 100 10
+  -- printMList avgs (replicate 10 prettyList)
 
 
   g <- getStdGen
