@@ -31,3 +31,4 @@ main = do
     "small"      -> Hopfield.SmallExperiments.main
     "cluster"    -> Hopfield.ClusterExperiments.run args
     "super"      -> Hopfield.ExperimentSuper2.main
+    _            -> error "unknown experiment"
