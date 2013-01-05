@@ -44,7 +44,7 @@ oneIteration2 expType networkSize clusterSize val1 start2 stop2 p_step2 i = zip 
     f x = evalRand (evaluatedFunction x) (mkStdGen i)
     unevaluated = map f values
     cs = unevaluated `using` parList rdeepseq
-    values = [start2, p_step2 .. stop2]
+    values = [start2, start2 + p_step2 .. stop2]
     evaluatedFunction = case expType of
       T1 -> basinsGivenProbabilityT1With2Clusters Hebbian networkSize clusterSize val1
       T2 -> basinsGivenStdT2With2Clusters Hebbian networkSize clusterSize (networkSize ./ 2.0) (networkSize ./ 2.0) val1
@@ -52,7 +52,7 @@ oneIteration2 expType networkSize clusterSize val1 start2 stop2 p_step2 i = zip 
 
 performAndPrint2 :: ExpType -> Int -> Int -> Double -> Double -> Double -> Double -> Int -> IO ()
 performAndPrint2 expType neurons clusterSize val1 start2 stop2 step2 iterations = do
-  putStrLn $ "Experiment type" ++ show expType
+  putStrLn $ "Experiment type " ++ show expType
   putStrLn $ "Two clusters"
   putStrLn $ "neurons  " ++ show neurons ++ "  cluster " ++ show clusterSize
   putStrLn $ "performed for " ++ show iterations ++ " iterations"
