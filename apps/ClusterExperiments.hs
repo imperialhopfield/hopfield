@@ -2,18 +2,20 @@
 
 module Main where
 
-import Analysis
 import Control.Monad (replicateM)
 import Control.Monad.Random
-import Hopfield
-import Measurement
 import Test.QuickCheck
 import Test.QuickCheck.Gen (unGen)
-import SuperAttractors
-import Util
-import Utils (Type(H), patternGen)
 
-import Clusters
+import Hopfield.Analysis
+import Hopfield.Clusters
+import Hopfield.Hopfield
+import Hopfield.Measurement
+import Hopfield.SuperAttractors
+import Hopfield.Util
+import Hopfield.TestUtil (Type(H), patternGen)
+
+
 
 main :: IO ()
 main = do

@@ -140,6 +140,15 @@ experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2 = do
   return $ average basinAvgs
 
 
+experimentUsingT2NoAvg :: MonadRandom m => LearningType -> Int -> Int -> m [(Double, Double)]
+experimentUsingT2NoAvg learning networkSize clusterSize
+  = do
+    let mean = networkSize ./. (2 :: Int)
+        deviations = [0.0, 2.0, networkSize ./. (8 :: Int)]
+    basinAvgs <- mapM (basinsGivenStdT2 learning networkSize clusterSize mean) deviations
+    return $ zip deviations basinAvgs
+
+
 type1T2 :: MonadRandom m => LearningType -> Int -> Int -> m Double
 type1T2 learning networkSize clusterSize
   = experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2
