@@ -63,10 +63,9 @@ performAndPrint2 expType neurons clusterSize val1 start2 stop2 step2 iterations 
 
 
 
-main :: IO ()
-main = do
+run :: [String] -> IO ()
+run args = do
 
-  args <- getArgs
   case args of
     ("1": t : n : c : start : stop : step: iterations: _)-> performAndPrint1 (read t) (read n) (read c) (read start) (read stop) (read step) (read iterations)
     ("2": t : n : c : fixed : start : stop : step: iterations: _)-> performAndPrint2 (read t) (read n) (read c) (read fixed) (read start) (read stop) (read step) (read iterations)
