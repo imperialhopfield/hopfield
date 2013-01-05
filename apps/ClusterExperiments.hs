@@ -32,8 +32,8 @@ main = do
 
   g <- getStdGen
 
-  let networkSize = 100
-      clusterSize = 10
+  let networkSize = 50
+      clusterSize = 5
       mean = networkSize ./. (2 :: Int)
       deviations = [0.0, 2.0 .. networkSize ./. (8 :: Int)]
       f x = evalRand (basinsGivenStdT2 Hebbian networkSize clusterSize mean x) g
