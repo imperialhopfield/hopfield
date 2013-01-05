@@ -29,7 +29,7 @@ oneIteration networkSize clusterSize i = zip cs deviations
 
 performAndPrintT2 :: Int -> Int -> Int -> IO ()
 performAndPrintT2 neurons clusterSize iterations = do
-    putStrLn $ "T2 neurons" ++ show neurons ++ "cluster " ++ show clusterSize
+    putStrLn $ "T2 neurons  " ++ show neurons ++ "  cluster " ++ show clusterSize
     mapM_ print $ map (oneIteration neurons clusterSize) [0.. iterations]
 
 
@@ -38,7 +38,8 @@ main = do
 
   args <- getArgs
 
-  case (head args) of
-    "big"    -> performAndPrintT2 100 10 10
-    "simple" -> performAndPrintT2 100 10 10
+  case args of
+    ("big": _)    -> performAndPrintT2 100 10 10
+    ("simple": _) -> performAndPrintT2 100 10 10
+    otherwise     -> putStrLn "Invalid argument"
 
