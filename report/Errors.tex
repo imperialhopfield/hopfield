@@ -40,7 +40,7 @@ In case one of the patterns is not a fixed point, it is said that the network
 has an error.
 
 {\tmem{}}We will now derive the equations for errors in Hopfield networks.
-Firstly, we shall derive the probabilty of error for a pattern which was used
+Firstly, we shall derive the probability of error for a pattern which was used
 for training, given that all the patterns were independent. Secondly, we will
 derive the equation of error for a super attractor: a pattern which was used
 to train the network, but which appeared in the training multiple times. The
@@ -109,7 +109,7 @@ probability of getting an error is the given by the probability of \ $C_i^k >
 1$.
 
 We model $C_i^k $ as follows. Each $x^l_{i^{}} x^l_j x^k_{^{} j} x^k$ can be
-modeled as a sample drawn from a random variable X with $\tmem{E (X) = 0}$ and
+modelled as a sample drawn from a random variable X with $\tmem{E (X) = 0}$ and
 $\tmop{Var} (X) = E (x^2) - E (x)^2 = 1.$
 
 By using the central limit theorem and by approximating $N \left( p \right.$ -
@@ -143,7 +143,7 @@ By denoting $\frac{p}{N}$ with $\sigma :$
 
 \[  \]
 \[  \]
-\tmtextbf{Stability of a super attractor, given indpendence of all other
+\tmtextbf{Stability of a super attractor, given independence of all other
 stored patterns}
 
 
@@ -158,7 +158,7 @@ a fixed point.
 Let $x^k_{}$ be the supper attractor with degree d.
 
 Let S = $\left\{ i \left|  \right. \right. x^i_{} = x^k$ , i {\tmem{$\in
-\left\{ 1 \ldots p \right\} $}}\}, be the set of indexes of occurences of the
+\left\{ 1 \ldots p \right\} $}}\}, be the set of indexes of occurrences of the
 supper attractor $x^k_{}$.
 
 $\tmop{We} \tmop{assumed} \tmop{that} \tmop{the} \tmop{super} \tmop{attractor}
@@ -226,10 +226,10 @@ image recognition, this can provide to be useful as it can give a guideline
 towards how to resize the images in order to bring them to the same size
 (patterns which are stored in a Hopfield network need to have equal lengths).
 It also enables us to compute the capacity of a network of given size, in
-order to minimze errors.
+order to minimise errors.
 
-Given p and N, we decuded the probability of error for the network. Thus,
-conversly, we can compute the maximum ratio of p and N to ensure that the
+Given p and N, we decided the probability of error for the network. Thus,
+conversely, we can compute the maximum ratio of p and N to ensure that the
 probability of error does not exceed a maximum accepted error probability.
 \[ P_{\tmop{error}} = \frac{1}{2}  \left( 1 \noplus \noplus -
    \tmtextit{\tmop{erf}} \left( \sqrt{\frac{N}{2 p}} \right) \right)  \]
@@ -250,7 +250,7 @@ where inverf is the inverse of the erf function.
 \tmtextbf{Measurements using the error of a network} \tmtextbf{for independent
 patterns}
 
-We will now give the reader an idea of how one should accomodate a fixed
+We will now give the reader an idea of how one should accommodate a fixed
 number of patterns depending on the error accepted by the application, by
 creating networks of appropriate size.
 
@@ -306,15 +306,15 @@ by using \tmtexttt{ghci}:
 The first argument of the function is $p$ (the number of training patterns),
 and the second one is $N$ (the size of the network). A similar function can be
 used for a given network \tmtexttt{computeErrorSuperAttractor}, that given a
-network computes the probability of error of the superattractor. The caller
+network computes the probability of error of the super attractor. The caller
 has to ensure that training patterns are independent in order for the
 computation to be correct.
 
-\tmtextbf{Deascresing the error by using one super attractor}
+\tmtextbf{Decreasing the error by using one super attractor}
 
-Above we descirbed the derivation for obtaining the error of a super
+Above we described the derivation for obtaining the error of a super
 attractor, given its degree. We remind the reader that we did this under the
-assumption that all other traning patterns are independent. We will now show
+assumption that all other training patterns are independent. We will now show
 how the error of a pattern decreases if it is made a super attractor, by
 varying the number of times it is presented to the network during training.
 
@@ -367,7 +367,7 @@ by using \tmtexttt{ghci}:
 The first argument of the function is the degree of the attractor, the second
 one is $p$ and the third one is $N$. A similar function can be used for a
 given network \tmtexttt{computeErrorSuperAttractor}, that given a network
-computes the probability of error of the superattractor. The caller of the
+computes the probability of error of the super attractor. The caller of the
 function has to ensure that the training patterns contain a super attractor
 and that the other patterns are independent.
 
