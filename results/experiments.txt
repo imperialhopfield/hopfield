@@ -62,8 +62,9 @@ dist/build/smallexp/small
 7.522058823529412
 
 
+T2 experiment with 1 cluster with no average but lists
+(0.0,49.0) (2.0,14.4) (12.5,3.3)
 
--------------------
 
 
 mcr10@pixel04 ~/gp/imperialhopfield (git)-[parallel] % dist/build/clusterexp/cluster
@@ -80,3 +81,7 @@ T2 in IO() to be able to use parallel map with 50 neurons cluster of size 5
 [(24.0,0.0),(9.6,2.0),(4.6,4.0),(4.6,6.0)]
 [(24.0,0.0),(4.6,2.0),(4.6,4.0),(4.2,6.0)]
 
+
+
+T2 in IO() to be able to use parallel map std dev 0.0 2.0 and 12.5
+[49.0,9.6,9.2]
