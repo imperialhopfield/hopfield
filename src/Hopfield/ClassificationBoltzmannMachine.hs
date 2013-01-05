@@ -1,7 +1,7 @@
 {-# LANGUAGE PatternGuards, ScopedTypeVariables #-}
 
 module Hopfield.ClassificationBoltzmannMachine where
--- | Base Restricted Bolzamann machine.
+-- | Base Restricted Boltzmann machine.
 
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
 
@@ -22,8 +22,8 @@ import Hopfield.Util
 
 import Debug.Trace
 
--- In the case of the Bolzamann Machine the weight matrix establishes the
--- weigths between visible and hidden neurons
+-- In the case of the Boltzmann Machine the weight matrix establishes the
+-- weights between visible and hidden neurons
 -- w i j - connection between visible neuron i and hidden neuron j
 
 -- | determines the rate in which the weights are changed in the training phase.
@@ -37,7 +37,7 @@ data Mode = Hidden | Visible | Classification
 
 data BoltzmannData = BoltzmannData {
     weightsB :: Weights    -- ^ the weights of the network
-  , classificationWeights :: Weights -- weigths for classification
+  , classificationWeights :: Weights -- weights for classification
   ,  biasB  :: Bias
   ,  biasC  :: Bias
   ,  biasD  :: Bias
@@ -52,7 +52,7 @@ data BoltzmannData = BoltzmannData {
 
 -- | Retrieves the dimension of the weights matrix corresponding to the given mode.
 -- For hidden, it is the width of the matrix, and for visible it is the height.
--- One has to ensure that the appropiate weigth matrix is passed with this function.
+-- One has to ensure that the appropriate weights matrix is passed with this function.
 getDimension :: Mode -> Weights -> Int
 getDimension Hidden  ws = V.length $ ws
 getDimension Visible ws = V.length $ ws ! 0
@@ -66,10 +66,10 @@ buildCBoltzmannData pats =
     where nr_visible = V.length (head pats)
 
 
--- | @buildBolzmannData' patterns nrHidden@: Takes a list of patterns and
--- builds a Bolzmann network (by training) in which these patterns are
+-- | @buildBoltzmannData' patterns nrHidden@: Takes a list of patterns and
+-- builds a Boltzmann network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
--- against the network, by using 'matchPatternBolzmann'.
+-- against the network, by using 'matchPatternBoltzmann'.
 buildCBoltzmannData' :: MonadRandom  m => [Pattern] -> Int ->  m BoltzmannData
 buildCBoltzmannData' [] _  = error "Train patterns are empty"
 buildCBoltzmannData' pats nrHidden
@@ -77,7 +77,7 @@ buildCBoltzmannData' pats nrHidden
       = error "Cannot have empty patterns"
   | any (\x -> V.length x /= first_len) pats
       = error "All training patterns must have the same length"
-  | otherwise = trainBolzmann pats nrHidden
+  | otherwise = trainBoltzmann pats nrHidden
   where
     first_len = V.length $ head pats
 
@@ -86,7 +86,7 @@ buildCBoltzmannData' pats nrHidden
 -- | @getActivationProbability ws bias pat index@
 -- can be used to compute the activation probability for a neuron in the
 -- visible layer, or for parts of the sums requires for
--- the probabilty of the classifications
+-- the probability of the classifications
 getActivationSum :: Weights -> Bias -> Pattern -> Int -> Double
 getActivationSum ws bias pat index
   = bias ! index + dotProduct (columnVector ws index) (toDouble pat)
@@ -189,7 +189,7 @@ getClassificationVector pat_classes pat
 -- | One step which updates the weights in the CD-n training process.
 -- The weights are changed according to one of the training patterns.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
--- @oneTrainingStep bm visible@ updates the parametrs of @bm@ (the 2 weight
+-- @oneTrainingStep bm visible@ updates the parameters of @bm@ (the 2 weight
 -- matrices and the biases) according to the training instance @v@
 -- and its classification, obtained by looking in the map kept in @bm@
 oneTrainingStep :: MonadRandom m => BoltzmannData -> Pattern ->  m BoltzmannData
@@ -220,15 +220,15 @@ oneTrainingStep (BoltzmannData ws u b c d pats nr_h pat_to_class) v = do
   return $ BoltzmannData new_ws new_u new_b new_c new_d pats nr_h pat_to_class
 
 
--- | The training function for the Bolzmann Machine.
+-- | The training function for the Boltzmann Machine.
 -- We are using the contrastive divergence algorithm CD-1
 -- TODO see if making the vis
 -- (we could extend to CD-n, but "In pratice,  CD-1 has been shown to work surprisingly well."
--- @trainBolzmann pats nrHidden@ where @pats@ are the training patterns
+-- @trainBoltzmann pats nrHidden@ where @pats@ are the training patterns
 -- and @nrHidden@ is the number of neurons to be created in the hidden layer.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine#Training_algorithm
-trainBolzmann :: MonadRandom m => [Pattern] -> Int -> m BoltzmannData
-trainBolzmann pats nr_h = do
+trainBoltzmann :: MonadRandom m => [Pattern] -> Int -> m BoltzmannData
+trainBoltzmann pats nr_h = do
   ws <- vector2D `liftM` genWeights
   u  <- vector2D `liftM` genU
   foldM oneTrainingStep (BoltzmannData ws u b c d pats nr_h pats_classes) pats
@@ -244,8 +244,8 @@ trainBolzmann pats nr_h = do
       nr_visible = V.length $ head pats
 
 
--- | @matchPatternBoltzmann bm pat@ given the boltzmann trained network @bm@
--- regonizes @pat@, by classifing it to one of the patterns the network was
+-- | @matchPatternBoltzmann bm pat@ given the Boltzmann trained network @bm@
+-- recognizes @pat@, by classifying it to one of the patterns the network was
 -- trained with. This is done by computing the free energy of @pat@ with
 -- every possible classification, and choosing the classification with
 -- lowest energy.
@@ -264,7 +264,7 @@ matchPatternCBoltzmann bm v
 
 -- | @getFreeEnergy bm visible classification_vector@
 -- Computes the free energy of @v@ with @classification_vector@, according
--- to the trained boltzmann network @bm@. It is used for classifing a given
+-- to the trained Boltzmann network @bm@. It is used for classifying a given
 -- visible vector according to the classes used for training the network @bm@.
 getFreeEnergy :: BoltzmannData -> Pattern -> Pattern -> Double
 getFreeEnergy (BoltzmannData ws u _b c d _pats _nrH _pats_classes) v y
@@ -272,7 +272,7 @@ getFreeEnergy (BoltzmannData ws u _b c d _pats _nrH _pats_classes) v y
       where hiddenSums = getHiddenSums ws u c v y
 
 
--- | The activation functiom for the network (the logistic sigmoid).
+-- | The activation function for the network (the logistic sigmoid).
 -- http://en.wikipedia.org/wiki/Sigmoid_function
 activation :: Double -> Double
 activation x = 1.0 / (1.0 + exp (-x))
@@ -299,13 +299,13 @@ validClassificationVector pat size
 validPattern :: Mode -> Weights -> Pattern -> Maybe String
 validPattern mode ws pat
   | getDimension mode ws /= V.length pat = Just $ "Size of pattern must match network size in " ++ show mode
-  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in bolzmann pattern"
+  | V.any (\x -> notElem x [0, 1]) pat   = Just "Non binary element in Boltzmann pattern"
   | otherwise                            = Nothing
 
 -- | @validWeights ws@ checks that a weight matrix is well formed.
 validWeights :: Weights -> Maybe String
 validWeights ws
   | V.null ws = Just "The  matrix of weights is empty"
-  | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "Weigths matrix ill formed"
+  | V.any (\x -> V.length x /= V.length (ws ! 0)) ws = Just "Weights matrix ill formed"
   | otherwise = Nothing
 
