@@ -156,7 +156,7 @@ executable clusterexp
     , HUnit >= 1.2.4.2
     , QuickCheck >= 2.4.2
   ghc-options:
-    -Wall -fwarn-unused-imports
+    -Wall -fwarn-unused-imports -threaded
 
 
 
