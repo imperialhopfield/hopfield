@@ -31,3 +31,26 @@ Our first experiment is showing us the basin sizes for increasing values of p, t
 
 \subsubsection{Comments}
 \hilight{Insert graph here}
+
+\subsection{Basin Size in Two Clusters using T1}
+
+This experiment is simmilar to the previous one, but it contains two clusters this time. The value of p will stay the same for one cluster (fixed at 0.45) and only vary in the range [0-0.5]. Method T1 is used, for a Hopfield Network of N neurons. The procedure is given below:
+\hilight{INSERT NEWLINE HERE}
+\begin{easylist}[enumerate]                                                                            
+\ListProperties(Style2*=,Numbers=a,Numbers1=R,FinalMark=.)
+& We generate 2 random patterns \(\mu_{1}\) and \(\mu_{2}\), corresponding to clusters \( C_{1} \) and \( C_{2} \).
+
+& We generate P patterns for \( C_{1} \), using T1 with associated probability \( p_{1}=0.45\). 
+
+& For all values of probability \( p_{2} \) from 0 to 0.5
+
+    && Starting from \(\mu_{2}\) we generate P patterns using T1 with associtated probability \( p_{2} \), and give them to the Hopfield network in order to be learned according to Hebb or Storkey rule.
+ 
+    && For both sets of patterns, we measure the mean basin size using the Storkey-Valabregue measurement and plot the values on the graph. 
+\end{easylist}
+\hilight{INSERT NEWLINE HERE}
+We will be interested to observe how can one cluster influence the other. For this reason, we have set a big p-value for one cluster (0.45), in order to make sure the attractors are spread around the state space. 
+
+\subsubsection{Comments}
+\hilight{Insert graph here}
+
