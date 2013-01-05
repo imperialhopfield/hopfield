@@ -3,7 +3,7 @@
 report/*.log
 report/*.aux
 report/*.pdf
-report/*.tex*
+report/*.tex~
 report/*.toc
 report/*.blg
 report/*.bbl
