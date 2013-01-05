@@ -2,4 +2,41 @@
 % This is where we describe our experiments. We insert plots, images, ....
 
 \section{Super Attractors}
-In the context of learning models such as the Hopfield model,
+In the context of learning models such as the Hopfield model, a super attractor is defined as an attractor resulting from training a model with multiple occurrences or instances of some training pattern. The degree of a super attractor denotes the number of occurrences of its corresponding pattern in the training set.
+
+
+In the context of modelling Attachment theory, a super attractor may represent repeated interactions with the primary care giver. Clearly, it is of interest to investigate the properties of such an attractor; in particular establishing the existence and, if existent, the type of relationship between the degree of the super attractor and the extent of its dominance, or stability, over the space of patterns.
+
+
+\subsection{Single super attractor}
+
+\hilight{WHAT SHALL WE DO ABOUT NON-FIXED POINTS???? DO WE DISCARD THEM OR INCLUDE THEM??}
+\begin{enumerate}
+
+% Define variables
+\newcommand{\psuper}{$p_{super}$}
+\newcommand{\prandom}{$\overrightarrow{p}_{random}$}
+
+\item Fix N, the number of neurons.
+
+\item Choose a random pattern \psuper, which signifies the primary care giver.
+
+\item Choose a number of random patterns \prandom, such that the Hamming distance between \psuper and each of \prandom is between 25\% and 75\%. The range forms a ball centred at 50\% Hamming distance\footnote{The percentage Hamming distance is simply the Hamming distance divided by the number of bits N} with an arbitrary radius, chosen such that the probability of a \prandom falling into \psuper's basin of attraction is small. This is done to avoid forming clusters of attractors, which we deal with separately in \hilight{a later section. TODO insert cross reference to section!!!!!} Recall that the Hopfield network is sign blind, and as a result the inverse of \psuper, $p_{super}^{-1}$, forms a symmetric super attractor. It is for this reason that a symmetric range about 50\% is chosen.
+
+\item \label{itm:choose degree} Fix a degree $d$ for \psuper and train a Hopfield network using $\overrightarrow{p}^d_{super}$ ($d$ instances of \psuper) and \prandom
+
+\item Measure the basin of attraction of \psuper using the Storkey-Valabregue method. \hilight{CROSS REFERENCE THIS}
+
+\item Repeat from step ~\ref{itm:choose degree} with a different degree.
+
+\end{enumerate}
+
+
+% undefine variables
+\let\psuper\undefined
+\let\prandom\undefined
+
+
+\hilight{Describe our specific parameters, our results, evaluate, how to reproduce in code, etc}
+
+\input{plot-one-super}

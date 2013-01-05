@@ -1,0 +1,10 @@
+% Data for one super attractor, varying the degree and measuring the basin of attraction
+% found in wa910/output
+% n = 100 ; one super attractor plus 16 random patterns ; includes non-fixed-points
+degree	n	mean	stddev
+1	800	2.373750	10.049268
+2	800	34.632500	19.745120
+4	800	46.973750	0.397817
+8	800	47.872500	0.333741
+16	800	48.101250	0.301848
+32	800	48.738750	0.439591
