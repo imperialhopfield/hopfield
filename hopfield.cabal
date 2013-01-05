@@ -23,6 +23,7 @@ library
     , RestrictedBoltzmannMachine
     , SuperAttractors
     , Util
+    , ExpUtil
   other-modules:
   hs-source-dirs:
     src

@@ -43,6 +43,7 @@ module Util (
 ) where
 
 
+import           Common (Showable)
 import           Data.Array.ST
 import           Data.List
 import qualified Data.Random as DR
@@ -271,15 +272,15 @@ toPercents ns = unwords [ show (round $ n * 100.0 :: Int) ++ "%" | n <- ns]
 
 
 -- Prints given elements separated by a tab
-attachLabel :: (Show a, Show b) => a -> b -> String
-attachLabel a b = concat [show a, "\t", show b]
+attachLabel :: [Showable] -> String
+attachLabel xs = concat $ intersperse "\t" $ map show xs
 
 
 -- Tabulates the two given lists as columns
-attachLabels :: (Show a, Show b) => String -> [a] -> [b] -> String
-attachLabels header lbls items
+attachLabels :: String -> [[Showable]] -> String
+attachLabels header is
   = header ++ "\n" ++ concat list
-  where list  = [ attachLabel l i ++ "\n" | l <- lbls | i <- items ]
+  where list  = [ attachLabel i ++ "\n" | i <- is ]
 
 
 -- Format list for output

@@ -3,8 +3,10 @@
 module Main where
 
 import Analysis
+import Common
 import Control.Monad (replicateM)
 import Control.Monad.Random
+import ExpUtil
 import Hopfield
 import Measurement
 import Test.QuickCheck
@@ -37,9 +39,9 @@ basinHeader = "Degree\tBasin size"
 main :: IO ()
 main = do
 
-    let n          = 50
-        numRandoms = 8
-        maxDegree  = 8
+    let n          = 100    -- number of neurons
+        numRandoms = 8      -- number of random patterns to include
+        maxDegree  = 32     -- maximum degree of super attractor
 
 
     -- The super attractor - primary care giver
@@ -62,38 +64,30 @@ main = do
         patCombiner = oneSuperAttr
 
 
-    putStrLn $ unwords [show n, "neurons.", "Attractor plus", show numRandoms, "random patterns.\n"]
-
-    putStrLn $ "Expected network errors: "
-    let expErrs = [ computeErrorSuperAttractorNumbers d p n | d <- degrees ]
-    putStrLn $ attachLabels errorHeader degrees expErrs
+    putStrLn $ unwords [show n, "neurons.", "Super attractor plus", show numRandoms, "random patterns.\n"]
 
 
-    putStrLn $ "Hamming distance between origin pattern and random patterns:"
-    let hammingDists  = map (hammingDistance originPat) randomPats
-        hammingPct    = map (./. n) hammingDists :: [Double]
-    putStrLn $ prettyList hammingDists
-    putStrLn $ toPercents hammingPct ++ "\n"
+    -- Compute probability of error
+    doErrorProb n p degrees
 
-    -- Original pattern as the sole pattern in the network
+
+    -- Compute hamming distance
+    doHamming originPat randomPats "origin" "random"
+
+
     putStrLn "Building networks..."
     let nets = buildNetworks pats degrees patCombiner
 
 
     --Check if pattern is fixed.
-    let patErrs = [ d | d <- degrees | net <- nets , not $ checkFixed net originIndex]
-    if not $ null patErrs
-        then putStrLn $
-            "WARNING: The following degrees have produced networks where the pattern is NOT a fixed point:\n" ++
-              prettyList patErrs ++ "\n"
-        else putStrLn "Pattern is always a fixed point\n"
+    doCheckFixed (zip degrees nets) originIndex "degrees"
 
 
     putStrLn "Measuring basins of attraction"
     let results = measureMultiBasins measurePatternBasin nets originPat
 
     putStrLn basinHeader
-    printMList results [ \r -> attachLabel d r | d <- degrees ]
+    printMList results [ \r -> attachLabel [pack d, pack r] | d <- degrees ]
 
 
     -- putStrLn "T1 experiment with 1 cluster"
