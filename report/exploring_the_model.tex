@@ -69,18 +69,21 @@ In the context of modelling Attachment theory, a super attractor may represent r
 
 \subsection{Single super attractor}
 
-\hilight{WHAT SHALL WE DO ABOUT NON-FIXED POINTS???? DO WE DISCARD THEM OR INCLUDE THEM??}
-\begin{enumerate}
-
 % Define variables
 \newcommand{\psuper}{$p_{super}$}
 \newcommand{\prandom}{$\overrightarrow{p}_{random}$}
+
+\hilight{WHAT SHALL WE DO ABOUT NON-FIXED POINTS???? DO WE DISCARD THEM OR INCLUDE THEM??}
+\begin{enumerate}
+
 
 \item Fix N, the number of neurons.
 
 \item Choose a random pattern \psuper, which signifies the primary care giver.
 
-\item Choose a number of random patterns \prandom, such that the Hamming distance between \psuper and each of \prandom is between 25\% and 75\%. The range forms a ball centred at 50\% Hamming distance\footnote{The percentage Hamming distance is simply the Hamming distance divided by the number of bits N} with an arbitrary radius, chosen such that the probability of a \prandom falling into \psuper's basin of attraction is small. This is done to avoid forming clusters of attractors, which we deal with separately in \hilight{a later section. TODO insert cross reference to section!!!!!} Recall that the Hopfield network is sign blind, and as a result the inverse of \psuper, $p_{super}^{-1}$, forms a symmetric super attractor. It is for this reason that a symmetric range about 50\% is chosen.
+\item Choose a number of random patterns \prandom, such that the Hamming distance between \psuper and each of \prandom is between 25\% and 75\%.
+
+The range forms a ball centred at 50\% Hamming distance\footnote{The percentage Hamming distance is simply the Hamming distance divided by the number of bits N} with an arbitrary radius, chosen such that the probability of a \prandom falling into \psuper's basin of attraction is small. This is done to avoid forming clusters of attractors, which we deal with separately in \hilight{a later section. TODO insert cross reference to section!!!!!} Recall that the Hopfield network is sign blind, and as a result the inverse of \psuper, $p_{super}^{-1}$, forms a symmetric super attractor. It is for this reason that a symmetric range about 50\% is chosen.
 
 \item \label{itm:choose degree} Fix a degree $d$ for \psuper and train a Hopfield network using $\overrightarrow{p}^d_{super}$ ($d$ instances of \psuper) and \prandom
 
@@ -91,11 +94,24 @@ In the context of modelling Attachment theory, a super attractor may represent r
 \end{enumerate}
 
 
+In our experiment 100 neurons are used, and the network is trained with 16 random patterns in addition to the super attractor. It is run with degree values {[}1, 2, 4, 8, 16, 32{]}. The entire procedure is repeated 800 times for various randomly chosen \psuper and \prandom. The average results obtained are summarised in ~\ref{fig:one super plot}.
+
+This experiment can be replicated by running \texttt{Experiment.hs}. \hilight{VERIFY}
+
+\begin{figure}[h]
+  \centering
+\input{plot-one-super}
+\caption{Average basin of attraction for a super attractor with varying degrees.}
+\label{fig:one super plot}
+\end{figure}
+
+
+The results show that as the super attractor's degree is increased, its basin of attraction also increases. Also note that this increase appears to approach the singularity at 50\% Hamming distance, which is consistent with our knowledge of \psuper's symmetrical counterpart. The very fast initial growth also indicates that super attractors in general very stable and demonstrate strong dominance over the space of patterns.
+
+
+Linking back to the Attachment theory model, this may be interpreted as depicting the strong influence of repeated and consistent interaction with the child, represented by a super attractor of increasing degree. In particular, it exhibits its dominance over distantly scattered, unrelated influences, which are represented by the random patterns.
+
+
 % undefine variables
 \let\psuper\undefined
 \let\prandom\undefined
-
-
-\hilight{Describe our specific parameters, our results, evaluate, how to reproduce in code, etc}
-
-\input{plot-one-super}
