@@ -1,6 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Main where
+module Hopfield.SmallExperiments where
 
 import Control.Applicative
 import Control.Monad
