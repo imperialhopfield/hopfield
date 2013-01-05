@@ -18,6 +18,7 @@ library
     , Hopfield.Measurement
     , Hopfield.ClassificationBoltzmannMachine
     , Hopfield.Clusters
+    , Hopfield.ClusterExperiments
     , Hopfield.Common
     , Hopfield.ConvertImage
     , Hopfield.RestrictedBoltzmannMachine
@@ -137,25 +138,11 @@ executable clusterexp
   hs-source-dirs:
     apps
   main-is:
-    ClusterExperiments.hs
+    ClusterExperimentsMain.hs
   other-modules:
   build-depends:
       base >= 4 && <= 5
     , hopfield
-    , parallel >= 3.1.0.1
-    , random >= 1.0.1.1
-    , probability >= 0.2.4
-    , hmatrix >= 0.11.0.4
-    , MonadRandom >= 0.1.8
-    , vector >= 0.9.1
-    , random-fu >= 0.2.3.1
-    , array >= 0.4.0.0
-    , erf >= 2.0.0.0
-    , exact-combinatorics >= 0.2.0.4
-    , rvar >= 0.2.0.1
-    , hspec >= 1.3.0.1
-    , HUnit >= 1.2.4.2
-    , QuickCheck >= 2.4.2
   ghc-options:
     -Wall -fwarn-unused-imports -threaded
 
@@ -178,7 +165,7 @@ executable recognize
     , parallel >= 3.1.0.1
   ghc-options:
 
-    -Wall -fwarn-unused-imports -auto-all -rtsopts
+    -Wall -fwarn-unused-imports -auto-all -rtsopts -threaded
 
 
 Test-Suite tests
