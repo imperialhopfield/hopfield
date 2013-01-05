@@ -37,7 +37,9 @@ oneIterationT1 networkSize clusterSize p_step i = zip cs probabilities
 
 performAndPrint :: ExpType -> Int -> Int -> Double -> Int ->IO ()
 performAndPrint expType neurons clusterSize step iterations = do
-    putStrLn $ "T2 neurons  " ++ show neurons ++ "  cluster " ++ show clusterSize
+    putStrLn $ "Experiment type" ++ show expType
+    putStrLn $ "neurons  " ++ show neurons ++ "  cluster " ++ show clusterSize
+    putStrLn $ "performed for " ++ show iterations ++ " iterations"
     mapM_ print $ map (iterationFunc neurons clusterSize step) [0.. iterations]
     where iterationFunc = case expType of
                           T1 -> oneIterationT1
