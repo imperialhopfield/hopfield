@@ -23,7 +23,7 @@ oneIteration networkSize clusterSize i = zip cs deviations
         unevaluated = map f deviations
         cs = unevaluated `using` parList rdeepseq
         mean = networkSize ./ 2.0
-        deviations = [1.0, 3.0 .. networkSize ./ 8.0]
+        deviations = [0.0, 1.0 .. networkSize ./ 8.0]
 
 
 main :: IO ()
@@ -34,5 +34,5 @@ main = do
   -- printMList avgs (replicate 10 prettyList)
 
   putStrLn "T2 in IO() to be able to use parallel map with 50 neurons cluster of size 5"
-  mapM_ print $ map (oneIteration 50 5) [0.. 10]
+  mapM_ print $ map (oneIteration 60 6) [0.. 5]
 
