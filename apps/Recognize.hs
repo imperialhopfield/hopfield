@@ -12,7 +12,7 @@ import Hopfield.Hopfield
 import Hopfield.ConvertImage
 import Hopfield.RestrictedBoltzmannMachine
 import Hopfield.ClassificationBoltzmannMachine
-import Hopfield.Benchmark (bench1)
+import Hopfield.Benchmark
 
 
 
@@ -114,3 +114,4 @@ main = do
 
     InbuiltBenchmarkOptions { benchmarkName } -> case benchmarkName of
       "bench1" -> bench1
+      "bench2" -> bench2
