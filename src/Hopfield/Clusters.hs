@@ -92,7 +92,7 @@ experimentUsingT1NoAvg learning networkSize clusterSize
 -------
 
 basinsGivenProbabilityT1With2Clusters :: MonadRandom m => LearningType -> Int -> Int -> Double -> Double -> m Double
-basinsGivenProbabilityT1With2Clusters learning networkSize clusterSize p2 p1  =  do
+basinsGivenProbabilityT1With2Clusters learning networkSize clusterSize p1 p2  =  do
      originPat1 <- randomSignVector networkSize
      originPat2 <- randomSignVector networkSize
      cluster1   <- getCluster Hopfield originPat1 clusterSize p1
@@ -135,9 +135,9 @@ experimentUsingT2NoAvg learning networkSize clusterSize
 
 
 
-basinsGivenProbabilityT2With2Clusters :: MonadRandom m => LearningType -> Int -> Int ->
+basinsGivenStdT2With2Clusters :: MonadRandom m => LearningType -> Int -> Int ->
                                             Double -> Double -> Double -> Double -> m Double
-basinsGivenProbabilityT2With2Clusters learning networkSize clusterSize mean1 mean2 std1 std2  =  do
+basinsGivenStdT2With2Clusters learning networkSize clusterSize mean1 mean2 std1 std2  =  do
      originPat1 <- randomSignVector networkSize
      originPat2 <- randomSignVector networkSize
      cluster1   <- getGaussianCluster Hopfield originPat1 clusterSize mean1 std1
@@ -149,7 +149,7 @@ experimentUsingT2With2Clusters :: MonadRandom m => LearningType -> Int -> Int ->
 experimentUsingT2With2Clusters learning networkSize clusterSize mean1 mean2 = do
   let deviation1 =  networkSize ./. (10 :: Int)
       deviations = [0.0, 2.0 .. 2.0 * deviation1]
-  basinAvgs <- mapM (basinsGivenProbabilityT2With2Clusters learning networkSize clusterSize mean2 mean1 deviation1) deviations
+  basinAvgs <- mapM (basinsGivenStdT2With2Clusters learning networkSize clusterSize mean2 mean1 deviation1) deviations
   return $ average basinAvgs
 
 
