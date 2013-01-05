@@ -1,5 +1,5 @@
 Some basic results
-
+             train_rule ->  network_size -> cluster_size -> p
 basinsGivenProbabilityT1 Storkey 36 2 0.1
 10.5
 
