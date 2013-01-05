@@ -4,8 +4,8 @@
 
 Our initial aim was to explore various properties of the attractors in a Hopfield Network. We are interested in studying, testing or challenging several ideas about the neural network:
 \begin{itemize}
- \item Clusters of attractors: We are interested to see how the Hopfield network behaves when learning simmilarly correlated patterns. This implies training the network with a cluster of attractors, which will lower the capacity of the network. We believe that basin sizes will get smaller as the patterns get closer to each other.
- \item Super-Attractors: Find out what happends if the network is trained several times with the same pattern. We believe this super-attractor will have a larger basin size compared to the other attractors.
+ \item Clusters of attractors: We are interested to see how the Hopfield network behaves when learning similarly correlated patterns. This implies training the network with a cluster of attractors, which will lower the capacity of the network. We believe that basin sizes will get smaller as the patterns get closer to each other.
+ \item Super-Attractors: Find out what happens if the network is trained several times with the same pattern. We believe this super-attractor will have a larger basin size compared to the other attractors.
  \item Convergence: We plan to train the network with different types of attractors and find out to which ones patterns tend to converge.
 \end{itemize}
 
@@ -14,18 +14,18 @@ Our initial aim was to explore various properties of the attractors in a Hopfiel
 
  A large part of our experiments were thus dedicated to measuring basin sizes of different attractors, clusters of attractors and a newly introduced concept of \emph{Super-Attractors}.
 
- A recognized scientific method for calculating the basin size is the Storkey-Valabregue measurement:
+ A recognised scientific method for calculating the basin size is the Storkey-Valabregue measurement:
 
  \begin{enumerate}
   \item Initially n = 1
   \item Choose an initial fixed point corresponding to a stored pattern \(\mu\)
-  \item \label{itm:choose radius} Choose some initial normalized Hamming radius \(r=r_{0}\)
+  \item \label{itm:choose radius} Choose some initial normalised Hamming radius \(r=r_{0}\)
   \item Let the set A be all the states Hamming-distant \( nr \) from the fixed point
   \item Sample 100 states from A
   \item Calculate how many of these states are attracted to the fixed point. Denote this number \( t_{\mu}(r) \)
   \item If \( t_{\mu}(r) \) is smaller than 90, stop and return \(nr\)
   \item Increment \(n\) by a suitable amount and repeat from (\ref{itm:choose radius})
-  \item Repeat fo each attractor.
+  \item Repeat for each attractor.
  \end{enumerate}
 
 % TODO: This algorithm is implemented in the Haskell function ...
@@ -33,7 +33,7 @@ Our initial aim was to explore various properties of the attractors in a Hopfiel
 
 \section{Generating Clusters of Attractors}
 
-There are various ways of generating clusters of attractors (i.e. attractors that have a low Hamming distance between each other). We shall present two different metodologies that can be used to generate them.
+There are various ways of generating clusters of attractors (i.e. attractors that have a low Hamming distance between each other). We shall present two different methodologies that can be used to generate them.
 
 One way is to start with a root pattern and then reverse each bit with a probability p. The new patterns can be interpreted as noisy versions of the root pattern. We shall denote this procedure T1.
 
@@ -58,10 +58,10 @@ Although the method has a big advantage for simplicity, we can only obtain N dif
 
 Another idea would be to extend our distribution to a multi-variate distribution. In this case, the capacity of the network would increase from \(N\) to \(\frac{n}{k}^k\), where k is the number of dimensions.
 
-Unfortunatelly, we did not have enough time to implement these ideas, so we only experimented with the naive encoding of patterns described above.
+Unfortunately, we did not have enough time to implement these ideas, so we only experimented with the naive encoding of patterns described above.
 
 \section{Super Attractors}
-In the context of learning models such as the Hopfield model, a super attractor is defined as an attractor resulting from training a model with multiple occurrences or instances of some training pattern. The degree of a super attractor denotes the number of occurrences of its corresponding pattern in the training set.
+In the context of learning models such as the Hopfield model, we define a super attractor as an attractor resulting from training a model with multiple occurrences or instances of some training pattern. The degree of a super attractor denotes the number of occurrences of its corresponding pattern in the training set.
 
 
 In the context of modelling Attachment theory, a super attractor may represent repeated interactions with the primary care giver. Clearly, it is of interest to investigate the properties of such an attractor; in particular establishing the existence and, if existent, the type of relationship between the degree of the super attractor and the extent of its dominance, or stability, over the space of patterns.
@@ -112,6 +112,6 @@ The results show that as the super attractor's degree is increased, its basin of
 Linking back to the Attachment theory model, this may be interpreted as depicting the strong influence of repeated and consistent interaction with the child, represented by a super attractor of increasing degree. In particular, it exhibits its dominance over distantly scattered, unrelated influences, which are represented by the random patterns.
 
 
-% undefine variables
+% undefined variables
 \let\psuper\undefined
 \let\prandom\undefined

@@ -11,7 +11,7 @@
   the network has an error.
 
   <em|>We will now derive the equations for errors in Hopfield networks.
-  Firstly, we shall derive the probabilty of error for a pattern which was
+  Firstly, we shall derive the probability of error for a pattern which was
   used for training, given that all the patterns were independent. Secondly,
   we will derive the equation of error for a super attractor: a pattern which
   was used to train the network, but which appeared in the training multiple
@@ -119,7 +119,7 @@
 
   We model <math|C<rsub|i><rsup|k> > as follows. Each
   <math|x<rsup|l><rsub|i<rsup|>> \ x<rsup|l><rsub|j>*x<rsup|k><rsub|<rsup|>j>*x<rsup|k>>
-  can be modeled as a sample drawn from a random variable X with
+  can be modelled as a sample drawn from a random variable X with
   <math|<em|E(X) = 0 >> and <math|Var(X) = E(x<rsup|2>) -E(x) <rsup|2> =1.>
 
   By using the central limit theorem and by approximating <math|N <left|(>p >
@@ -190,7 +190,7 @@
     \;
   </equation*>
 
-  <with|font-series|bold|Stability of a super attractor, given indpendence of
+  <with|font-series|bold|Stability of a super attractor, given independence of
   all other stored patterns>
 
   \;
@@ -333,10 +333,10 @@
   guideline towards how to resize the images in order to bring them to the
   same size (patterns which are stored in a Hopfield network need to have
   equal lengths). It also enables us to compute the capacity of a network of
-  given size, in order to minimze errors.
+  given size, in order to minimise errors.
 
-  Given p and N, we decuded the probability of error for the network. Thus,
-  conversly, we can compute the maximum ratio of p and N to ensure that the
+  Given p and N, we deduced the probability of error for the network. Thus,
+  conversely, we can compute the maximum ratio of p and N to ensure that the
   probability of error does not exceed a maximum accepted error probability.
 
   <\equation*>
@@ -366,7 +366,7 @@
   <with|font-series|bold|Measurements using the error of a network>
   <with|font-series|bold|for independent patterns>
 
-  We will now give the reader an idea of how one should accomodate a fixed
+  We will now give the reader an idea of how one should accommodate a fixed
   number of patterns depending on the error accepted by the application, by
   creating networks of appropriate size.
 
@@ -395,15 +395,15 @@
   patterns), and the second one is <math|N> (the size of the network). A
   similar function can be used for a given network
   <code*|computeErrorSuperAttractor>, that given a network computes the
-  probability of error of the superattractor. The caller has to ensure that
+  probability of error of the super attractor. The caller has to ensure that
   training patterns are independent in order for the computation to be
   correct.
 
-  <with|font-series|bold|Deascresing the error by using one super attractor>
+  <with|font-series|bold|Decreasing the error by using one super attractor>
 
-  Above we descirbed the derivation for obtaining the error of a super
+  Above we described the derivation for obtaining the error of a super
   attractor, given its degree. We remind the reader that we did this under
-  the assumption that all other traning patterns are independent. We will now
+  the assumption that all other training patterns are independent. We will now
   show how the error of a pattern decreases if it is made a super attractor,
   by varying the number of times it is presented to the network during
   training.
@@ -428,7 +428,7 @@
   The first argument of the function is the degree of the attractor, the
   second one is <math|p> and the third one is <math|N>. A similar function
   can be used for a given network <code*|computeErrorSuperAttractor>, that
-  given a network computes the probability of error of the superattractor.
+  given a network computes the probability of error of the super attractor.
   The caller of the function has to ensure that the training patterns contain
   a super attractor and that the other patterns are independent.\ 
 
