@@ -2,7 +2,6 @@
 
 module Main where
 
-import Analysis
 import Common
 import Control.Monad (replicateM)
 import Control.Monad.Random
