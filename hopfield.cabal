@@ -178,7 +178,7 @@ executable recognize
     , parallel >= 3.1.0.1
   ghc-options:
 
-    -Wall -fwarn-unused-imports -auto-all -rtsopts
+    -Wall -fwarn-unused-imports -auto-all -rtsopts -threaded
 
 
 Test-Suite tests
