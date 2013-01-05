@@ -7,9 +7,6 @@ import Control.Monad (replicateM)
 import Control.Monad.Random
 import Control.Parallel.Strategies
 
-import Test.QuickCheck
-import Test.QuickCheck.Gen (unGen)
-
 import Hopfield.Analysis
 import Hopfield.Clusters
 import Hopfield.Hopfield
@@ -20,6 +17,18 @@ import Hopfield.TestUtil (Type(H), patternGen)
 
 
 
+networkSize = 60
+clusterSize = 6
+mean = networkSize ./ 2.0
+deviations = [0.0, 2.0 .. networkSize ./ 8.0]
+
+oneIteration i = zip cs deviations
+      where
+        f x = evalRand (basinsGivenStdT2 Hebbian networkSize clusterSize mean x) (mkStdGen i)
+        unevaluated = map f deviations
+        cs = unevaluated `using` parList rdeepseq
+
+
 main :: IO ()
 main = do
 
@@ -27,16 +36,6 @@ main = do
   -- let avgs =  replicate 10 $ experimentUsingT2NoAvg Hebbian 100 10
   -- printMList avgs (replicate 10 prettyList)
 
+  putStrLn "T2 in IO() to be able to use parallel map with 60 neurons cluster of size 6`"
+  mapM_ print $ map oneIteration [0.. 4]
 
-  putStrLn "T2 in IO() to be able to use parallel map with 50 neurons cluster of size 5"
-
-  g <- getStdGen
-
-  let networkSize = 60
-      clusterSize = 6
-      mean = networkSize ./. (2 :: Int)
-      deviations = [0.0, 2.0 .. networkSize ./. (8 :: Int)]
-      f x = evalRand (basinsGivenStdT2 Hebbian networkSize clusterSize mean x) g
-      unevaluated = map f deviations
-      cs = unevaluated `using` parList rdeepseq
-  print cs

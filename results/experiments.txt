@@ -85,3 +85,8 @@ T2 in IO() to be able to use parallel map with 50 neurons cluster of size 5
 
 T2 in IO() to be able to use parallel map std dev 0.0 2.0 and 12.5
 [49.0,9.6,9.2]
+
+
+T2 in IO() to be able to use parallel map with 50 neurons cluster of size 6
+[29.0,14.0,9.333333333333334,14.0,9.333333333333334]
+dist/build/clusterexp/clusterexp  503.22s user 5.29s system 99% cpu 8:30.08 total
