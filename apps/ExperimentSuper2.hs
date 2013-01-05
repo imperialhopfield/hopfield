@@ -54,7 +54,7 @@ main = do
 
     let pats        = originPat:newPat:randomPats
         originIndex = 0                         -- index of main pattern
-        newIndex    = 1                         -- index of new pattern
+        newIndex    = fstDegree + 1             -- index of new pattern
         degrees     = powersOfTwo maxDegree
         patCombiner = twoSuperAttrOneFixed fstDegree
 
