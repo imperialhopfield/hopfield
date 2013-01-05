@@ -32,7 +32,8 @@ main = do
   -- Commented for efficiency reasons
   -- let avgs =  replicate 10 $ experimentUsingT2NoAvg Hebbian 100 10
   -- printMList avgs (replicate 10 prettyList)
-
-  putStrLn "T2 in IO() to be able to use parallel map with 50 neurons cluster of size 5"
-  mapM_ print $ map (oneIteration 60 6) [0.. 5]
+  let neurons = 60
+      cluster = 5
+  putStrLn $ "T2" ++ show neurons ++ show cluster
+  mapM_ print $ map (oneIteration neurons cluster) [0.. 5]
 
