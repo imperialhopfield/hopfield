@@ -28,9 +28,9 @@ The network is able to update the values associated to neurons by adhering to ce
  \item Asynchronous: Only one node is updated at a time. A random node can be chosen as the next one to get updated, or otherwise a sequence of nodes can be imposed a-priori.
 \end{itemize}
 
-Assume N neurons = 1.. N, with values \(x_{i} = \pm1\). The updating of an individual node i is performed by first calculating a weighted sum of the neighbouring nodes, and then applying the sign function:\\
+Assume N neurons = 1.. N, with values \(x_{i} = \pm1\). The updating of an individual node i is performed by first calculating a weighted sum of the neighbouring nodes, and then applying the sign function:
 
- \(x_{i} = sgn(\sum_{j=1}^{N}w_{ij}x_{j} + b_{i})\)\\
+ \[x_{i} = sgn(\sum_{j=1}^{N}w_{ij}x_{j} + b_{i})\]
 
 where \( b_{i} \) is a bias that we will consider to be equal to 0 for the purpose of this project.
 
@@ -42,9 +42,9 @@ If updating is repeatedly performed, the network would eventually may converge t
 
 The Hebbian theory has been introduced by Donald Hebb in 1949, in order to explain "associative learning", in which simultaneous activation of neuron cells leads to pronounced increases in synaptic strenght between those cells \cite{hebb_wiki}. It is ofter summarized as "Neurons that fire together, wire together". 
 
-For the Hopfield Networks, this is implemented in the following manner, when learning p patterns:\\
+For the Hopfield Networks, this is implemented in the following manner, when learning p patterns:
 
-\( w_{ij}=\frac{1}{N}\sum_{\mu=1}^{p}\epsilon_{i}^\mu \epsilon_{j}^\mu \)\\
+\[ w_{ij}=\frac{1}{N}\sum_{\mu=1}^{p}\epsilon_{i}^\mu \epsilon_{j}^\mu \]
 
 For pattern \(\mu\), if the bits corresponding to neurons i and j are equal, then the product  \( \epsilon_{i}^\mu \epsilon_{j}^\mu \) will be positive. This would, in turn, have a positive effect on the weight \(w_{ij} \) and the values of i and j will tend to become equal. The opposite happends if the bits corresponding to neurons i and j are different.
 
@@ -52,48 +52,52 @@ For pattern \(\mu\), if the bits corresponding to neurons i and j are equal, the
 
 Patterns that the network uses for training, called retrieval states, become attractors of the system. Repeated updates would eventually lead to convergence to one of the retrieval states. However, sometimes the network will converge to spurious patterns, that are different from the training patterns. 
 
-A a linear combination of an odd number of stored patterns, in this case 3 patterns, would give us a spurious state:\\
+A a linear combination of an odd number of stored patterns, in this case 3 patterns, would give us a spurious state:
 
-\( \epsilon_{i}^{mix} = \pm sgn(\pm \epsilon_{i}^{\mu_{1}} 
+\[ \epsilon_{i}^{mix} = \pm sgn(\pm \epsilon_{i}^{\mu_{1}} 
 			         \pm \epsilon_{i}^{\mu_{2}}
-			         \pm \epsilon_{i}^{\mu_{3}}) \)\\
+			         \pm \epsilon_{i}^{\mu_{3}}) \]
 
 However, we shall later on see that the probability of the network converging to these states is small, becase of the tiny basin size. Furthermore, the Bolzman Machine has the capacity of getting out of these spurious states, because of the probabilistic updating of the nodes.			       
 
 \subsection{Energy Landscape}
 
-One of Hopfield's most important contributions was to associate a Lyapunov, or energy function to the neural network. This is calculated as:\\
+One of Hopfield's most important contributions was to associate a Lyapunov, or energy function to the neural network. This is calculated as:
 
-\( E = -\frac{1}{2} \sum_{i,j=1}^{N}w_{ij}x_{i}x_{j} \)\\
+\[ E = -\frac{1}{2} \sum_{i,j=1}^{N}w_{ij}x_{i}x_{j} \]
+
+The function decreases as the system gets updated until it reaches a local minimum, corresponding to an attractor. 
+
+\[ E = -\frac{1}{2} \sum_{i,j=1}^{N}w_{ij}x_{i}x_{j} \]
 
 The function decreases as the system gets updated until it reaches a local minimum, corresponding to an attractor. 
 
 \subsection{Stability and Capacity}
 
-Concepts of stability and capacity are important in the analysis of Hopfield Networks. A neuron unit \( \epsilon_{i}^{\mu}\) is said to be stable if the update rule will not change its state. The mathematical condition for this is:\\
+Concepts of stability and capacity are important in the analysis of Hopfield Networks. A neuron unit \( \epsilon_{i}^{\mu}\) is said to be stable if the update rule will not change its state. The mathematical condition for this is:
 
- \(x_{i} = sgn(\sum_{j=1}^{N}w_{ij}x_{j}) \)\\
+ \[x_{i} = sgn(\sum_{j=1}^{N}w_{ij}x_{j}) \]
 
 Since we are using the Hebbian Rule, we can replace \(w_{ij}\) with
-\(\sum_{\nu}\epsilon_{i}^{\nu}\epsilon_{j}^{\nu}\), resulting in:\\
+\(\sum_{\nu}\epsilon_{i}^{\nu}\epsilon_{j}^{\nu}\), resulting in:
 
-\( h_{i}^{\mu} = \frac{1}{N}\sum_{j} \sum_{\nu} \epsilon_{i}^{\nu}
+\[ h_{i}^{\mu} = \frac{1}{N}\sum_{j} \sum_{\nu} \epsilon_{i}^{\nu}
 						 \epsilon_{j}^{\nu}
-						 \epsilon_{j}^{\mu}\)\\
+						 \epsilon_{j}^{\mu}\]
  
- We will now isolate the contribution of neuron i, in order to get:\\
+ We will now isolate the contribution of neuron i, in order to get:
  
-\( h_{i}^{\mu} = \epsilon_{i}^{\nu} + \frac{1}{N}\sum_{j} \sum_{\nu\neq\mu} 			 					 \epsilon_{i}^{\nu}
+\[ h_{i}^{\mu} = \epsilon_{i}^{\nu} + \frac{1}{N}\sum_{j} \sum_{\nu\neq\mu} 			 					 \epsilon_{i}^{\nu}
 						 \epsilon_{j}^{\nu}
-						 \epsilon_{j}^{\mu}\)\\
+						 \epsilon_{j}^{\mu}\]
  
  Now, the input for node i is made of two components: the first component depends on the node i itself, while the second component, called the \textbf{crosstalk term}, is directly dependent upon the neighbours of the node. 
  
- If we multiply the crosstalk term by \(-\epsilon_{i}^{\nu}\),  we get a quantity that will help us study the capacity:\\
+ If we multiply the crosstalk term by \(-\epsilon_{i}^{\nu}\),  we get a quantity that will help us study the capacity:
  
- \( C_{i}^{\nu}= -\epsilon_{i}^{\nu} \frac{1}{N}\sum_{j} \sum_{\nu\neq\mu} 			 			\epsilon_{i}^{\nu}
+ \[ C_{i}^{\nu}= -\epsilon_{i}^{\nu} \frac{1}{N}\sum_{j} \sum_{\nu\neq\mu} 			 			\epsilon_{i}^{\nu}
 		       		 \epsilon_{j}^{\nu}
-				 \epsilon_{j}^{\mu}\)\\
+				 \epsilon_{j}^{\mu}\]
  
  If \( C_{i}^{\nu} \) is negative, then the cross-talk term has the same sign as unit i, and thus this value will not change \cite{lectureslides}. However, if \( C_{i}^{\nu} \) is positive and greater than 1, then \( \epsilon_{i}^{\nu}\) will change, so node i will become unstable. We will estimate the probability of \( C_{i}^{\nu} > 1 \)
  
@@ -101,9 +105,9 @@ Since we are using the Hebbian Rule, we can replace \(w_{ij}\) with
  
 \subsection{Training using the Pseudo-Inverse Rule}
 
-The pseudo-inverse rule makes use of the inverse of a matrix in order to perform the learning process. In contrast to the Hebbian Learning, it offers a higher capacity and performs better with correlated, linearly independent patterns. The weight matrix is computed as:\\
+The pseudo-inverse rule makes use of the inverse of a matrix in order to perform the learning process. In contrast to the Hebbian Learning, it offers a higher capacity and performs better with correlated, linearly independent patterns. The weight matrix is computed as:
 
-\( w_{ij} = \frac{1}{N} \sum_{\mu\nu}\epsilon_{i}^\mu Q^{-1} \epsilon_{j}^\mu \)\\
+\[ w_{ij} = \frac{1}{N} \sum_{\mu\nu}\epsilon_{i}^\mu Q^{-1} \epsilon_{j}^\mu \]
 
 In this case, Q is the overlap matrix:
 \(  Q_{\mu\nu} = \frac{1}{N}\sum_{i}\epsilon_{i}^\mu \epsilon_{i}^\nu \)
@@ -118,15 +122,15 @@ These properties are desirable, since learning becomes more biologically plausib
 
 \subsection{Training using the Storkey Rule}
 
-The weight matrix of an attractor neural network is said to follow the Storkey learning rule if it obeys:\\
+The weight matrix of an attractor neural network is said to follow the Storkey learning rule if it obeys:
 
-\( w_{ij}^{\nu-1} = w_{ij}^{\nu-1}+
+\[ w_{ij}^{\nu-1} = w_{ij}^{\nu-1}+
 		    +\frac{1}{n}\epsilon_{i}^{\nu} \epsilon_{j}^{\nu} 
 		    -\frac{1}{n}\epsilon_{i}^{\nu} h_{ji}^{\nu}
 		    -\frac{1}{n}h_{ij}^{\nu} \epsilon_{i}^{\nu}
-		    \)\\ 
+		    \]
 
-where \( h_{ji}^{\nu} = \sum_{k=1,k\neq,j}^{n} w_{ik}^{\mu-1}\epsilon_{k}^{\mu} \) is a form of \emph{local field} \cite{storkey1997increasing} at neuron i.\\ 
+where \( h_{ji}^{\nu} = \sum_{k=1,k\neq,j}^{n} w_{ik}^{\mu-1}\epsilon_{k}^{\mu} \) is a form of \emph{local field} \cite{storkey1997increasing} at neuron i.
 		    
 This rule is local, since the synapses take into account only neurons at their sides. This rule is slightly more powerful than the generalized Hebb rule, since it makes use of more information. Because of the action field, each neuron uses information from all the neighbours. As Storkey has showed in 1997, the capacity of the network trained with this rule is greater than compared to Hebbian rule \cite{storkey1997increasing}.
 
@@ -134,4 +138,5 @@ This rule is local, since the synapses take into account only neurons at their s
 \subsection{Basins of Attraction}
 
 A basin of attraction for a particular attractor a is defined as the set of all states that will eventually converge to a, under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A big basin size would provide stability for the attractor, since the states in the neibourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor. 
+
 
