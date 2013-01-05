@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | Base Hopfield model, providing training and running.
-module Hopfield (
+module Hopfield.Hopfield (
     Pattern
   , Weights
   , LearningType (Hebbian, Storkey)
@@ -25,8 +25,12 @@ import           Control.Monad.Random (MonadRandom)
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
-import           Common
-import           Util
+
+import           Hopfield.Common
+import           Hopfield.Util
+
+
+import Control.DeepSeq
 
 
 data LearningType = Hebbian | Storkey deriving (Eq, Show)
@@ -130,7 +134,7 @@ train pats = vector2D ws
 computeH_ :: Weights -> Pattern -> Int -> Int
 computeH_ ws pat i = if weighted >= 0 then 1 else -1
   where
-    weighted = sum [ (ws ! i ! j) *. (pat ! j) | j <- [0 .. p-1] ]
+    weighted = force $ sum [ (ws ! i ! j) *. (pat ! j) | j <- [0 .. p-1] ]
     p = V.length pat
 
 

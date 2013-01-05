@@ -1,6 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Utils where
+module Hopfield.TestUtil where
 
 import           Control.Applicative
 import           Control.Monad
@@ -8,21 +8,16 @@ import           Control.Monad.Random
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Test.QuickCheck
-import           Control.Monad
-import           Data.Number.Erf (normcdf)
 
-import           RestrictedBoltzmannMachine
-import           Measurement
-import           Hopfield
-import           Util
+import           Hopfield.Hopfield
+import           Hopfield.Measurement
+import           Hopfield.RestrictedBoltzmannMachine
+import           Hopfield.Util
 
 
 
 data Type = H | BM
 
--- | Defines an arbitrary vector
-instance (Arbitrary a) => Arbitrary (V.Vector a) where
-  arbitrary = fmap V.fromList arbitrary
 
 nonempty = (`suchThat` (not . null))
 
@@ -132,7 +127,7 @@ replaceAtN n r (x:xs)
 -- scale
 crosstalk :: HopfieldData -> Int -> Int -> Int
 -- the cross talk term is h(xi k ) - xi k
-crosstalk hs index n = computeH (weights hs) pat n - pat V.! n
+crosstalk hs index n = computeH (weights hs) pat n - pat ! n
                           where pat = (patterns hs) !! index
 
 

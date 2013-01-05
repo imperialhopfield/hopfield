@@ -1,12 +1,12 @@
-module Analysis where
+module Hopfield.Analysis where
 
 import           Data.List
 import           Data.Number.Erf
 import qualified Data.Vector as V
 
 
-import Hopfield
-import Util
+import Hopfield.Hopfield
+import Hopfield.Util
 
 
 

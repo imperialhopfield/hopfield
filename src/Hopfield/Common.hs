@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternGuards, ExistentialQuantification #-}
 
-module Common where
+module Hopfield.Common where
 
 
 import Data.Vector (Vector)

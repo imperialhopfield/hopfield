@@ -4,8 +4,8 @@ module TestBolzmann where
 
 import Test.Hspec
 import Test.QuickCheck
-import Test.HUnit
-import Utils
+
+import Hopfield.TestUtil
 
 
 testBolzmannMachine :: Spec

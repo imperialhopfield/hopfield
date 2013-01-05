@@ -1,7 +1,7 @@
 {-# LANGUAGE ParallelListComp, ScopedTypeVariables #-}
 
 
-module Util (
+module Hopfield.Util (
     average
   , (*.)
   , (.*)
@@ -43,20 +43,21 @@ module Util (
 ) where
 
 
-import           Common (Showable)
-import           Data.Array.ST
-import           Data.List
-import qualified Data.Random as DR
-import qualified Data.Vector as V
-import           Data.Word (Word32)
 import           Control.Monad (forM_, liftM, replicateM)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
+import           Data.Array.ST
+import qualified Data.Random as DR
+import           Data.List
+import qualified Data.Vector as V
+import           Data.Word (Word32)
 import           Foreign.Storable
 import           GHC.Arr as Arr
 import qualified Numeric.Container as NC
 import           Numeric.Probability.Random (T, runSeed)
 import           System.Random (mkStdGen)
+
+import           Hopfield.Common (Showable)
 
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a

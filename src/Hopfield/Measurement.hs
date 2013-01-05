@@ -1,5 +1,5 @@
 -- | Functions to measure various properties of a network
-module Measurement (
+module Hopfield.Measurement (
   -- * Basin of attraction
     BasinMeasure
   , hammingDistribution
@@ -18,11 +18,12 @@ import           Control.Monad.Random (MonadRandom)
 import           Data.List
 import           Data.Maybe
 import qualified Data.Vector as V
-import           Hopfield
 import           Math.Combinatorics.Exact.Binomial (choose)
 import           Numeric.Probability.Distribution (Spread, relative)
 import           Numeric.Probability.Random (T, pick)
-import           Util ((./.), toArray, shuffle, runT)
+
+import           Hopfield.Hopfield
+import           Hopfield.Util ((./.), toArray, shuffle, runT)
 
 
 -- A function computing some measure of a pattern's basin in the given network

@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternGuards #-}
 
-module Clusters where
+module Hopfield.Clusters where
 
 
 -- Module which deals with pattern cluster generation and related functions.
@@ -10,10 +10,10 @@ import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import           Control.Monad (liftM, replicateM)
 
-import Common
-import Hopfield
-import Measurement
-import Util
+import Hopfield.Common
+import Hopfield.Hopfield
+import Hopfield.Measurement
+import Hopfield.Util
 
 
 --  @getPatternInCluster pat p@ gets a pattern in a cluster given by @pat@

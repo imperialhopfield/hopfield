@@ -2,7 +2,7 @@
 
 -- | Base Restricted Bolzamann machine.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
-module RestrictedBoltzmannMachine where
+module Hopfield.RestrictedBoltzmannMachine where
 
 
 import           Data.Maybe
@@ -13,8 +13,9 @@ import           Data.Vector ((!))
 import qualified Data.Vector as V
 import qualified Numeric.Container as NC
 
-import Common
-import Util
+import Hopfield.Common
+import Hopfield.Util
+
 
 -- In the case of the Bolzamann Machine the weight matrix establishes the
 -- weigths between visible and hidden neurons

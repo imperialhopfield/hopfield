@@ -2,12 +2,13 @@
 
 -- Provides functions to construct and measure networks with super attractors
 -- with varying pattern degrees
-module SuperAttractors where
+module Hopfield.SuperAttractors where
 
-import           Measurement
 import           Control.Monad.Random (MonadRandom)
 import qualified Data.Vector as V
-import           Hopfield
+
+import           Hopfield.Hopfield
+import           Hopfield.Measurement
 
 
 -- Degree of a pattern is the number of instances it has in a network

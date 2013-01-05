@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternGuards, ScopedTypeVariables #-}
 
-module ClassificationBoltzmannMachine where
+module Hopfield.ClassificationBoltzmannMachine where
 -- | Base Restricted Bolzamann machine.
 
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
@@ -17,8 +17,8 @@ import           Data.Vector ((!))
 import qualified Data.Vector as V
 import qualified Numeric.Container as NC
 
-import Common
-import Util
+import Hopfield.Common
+import Hopfield.Util
 
 import Debug.Trace
 

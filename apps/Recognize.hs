@@ -7,11 +7,11 @@ import           Control.Monad.Random
 import qualified Data.Vector as V
 import           Options.Applicative
 
-import Common
-import Hopfield
-import ConvertImage
-import RestrictedBoltzmannMachine
-import ClassificationBoltzmannMachine
+import Hopfield.Common
+import Hopfield.Hopfield
+import Hopfield.ConvertImage
+import Hopfield.RestrictedBoltzmannMachine
+import Hopfield.ClassificationBoltzmannMachine
 
 
 

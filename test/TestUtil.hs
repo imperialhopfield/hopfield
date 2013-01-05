@@ -1,14 +1,13 @@
 module TestUtil where
 
-import Test.Hspec
-import Test.QuickCheck
-import Test.HUnit
-
-import Data.Maybe
 import Data.List
+import Data.Maybe
+import Test.Hspec
+import Test.HUnit
+import Test.QuickCheck
 
-import Util
-import Utils
+import Hopfield.Util
+import Hopfield.TestUtil
 
 
 testUtil = do
