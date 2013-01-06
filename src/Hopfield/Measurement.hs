@@ -23,7 +23,7 @@ import           Numeric.Probability.Distribution (Spread, relative)
 import           Numeric.Probability.Random (T, pick)
 
 import           Hopfield.Hopfield
-import           Hopfield.Util ((./.), toArray, shuffle, runT)
+import           Hopfield.Util ((./.), shuffleList, runT)
 
 
 -- A function computing some measure of a pattern's basin in the given network
@@ -57,8 +57,8 @@ sampleHammingDistance pat r numSamples
   = liftM (map (V.fromList . multByPat)) coeffSamples
       where
         n                = V.length pat
-        basePerm         = toArray $ replicate r (-1) ++ replicate (n-r) 1
-        coeffSamples     = replicateM numSamples $ shuffle basePerm
+        basePerm         = replicate r (-1) ++ replicate (n-r) 1
+        coeffSamples     = replicateM numSamples $ shuffleList basePerm
         multByPat coeffs = zipWith (*) coeffs (V.toList pat)
 
 
