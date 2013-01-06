@@ -60,8 +60,7 @@ library
     -- Can't use "-Wextra -Werror" here due to hsc2hs generating unused main() parameters
     -g -std=c99 -O0 -Wall -Wextra
   ghc-options:
-    -Wall -fwarn-unused-imports -auto-all -O -caf-all -rtsopts
-    -- -ffast-math -fexcess-precision
+    -Wall -fwarn-unused-imports -auto-all -O
   extra-libraries:
     MagickWand MagickCore
 
