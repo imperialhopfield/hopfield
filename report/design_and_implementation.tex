@@ -9,7 +9,7 @@
 In this section we shall introduce the experiments that we used to analyse various properties of the Hopfield Network. We remind the reader about the two methods that we are going to use for generating clusters of attractors:
 \begin{itemize}
  \item T1: We start with a root pattern \(\mu\), and generate patterns by flipping each bit from \(\mu\) with probability \(p\).
- \item T2: This method is generating Gaussian-distributed patterns. We sample several numbers from a normal distribution with a certain mean and variance, and then encode each number into patterns of the form [1,1,1,-1,-1]. 
+ \item T2: This method is generating Gaussian-distributed patterns. We sample several numbers from a normal distribution with a certain mean and variance, and then encode each number into patterns of the form [1,1,1,-1,-1].
 \end{itemize}
 
 
@@ -17,15 +17,15 @@ In this section we shall introduce the experiments that we used to analyse vario
 
 Our first experiment is showing us the basin sizes for increasing values of p, the probability of flipping a bit. Method T1 is used, for a Hopfield Network of N neurons.
 
-\begin{easylist}[enumerate]                                                                            
+\begin{easylist}[enumerate]
 \ListProperties(Style2*=,Numbers=a,Numbers1=R,FinalMark=.)
 & We generate a random pattern \(\mu\)
 
 & For all values of probability p from 0 to 0.5
 
     && Starting from \(\mu\) we generate P patterns using T1, and give them to the Hopfield network in order to be learned according to Hebb or Storkey rule.
- 
-    && We measure the basin size for all the patterns learned using the Storkey-Valabregue measurement and take their mean. 
+
+    && We measure the basin size for all the patterns learned using the Storkey-Valabregue measurement and take their mean.
 \end{easylist}
 
 
@@ -34,22 +34,23 @@ Our first experiment is showing us the basin sizes for increasing values of p, t
 
 \subsection{Basin Size in Two Clusters using T1}
 
-This experiment is simmilar to the previous one, but it contains two clusters this time. The value of p will stay the same for one cluster (fixed at 0.45) and only vary in the range [0-0.5]. Method T1 is used, for a Hopfield Network of N neurons. The procedure is given below:
+This experiment is similar to the previous one, but it contains two clusters this time. The value of p will stay the same for one cluster (fixed at 0.45) and only vary in the range [0-0.5]. Method T1 is used, for a Hopfield Network of N neurons. The procedure is given below:
 \hilight{INSERT NEWLINE HERE}
-\begin{easylist}[enumerate]                                                                            
+\newline
+\begin{easylist}[enumerate]
 \ListProperties(Style2*=,Numbers=a,Numbers1=R,FinalMark=.)
 & We generate 2 random patterns \(\mu_{1}\) and \(\mu_{2}\), corresponding to clusters \( C_{1} \) and \( C_{2} \).
 
-& We generate P patterns for \( C_{1} \), using T1 with associated probability \( p_{1}=0.45\). 
+& We generate P patterns for \( C_{1} \), using T1 with associated probability \( p_{1}=0.45\).
 
 & For all values of probability \( p_{2} \) from 0 to 0.5
 
-    && Starting from \(\mu_{2}\) we generate P patterns using T1 with associtated probability \( p_{2} \), and give them to the Hopfield network in order to be learned according to Hebb or Storkey rule.
- 
-    && For both sets of patterns, we measure the mean basin size using the Storkey-Valabregue measurement and plot the values on the graph. 
+    && Starting from \(\mu_{2}\) we generate P patterns using T1 with associated probability \( p_{2} \), and give them to the Hopfield network in order to be learned according to Hebb or Storkey rule.
+
+    && For both sets of patterns, we measure the mean basin size using the Storkey-Valabregue measurement and plot the values on the graph.
 \end{easylist}
 \hilight{INSERT NEWLINE HERE}
-We will be interested to observe how can one cluster influence the other. For this reason, we have set a big p-value for one cluster (0.45), in order to make sure the attractors are spread around the state space. 
+We will be interested to observe how can one cluster influence the other. For this reason, we have set a big p-value for one cluster (0.45), in order to make sure the attractors are spread around the state space.
 
 \subsubsection{Comments}
 \hilight{Insert graph here}
