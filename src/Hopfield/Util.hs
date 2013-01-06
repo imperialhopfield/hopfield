@@ -34,8 +34,7 @@ module Hopfield.Util (
   , repeatUntilEqualOrLimitExceeded
   , repeatUntilNothing
   , runT
-  , shuffleListArray
-  , shuffleList
+  , shuffle
   , toArray
   , toBinary
   , toDouble
@@ -47,14 +46,13 @@ module Hopfield.Util (
 import           Control.Monad (forM_, liftM, replicateM)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
-import           Data.Array.IArray
 import           Data.Array.ST
-import qualified Data.Array.Unboxed as UA -- TODO IArray
 import qualified Data.Random as DR
 import           Data.List
 import qualified Data.Vector as V
 import           Data.Word (Word32)
 import           Foreign.Storable
+import           GHC.Arr as Arr
 import qualified Numeric.Container as NC
 import           Numeric.Probability.Random (T, runSeed)
 import           System.Random (mkStdGen)
@@ -225,26 +223,21 @@ toArray xs = listArray (0, l-1) xs
   where l = length xs
 
 
--- Efficient O(n) random shuffle of a list
--- List will be transformed to an array (so probably forced).
+-- Efficient O(n) random shuffle of an array
 -- Modified from http://www.haskell.org/haskellwiki/Random_shuffle
-shuffleListArray :: MonadRandom m => [Int] -> m (UA.UArray Int Int)
-shuffleListArray xs = do
-    let len = length xs
+shuffle :: MonadRandom m => Array Int a -> m [a]
+shuffle xs = do
+    let len = Arr.numElements xs
     rands <- take len `liftM` Random.getRandomRs (0, len-1)
-    let shuffledArray = runSTUArray $ do
-                starr <- newListArray (0, len-1) xs
+    let shuffledArray = runSTArray $ do
+                ar <- Arr.thawSTArray xs
                 forM_ (zip [0..(len-1)] rands) $ \(i, j) -> do
-                    vi <- readArray starr i
-                    vj <- readArray starr j
-                    writeArray starr j vi
-                    writeArray starr i vj
-                return starr
-    return shuffledArray
-
-
-shuffleList :: MonadRandom m => [Int] -> m [Int]
-shuffleList l = elems `liftM` shuffleListArray l
+                    vi <- Arr.readSTArray ar i
+                    vj <- Arr.readSTArray ar j
+                    Arr.writeSTArray ar j vi
+                    Arr.writeSTArray ar i vj
+                return ar
+    return (elems shuffledArray)
 
 
 -- Run a random generator T (Numeric.Probability.Random) in MonadRandom

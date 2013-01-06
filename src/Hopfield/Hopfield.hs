@@ -186,7 +186,7 @@ getUpdatables_ ws pat = [ i | (i, x_i) <- zip [0..] (V.toList pat)
 -- TODO niklas doc how we do random updating now
 update_ :: MonadRandom m => Weights -> Pattern -> m (Maybe Pattern)
 update_ ws pat = do
-  randomIndices <- shuffleListArray [0 .. V.length pat - 1]
+  randomIndices <- shuffle . toArray $ [0 .. V.length pat - 1]
   return $ case firstUpdatable randomIndices 0 of
     Nothing -> Nothing
     Just index -> Just $ flipAtIndex pat index
