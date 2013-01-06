@@ -183,14 +183,16 @@ getUpdatables_ ws pat = [ i | (i, x_i) <- zip [0..] (V.toList pat)
 
 
 -- | See `update`.
+-- TODO niklas doc how we do random updating now
 update_ :: MonadRandom m => Weights -> Pattern -> m (Maybe Pattern)
-update_ ws pat = case updatables of
-  [] -> return Nothing
-  _  -> do
-          index <- randomElem updatables
-          return $ Just $ flipAtIndex pat index
+update_ ws pat = do
+  randomIndices <- shuffleList [0 .. V.length pat - 1]
+  return $ case updatables randomIndices of
+    []      -> Nothing
+    index:_ -> Just $ flipAtIndex pat index
   where
-     updatables = getUpdatables_ ws pat
+     updatables randomIndices = [ i | i <- randomIndices, let new = computeH_ ws pat i
+                                    , new /= pat ! i ]
      flipAtIndex vec index = let val = vec ! index -- seq only brings small saving here
                               in val `seq` V.modify (\v -> write v index (-val)) vec
 
