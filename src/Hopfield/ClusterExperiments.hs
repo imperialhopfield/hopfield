@@ -18,7 +18,7 @@ data ExpType = T1 | T2
 oneIteration1 :: ExpType -> Int -> Int -> Double -> Double -> Double -> Int-> [(Double, Double)]
 oneIteration1 expType networkSize clusterSize start stop p_step i = zip cs values
   where
-    f x = evalRand (evaluatedFunction x) (mkStdGen ( i + 100))
+    f x = evalRand (evaluatedFunction x) (mkStdGen i)
     unevaluated = map f values
     cs = unevaluated `using` parList rdeepseq
     values = [start, p_step .. stop]
@@ -39,7 +39,7 @@ performAndPrint1 expType neurons clusterSize start stop step iterations = do
 oneIteration2 :: ExpType -> Int -> Int -> Double -> Double -> Double -> Double -> Int-> [(Double, Double)]
 oneIteration2 expType networkSize clusterSize val1 start2 stop2 p_step2 i = zip cs values
   where
-    f x = evalRand (evaluatedFunction x) (mkStdGen (i + 100))
+    f x = evalRand (evaluatedFunction x) (mkStdGen i)
     unevaluated = map f values
     cs = unevaluated `using` parList rdeepseq
     values = [start2, start2 + p_step2 .. stop2]
