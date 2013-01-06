@@ -121,7 +121,7 @@ In this section we shall introduce the experiments that we used to analyse vario
 \end{itemize}
 
 
-\subsection{Basin Size in One Cluster using T1}
+\subsection{Basin Size for One Cluster using T1}
 
 Our first experiment is showing us the basin sizes for increasing values of p, the probability of flipping a bit. Method T1 is used, for a Hopfield Network of N neurons.
 
@@ -137,12 +137,20 @@ Our first experiment is showing us the basin sizes for increasing values of p, t
 \end{easylist}
 
 
-\subsubsection{Comments}
 \hilight{Insert graph here}
 
-\subsection{Basin Size in Two Clusters using T1}
+\subsubsection{Comments}
 
-This experiment is similar to the previous one, but it contains two clusters this time. The value of p will stay the same for one cluster (fixed at 0.45) and only vary in the range [0-0.5]. Method T1 is used, for a Hopfield Network of N neurons. The procedure is given below:
+This initial experiment is confirming what we already know from theory: A Hopfield network that is trained with similar patterns loses capacity. Although we are not measuring capacity here, the basin size is strongly correlated to that. 
+
+Initially, when p is zero, we observe a huge value for the basin size. This is easily explained, since all the patterns generated are the the same as the root pattern. Subsequently, the network is trained with the same patterns that have the effect of creating a super-attractor with a huge basin size. 
+
+When p is between 0 and a critical value of 0.35, the basin size is 0, since the patterns are too close to each other and don't have enough space to fit basins of attraction between them. As soon as p goes over 0.35, the basins start to increase until a certain maximum level.
+
+
+\subsection{Basin Size for Two Clusters using T1}
+
+This experiment is similar to the previous one, however it contains two clusters this time. The value \(p_{1}\) for one cluster will stay the same (fixed at 0.45), while \( p_{2}\), corresponding to the second cluster, will vary in the range [0-0.5]. Method T1 is used, for a Hopfield Network of N neurons. The procedure is given below:
 \hilight{INSERT NEWLINE HERE}
 \newline
 \begin{easylist}[enumerate]
@@ -161,8 +169,13 @@ This experiment is similar to the previous one, but it contains two clusters thi
 \hilight{INSERT NEWLINE HERE}
 We will be interested to observe how can one cluster influence the other. For this reason, we have set a big p-value for one cluster (0.45), in order to make sure the attractors are spread around the state space.
 
-\subsubsection{Comments}
 \hilight{Insert graph here}
+\subsubsection{Comments}
+
+This latter experiment seems to suggest that one cluster can indeed influence the other, in terms of basins of attraction. The instability (small basin sizes) of \(C_{2}\) seems to be transmitted to cluster \(C_{1}\), as long as p is smaller than 0.4. Cluster \(C_{2}\) seems to have a corresponding stability that increases linearly. As soon as the 2 probabilities approach each other, the basin sizes become equal. 
+
+This result is confirming Federico's earlier work \cite{federico}, in the sense that instability is indeed and "illness" that can be passed from one cluster to another.
+
 
 \section{Experiments with Gaussian-distributed patterns}
 
@@ -170,9 +183,6 @@ In this section we are testing clusters of patterns that have been generated usi
 
 
 \subsection{Basin Size for One Cluster using T2}
-
-For this experiment, we shall increase the standard deviation and observe the effect on the basin size of the patterns.
-
 
 \subsubsection{Comments}
 \hilight{Insert graph here}
