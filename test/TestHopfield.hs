@@ -61,8 +61,10 @@ testHopfield = do
 
     describe "test repeatedUpdate" $ forAllMethods $ \(Config method maxPatSize) -> do
 
-      it "test that when repeatedUpdate has finished, no other update can occur" $
-        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ energyDecreasesAfterUpdate method
+      return ()
+
+      -- TODO implement
+      -- it "test that when repeatedUpdate has finished, no other update can occur" $
 
 
     describe "getUpdatables" $ do
