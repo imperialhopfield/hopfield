@@ -2,8 +2,10 @@
 \begin{axis}[
 xmin = 0,
 ymin = 0,
-xlabel = Degree,
-ylabel = Average Basin Size
+xlabel = Degree \dnew,
+ylabel = Average Basin Size,
+% legend
+legend style={at={(1,0.5)},anchor=east}
 ]
 
 \addplot [
@@ -15,6 +17,8 @@ smooth  % draw smooth curve
 y = mean-origin
 ] {data-two-super.csv};
 
+\addlegendentry{\textbf{\poriginsuper}} ;
+
 
 \addplot [
 color = blue,
@@ -24,6 +28,9 @@ smooth  % draw smooth curve
 ] table [
 y = mean-new
 ] {data-two-super.csv};
+
+\addlegendentry{\textbf{\pnewsuper}} ;
+
 
 \end{axis}
 \end{tikzpicture}
