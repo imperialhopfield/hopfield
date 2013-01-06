@@ -1,0 +1,10 @@
+% Data for two super attractors, varying the degree and measuring the basin of attraction
+% found in wa910/output-super
+% n = 100 ; two super attractors plus 8 random patterns ; includes non-fixed-points
+key	n	mean origin	stddev origin	mean new	stddev new
+1	449	47.986637	0.114952	0.000000	0.000000
+2	449	47.884187	0.334002	0.238307	1.117536
+4	449	46.632517	0.602015	9.104677	8.523612
+8	449	41.097996	1.089405	38.158129	1.746024
+16	449	16.643653	10.110217	45.846325	0.665469
+32	449	0.850780	2.651230	47.995546	0.163603
