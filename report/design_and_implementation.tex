@@ -14,3 +14,16 @@ The functions responsible for image preprocessing (loading, rescaling, convertin
 Since this was a group project in which all of us has to implement various parts of the system, we used Git as a version-control system. We have chosen Git because of it's powerful features and reliability as a distributed version-control system.
 
 %TODO. Talk about Jenkins , continuous integration, Review Board, ....
+
+
+
+
+\section{Technical Challenges}
+
+\subsection{Computation Time}
+
+
+\hilight{maybe move detailed discussion to where the algorithm is actually described?}
+The common theme of our experiments is measuring and comparing basins of attractions over a multitude of parameters, performed using the Storkey-Valabregue method. \hilight{CROSS REF} As we know this involves performing a very expensive computation: sampling 100 patterns for each Hamming radius, a maximum of N steps, and for each of those patterns iterative updates are run with the network until convergence is achieved. Though impossible due to properties of Hopfield networks, we can approximate the worst case complexity of the latter as requiring $2^N$ iterations until convergence, $2^N$ being the number of possible states. Thus we may cynically, for the sake of quantifying it, approximate the worst case complexity of the Storkey-Valabregue method to be $O(N2^N)$. While this is probably not an accurate representation of what occurs in practice, it serves to demonstrate the sheer amount of computation performed.
+
+Naturally, this posed a significant computational challenge which we had to be overcome, as we typically obtain a large number of samples of basin measurements for our experiments, in the order of hundreds of samples for a given experiment. One way in which we overcome this limitation is by exploiting parallelism both at the process level (trivially achieved using \textbf{Haskell}!) and at the machine level, running multiple experiments on several lab machines. We also sought to improve the quality of our code itself, using profiling to identify hotspots. \hilight{next subsection on benchmarks}
