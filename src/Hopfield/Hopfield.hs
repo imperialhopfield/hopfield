@@ -16,12 +16,14 @@ module Hopfield.Hopfield (
   , update
   , getUpdatables
   , repeatedUpdate
+  , updateChain
   , matchPattern
   , computeH
   -- * Energy
   , energy
 ) where
 
+import           Control.Monad
 import           Control.Monad.Random (MonadRandom)
 import           Data.List
 import           Data.Vector ((!))
@@ -219,6 +221,17 @@ matchPattern :: MonadRandom m => HopfieldData -> Pattern -> m (Either Pattern In
 matchPattern (HopfieldData ws pats) pat = do
   converged_pattern <- repeatedUpdate_ ws pat
   return $ findInList pats converged_pattern
+
+
+-- | Like `repeatedUpdate`, but collecting all patterns until convergence.
+-- The last pattern in the list is the converged pattern.
+-- The argument pattern is NOT prepended to the result list.
+--
+-- POST: The returned list is not empty.
+updateChain :: (MonadRandom m) => HopfieldData -> Pattern -> m [Pattern]
+updateChain (HopfieldData ws pats) pat
+  | Just e <- validPattern pat = error e
+  | otherwise                  = (pat:) `liftM` unfoldrSelfM (update_ ws) pat
 
 
 -- | See `energy`.
