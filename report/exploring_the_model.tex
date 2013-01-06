@@ -41,7 +41,6 @@ One way is to start with a root pattern and then reverse each bit with a probabi
 
 Another objective of this work was to analyse patterns that are extracted according to a Gaussian distribution with a specific mean and variance.
 
-
 Since the state space is \( 2^N \) for a network of N neurons, the Gaussian Distribution will have to be defined over a huge set of states. This is highly non-trivial, since we are dealing with binary patterns, that cannot be ordered in an easy way.
 
 In this case, we will use Federico's method for sampling Gaussian distributed patterns \cite[p.~33]{federico}. We tackle this issue using the simplest possible approach: to draw numbers from a Normal Distribution and then translate them into patterns that will preserve the distance between them. Formally, if \(x\) and \(y\) were drawn and \( |x-y|=\delta\), then the Hamming distance between the encoded patterns \(x'\) and \(y'\) would also be \( d(x',y')=\delta\).
