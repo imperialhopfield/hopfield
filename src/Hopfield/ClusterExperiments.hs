@@ -2,11 +2,9 @@
 
 module Hopfield.ClusterExperiments where
 
-
 import Control.Monad
 import Control.Monad.Random
 import Control.Parallel.Strategies
-import System.Environment
 
 import Hopfield.Clusters
 import Hopfield.Hopfield
@@ -58,8 +56,8 @@ performAndPrint2 expType neurons clusterSize val1 start2 stop2 step2 iterations 
   putStrLn $ "performed for " ++ show iterations ++ " iterations"
   putStrLn $ "fixing the parameter(prob for T1 or std dev for T2) for the first cluster to be " ++ show val1
   putStrLn $ "varying the parameter for the second cluster between" ++ show start2 ++ "and " ++ show stop2
-  mapM_ print $ map (oneIteration2 expType neurons clusterSize val1 start2 stop2 step2) [0.. iterations]
-
+  seeds <- replicateM iterations $ getRandomR (20 :: Int, 1000 :: Int)
+  mapM_ print $ map (oneIteration2 expType neurons clusterSize val1 start2 stop2 step2) seeds
 
 
 
