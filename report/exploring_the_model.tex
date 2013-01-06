@@ -172,7 +172,7 @@ We will be interested to observe how can one cluster influence the other. For th
 \hilight{Insert graph here}
 \subsubsection{Comments}
 
-This latter experiment seems to suggest that one cluster can indeed influence the other, in terms of basins of attraction. The instability (small basin sizes) of \(C_{2}\) seems to be transmitted to cluster \(C_{1}\), as long as p is smaller than 0.4. Cluster \(C_{2}\) seems to have a corresponding stability that increases linearly. As soon as the 2 probabilities approach each other, the basin sizes become equal. 
+This latter experiment seems to suggest that one cluster can indeed influence the other, in terms of basins of attraction. The instability (small basin sizes) of \(C_{2}\) seems to be transmitted to cluster \(C_{}\), as long as p is smaller than 0.4. Cluster \(C_{2}\) seems to have a corresponding stability that increases linearly. As soon as the 2 probabilities approach each other, the basin sizes become equal. 
 
 This result is confirming Federico's earlier work \cite{federico}, in the sense that instability is indeed and "illness" that can be passed from one cluster to another.
 
@@ -181,18 +181,21 @@ This result is confirming Federico's earlier work \cite{federico}, in the sense 
 
 In this section we are testing clusters of patterns that have been generated using a normal distribution. We are expecting to get similar results to the T1 method, since by the Central Limit Theorem, the Binomial distribution ~ B(N, p) is nicely approximated by a Gaussian distribution with mean N(Np, Np(1-p)). Since in the previous experiments, we used to increase the probability p of flipping a bit, this now translates to increasing the standard deviation of the normal distribution.
 
-
-\subsection{Basin Size for One Cluster using T2}
-
+ 
 \subsubsection{Comments}
 \hilight{Insert graph here}
+
+The results here are quite surprising. The experiment with Gaussian-distributed patterns shows us that the basin sizes decrease exponentially as standard deviation increases. This might be the case because at low standard deviation, the patterns would repeat themselves and create small super-attractors that have big basin sizes. 
+
 
 \subsection{Basin Size for Two Clusters using T2}
 
 \subsubsection{Comments}
 \hilight{Insert graph here}\\
 
+This experiment has been run on a network of X nodes, with 2 clusters of patterns: C1 composed of XX nr of patterns, having a standard deviation of XX.
 
+As it can be easily noticed in the graph, cluster C1, with varying standard deviation, has greater basin sizes 
 
 \hilight{INSERT RBM part here}
 
