@@ -10,14 +10,19 @@ One of the most interesting applications of the Hopfield Networks and Boltzmann 
 
 \subsection{Strange Situation Procedure}
 
+%Just meantioned about it, since Abbas said we shouldn't go into detail here.
 The classification of infants into the corresponding attachment type is formulated in the Strange Situation Procedure. The child is observed playing for 20 minutes while caregivers and strangers enter and leave the room, recreating the environment of the familiar and unfamiliar presence in most of the children's lives.\cite{website:attachment_patterns_wiki}
 
 \section{Practical applications of Attractor Neural Networks}
 
+%This should be expanded. Not sure what Abbas has in mind, but I believe our main motivation is not to model Attachment Theory.
 Neural Networks have been successfully used in medical computing, in order to diagnose Parkinson's disease\cite{nets_parkinsons}. Other applications include facial recognition, which we have implemented for the purpose of this project, combinatorial problems such as the Travelling Salesman\cite{hopfield_laferriere}.
 One practical application of the attractor neural networks, such as the Boltzmann machine, is the performance improvement of speech recognition software\cite{speech_nets}.
 
+
 \section{Hopfield Networks}
+
+%This section with Hopfield Networks has loads of sub-sections. We should consider adding some hierarchy.
 The Hopfield Networks are a form of recurrent artificial neural networks invented by John Hopfield in 1982 \cite{hopfield_wiki}. It aims to store and retrieve information like the human brain. It basically consists of a complete graph of N neurons, each having a value of +1 or -1 associated to it. Since the graph is complete, each pair of neurons (i,j) is connected by an edge, having an associated weight \( w_{ij}\).
 
 \subsection{Updating the Hopfield Network}
@@ -52,7 +57,7 @@ For pattern \(\mu\), if the bits corresponding to neurons i and j are equal, the
 
 Patterns that the network uses for training, called retrieval states, become attractors of the system. Repeated updates would eventually lead to convergence to one of the retrieval states. However, sometimes the network will converge to spurious patterns, that are different from the training patterns. 
 
-A a linear combination of an odd number of stored patterns, in this case 3 patterns, would give us a spurious state:\\
+A a linear combination of an odd number of stored patterns, in this case 3 patterns, would give us a spurious state:
 
 \[ \epsilon_{i}^{mix} = \pm sgn(\pm \epsilon_{i}^{\mu_{1}} 
 			         \pm \epsilon_{i}^{\mu_{2}}
@@ -108,13 +113,17 @@ The pseudo-inverse rule makes use of the inverse of a matrix in order to perform
 In this case, Q is the overlap matrix:
 \(  Q_{\mu\nu} = \frac{1}{N}\sum_{i}\epsilon_{i}^\mu \epsilon_{i}^\nu \)
 
-Now that we have introduced a second learning rule, it is worth mentioning a few desirable properties that neural network learning rules should aim to have:
+%Locality and Incrementality
+%I thought it would be best to be inserted here, since the reader has just been introduced to the second training rule, and can easily compare and reason out why these properties are useful
+Now that we have introduced a second learning rule, it is worth mentioning a few desirable properties that neural network learning rules should aim to have. In Artificial Neural Networks, learning rules can be:
 \begin{itemize}
- \item Locality: each weight is updated using information available to neurons on either side of the connection.
+ \item Local: each weight is updated using information available to neurons on either side of the connection.
  \item Incremental: new patterns can be learned without using information from the older patterns. When a new pattern is used for training, the new values for the weights only depend on the old values and on the bits of the pattern.
 \end{itemize}
 
-These properties are desirable, since learning becomes more biologically plausible. It is important to mention that Hebbian Learning is both local and incremental, whereas the Pseudo-inverse learning rule is neither local nor incremental, since it depends upon the computation of an inverse matrix that contains information about all the patterns together.
+These properties are desirable, since learning becomes more biologically plausible. For example, since our brain is always learning new concepts, we can reason that learning is incremental. A learning system that would not be incremental would generally be trained only once, with a huge batch of training data.
+
+It is important to mention that Hebbian Learning is both local and incremental, whereas the Pseudo-inverse learning rule is neither local nor incremental, since it depends upon the computation of an inverse matrix that contains information about all the patterns together.
 
 \subsection{Training using the Storkey Rule}
 
@@ -132,6 +141,6 @@ This rule is local, since the synapses take into account only neurons at their s
 
 
 \subsection{Basins of Attraction}
-
+%I think we should move the measurements for the basins of attraction in here.
 A basin of attraction for a particular attractor a is defined as the set of all states that will eventually converge to a, under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A large basin size would provide stability for the attractor, since the states in the neighbourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor.
 

@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+\begin{axis}[
+xmin = 0,
+ymin = 0,
+xlabel = Degree,
+ylabel = Average Basin Size
+]
+
+\addplot [
+color = red,
+mark = *, % A filled circle
+only marks,
+smooth  % draw smooth curve
+] table [
+y = mean-origin
+] {data-two-super.csv};
+
+
+\addplot [
+color = blue,
+mark = *, % A filled circle
+only marks,
+smooth  % draw smooth curve
+] table [
+y = mean-new
+] {data-two-super.csv};
+
+\end{axis}
+\end{tikzpicture}

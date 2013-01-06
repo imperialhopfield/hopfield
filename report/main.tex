@@ -9,6 +9,8 @@
 
 % Make bibliography appear in table of contents
 \usepackage[nottoc,numbib]{tocbibind}
+
+
 \usepackage[ampersand]{easylist}
 
 % Allows us to click on links and references!
@@ -95,36 +97,13 @@
 \include{design_and_implementation}
 
 % Chapter 5
-\chapter{Evaluation}
-% Step back and say things like:
-% "X worked out well"
-% "in hindsight we could have used this tool instead"
-
-% How do we know that our code works?
-% e.g. functionality + performance testing
-% show relevant testing *results*
-
-% In a nutshell, how successful was this project
-% Tony: "DONT SAY: all our objectives (from intro) were met. Have the maturity
-% to show your mistakes and more importantly what you learned!"
+\include{evaluation}
 
 % Chapter 6
-\chapter{Conclusion and Future Extensions}
-% Tony: "Conclusion is NOT a summary"
-% e.g. result that you did not know about
+\include{conclusion}
 
 % Chapter 7
-\chapter{Project Management}
-% Use this to convey your *group collaboration*
-% Team organisation, supervisor, software engineering team skills
-
-% DONT give lots of text about the SE process (a la diary), rather your team,
-% deliverables, etc
-
-% Note that group collaboration is worth 30%. This is part assessed by our
-% supervisor comments, how we present ourselves, and probably a bit will be
-% influenced by what we say here. Bare this in mind!
-
+\include{project_management}
 
 \nocite{*} % Show all Bib-entries
 \bibliographystyle{plain}
