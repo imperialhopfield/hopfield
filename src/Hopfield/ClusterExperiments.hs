@@ -36,8 +36,8 @@ performAndPrint1 expType neurons clusterSize start stop step iterations = do
   mapM_ print $ map (oneIteration1 expType neurons clusterSize start stop step) [0.. iterations]
 
 
-oneIteration2 :: ExpType -> Int -> Int -> Double -> Double -> Double -> Double -> Int-> [(Double, Double)]
-oneIteration2 expType networkSize clusterSize val1 start2 stop2 p_step2 i = zip cs values
+oneIteration2 :: ExpType -> Int -> Int -> Double -> Double -> Double -> Double -> Int-> [(Double, (Double, Double))]
+oneIteration2 expType networkSize clusterSize val1 start2 stop2 p_step2 i = zip values cs
   where
     f x = evalRand (evaluatedFunction x) (mkStdGen i)
     unevaluated = map f values
