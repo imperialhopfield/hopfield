@@ -129,7 +129,7 @@ Linking back to the Attachment theory model, this may be interpreted as depictin
 
 \item \label{itm:choose two super} Choose a random pattern \poriginsuper, which signifies the primary care giver.
 
-\item Choose a random pattern \pnewsuper, such that the Hamming distance between \poriginsuper and each of \pnewsuper is between 25\% and 75\%. This could symbolize the training due to either a second primary care giver, or that resulting from a retraining period. \hilight{CROSS REF TO RETRAINING IN ATTACHMENT THEORY}
+\item Choose a random pattern \pnewsuper, such that the Hamming distance between \poriginsuper and each of \pnewsuper is between 25\% and 75\%. This could symbolize the training due to either an alternate and influential care giver, or that resulting from a retraining period. \hilight{CROSS REF TO RETRAINING IN ATTACHMENT THEORY}
 
 
 \item Choose a number of random patterns \prandom, such that the Hamming distance between \poriginsuper and each of \prandom is between 25\% and 75\%.
@@ -145,7 +145,7 @@ Note that while this allows for the possibility of forming a cluster in the vici
 
 \end{enumerate}
 
-In our experiment 100 neurons are used, and the network was trained with 8 random patterns in addition to the original and new super attractors, \poriginsuper and \pnewsuper, respectively. \poriginsuper is given a fixed degree, \dorigin, of 8. This value was chosen as being the smallest point of stability from the previous experiment ~\ref{fig:one super plot}, beyond which increasing the degree further does not greatly impact the basin of attraction. It is run with \dnew degree values {[}1, 2, 4, 8, 16, 32{]}. The entire procedure is repeated 449 \hilight{CHECK NEW RESULTS} times for various randomly chosen \poriginsuper, \pnewsuper and \prandom. The average results obtained are summarised in ~\ref{fig:two super plot}.
+In our experiment 100 neurons are used, and the network was trained with 8 random patterns in addition to the original and new super attractors, \poriginsuper and \pnewsuper, respectively. \poriginsuper is given a fixed degree, \dorigin, of 8. This value was chosen as being the smallest point of stability from the previous experiment ~\ref{fig:one super plot}, beyond which increasing the degree further does not greatly impact the basin of attraction. It is run with \dnew degree values {[}1, 2, 4, 8, 16, 32{]}. The entire procedure is repeated 634 \hilight{CHECK NEW RESULTS} times for various randomly chosen \poriginsuper, \pnewsuper and \prandom. The average results obtained are summarised in ~\ref{fig:two super plot}.
 
 This experiment can be replicated by running \texttt{ExperimentSuper2.hs}. \hilight{VERIFY}
 
@@ -159,7 +159,7 @@ This experiment can be replicated by running \texttt{ExperimentSuper2.hs}. \hili
 
 The results clearly reveal that increasing the degree of the new pattern increases its own basin of attraction, and decreases that of the original pattern. This relationship is symmetrical, as can be observed by the shape of the graph, in addition to the intersection point, which occurs (roughly) near the point (8 , 8) where both patterns have the same degree of 8. By random choice of original pattern, and random choice of new pattern (subject to a Hamming distance of 25\% to 75\% from the original pattern), we can claim that the basin of attraction depends solely on the relative degrees of the two patterns, and is independent of the actual patterns themselves. This is also consistent with the symmetry observed.
 
-This also fits in nicely nicely with in the Attachment theory interpretation. The original pattern as before represents the consistent interactions with a primary care giver. The new pattern may represent the consistent, yet significantly different, interactions with an influential alternate care give, perhaps the other parent of the child or a relative with whom they have developed a close relationship. Intuitively, the care giver which has more interactions would exert a stronger influence, undermining the dominance of the other care giver, and indeed the impact of any other interactions.
+This also fits in nicely nicely with in the Attachment theory interpretation. The original pattern as before represents the consistent interactions with a primary care giver. The new pattern may represent the consistent, yet significantly different, interactions with an alternate and influential care giver, perhaps the other parent of the child or a relative with whom they have developed a close relationship. Intuitively, the care giver which has more interactions would exert a stronger influence, undermining the dominance of the other care giver, and indeed the impact of any other interactions.
 
 In relation to retraining \hilight{reword?}, the new pattern may also be taken to represent the influences arising due to the undertaken retraining phase. We find that, similar to the above, increasing the number of interactions due to retraining further ingrains its dominance, and dilutes that of the previous interactions due to the primary care giver or otherwise.
 
