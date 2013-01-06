@@ -163,14 +163,15 @@ computeH_ ws pat i = {-# SCC "computeHall" #-} if weighted >= 0 then 1 else -1
     --             in sum [ if 1 == pat `V.unsafeIndex` j then w else -w | j <- [0 .. p-1]
     --                                                                   , let w = ws_row `V.unsafeIndex` j ]
 
-    weighted = go 0 0.0
     wss = ws ! i
+    weighted = go 0 0.0
     go :: Int -> Double -> Double
     go !j !s | j == p    = s
              | otherwise = let w  = wss `V.unsafeIndex` j
-                               s' = s + if pat `V.unsafeIndex` j > 0 then w
-                                                                     else -w
-                            in s' `seq` go (j+1) s'
+                               x = if pat `V.unsafeIndex` j > 0 then w
+                                                                 else -w
+                            in go (j+1) (s+x)
+
     p = {-# SCC "computeHvlength" #-} V.length pat
 
 
