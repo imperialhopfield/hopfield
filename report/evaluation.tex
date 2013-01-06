@@ -1,0 +1,28 @@
+% Chapter 5
+\chapter{Evaluation}
+% Step back and say things like:
+% "X worked out well"
+% "in hindsight we could have used this tool instead"
+
+% How do we know that our code works?
+% e.g. functionality + performance testing
+% show relevant testing *results*
+
+% In a nutshell, how successful was this project
+% Tony: "DONT SAY: all our objectives (from intro) were met. Have the maturity
+% to show your mistakes and more importantly what you learned!"
+
+
+\section{Implementation}
+% In here, we can evaluate our implementation ... Talk about why Haskell was slow for computing the experiments, how we overcame this, ...
+
+In a nutshell, we are really content with the choice of our tools and with our implementation of the neural network. Since our mathematical core of the algorithm did not contain much state information, Haskell was definitely a good choice for that. However, we initially found that it was slow in running some experiments, containing large networks and having many patterns to train for. Because of this, we invested a lot in time in optimising the algorithms. 
+
+\subsection{Unit Testing}
+
+Unit testing of our Haskell functions was performed using the HUnit framework. This allowed us to heavily test the complex functions responsible for performing updates or calculating energy and capacity, thus making sure about important invariants: energy is always monotonically decreasing, capacity is following the theoretical trends and updates eventually converge to an attractor. 
+
+
+\section{Evaluating our experiments}
+% We can use this section to evaluate some of our experiments, point out any inconsistencies, limitations, ... 
+
