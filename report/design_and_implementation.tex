@@ -57,7 +57,7 @@ We will be interested to observe how can one cluster influence the other. For th
 
 \section{Experiments with Gaussian-distributed patterns}
 
-In this section we are testing clusters of patterns that have been generated using a normal distribution. We are expecting to get similar results to the T1 method, since by the Central Limit Theorem, the Binomial distribution ~ B(N, p) is nicely approximated by a Gaussian distribution with mean N(Np, Np(1-p)). Since in the previous experiments, we used to increase the probability p of flipping a bit, this translates now to increasing the standard deviation of the normal distribution.
+In this section we are testing clusters of patterns that have been generated using a normal distribution. We are expecting to get similar results to the T1 method, since by the Central Limit Theorem, the Binomial distribution ~ B(N, p) is nicely approximated by a Gaussian distribution with mean N(Np, Np(1-p)). Since in the previous experiments, we used to increase the probability p of flipping a bit, this now translates to increasing the standard deviation of the normal distribution.
 
 
 \subsection{Basin Size for One Cluster using T2}
@@ -72,3 +72,13 @@ For this experiment, we shall increase the standard deviation and observe the ef
 
 \subsubsection{Comments}
 \hilight{Insert graph here}
+
+\section{Technologies used}
+
+We have combined several technologies in order to create a nice workflow for our working environment. First of all, it is worth mentioning that we implemented the core algorithms for the neural network in \textbf{Haskell}. It is a very good candidate for solving mathematical problems, and has a strong type system that helped us detect bugs early on, at compile time.
+
+The functions responsible for image preprocessing (loading, rescaling, converting to gray-scale values, mapping pixels to binary patterns) were implemented in the \textbf{C} programming language, using the MagickWand Library. Therefore, we also set up an interface of communication between C and Haskell.
+
+Since this was a group project in which all of us has to implement various parts of the system, we used Git as a version-control system. We have chosen Git because of it's powerful features and reliability as a distributed version-control system.
+
+%TODO. Talk about Jenkins , continuous integration, Review Board, ....

@@ -1,5 +1,6 @@
 {-# LANGUAGE PatternGuards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE BangPatterns #-}
 
 -- | Base Hopfield model, providing training and running.
 module Hopfield.Hopfield (
@@ -22,9 +23,11 @@ module Hopfield.Hopfield (
 ) where
 
 import           Control.Monad.Random (MonadRandom)
+import           Data.List
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
+import           Control.Parallel.Strategies
 
 import           Hopfield.Common
 import           Hopfield.Util
@@ -128,12 +131,48 @@ train pats = vector2D ws
     n = V.length (head pats)
 
 
+
+foldl'rnf :: NFData a => (a -> b -> a) -> a -> [b] -> a
+foldl'rnf f z xs = lgo z xs
+    where
+        lgo z []     = z
+        lgo z (x:xs) = lgo z' xs
+            where
+                z' = f z x `using` rdeepseq
+
+
 -- | See `computeH`.
 computeH_ :: Weights -> Pattern -> Int -> Int
-computeH_ ws pat i = if weighted >= 0 then 1 else -1
+computeH_ ws pat i = {-# SCC "computeHall" #-} if weighted >= 0 then 1 else -1
   where
-    weighted = sum [ (ws ! i ! j) *. (pat ! j) | j <- [0 .. p-1] ]
-    p = V.length pat
+    -- weighted = {-# SCC "computeHsum" #-} sum [ ({-# SCC "computeHmult" #-}
+    --                                               ( ({-# SCC "computeHacc1" #-} (ws ! i ! j))
+    --                                                   *.
+    --                                                 ({-# SCC "computeHacc2" #-} (pat ! j))
+    --                                               )) | j <- [0 .. p-1] ]
+    mysum = foldl' (+) 0
+    weighted :: Double
+    -- weighted = let ws_row = ws ! i in
+    --             {-# SCC "computeHsum" #-} sum [ ({-# SCC "computeHmult" #-}
+    --                                               ( let w = ws_row ! j
+    --                                                  in if 1 == ({-# SCC "computeHacc2" #-} (pat ! j))
+    --                                                     then w
+    --                                                     else -w
+    --                                               )) | j <- [0 .. p-1] ]
+    -- weighted = let ws_row = ws `V.unsafeIndex` i
+    --             in sum [ if 1 == pat `V.unsafeIndex` j then w else -w | j <- [0 .. p-1]
+    --                                                                   , let w = ws_row `V.unsafeIndex` j ]
+
+    wss = ws ! i
+    weighted = go 0 0.0
+    go :: Int -> Double -> Double
+    go !j !s | j == p    = s
+             | otherwise = let w  = wss `V.unsafeIndex` j
+                               x = if pat `V.unsafeIndex` j > 0 then w
+                                                                 else -w
+                            in go (j+1) (s+x)
+
+    p = {-# SCC "computeHvlength" #-} V.length pat
 
 
 -- | See `getUpdatables`.
