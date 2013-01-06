@@ -2,14 +2,15 @@
 % Justify design decisions, tools used, etc.
 % NO CODE!!! (except for skeleton of algorithms maybe)
 
-
-
 \section{Technologies used}
 
+%Haskell
 We have combined several technologies in order to create a nice workflow for our working environment. First of all, it is worth mentioning that we implemented the core algorithms for the neural network in \textbf{Haskell}. It is a very good candidate for solving mathematical problems, and has a strong type system that helped us detect bugs early on, at compile time.
 
+%Image loading with C
 The functions responsible for image preprocessing (loading, rescaling, converting to gray-scale values, mapping pixels to binary patterns) were implemented in the \textbf{C} programming language, using the MagickWand Library. Therefore, we also set up an interface of communication between C and Haskell.
 
+%Git
 Since this was a group project in which all of us has to implement various parts of the system, we used Git as a version-control system. We have chosen Git because of it's powerful features and reliability as a distributed version-control system.
 
 %TODO. Talk about Jenkins , continuous integration, Review Board, ....
