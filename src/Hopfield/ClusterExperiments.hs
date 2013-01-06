@@ -2,11 +2,9 @@
 
 module Hopfield.ClusterExperiments where
 
-
 import Control.Monad
 import Control.Monad.Random
 import Control.Parallel.Strategies
-import System.Environment
 
 import Hopfield.Clusters
 import Hopfield.Hopfield
@@ -20,7 +18,7 @@ data ExpType = T1 | T2
 oneIteration1 :: ExpType -> Int -> Int -> Double -> Double -> Double -> Int-> [(Double, Double)]
 oneIteration1 expType networkSize clusterSize start stop p_step i = zip cs values
   where
-    f x = evalRand (evaluatedFunction x) (mkStdGen i)
+    f x = evalRand (evaluatedFunction x) (mkStdGen ( i + 100))
     unevaluated = map f values
     cs = unevaluated `using` parList rdeepseq
     values = [start, p_step .. stop]
@@ -41,7 +39,7 @@ performAndPrint1 expType neurons clusterSize start stop step iterations = do
 oneIteration2 :: ExpType -> Int -> Int -> Double -> Double -> Double -> Double -> Int-> [(Double, Double)]
 oneIteration2 expType networkSize clusterSize val1 start2 stop2 p_step2 i = zip cs values
   where
-    f x = evalRand (evaluatedFunction x) (mkStdGen i)
+    f x = evalRand (evaluatedFunction x) (mkStdGen (i + 100))
     unevaluated = map f values
     cs = unevaluated `using` parList rdeepseq
     values = [start2, start2 + p_step2 .. stop2]
@@ -58,8 +56,8 @@ performAndPrint2 expType neurons clusterSize val1 start2 stop2 step2 iterations 
   putStrLn $ "performed for " ++ show iterations ++ " iterations"
   putStrLn $ "fixing the parameter(prob for T1 or std dev for T2) for the first cluster to be " ++ show val1
   putStrLn $ "varying the parameter for the second cluster between" ++ show start2 ++ "and " ++ show stop2
-  mapM_ print $ map (oneIteration2 expType neurons clusterSize val1 start2 stop2 step2) [0.. iterations]
-
+  seeds <- replicateM iterations $ getRandomR (20 :: Int, 1000 :: Int)
+  mapM_ print $ map (oneIteration2 expType neurons clusterSize val1 start2 stop2 step2) seeds
 
 
 
