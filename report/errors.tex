@@ -23,7 +23,7 @@
 %%%%%%%%%% End TeXmacs macros
 
 
-\tmtextbf{Errors in Hopfield networks}
+\chapter{Errors in Hopfield networks}
 
 When a Hopfield network is trained using a list of patterns, it is desired
 that those patterns are attractors, which requires that they are fixed points.
@@ -40,7 +40,7 @@ independent. In the context of attachment types, we can assume that the super
 attractor is the primary care giver, which was consistent in his/her
 behaviour, and that the other encounters of the child were independent.
 
-\tmtextbf{Stability of stored states, given independence of all stored
+\section{Stability of stored states, given independence of all stored
 patterns}
 
 Consider a pattern stored in the network \tmtextit{x$^k$}. We want to find out
@@ -134,7 +134,7 @@ By denoting $\frac{p}{N}$ with $\sigma :$
 
 \[  \]
 \[  \]
-\tmtextbf{Stability of a super attractor, given independence of all other
+\section{Stability of a super attractor, given independence of all other
 stored patterns}
 
 
@@ -207,7 +207,7 @@ By denoting $\frac{p - d}{N}$ with $\sigma :$
    \right) \right)  \]
 
 
-\tmtextbf{Computing network parameters given maximum accepted error}
+\section{Computing network parameters given maximum accepted error}
 
 Assuming all training patterns are independent, we can use the above results
 to determine the minimum number of neurons which should be used for the
@@ -237,7 +237,7 @@ probability of error does not exceed a maximum accepted error probability.
 \end{eqnarray*}
 where inverf is the inverse of the erf function.
 
-\tmtextbf{Measurements using the error of a network} \tmtextbf{for independent
+\section{Measurements using the error of a network for independent
 patterns}
 
 We will now give the reader an idea of how one should accommodate a fixed
@@ -247,6 +247,7 @@ creating networks of appropriate size.
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
 
 \begin{table}[h]
+\centering
   \begin{tabular}{|c|c|c|}
     \hline
     \tmtextbf{p} & \tmtextbf{error} & \tmtextbf{N}\\
@@ -268,6 +269,7 @@ The following table describes the capacity of the network in terms of the
 error accepted, by fixing the size of the network.
 
 \begin{table}[h]
+  \centering
   \begin{tabular}{|c|c|c|}
     \hline
     \tmtextbf{N} & \tmtextbf{error} & \tmtextbf{p}\\
@@ -297,7 +299,7 @@ network computes the probability of error of the super attractor. The caller
 has to ensure that training patterns are independent in order for the
 computation to be correct.
 
-\tmtextbf{Decreasing the error by using one super attractor}
+\section{Decreasing the error by using one super attractor}
 
 Above we described the derivation for obtaining the error of a super
 attractor, given its degree. We remind the reader that we did this under the
@@ -305,9 +307,9 @@ assumption that all other training patterns are independent. We will now show
 how the error of a pattern decreases if it is made a super attractor, by
 varying the number of times it is presented to the network during training.
 
-
-
-\tmfloat{h}{small}{table}{\begin{tabular}{|c|c|c|c|}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
   \hline
   \tmtextbf{degree} & \tmtextbf{p} & \tmtextbf{N} & \tmtextbf{error}\\
   \hline
@@ -323,8 +325,10 @@ varying the number of times it is presented to the network during training.
   \hline
   15 & 20 & 100 & $3.87 \ast 10^{- 6}$\\
   \hline
-\end{tabular}}{} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
-\tmfloat{h}{small}{table}{\begin{tabular}{|c|c|c|c|}
+\end{tabular}{}
+
+\centering
+\begin{tabular}{|c|c|c|c|}
   \hline
   \tmtextbf{degree} & \tmtextbf{p} & \tmtextbf{N} & \tmtextbf{error}\\
   \hline
@@ -340,7 +344,9 @@ varying the number of times it is presented to the network during training.
   \hline
   40 & 50 & 100 & $7.82 \ast 10^{- 4}$\\
   \hline
-\end{tabular}}{}
+\end{tabular}{}
+\caption{Computing the network error when using a super attractor}
+\end{table}
 
 Note that in the second table we are intentionally stressing the network so
 that we can notice how super attractors also affect the capacity of the

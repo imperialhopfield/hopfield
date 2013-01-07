@@ -1,0 +1,14 @@
+\chapter{Neuron Update Optimisation}
+
+
+\section{Initial Method}
+Originally, each update iteration of the Hopfield network involved scanning through all neurons and computing the $h$ value. As this involves scanning through all the neurons in every step, it is clearly an $O(n)$ operation.
+
+\section{Optimisation}
+First we shuffle the list of neurons\footnote{Although this is an extra $O(n)$ operation, it has a negligible footprint to computing the $h$ value}. We then select the first neuron. If it is updatable then we are done. If not then continue with the second neuron, and so on. In the worst case, we will perform as bad as the initial method described above. In general, however, we will always beat or match the above algorithm as we avoid computing the $h$ value for every node.
+
+
+
+At the beginning of the convergence process, the patterns tend to undergo a lot of transformations, and have a large number of updatable neurons. Depending on the size of the basin of attraction in which the pattern will land, and on the journey the pattern has to go trough until it reaches the basin, the number of updatable neurons during the journey varies greatly.
+
+As a pattern approaches convergence, the number of updatable neurons decreases (as for a fixed point, there are no updatable neurons) so we slightly reach the old performance. In any case our algorithm is still at least as good as the initial method.
