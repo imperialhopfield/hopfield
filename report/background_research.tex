@@ -73,6 +73,9 @@ One of Hopfield's most important contributions was to associate a Lyapunov, or e
 
 The function decreases as the system gets updated until it reaches a local minimum, corresponding to an attractor.
 
+% Inportenergy Landscape drawing from Lukasz
+\includegraphics[scale=0.25]{energy_landscape.png}
+
 \subsection{Stability and Capacity}
 
 Concepts of stability and capacity are important in the analysis of Hopfield Networks. A neuron unit \( \epsilon_{i}^{\mu}\) is said to be stable if the update rule will not change its state. The mathematical condition for this is:
@@ -140,7 +143,5 @@ where \( h_{ji}^{\nu} = \sum_{k=1,k\neq,j}^{n} w_{ik}^{\mu-1}\epsilon_{k}^{\mu} 
 This rule is local, since the synapses take into account only neurons at their sides. This rule is slightly more powerful than the generalised Hebb rule, since it makes use of more information. Because of the action field, each neuron uses information from all the neighbours. As Storkey has showed in 1997, the capacity of the network trained with this rule is greater than compared to Hebbian rule \cite{storkey1997increasing}.
 
 
-\subsection{Basins of Attraction}
-%I think we should move the measurements for the basins of attraction in here.
-A basin of attraction for a particular attractor a is defined as the set of all states that will eventually converge to a, under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A large basin size would provide stability for the attractor, since the states in the neighbourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor.
+
 
