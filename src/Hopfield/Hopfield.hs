@@ -133,38 +133,11 @@ train pats = vector2D ws
     n = V.length (head pats)
 
 
-
-foldl'rnf :: NFData a => (a -> b -> a) -> a -> [b] -> a
-foldl'rnf f z xs = lgo z xs
-    where
-        lgo z []     = z
-        lgo z (x:xs) = lgo z' xs
-            where
-                z' = f z x `using` rdeepseq
-
-
 -- | See `computeH`.
 computeH_ :: Weights -> Pattern -> Int -> Int
 computeH_ ws pat i = {-# SCC "computeHall" #-} if weighted >= 0 then 1 else -1
   where
-    -- weighted = {-# SCC "computeHsum" #-} sum [ ({-# SCC "computeHmult" #-}
-    --                                               ( ({-# SCC "computeHacc1" #-} (ws ! i ! j))
-    --                                                   *.
-    --                                                 ({-# SCC "computeHacc2" #-} (pat ! j))
-    --                                               )) | j <- [0 .. p-1] ]
-    mysum = foldl' (+) 0
     weighted :: Double
-    -- weighted = let ws_row = ws ! i in
-    --             {-# SCC "computeHsum" #-} sum [ ({-# SCC "computeHmult" #-}
-    --                                               ( let w = ws_row ! j
-    --                                                  in if 1 == ({-# SCC "computeHacc2" #-} (pat ! j))
-    --                                                     then w
-    --                                                     else -w
-    --                                               )) | j <- [0 .. p-1] ]
-    -- weighted = let ws_row = ws `V.unsafeIndex` i
-    --             in sum [ if 1 == pat `V.unsafeIndex` j then w else -w | j <- [0 .. p-1]
-    --                                                                   , let w = ws_row `V.unsafeIndex` j ]
-
     wss = ws ! i
     weighted = go 0 0.0
     go :: Int -> Double -> Double
