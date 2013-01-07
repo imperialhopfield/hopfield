@@ -110,10 +110,15 @@ main = do
                           "cboltzmann" -> CBoltzmann
                           _            -> error "unrecognized method"
 
-        print =<< recPic recMethod (width, height) filePaths queryPath
+        if saveAllPatterns
+          then
+            undefined
+          else
+            print =<< recPic recMethod (width, height) filePaths queryPath
 
     BenchmarkOptions { benchmarkPaths = _bp } -> error "benchmark not implemented"
 
     InbuiltBenchmarkOptions { benchmarkName } -> case benchmarkName of
       "bench1" -> bench1
       "bench2" -> bench2
+      _        -> error "unknown benchmark name"
