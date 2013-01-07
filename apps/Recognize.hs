@@ -7,6 +7,8 @@ import           Control.Monad
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Options.Applicative
+import           Text.Printf
+import           System.Directory
 
 import Hopfield.Common
 import Hopfield.Hopfield
@@ -66,12 +68,17 @@ saveChain method (width, height) imgPaths queryImgPath = do
   case method of
     Hopfield -> do chain <- updateChain (buildHopfieldData Storkey imgPats) queryPat
                    -- mapM_ (putStrLn . patternToAsciiArt 8) chain
+                   cleanupDir
                    mapM_ save $ zip [(0::Int)..] (reverse chain)
     m        -> error $ "saving convergence chains for method " ++ show m ++ " not yet implemented"
 
   where
-    save (number, pattern) = let filename = "converged-images/" ++ show number ++ ".bmp"
-                              in writeBitmap filename (patternToBwImage pattern width height)
+    save (number, pattern) = do let filename = printf "converged-images/%.6d.bmp" number
+
+                                createDirectoryIfMissing True "converged-images"
+                                writeBitmap filename (patternToBwImage pattern width height)
+
+    cleanupDir = removeDirectoryRecursive "converged-images"
 
 
 data RecognizeArgs = RunOptions

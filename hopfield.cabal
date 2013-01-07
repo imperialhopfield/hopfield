@@ -98,6 +98,7 @@ executable recognize
     , vector >= 0.9.1
     , optparse-applicative >= 0.5.0.0
     , JuicyPixels >= 2.0.0 && < 2.0.2
+    , directory >= 1.1.0.2
   ghc-options:
 
     -Wall -fwarn-unused-imports -auto-all -O -caf-all -rtsopts -threaded
