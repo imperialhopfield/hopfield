@@ -14,6 +14,7 @@ import Hopfield.ClassificationBoltzmannMachine
 import Hopfield.Benchmark
 
 
+-- TODO niklas make --fixseed command line option for deterministic results
 
 transformFunction :: Method -> (Int -> Int)
 transformFunction Hopfield  = (\x -> 2 * x - 1)
