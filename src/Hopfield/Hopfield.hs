@@ -162,14 +162,18 @@ getUpdatables_ ws pat = [ i | (i, x_i) <- zip [0..] (V.toList pat)
 update_ :: MonadRandom m => Weights -> Pattern -> m (Maybe Pattern)
 update_ ws pat = do
   randomIndices <- shuffle . toArray $ [0 .. V.length pat - 1]
-  return $ case firstUpdatable randomIndices 0 of
+  -- TODO avoid Array -> List -> Vector conversion
+  return $ case firstUpdatable (V.fromList randomIndices) of
     Nothing -> Nothing
     Just index -> Just $ flipAtIndex pat index
   where
-     firstUpdatable indices i
-       | i == V.length pat             = Nothing
-       | pat ! i /= computeH_ ws pat i = Just i
-       | otherwise                     = firstUpdatable indices (i+1)
+     firstUpdatable indices = go 0
+       where
+         go n
+           | n == V.length pat             = Nothing
+           | pat ! i /= computeH_ ws pat i = Just i
+           | otherwise                     = go (n+1)
+           where i = indices ! n
 
      flipAtIndex vec index = let val = vec ! index -- seq only brings small saving here
                               in val `seq` V.modify (\v -> write v index (-val)) vec
