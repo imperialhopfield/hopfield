@@ -19,6 +19,10 @@ import           Hopfield.Util
 data Type = H | BM
 
 
+instance (Arbitrary a) => Arbitrary (V.Vector a) where
+  arbitrary = fmap V.fromList arbitrary
+
+
 nonempty = (`suchThat` (not . null))
 
 mapMonad :: Monad m => (a -> b) -> m [a] -> m [b]

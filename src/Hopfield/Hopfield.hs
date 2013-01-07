@@ -16,12 +16,14 @@ module Hopfield.Hopfield (
   , update
   , getUpdatables
   , repeatedUpdate
+  , updateChain
   , matchPattern
   , computeH
   -- * Energy
   , energy
 ) where
 
+import           Control.Monad
 import           Control.Monad.Random (MonadRandom)
 import           Data.List
 import           Data.Vector ((!))
@@ -131,38 +133,11 @@ train pats = vector2D ws
     n = V.length (head pats)
 
 
-
-foldl'rnf :: NFData a => (a -> b -> a) -> a -> [b] -> a
-foldl'rnf f z xs = lgo z xs
-    where
-        lgo z []     = z
-        lgo z (x:xs) = lgo z' xs
-            where
-                z' = f z x `using` rdeepseq
-
-
 -- | See `computeH`.
 computeH_ :: Weights -> Pattern -> Int -> Int
 computeH_ ws pat i = {-# SCC "computeHall" #-} if weighted >= 0 then 1 else -1
   where
-    -- weighted = {-# SCC "computeHsum" #-} sum [ ({-# SCC "computeHmult" #-}
-    --                                               ( ({-# SCC "computeHacc1" #-} (ws ! i ! j))
-    --                                                   *.
-    --                                                 ({-# SCC "computeHacc2" #-} (pat ! j))
-    --                                               )) | j <- [0 .. p-1] ]
-    mysum = foldl' (+) 0
     weighted :: Double
-    -- weighted = let ws_row = ws ! i in
-    --             {-# SCC "computeHsum" #-} sum [ ({-# SCC "computeHmult" #-}
-    --                                               ( let w = ws_row ! j
-    --                                                  in if 1 == ({-# SCC "computeHacc2" #-} (pat ! j))
-    --                                                     then w
-    --                                                     else -w
-    --                                               )) | j <- [0 .. p-1] ]
-    -- weighted = let ws_row = ws `V.unsafeIndex` i
-    --             in sum [ if 1 == pat `V.unsafeIndex` j then w else -w | j <- [0 .. p-1]
-    --                                                                   , let w = ws_row `V.unsafeIndex` j ]
-
     wss = ws ! i
     weighted = go 0 0.0
     go :: Int -> Double -> Double
@@ -187,14 +162,18 @@ getUpdatables_ ws pat = [ i | (i, x_i) <- zip [0..] (V.toList pat)
 update_ :: MonadRandom m => Weights -> Pattern -> m (Maybe Pattern)
 update_ ws pat = do
   randomIndices <- shuffle . toArray $ [0 .. V.length pat - 1]
-  return $ case firstUpdatable randomIndices 0 of
+  -- TODO avoid Array -> List -> Vector conversion
+  return $ case firstUpdatable (V.fromList randomIndices) of
     Nothing -> Nothing
     Just index -> Just $ flipAtIndex pat index
   where
-     firstUpdatable indices i
-       | i == V.length pat             = Nothing
-       | pat ! i /= computeH_ ws pat i = Just i
-       | otherwise                     = firstUpdatable indices (i+1)
+     firstUpdatable indices = go 0
+       where
+         go n
+           | n == V.length pat             = Nothing
+           | pat ! i /= computeH_ ws pat i = Just i
+           | otherwise                     = go (n+1)
+           where i = indices ! n
 
      flipAtIndex vec index = let val = vec ! index -- seq only brings small saving here
                               in val `seq` V.modify (\v -> write v index (-val)) vec
@@ -219,6 +198,17 @@ matchPattern :: MonadRandom m => HopfieldData -> Pattern -> m (Either Pattern In
 matchPattern (HopfieldData ws pats) pat = do
   converged_pattern <- repeatedUpdate_ ws pat
   return $ findInList pats converged_pattern
+
+
+-- | Like `repeatedUpdate`, but collecting all patterns until convergence.
+-- The last pattern in the list is the converged pattern.
+-- The argument pattern is NOT prepended to the result list.
+--
+-- POST: The returned list is not empty.
+updateChain :: (MonadRandom m) => HopfieldData -> Pattern -> m [Pattern]
+updateChain (HopfieldData ws pats) pat
+  | Just e <- validPattern pat = error e
+  | otherwise                  = (pat:) `liftM` unfoldrSelfM (update_ ws) pat
 
 
 -- | See `energy`.

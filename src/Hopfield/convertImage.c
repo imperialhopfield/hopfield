@@ -22,8 +22,8 @@ mapToBinary(double** pattern, int width, int height){
 
   int i=0;
 
-  for(int w = 0; w < width; w++)
-    for(int h = 0; h < height; h++)
+  for(int h = 0; h < height; h++)
+    for(int w = 0; w < width; w++)
     {
       binaryPattern->pattern[i] = pattern[w][h] < 0.5 ? 0 : 1;
       i++;

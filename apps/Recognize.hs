@@ -2,10 +2,13 @@
 
 module Main where
 
+import           Codec.Picture
 import           Control.Monad
-import           Control.Monad.Random
+import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Options.Applicative
+import           Text.Printf
+import           System.Directory
 
 import Hopfield.Common
 import Hopfield.Hopfield
@@ -13,8 +16,10 @@ import Hopfield.ConvertImage
 import Hopfield.RestrictedBoltzmannMachine
 import Hopfield.ClassificationBoltzmannMachine
 import Hopfield.Benchmark
+import Hopfield.Util
 
 
+-- TODO niklas make --fixseed command line option for deterministic results
 
 transformFunction :: Method -> (Int -> Int)
 transformFunction Hopfield  = (\x -> 2 * x - 1)
@@ -24,20 +29,56 @@ toPattern :: Method -> CBinaryPattern -> Pattern
 toPattern m (CBinaryPattern { cPattern = pat }) = V.fromList $ map (transformFunction m . fromIntegral) $ pat
 
 
-recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Maybe FilePath)
+-- | Generates a black-white pixel value from the given pattern.
+-- Returns: 'maxBound' if > 0, otherwise 'minBound' for any numeric output type
+-- (e.g. 0/255 for Word8).
+genPixelBW :: (Bounded a) => Pattern -> Int -> Int -> Int -> a
+genPixelBW pattern x y width | pattern ! (y + x * width) > 0 = maxBound
+                             | otherwise                     = minBound
+
+
+-- | Converts a 'Pattern' to a 8-bit black-white image.
+patternToBwImage :: Pattern -> Int -> Int -> Image Pixel8
+patternToBwImage pattern width height = generateImage (genPixelBW pattern width) width height
+
+
+recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Either (Image Pixel8) FilePath)
 recPic method (width, height) imgPaths queryImgPath = do
   l@(_queryImg:_imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
-  gen <- getStdGen
   let queryPat:imgPats = map (toPattern method) l
-      runRandom r = evalRand r gen
-      result =  case method of
-          Hopfield   -> runRandom $ matchPattern (buildHopfieldData Storkey imgPats) queryPat
-          Boltzmann  -> Right $ runRandom $ matchPatternBoltzmann (runRandom $ buildBoltzmannData imgPats) queryPat
-          CBoltzmann -> Right $ matchPatternCBoltzmann (runRandom $ buildCBoltzmannData imgPats) queryPat
+
+  result <- case method of
+              Hopfield   -> matchPattern (buildHopfieldData Storkey imgPats) queryPat
+              Boltzmann  -> do d <- buildBoltzmannData imgPats
+                               Right <$> matchPatternBoltzmann d queryPat
+              CBoltzmann -> do d <- buildCBoltzmannData imgPats
+                               return . Right $ matchPatternCBoltzmann d queryPat
+
   return $ case result of
-             Left _pattern -> Nothing -- TODO apply heuristic if we want (we want)
-                                      -- only required for Hopfield
-             Right i       -> Just $ imgPaths !! i
+             -- TODO apply heuristic instead of returning pattern as image (only required for Hopfield)
+             Left pattern -> Left $ patternToBwImage pattern width height
+             Right i      -> Right $ imgPaths !! i
+
+
+saveChain :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO ()
+saveChain method (width, height) imgPaths queryImgPath = do
+  l@(_queryImg:_imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
+  let queryPat:imgPats = map (toPattern method) l
+
+  case method of
+    Hopfield -> do chain <- updateChain (buildHopfieldData Storkey imgPats) queryPat
+                   -- mapM_ (putStrLn . patternToAsciiArt 8) chain
+                   cleanupDir
+                   mapM_ save $ zip [(0::Int)..] chain
+    m        -> error $ "saving convergence chains for method " ++ show m ++ " not yet implemented"
+
+  where
+    save (number, pattern) = do let filename = printf "converged-images/%.6d.bmp" number
+
+                                createDirectoryIfMissing True "converged-images"
+                                writeBitmap filename (patternToBwImage pattern width height)
+
+    cleanupDir = removeDirectoryRecursive "converged-images"
 
 
 data RecognizeArgs = RunOptions
@@ -46,6 +87,7 @@ data RecognizeArgs = RunOptions
                        , height :: Int
                        , queryPath :: String
                        , filePaths :: [String]
+                       , saveAllPatterns :: Bool
                        }
                    | BenchmarkOptions
                        { benchmarkPaths :: [String]
@@ -62,6 +104,7 @@ runOptions = RunOptions <$> argument str  ( metavar "METHOD"     <> help "hopfie
                         <*> argument auto ( metavar "HEIGHT"     <> help "height images are resized to" )
                         <*> argument str  ( metavar "QUERY_PATH" <> help "image to match" )
                         <*> arguments str ( metavar "FILE_PATHS" <> help "images to match against (training set)" )
+                        <*> switch ( long "save-all-patterns" <> help "save all intermediate patterns to harddisk" )
 
 
 benchmarkOptions :: Parser RecognizeArgs
@@ -95,7 +138,7 @@ main = do
 
   case recArgs of
 
-    RunOptions { method, width, height, queryPath, filePaths }
+    RunOptions { method, width, height, queryPath, filePaths, saveAllPatterns }
       | width < 1       -> error "width must be > 1"
       | height < 1      -> error "height must be > 1"
       | queryPath == "" -> error "empty query path"
@@ -108,10 +151,22 @@ main = do
                           "cboltzmann" -> CBoltzmann
                           _            -> error "unrecognized method"
 
-        print =<< recPic recMethod (width, height) filePaths queryPath
+        if saveAllPatterns
+          then
+            saveChain recMethod (width, height) filePaths queryPath
+          else do
+            foundPathOrImage <- recPic recMethod (width, height) filePaths queryPath
+            case foundPathOrImage of
+              Right path    -> putStrLn path
+              Left image -> do let convergedPath = "converged.bmp"
+                                -- TODO handle return
+                               _ <- writeBitmap convergedPath image
+                               putStrLn $ "no pattern found, wrote coverged image to " ++ convergedPath
+
 
     BenchmarkOptions { benchmarkPaths = _bp } -> error "benchmark not implemented"
 
     InbuiltBenchmarkOptions { benchmarkName } -> case benchmarkName of
       "bench1" -> bench1
       "bench2" -> bench2
+      _        -> error "unknown benchmark name"

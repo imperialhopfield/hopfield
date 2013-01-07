@@ -40,13 +40,18 @@ module Hopfield.Util (
   , toDouble
   , toPercents
   , vector2D
+  , unfoldrSelfM
+  , patternToAsciiArt
 ) where
 
 
-import           Control.Monad (forM_, liftM, replicateM)
+import           Control.Applicative
+import           Control.Monad
+import           Control.Monad.Loops (unfoldrM)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Data.Array.ST
+import           Data.List.Split (chunksOf)
 import qualified Data.Random as DR
 import           Data.List
 import qualified Data.Vector as V
@@ -57,7 +62,7 @@ import qualified Numeric.Container as NC
 import           Numeric.Probability.Random (T, runSeed)
 import           System.Random (mkStdGen)
 
-import           Hopfield.Common (Showable)
+import           Hopfield.Common
 
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
@@ -300,3 +305,29 @@ printMList (x:xs) (f:fs) = do
     value <- x
     putStrLn $ f value
     printMList xs fs
+
+
+-- | Executes the monadic action returning a maybe until 'Nothing' is returned,
+-- collecting the results in a list.
+--
+-- Like `unfoldr`, the initial value is not part of the result list.
+unfoldrSelfM :: Monad m => (a -> m (Maybe a)) -> a -> m [a]
+-- Could be the following with `unfoldrM` from monad-loops:
+--   unfoldrSelfM f seed = unfoldrM (\x -> ((\z -> (z,z)) <$>) `liftM` f x) seed
+-- but monad-loops < 0.4.2 has a bug:
+--   https://github.com/mokus0/monad-loops/commit/7ede550ecd2df61d12f5148b86bd5f3daaf6eb24
+unfoldrSelfM f seed = go seed
+  where
+    go a = do
+      mx <- f a
+      case mx of
+        Nothing -> return []
+        Just x  -> do xs <- go x
+                      return $ x : xs
+
+
+patternToAsciiArt :: Int -> Pattern -> String
+patternToAsciiArt width = unlines . chunksOf width . V.toList . fmap toChar
+  where
+    toChar i | i > 0     = '1'
+             | otherwise = ' '
