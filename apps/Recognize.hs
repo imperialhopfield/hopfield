@@ -65,6 +65,21 @@ recPic method (width, height) imgPaths queryImgPath = do
              Right i      -> Right $ imgPaths !! i
 
 
+saveChain :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO ()
+saveChain method (width, height) imgPaths queryImgPath = do
+  l@(_queryImg:_imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
+  let queryPat:imgPats = map (toPattern method) l
+
+  case method of
+    Hopfield -> do chain <- updateChain (buildHopfieldData Storkey imgPats) queryPat
+                   mapM_ save (zip [(0::Int)..] (queryPat:chain))
+    m        -> error $ "saving convergence chains for method " ++ show m ++ " not yet implemented"
+
+  where
+    save (number, pattern) = let filename = "converged-images/" ++ show number ++ ".bmp"
+                              in writeBitmap filename (patternToBwImage pattern width height)
+
+
 data RecognizeArgs = RunOptions
                        { method :: String
                        , width :: Int
@@ -137,7 +152,7 @@ main = do
 
         if saveAllPatterns
           then
-            error "saving pattern chain not implemented"
+            saveChain recMethod (width, height) filePaths queryPath
           else do
             foundPathOrImage <- recPic recMethod (width, height) filePaths queryPath
             case foundPathOrImage of
