@@ -11,14 +11,19 @@
 % influenced by what we say here. Bare this in mind!
 
 
+\section{Project Organisation}
 %introduction
-We started out the project by thoroughly investigating the Hopfield model, reading important research papers that were describing it in detail and showing the potential for other applications. 
+We started out the project by thoroughly investigating the Hopfield model, reading important research papers that were describing it in detail and showing the potential for other applications.
 
 %allocation of work
-Once we had a firm understanding of the mathematical model, we assigned various tasks to each members in order to create a simple image recognition application. Wael and Mihaela started implementing the core algorithm in Haskell, based on information gathered from the research papers. Razvan implemented the image preprocessing in C, while Niklas was integrating the Haskell algorithmmic core with the C programs. 
+Once we had a firm understanding of the mathematical model, we assigned various tasks to each members in order to create a simple image recognition application. Wael and Mihaela started implementing the core algorithm in Haskell, based on information gathered from the research papers. Razvan implemented the image preprocessing in C, while Niklas was integrating the Haskell algorithmic core with the C programs. Lukasz worked on implementing the GUI and image loading, GUI usability and correctness testing, as well as supplying much of the artistic work, including that found throughout this report.
 
 %mention about Chatley
-We heavily followed the advice that Prof Chatley offered in the Software Engineering Lectures. Therefore, we used to have regular weekly meetings and perform iterative development in order to make sure we have a working version of our product at any time.
+We heavily followed the advice that Dr. Chatley offered in the Software Engineering Lectures. Therefore, we used to have regular weekly meetings and perform iterative development in order to make sure we have a working version of our product at any time.
 
 % we didn't use Agile
-Although we did not use any popular software engineering methodology, such as Agile development, we did make sure we are on track with the project requirements. We closely collaborated in order to ensure timely delivery and were flexible to quick changes that came across the progress of the project. 
+Although we did not use any popular software engineering methodology, such as Agile development, we did make sure we are on track with the project requirements. We closely collaborated in order to ensure timely delivery and were flexible to quick changes that came across the progress of the project.
+
+
+\section{A story}
+It is in difficult times that the value of team work really flourishes, as the story of our experiments shall show. As aforementioned, running our experiments posed as a formidable difficulty due the hefty processing time it required. Such experiments would last long hours, sometimes overnight. This was deemed unacceptable to us, and we sought a solution to this problem. Various members of the team collaborated in subgroups, each focusing on a particular aspect of improvement. These sub-groups were not rigid subdivisions of the team, quite the contrary, they were dynamic and self-arranging. One task undertaken by a subgroup is the optimisation of the experiment, in particular those arising from running the Storkey-Valabregue method. Iteratively optimising the code and testing the results locally and at scale (by actually running the experiments). Another subgroup worked on exploiting the resources available to us, developing the code and writing scripts to parallelize the experiments to run on multiple cores and multiple machines. Eventually, the experiments exhibited an improvement of at least 30 fold for some experiments (the magic of parallelism!). So what can we conclude from this? Team work can perform miracles!
