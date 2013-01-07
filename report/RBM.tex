@@ -22,7 +22,7 @@ in such a state. This resembles simulated annealing, but ensuring we are not
 caught in a local minima (in the energy landscape).
 
 Restricted Boltzmann Machines have been used for various purposes in recent
-years 
+years
 \cite{louradour2011classification} \cite{teh2001rate} \cite{nair2010rectified}
 , most of it
 conducted by Geoffrey E. Hinton at university of Toronto, Canada. They have a
@@ -35,6 +35,7 @@ hidden units take binary values. This is the approach we also adopted for our
 implementation.
 
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \begin{figure}[h]
+  \centering
   \resizebox{300px}{300px}{\includegraphics{RBM-1.eps}}
   \caption{Restricted Boltzmann Machine}
 \end{figure}
@@ -125,7 +126,8 @@ another set of visible units, called the \emph{classification units}.
 
 
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \begin{figure}[h]
-  \ \ \ \ \ \ \ \ \ \ \resizebox{350px}{350px}{\includegraphics{RBM-2.eps}}
+  \ \ \ \ \ \ \ \ \ \ \centering
+  \resizebox{350px}{350px}{\includegraphics{RBM-2.eps}}
   \caption{Classification Boltzmann machine}
 \end{figure}
 
@@ -240,6 +242,7 @@ creating the binary vector using the representation in base 2 of class c.
 
 \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \begin{figure}[h]
   \ \ \ \ \ \ \ \ \ \ \ \ \
+  \centering
   \resizebox{350px}{350px}{\includegraphics{RBM-3.eps}}
   \caption{Boltzmann machines according to our new method}
 \end{figure} \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
@@ -260,6 +263,7 @@ probability.
 
 
 \begin{figure}[h]
+  \centering
   \resizebox{622px}{182px}{\includegraphics{RBM-4.eps}}
   \caption{The recognition process in the new Boltzmann machine.}
 \end{figure}
