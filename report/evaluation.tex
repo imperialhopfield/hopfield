@@ -24,13 +24,17 @@ There are a lot of advantages of using Haskell, including its clarity and correc
 Using Haskell came with an initial price: while all the group members were familiar with the language due to our course in first year, we soon came to the realisation that we only played with Haskell before. Only with our project we got to see its true beauty and power.
 This early overhead turned out to be very small compared to the benefits and the satisfactions we got back. The project enabled us to learn about neural networks and attachment types, but we chose to exploit this opportuinity in order to become better using a programming language we like.
 \begin{figure}[h]
-  \centering
+  \centering1
 \input{plot-hpi.tex}
 \caption{Average Haskell Proficieny Index over time.}
 \label{fig:Haskell Proficieny Index over time}
 \end{figure}
 
-However, we initially found that it was slow in running some experiments, containing large networks and having many patterns to train for. Because of this, we invested a lot in time in optimising the algorithms. 
+While testing the recognition application we realised that our implementation was not as fast as we would have liked it to be, and imposed serious limtation on the size of the networks we were able to try out.
+As a consequence, we invested a good amount of time in understanding Haskell compiler optimisations, runtime characteristics, and profiling tools. Using time and allocation profiling, we found that two inner loops in our numerical network updating code were slowing us down significantly. By changing 12 lines to manually unroll the involved list comprehensions into tail-recursive functions we were able to get an overall 4-times speedup of our program.
+
+
+% already good performance that we achieved through writing code without side effects and ghc's highly optimizing native code generator.
 
 \subsection{Unit Testing}
 
