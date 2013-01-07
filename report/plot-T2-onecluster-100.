@@ -13,7 +13,7 @@ only marks,
 smooth  % draw smooth curve
 ] table [
 y = mean
-] {data-T1-onecluster-100.csv};
+] {data-T2-onecluster-100.csv};
 
 \end{axis}
 \end{tikzpicture}

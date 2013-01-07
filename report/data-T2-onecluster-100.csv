@@ -1,5 +1,5 @@
 % email: Experiments to plot: one cluster 100 10
-% n = 100 ; ONE cluster of size 10
+% T2 ; n = 100 ; ONE cluster of size 10
 % with std dev given by the key.
 key	n	mean	stddev
 0.0	10	49.000000	0.000000
