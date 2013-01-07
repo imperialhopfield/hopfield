@@ -50,6 +50,7 @@ library
     , QuickCheck >= 2.4.2
     , deepseq >= 1.3.0.0
     , monad-loops >= 0.3.3.0
+    , split >= 0.2.1.1
   c-sources:
       src/Hopfield/convertImage.c
   include-dirs:
@@ -97,7 +98,6 @@ executable recognize
     , vector >= 0.9.1
     , optparse-applicative >= 0.5.0.0
     , JuicyPixels >= 2.0.0 && < 2.0.2
-    , split >= 0.2.1.1
   ghc-options:
 
     -Wall -fwarn-unused-imports -auto-all -O -caf-all -rtsopts -threaded

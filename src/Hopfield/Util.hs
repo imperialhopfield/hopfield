@@ -41,6 +41,7 @@ module Hopfield.Util (
   , toPercents
   , vector2D
   , unfoldrSelfM
+  , patternToAsciiArt
 ) where
 
 
@@ -50,6 +51,7 @@ import           Control.Monad.Loops (unfoldrM)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Data.Array.ST
+import           Data.List.Split (chunksOf)
 import qualified Data.Random as DR
 import           Data.List
 import qualified Data.Vector as V
@@ -60,7 +62,7 @@ import qualified Numeric.Container as NC
 import           Numeric.Probability.Random (T, runSeed)
 import           System.Random (mkStdGen)
 
-import           Hopfield.Common (Showable)
+import           Hopfield.Common
 
 
 (./.) :: (Fractional a, Integral a1, Integral a2) => a1 -> a2 -> a
@@ -321,3 +323,10 @@ unfoldrSelfM f seed = go seed []
       case mx of
         Nothing -> return acc
         Just x  -> go x (x:acc)
+
+
+patternToAsciiArt :: Int -> Pattern -> String
+patternToAsciiArt width = unlines . chunksOf width . V.toList . fmap toChar
+  where
+    toChar i | i > 0     = '1'
+             | otherwise = ' '

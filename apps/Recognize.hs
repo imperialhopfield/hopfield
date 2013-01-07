@@ -4,7 +4,6 @@ module Main where
 
 import           Codec.Picture
 import           Control.Monad
-import           Data.List.Split (chunksOf)
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Options.Applicative
@@ -15,6 +14,7 @@ import Hopfield.ConvertImage
 import Hopfield.RestrictedBoltzmannMachine
 import Hopfield.ClassificationBoltzmannMachine
 import Hopfield.Benchmark
+import Hopfield.Util
 
 
 -- TODO niklas make --fixseed command line option for deterministic results
@@ -38,13 +38,6 @@ genPixelBW pattern x y width | pattern ! (y + x * width) > 0 = maxBound
 -- | Converts a 'Pattern' to a 8-bit black-white image.
 patternToBwImage :: Pattern -> Int -> Int -> Image Pixel8
 patternToBwImage pattern width height = generateImage (genPixelBW pattern width) width height
-
-
-patternToAsciiArt :: Int -> Pattern -> String
-patternToAsciiArt width = unlines . chunksOf width . V.toList . fmap toChar
-  where
-    toChar i | i > 0     = '1'
-             | otherwise = ' '
 
 
 recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Either (Image Pixel8) FilePath)
