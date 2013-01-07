@@ -67,6 +67,19 @@ testHopfield = do
       -- it "test that when repeatedUpdate has finished, no other update can occur" $
 
 
+    describe "updateChain" $ forAllMethods $ \(Config method maxPatSize) -> do
+
+      -- Note that `updateChain` need not produce patterns like `repeatedUpdate`
+      -- because the updates are random.
+
+      it "updateChain terminates nonempty" $
+        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ \(training_pats, testPats) ->
+          let hd = buildHopfieldData method training_pats
+           in and $ flip evalRand (mkStdGen 1) $ forM testPats $ \testPat -> do
+                result_chain <- updateChain hd testPat
+                return $ length result_chain >= 1
+
+
     describe "getUpdatables" $ do
       it "getUpdatables test1" $
         getUpdatables (vector2D  [[0  ,0.2,0.5],
