@@ -18,7 +18,19 @@
 
 
 %why Haskell?
-In a nutshell, we are really content with the choice of our tools and with our implementation of the neural network. Since our mathematical core of the algorithm did not contain much state information, Haskell was definitely a good choice for that. However, we initially found that it was slow in running some experiments, containing large networks and having many patterns to train for. Because of this, we invested a lot in time in optimising the algorithms. 
+In a nutshell, we are content with the choice of our tools and with our implementation of the neural network. Since our mathematical core of the algorithm does not contain much state information, we chose to implement our project in Haskell.
+The strong types allowed us to have confidence in the code we write. Most of our experiments took quite some time, so it enabled us to not find out in the middle of an experiment that we have a type missmatch, wasting hours of precious computation time.
+There are a lot of advantages of using Haskell, including its clarity and correctness. The type system enforces the programmer to have a clear understanding of the problem and the various solutions available, which leads to high quality code.
+Using Haskell came with an initial price: while all the group members were familiar with the language due to our course in firsy year, we soon came to the realisation that we only played with Haskell before. Only with our project we got to see its true beauty and power.
+This early overhead turned out to be very small compared to the benefits and the satisfactions we got back. The project enabled us to learn about neural networks and attachment types, but we chose to exploit this opportuinity in order to become better using a programming language we like.
+\begin{figure}[h]
+  \centering
+\input{plot-one-super}
+\caption{Average basin of attraction for a super attractor with varying degrees.}
+\label{fig:Haskell Proficieny Index over time}
+\end{figure}
+
+However, we initially found that it was slow in running some experiments, containing large networks and having many patterns to train for. Because of this, we invested a lot in time in optimising the algorithms. 
 
 \subsection{Unit Testing}
 
