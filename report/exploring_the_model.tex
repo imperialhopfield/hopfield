@@ -144,6 +144,18 @@ Initially, when p is zero, we observe a huge value of 24 for the basin size. Thi
 
 When p is between 0 and a critical value of 0.35, the basin size is 0, since the patterns are too close to each other and don't have enough space to fit basins of attraction between them. As soon as p goes over 0.35, the basins start to increase until a maximum size of 11.
 
+\subsubsection{Further explanation of the results using T1}
+
+The results can also be easily understood and visualised in figure \ref{fig:basins}. For small p values, the attractors formed in the network are too close to each other to allow room for any basins of attraction (apart from the attractors lying at the edge of the cluster). When the p-value is high, the attractors become more disperse, leaving room for larger basins. It is also worth mentioning that the basin shapes are not necessarily hyper-spherical.  
+
+
+\begin{figure}[h]
+  \centering
+\includegraphics[scale=0.25]{images/basins_of_attraction.png}
+\caption{Illustration of clusters of attractors generated using T1, with different p-values. }
+\label{fig:basins}
+\end{figure}
+
 
 \subsection{Basin Size for Two Clusters using T1}
 
@@ -173,18 +185,14 @@ We will be interested to observe how can the probability p influences the basin 
 \label{fig:plot-T1-twocluster}
 \end{figure}
 
-This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other.
+This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other. 
 
-\subsubsection{Further explanation of the results using T1}
 
-The results can also be easily understood and visualised in figure \ref{fig:basins}. For small p values, the attractors formed in the network are too close to each other to allow room for any basins of attraction (apart from the attractors lying at the edge of the cluster). When the p-value is high, the attractors become more disperse, leaving room for larger basins. It is also worth mentioning that the basin shapes are not necessarily hyper-spherical.  
 
-\begin{figure}[h]
-  \centering
-\includegraphics[scale=0.25]{images/basins_of_attraction.png}
-\caption{Illustration of clusters of attractors generated using T1, with different p-values. }
-\label{fig:basins}
-\end{figure}
+
+\subsubsection{Link to attachment theory}
+A network having been trained with two clusters of patterns can be interpreted, in attachment theory, with an infant that has been exposed to two different caregivers. The patterns can be for example, visual or auditory memories describing the 2 caregivers. 
+
 
 
 \section{Experiments with Gaussian-distributed patterns}
