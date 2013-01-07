@@ -54,7 +54,7 @@ For the Hopfield Networks, this is implemented in the following manner, when lea
 For pattern \(\mu\), if the bits corresponding to neurons i and j are equal, then the product  \( \epsilon_{i}^\mu \epsilon_{j}^\mu \) will be positive. This would, in turn, have a positive effect on the weight \(w_{ij} \) and the values of i and j will tend to become equal. The opposite happens if the bits corresponding to neurons i and j are different.
 
 \subsection{Spurious Patterns}
-
+\label{spurious_patterns}
 Patterns that the network uses for training, called retrieval states, become attractors of the system. Repeated updates would eventually lead to convergence to one of the retrieval states. However, sometimes the network will converge to spurious patterns, that are different from the training patterns. 
 
 A a linear combination of an odd number of stored patterns, in this case 3 patterns, would give us a spurious state:

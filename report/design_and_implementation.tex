@@ -46,7 +46,7 @@ Another challenge which we have faced is dealing the sheer amount of data genera
 \section{Anticipated Risks}
 
 \subsection{Failure to match a pattern stored}
-One of the risks associated with using the Hopfield model is that the converged pattern may not be one of the stored patterns, but rather a spurious pattern, as explained in \hilight{CROSS REF}. This poses a problem for our recognition application, which needs to return as a result the closest matched stored pattern. Another issue with similar repercussions is that a large number of iterations are run, but the pattern has not yet converged.
+One of the risks associated with using the Hopfield model is that the converged pattern may not be one of the stored patterns, but rather a spurious pattern, as explained in \ref{spurious_patterns}. This poses a problem for our recognition application, which needs to return as a result the closest matched stored pattern. Another issue with similar repercussions is that a large number of iterations are run, but the pattern has not yet converged.
 One solution to this which we have employed \hilight{have we? also cross ref if applicable} is to simply output the stored pattern with the smallest Hamming distance between it and the current state of the input pattern following iteration. This makes our image recognition robust to such unfortunate occurrences.
 
 

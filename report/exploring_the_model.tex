@@ -11,11 +11,11 @@ Our initial aim was to explore various properties of the attractors in a Hopfiel
 
 \section{Basins of Attraction}
 %I think we should move the measurements for the basins of attraction in here.
-A basin of attraction for a particular attractor a is defined as the set of all states that will eventually converge to a, under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A large basin size would provide stability for the attractor, since the states in the neighbourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor.
+A basin of attraction for a particular attractor \(\alpha\) is defined as the set of all states that will eventually converge to \(\alpha\), under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A large basin size would provide stability for the attractor, since the states in the neighbourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor.
 
 \subsection{Measuring the Basin Size}
 
- A large part of our experiments were thus dedicated to measuring basin sizes of different attractors, clusters of attractors and a newly introduced concept of \emph{Super-Attractors}.
+ A large part of our experiments were thus dedicated to measuring basin sizes of different attractors, clusters of attractors and a newly introduced concept of \emph{Super-Attractors} \ref{super_attractors}.
 
  A recognised scientific method for calculating the basin size is the Storkey-Valabregue measurement. This can be computed as follows:
 
@@ -153,6 +153,7 @@ As it can be easily noticed in the graph, cluster C1, with varying standard devi
 
 
 \section{Super Attractors}
+\label{super_attractors}
 In the context of learning models such as the Hopfield model, we define a super attractor as an attractor resulting from training a model with multiple occurrences or instances of some stored pattern. The degree of a super attractor denotes the number of occurrences of its corresponding pattern in the training set.
 
 

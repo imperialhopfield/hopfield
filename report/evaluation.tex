@@ -16,30 +16,30 @@
 \section{Implementation}
 % In here, we can evaluate our implementation ... Talk about why Haskell was slow for computing the experiments, how we overcame this, ...
 
-
+\hilight{we need to add some sub-sections here, or bullet points ... this wall of text would only appeal to Chatley}
 %why Haskell?
 In a nutshell, we are content with the choice of our tools and with our implementation of the neural network. Since our mathematical core of the algorithm does not contain much state information, we chose to implement our project in Haskell.
 The strong types allowed us to have confidence in the code we write. Most of our experiments took quite some time, so it enabled us to not find out in the middle of an experiment that we have a type missmatch, wasting hours of precious computation time.
 There are a lot of advantages of using Haskell, including its clarity and correctness. The type system enforces the programmer to have a clear understanding of the problem and the various solutions available, which leads to high quality code.
 Using Haskell came with an initial price: while all the group members were familiar with the language due to our course in first year, we soon came to the realisation that we only played with Haskell before. Only with our project we got to see its true beauty and power.
-This early overhead turned out to be very small compared to the benefits and the satisfactions we got back. The project enabled us to learn about neural networks and attachment types, but we chose to exploit this opportuinity in order to become better using a programming language we like.
+This early overhead turned out to be very small compared to the benefits and the satisfactions we got back. The project enabled us to learn about neural networks and attachment types, but we chose to exploit this opportunity in order to become better using a programming language we like.
 \begin{figure}[h]
   \centering1
 \input{plot-hpi.tex}
-\caption{Average Haskell Proficieny Index over time.}
+\caption{Average Haskell Proficiency Index over time.}
 \label{fig:Haskell Proficieny Index over time}
 \end{figure}
 
-While testing the recognition application we realised that our implementation was not as fast as we would have liked it to be, and imposed serious limtation on the size of the networks we were able to try out.
+While testing the recognition application we realised that our implementation was not as fast as we would have liked it to be, and imposed serious limitation on the size of the networks we were able to try out.
 As a consequence, we invested a good amount of time in understanding Haskell compiler optimisations, runtime characteristics, and profiling tools. Using time and allocation profiling, we found that two inner loops in our numerical network updating code were slowing us down significantly. By changing 12 lines to manually unroll the involved list comprehensions into tail-recursive functions we were able to get an overall 4-times speedup of our program.
-Additionally, Haskell's being a purely functional programming language allows for easy and efficient parallelisation.
+Additionally, Haskell's being a purely functional programming language allows for easy and efficient parallelization.
 By replacing a top-level map with a parallel map function, our program immediately scaled up to the eight processes that were available on the lab machines we used. Because our main processing time is spent in numerical, cache-local loops, we also got almost 8-times improved performance from this. This final scaling success is an improvement over an initial try in which we parallelized an inner loop, which turned out to be too fine-grained.
 
 % already good performance that we achieved through writing code without side effects and ghc's highly optimizing native code generator.
 
 \subsection{Unit Testing}
 
-Unit testing of our Haskell functions was performed using the HUnit framework. This allowed us to heavily test the complex functions responsible for performing updates or calculating energy and capacity, thus making sure about important invariants: energy is always monotonically decreasing, capacity is following the theoretical trends and updates eventually converge to an attractor. 
+Unit testing of our Haskell functions was performed using the HUnit framework. This allowed us to heavily test the complex functions responsible for performing updates or calculating energy and capacity, thus making sure that important invariants always hold: energy is always monotonically decreasing, capacity is following the theoretical trends and updates eventually converge to an attractor. 
 
 %show some testing results here
 
