@@ -1,0 +1,59 @@
+
+\section{Comparing Storkey and Hebbian learning}
+
+When training a Hopfield network, we have employed two types of learning: the
+first one is the hebbian learning, while the second one is Storkey learning.
+The advatage of the latter is that it increases the capacity of the network
+and the basin of attraction of the clusters. We will now explain some
+experiments we did with both types of learning in order to see how the
+learning type affects the basin of attraction for clusters.
+
+We will now show how the learning determines the basin of attraction of a
+Gaussian distributed cluster. The generation was done using the T2 method
+described in section ~\ref{sec:fexp}.
+
+\begin{table}[h]
+  \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    \tmtextbf{Learning} & N & Cluster size & $\mu$ & $\sigma$ & Average size
+    of basin of attraction\\
+    \hline
+    Hebbian & 50 & 2 & 25 & 5 & 10.0\\
+    \hline
+    Storkey & 50 & 2 & 25 & 5 & 18.0\\
+    \hline
+    Hebbian & 50 & 4 & 25 & 5 & 1.5\\
+    \hline
+    Storkey & 50 & 4 & 25 & 5 & 4\\
+    \hline
+    Hebbian & 50 & 4 & 25 & 10 & 5.75\\
+    \hline
+    Storkey & 50 & 4 & 25 & 10 & 8.0\\
+    \hline
+    Hebbian & 50 & 5 & 25 & 5 & 4.4\\
+    \hline
+    Storkey & 50 & 5 & 25 & 5 & 4.8\\
+    \hline
+    Hebbian & 50 & 6 & 25 & 5 & 4.2\\
+    \hline
+    Storkey & 50 & 6 & 25 & 5 & 4.4\\
+    \hline
+    Hebbian & 50 & 6 & 25 & 10 & 4.45\\
+    \hline
+    Storkey & 50 & 6 & 25 & 10 & 5.61\\
+    \hline
+  \end{tabular}
+  \caption{}
+\end{table}
+
+
+
+The results confirm what the mathematical theory showed us: Storkey learning
+increases the average basin of attraction. We must note that this does not
+come without a price: training the network using Storkey learning slowed down
+our experiments, as it is more expensive. Depending to the application, this
+is an acceptable trade off. All our functions and experiments can be performed
+with both types of learning, just by changing a parameter (the learning type),
+which enables any user of our libraries to make the choice depending on the
+use case.
+
