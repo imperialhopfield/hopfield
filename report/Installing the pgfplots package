@@ -1,0 +1,10 @@
+Installing the pgfplots package
+
+cd ~/texmf
+
+take zip from:
+http://downloads.sourceforge.net/project/pgfplots/pgfplots/1.7/pgfplots_1.7.tds.zip?r=&ts=1357529528&use_mirror=heanet
+pgf
+texmacs
+
+ unzip it
