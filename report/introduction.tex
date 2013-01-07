@@ -32,7 +32,7 @@ Our main objective is to confirm the results of previous work done by Federico M
 %Improvement of Federico's results
 In addition to that, we were aiming to improve some of the methods that were used in his experiments. This includes the technique for sampling Gaussian-distributed patterns or for calculating basin sizes. Our final aims consisted of explaining some of the subsequent inconsistencies that have been found in his results.
 
-\section{Contributions}
+\section{Our achievements}
 
 Since our project was related to exploring attractor-based neural networks, we have obtained interesting results about their attractors. These attractors are analogous to learned memories or experiences that an individual has learned.
 
@@ -40,8 +40,8 @@ Since our project was related to exploring attractor-based neural networks, we h
 Our main contributions are outlined below:
 \begin{itemize}
 \item Confirming Federico's results by reimplementing them in a completely different environment (Haskell)
-\item Proving that the Hopfield network is capable of performing image recognition, by learning image patterns and then recalling the closest image, when queried for an input. Furthermore, we have proven it's associative memory properties, by recalling some of the learned images.
+\item Proving that the Hopfield network is capable of performing image recognition, by learning image patterns and then recalling the closest image, when queried for an input. Furthermore, we have proven it's associative memory properties, by successfully recalling some of the learned images.
 \item We found out that training patterns are not guaranteed to become fixed points in the Hopfield network. This is an aspect that was not mentioned in similar research papers, and we first thought the the patterns are always fixed points.
-\item Extending some of the experiments to the Boltzmann Machine, which provides a nice way of overcoming some limitations of the Hopfield Network. It can prevent convergence to spurious patterns by using a stochastic update rule.
+\item Extending the research to encompass the Boltzmann Machine, which provides a nice way of overcoming some limitations of the Hopfield Network. Amongst other features, it can prevent convergence to spurious patterns by using a stochastic update rule.
 \item A thorough analysis of Super-Attractors, which represent patterns that have been used multiple times in the training process. They generally have greater basin sizes, and therefore patterns will have a greater chance of converging to them compared to normal attractors.
 \end{itemize}
