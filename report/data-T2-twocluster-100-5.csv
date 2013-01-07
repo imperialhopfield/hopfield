@@ -1,0 +1,18 @@
+% email1: 100 10 2 clusters average basin for all training patterns (ie both clusters ) one std dev is set to 10.0, the others vary
+% email2: 2 clusters 100 10 with 10.0 first std dev the other one from 0.0 to 20.0
+% JOIN OF THE ABOVE
+% T2 ; n = 100 ; TWO cluster of size 10
+% stddev of first cluster is 10
+% with std dev of second cluster given by the key.
+% AVG basin size, basin size origin, basin size new
+% 6,7,8...
+key	n	mean-new	stddev-new
+0.0	35	26.088571	2.101578
+1.0	35	13.244286	3.650922
+2.0	35	9.051429	3.192765
+3.0	35	7.744286	3.246169
+4.0	35	7.294286	3.592021
+5.0	35	6.935714	3.306290
+6.0	35	7.079541	3.315467
+7.0	35	6.679134	3.315467
+8.0	35	6.532478	3.412378
