@@ -41,7 +41,6 @@ One way is to start with a root pattern and then reverse each bit with a probabi
 
 Another objective of this work was to analyse patterns that are extracted according to a Gaussian distribution with a specific mean and variance.
 
-
 Since the state space is \( 2^N \) for a network of N neurons, the Gaussian Distribution will have to be defined over a huge set of states. This is highly non-trivial, since we are dealing with binary patterns, that cannot be ordered in an easy way.
 
 In this case, we will use Federico's method for sampling Gaussian distributed patterns \cite[p.~33]{federico}. We tackle this issue using the simplest possible approach: to draw numbers from a Normal Distribution and then translate them into patterns that will preserve the distance between them. Formally, if \(x\) and \(y\) were drawn and \( |x-y|=\delta\), then the Hamming distance between the encoded patterns \(x'\) and \(y'\) would also be \( d(x',y')=\delta\).
@@ -61,7 +60,7 @@ Another idea would be to extend our distribution to a multi-variate distribution
 Unfortunately, we did not have enough time to implement these ideas, so we only experimented with the naive encoding of patterns described above.
 
 \section{Super Attractors}
-In the context of learning models such as the Hopfield model, we define a super attractor as an attractor resulting from training a model with multiple occurrences or instances of some training pattern. The degree of a super attractor denotes the number of occurrences of its corresponding pattern in the training set.
+In the context of learning models such as the Hopfield model, we define a super attractor as an attractor resulting from training a model with multiple occurrences or instances of some stored pattern. The degree of a super attractor denotes the number of occurrences of its corresponding pattern in the training set.
 
 
 In the context of modelling Attachment theory, a super attractor may represent repeated interactions with the primary care giver. Clearly, it is of interest to investigate the properties of such an attractor; in particular establishing the existence and, if existent, the type of relationship between the degree of the super attractor and the extent of its dominance, or stability, over the space of patterns.
@@ -79,17 +78,17 @@ In the context of modelling Attachment theory, a super attractor may represent r
 
 \item Fix N, the number of neurons.
 
-\item Choose a random pattern \psuper, which signifies the primary care giver.
+\item \label{itm:choose pattern} Choose a random pattern \psuper, which signifies the primary care giver.
 
 \item Choose a number of random patterns \prandom, such that the Hamming distance between \psuper and each of \prandom is between 25\% and 75\%.
 
 The range forms a ball centred at 50\% Hamming distance\footnote{The percentage Hamming distance is simply the Hamming distance divided by the number of bits N} with an arbitrary radius, chosen such that the probability of a \prandom falling into \psuper's basin of attraction is small. This is done to avoid forming clusters of attractors, which we deal with separately in \hilight{a later section. TODO insert cross reference to section!!!!!} Recall that the Hopfield network is sign blind, and as a result the inverse of \psuper, $p_{super}^{-1}$, forms a symmetric super attractor. It is for this reason that a symmetric range about 50\% is chosen.
 
-\item \label{itm:choose degree} Fix a degree $d$ for \psuper and train a Hopfield network using $\overrightarrow{p}^d_{super}$ ($d$ instances of \psuper) and \prandom
+\item Choose a degree $d$ for \psuper and train a Hopfield network using $\overrightarrow{p}^d_{super}$ ($d$ instances of \psuper) and \prandom.
 
 \item Measure the basin of attraction of \psuper using the Storkey-Valabregue method. \hilight{CROSS REFERENCE THIS}
 
-\item Repeat from (\ref{itm:choose degree}) with a different degree.
+\item Repeat from (\ref{itm:choose pattern}) for various values of degree $d$.
 
 \end{enumerate}
 
@@ -110,6 +109,72 @@ The results show that as the super attractor's degree is increased, its basin of
 
 
 Linking back to the Attachment theory model, this may be interpreted as depicting the strong influence of repeated and consistent interaction with the child, represented by a super attractor of increasing degree. In particular, it exhibits its dominance over distantly scattered, unrelated influences, which are represented by the random patterns.
+
+
+
+\subsection{Two super attractors}
+
+
+% Define variables
+\newcommand{\poriginsuper}{$p_{origin}$}
+\newcommand{\pnewsuper}{$p_{new}$}
+\newcommand{\dorigin}{$d_{origin}$}
+\newcommand{\dnew}{$d_{new}$}
+
+\begin{enumerate}
+
+\item Fix N, the number of neurons.
+
+\item Fix a degree \dorigin, for all chosen \poriginsuper from (\ref{itm:choose two super}).
+
+\item \label{itm:choose two super} Choose a random pattern \poriginsuper, which signifies the primary care giver.
+
+\item Choose a random pattern \pnewsuper, such that the Hamming distance between \poriginsuper and each of \pnewsuper is between 25\% and 75\%. This could symbolize the training due to either an alternate and influential care giver, or that resulting from a retraining period. \hilight{CROSS REF TO RETRAINING IN ATTACHMENT THEORY}
+
+
+\item Choose a number of random patterns \prandom, such that the Hamming distance between \poriginsuper and each of \prandom is between 25\% and 75\%.
+
+Note that while this allows for the possibility of forming a cluster in the vicinity of \pnewsuper, in practice the probability of this occurring is negligible.
+
+
+\item Choose a degree \dnew for \pnewsuper and train a Hopfield network using \prandom, \dorigin instances of \poriginsuper, and \dnew instances of \pnewsuper
+
+\item Measure the basins of attraction for each of \poriginsuper and \pnewsuper using the Storkey-Valabregue method. \hilight{CROSS REFERENCE THIS}
+
+\item Repeat from (\ref{itm:choose two super}) for different value of degree \dnew.
+
+\end{enumerate}
+
+In our experiment 100 neurons are used, and the network was trained with 8 random patterns in addition to the original and new super attractors, \poriginsuper and \pnewsuper, respectively. \poriginsuper is given a fixed degree, \dorigin, of 8. This value was chosen as being the smallest point of stability from the previous experiment ~\ref{fig:one super plot}, beyond which increasing the degree further does not greatly impact the basin of attraction. It is run with \dnew degree values {[}1, 2, 4, 8, 16, 32{]}. The entire procedure is repeated 634 \hilight{CHECK NEW RESULTS} times for various randomly chosen \poriginsuper, \pnewsuper and \prandom. The average results obtained are summarised in ~\ref{fig:two super plot}.
+
+This experiment can be replicated by running \texttt{ExperimentSuper2.hs}. \hilight{VERIFY}
+
+\begin{figure}[h]
+  \centering
+\input{plot-two-super}
+\caption{Average basin of attraction for the two super attractors, \poriginsuper having a fixed degree, \dorigin, of 8, and varying the degree, \dnew, of \pnewsuper.}
+\label{fig:two super plot}
+\end{figure}
+
+
+The results clearly reveal that increasing the degree of the new pattern increases its own basin of attraction, and decreases that of the original pattern. This relationship is symmetrical, as can be observed by the shape of the graph, in addition to the intersection point, which occurs (roughly) near the point (8 , 8) where both patterns have the same degree of 8. By random choice of original pattern, and random choice of new pattern (subject to a Hamming distance of 25\% to 75\% from the original pattern), we can claim that the basin of attraction depends solely on the relative degrees of the two patterns, and is independent of the actual patterns themselves. This is also consistent with the symmetry observed.
+
+This also fits in nicely nicely with in the Attachment theory interpretation. The original pattern as before represents the consistent interactions with a primary care giver. The new pattern may represent the consistent, yet significantly different, interactions with an alternate and influential care giver, perhaps the other parent of the child or a relative with whom they have developed a close relationship. Intuitively, the care giver which has more interactions would exert a stronger influence, undermining the dominance of the other care giver, and indeed the impact of any other interactions.
+
+In relation to retraining \hilight{reword?}, the new pattern may also be taken to represent the influences arising due to the undertaken retraining phase. We find that, similar to the above, increasing the number of interactions due to retraining further ingrains its dominance, and dilutes that of the previous interactions due to the primary care giver or otherwise.
+
+
+% undefined variables
+\let\psuper\undefined
+\let\poriginsuper\undefined
+\let\pnewsuper\undefined
+\let\dorigin\undefined
+\let\dnew\undefined
+\let\prandom\undefined
+
+
+
+
 
 
 
@@ -188,6 +253,4 @@ For this experiment, we shall increase the standard deviation and observe the ef
 \hilight{INSERT RBM part here}
 \input{RBM}
 
-% undefined variables
-\let\psuper\undefined
-\let\prandom\undefined
+
