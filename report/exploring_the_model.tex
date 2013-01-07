@@ -14,16 +14,14 @@ Before being sent to the Hopfield model, the image suffers a few normalizing tra
  \item conversion first to grayscale, and then to only black or white pixels takes place
 \end{enumerate}
 
-We present the convergence series of the image of a criminal:
-
-
+In figure \ref{fig:criminal}, we present the convergence series for the input image of a criminal. The network used for this experiment had 400 neurons, running on images of 20x20 pixels. It clearly illustrates the how efficient the networks can be in these scenarios. However, the network might also convert to to spurious patterns, which might create problems in certain situations. See section \ref{spurious_patterns} for a more detailed description.
 
 \begin{figure}[h]
   \centering
 \includegraphics[scale=2]{images/convergence/all.png}
 \caption{Convergence sequence for a criminal in the police database}
 \label{fig:criminal}
-\end{figure}
+\end{figure} 
 
 \section{Further analysis}
 
@@ -89,9 +87,7 @@ Another idea would be to extend our distribution to a multi-variate distribution
 Unfortunately, we did not have enough time to implement these ideas, so we only experimented with the naive encoding of patterns described above.
 
 
-
-
-\section{First experiments}
+\section{First experiments with basin sizes}
 \label{sec:fexp}
 
 In this section we shall introduce the experiments that we used to analyse various properties of the Hopfield Network. We remind the reader about the two methods that we are going to use for generating clusters of attractors:
@@ -131,7 +127,6 @@ When p is between 0 and a critical value of 0.35, the basin size is 0, since the
 \subsection{Basin Size for Two Clusters using T1}
 
 This experiment is similar to the previous one, however it contains two clusters this time. The value \(p_{1}\) for one cluster will stay the same (fixed at 0.45), while \( p_{2}\), corresponding to the second cluster, will vary in the range [0-0.5]. Method T1 is used, for a Hopfield Network of N neurons. The procedure is given below:
-\hilight{INSERT NEWLINE HERE}
 \newline
 \begin{easylist}[enumerate]
 \ListProperties(Style2*=,Numbers=a,Numbers1=R,FinalMark=.)
@@ -144,9 +139,8 @@ This experiment is similar to the previous one, however it contains two clusters
     && Starting from \(\mu_{2}\) we generate P patterns using T1 with associated probability \( p_{2} \), and give them to the Hopfield network in order to be learned according to Hebb or Storkey rule.
 
     && For both sets of patterns, we measure the mean basin size using the Storkey-Valabregue measurement and plot the values on the graph.
-\end{easylist}
+\end{easylist} 
 
-\hilight{INSERT NEWLINE HERE}
 We will be interested to observe how can one cluster influence the other. For this reason, we have set a big p-value for one cluster (0.45), in order to make sure the attractors are spread around the state space.
 
 \hilight{Insert graph here}
@@ -163,7 +157,13 @@ In this section we are testing clusters of patterns that have been generated usi
 
 
 \subsubsection{Comments}
-\hilight{Insert graph here}
+
+\begin{figure}[h]
+  \centering
+\insert{plot-T2-onecluster-100}
+\caption{Basin sizes of one cluster generated using T2}
+\label{fig:plot-T2-onecluster}
+\end{figure}
 
 The results here are quite surprising. The experiment with Gaussian-distributed patterns shows us that the basin sizes decrease exponentially as standard deviation increases. This might be the case because at low standard deviation, the patterns would repeat themselves and create small super-attractors that have big basin sizes.
 
@@ -171,7 +171,13 @@ The results here are quite surprising. The experiment with Gaussian-distributed 
 \subsection{Basin Size for Two Clusters using T2}
 
 \subsubsection{Comments}
-\hilight{Insert graph here}\\
+
+\begin{figure}[h]
+  \centering
+\insert{plot-T2-twocluster-100}
+\caption{Basin size for two clusters generated using T2}
+\label{fig:plot-T2-twocluster}
+\end{figure}
 
 This experiment has been run on a network of X nodes, with 2 clusters of patterns: C1 composed of XX nr of patterns, having a standard deviation of XX.
 
