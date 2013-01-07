@@ -112,16 +112,20 @@ Our first experiment is showing us the basin sizes for increasing values of p, t
     && We measure the basin size for all the patterns learned using the Storkey-Valabregue measurement and take their mean.
 \end{easylist}
 
-
-\hilight{Insert graph here}
+\begin{figure}[h]
+  \centering
+  \input{plot-T1-onecluster-100}
+\caption{Average Basin size of patterns belonging to one cluster generated using T1}
+\label{fig:plot-T1-onecluster}
+\end{figure}
 
 \subsubsection{Comments}
 
-This initial experiment is confirming what we already know from theory: A Hopfield network that is trained with similar patterns loses capacity. Although we are not measuring capacity here, the basin size is strongly correlated to that.
+The results are displayed in figure \ref{fig:plot-T1-onecluster}. This initial experiment is confirming not only what Federico obtained \cite{federico}, but also what we already know from theory: A Hopfield network that is trained with similar patterns loses capacity. Although we are not measuring capacity here, the basin size is strongly correlated to that.
 
-Initially, when p is zero, we observe a huge value for the basin size. This is easily explained, since all the patterns generated are the the same as the root pattern. Subsequently, the network is trained with the same patterns that have the effect of creating a super-attractor with a huge basin size.
+Initially, when p is zero, we observe a huge value of 24 for the basin size. This is easily explained, since all the patterns generated are the the same as the root pattern. Subsequently, the network is trained with the same patterns that have the effect of creating a super-attractor with a huge basin size.
 
-When p is between 0 and a critical value of 0.35, the basin size is 0, since the patterns are too close to each other and don't have enough space to fit basins of attraction between them. As soon as p goes over 0.35, the basins start to increase until a certain maximum level.
+When p is between 0 and a critical value of 0.35, the basin size is 0, since the patterns are too close to each other and don't have enough space to fit basins of attraction between them. As soon as p goes over 0.35, the basins start to increase until a maximum size of 11.
 
 
 \subsection{Basin Size for Two Clusters using T1}
@@ -141,15 +145,18 @@ This experiment is similar to the previous one, however it contains two clusters
     && For both sets of patterns, we measure the mean basin size using the Storkey-Valabregue measurement and plot the values on the graph.
 \end{easylist}
 
-We will be interested to observe how can one cluster influence the other. For this reason, we have set a big p-value for one cluster (0.45), in order to make sure the attractors are spread around the state space.
+We will be interested to observe how can the probability p influences the basin sizes. For this reason, we have run two experiments, in which we are outputting the basin sizes for cluster 1, in which p varies. The
 
-\hilight{Insert graph here}
 \subsubsection{Comments}
 
-This latter experiment seems to suggest that one cluster can indeed influence the other, in terms of basins of attraction. The instability (small basin sizes) of \(C_{2}\) seems to be transmitted to cluster \(C_{}\), as long as p is smaller than 0.4. Cluster \(C_{2}\) seems to have a corresponding stability that increases linearly. As soon as the 2 probabilities approach each other, the basin sizes become equal.
+\begin{figure}[h]
+  \centering
+  \input{plot-T1-twocluster-100}
+\caption{Average Basin size of patterns belonging to Cluster 2, generated using T1}
+\label{fig:plot-T1-twocluster}
+\end{figure}
 
-This result is confirming Federico's earlier work \cite{federico}, in the sense that instability is indeed and "illness" that can be passed from one cluster to another.
-
+This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other. 
 
 \section{Experiments with Gaussian-distributed patterns}
 
@@ -161,12 +168,11 @@ In this section we are testing clusters of patterns that have been generated usi
 \begin{figure}[h]
   \centering
   \input{plot-T2-onecluster-100}
-\caption{Basin sizes of one cluster generated using T2}
+\caption{Average basin sizes of one cluster generated using T2}
 \label{fig:plot-T2-onecluster}
 \end{figure}
 
 The results here are quite surprising. The experiment with Gaussian-distributed patterns shows us that the basin sizes decrease exponentially as standard deviation increases. This might be the case because at low standard deviation, the patterns would repeat themselves and create small super-attractors that have big basin sizes.
-
 
 \subsection{Basin Size for Two Clusters using T2}
 
@@ -175,13 +181,13 @@ The results here are quite surprising. The experiment with Gaussian-distributed 
 \begin{figure}[h]
   \centering
   \input{plot-T2-twocluster-100}
-\caption{Basin size for two clusters generated using T2}
+\caption{Average basin size for two clusters generated using T2}
 \label{fig:plot-T2-twocluster}
 \end{figure}
 
-This experiment has been run on a network of X nodes, with 2 clusters of patterns: C1 composed of XX nr of patterns, having a standard deviation of XX.
+This experiment has been run on a network of 100 nodes, with 2 clusters of patterns:C1, with fixed standard deviation $\sigma_{1}$, and C2, with varying standard deviation $\sigma_{2}$. We have run 3 diffeent trials, with $\sigma_{1}$ = 0.2, 5 or 10
 
-As it can be easily noticed in the graph, cluster C1, with varying standard deviation, has greater basin sizes
+As it can be easily noticed in the graph, the standard deviation does not have any effect on the basin size of the clusters. This seems to suggest that a more disperse cluster will not be affected by neighbouring attractors.  
 
 
 \section{Super Attractors}
