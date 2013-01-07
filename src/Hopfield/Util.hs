@@ -316,13 +316,14 @@ unfoldrSelfM :: Monad m => (a -> m (Maybe a)) -> a -> m [a]
 --   unfoldrSelfM f seed = unfoldrM (\x -> ((\z -> (z,z)) <$>) `liftM` f x) seed
 -- but monad-loops < 0.4.2 has a bug:
 --   https://github.com/mokus0/monad-loops/commit/7ede550ecd2df61d12f5148b86bd5f3daaf6eb24
-unfoldrSelfM f seed = go seed []
+unfoldrSelfM f seed = go seed
   where
-    go a acc = do
+    go a = do
       mx <- f a
       case mx of
-        Nothing -> return acc
-        Just x  -> go x (x:acc)
+        Nothing -> return []
+        Just x  -> do xs <- go x
+                      return $ x : xs
 
 
 patternToAsciiArt :: Int -> Pattern -> String
