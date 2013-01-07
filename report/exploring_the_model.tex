@@ -5,7 +5,7 @@ We started out the analysis by experimenting with converge of patterns. We shall
 
 \section{Facial Recognition for Police criminal records}
 
-This experiment is describing how the Hopfield network might be used by a Police Office, in order to identify criminals. Since the police has a big database that contains facial images of criminals, the network can perform identify, given an image, which criminal is depicted.
+This experiment describes how the Hopfield network might be used by a Police Office, in order to identify criminals. Since the police has a big database that contains facial images of criminals, the network can perform identify, given an image, which criminal is depicted.
 
 Before being sent to the Hopfield model, the image suffers a few normalizing transformations:
 \begin{enumerate}
@@ -22,6 +22,23 @@ In figure \ref{fig:criminal}, we present the convergence series for the input im
 \caption{Convergence sequence for a criminal in the police database}
 \label{fig:criminal}
 \end{figure}
+
+Furthermore, we have developed a GUI, powered by the underlying recognition core, to provide a friendly user experience, in addition to providing interactive facilities (figure \ref{fig:gui}). An overview of our the recognition system can be found in figure ~\ref{fig:system}.
+
+\begin{figure}[h]
+  \centering
+\includegraphics[scale=0.3]{screenshots-small/gui1.jpg}
+\caption{GUI for a criminal record recognition system.}
+\label{fig:gui}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+\includegraphics[scale=0.3]{recognition.jpg}
+\caption{Outline of the Recognition System demonstrating how the various system components interact}
+\label{fig:system}
+\end{figure}
+
 
 \section{Further analysis}
 
@@ -156,7 +173,7 @@ We will be interested to observe how can the probability p influences the basin 
 \label{fig:plot-T1-twocluster}
 \end{figure}
 
-This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other. 
+This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other.
 
 \section{Experiments with Gaussian-distributed patterns}
 
@@ -187,7 +204,7 @@ The results here are quite surprising. The experiment with Gaussian-distributed 
 
 This experiment has been run on a network of 100 nodes, with 2 clusters of patterns:C1, with fixed standard deviation $\sigma_{1}$, and C2, with varying standard deviation $\sigma_{2}$. We have run 3 diffeent trials, with $\sigma_{1}$ = 0.2, 5 or 10
 
-As it can be easily noticed in the graph, the standard deviation does not have any effect on the basin size of the clusters. This seems to suggest that a more disperse cluster will not be affected by neighbouring attractors.  
+As it can be easily noticed in the graph, the standard deviation does not have any effect on the basin size of the clusters. This seems to suggest that a more disperse cluster will not be affected by neighbouring attractors.
 
 
 \section{Super Attractors}
