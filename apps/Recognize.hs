@@ -65,7 +65,8 @@ saveChain method (width, height) imgPaths queryImgPath = do
 
   case method of
     Hopfield -> do chain <- updateChain (buildHopfieldData Storkey imgPats) queryPat
-                   mapM_ save (zip [(0::Int)..] (queryPat:chain))
+                   -- mapM_ (putStrLn . patternToAsciiArt 8) chain
+                   mapM_ save $ zip [(0::Int)..] (reverse chain)
     m        -> error $ "saving convergence chains for method " ++ show m ++ " not yet implemented"
 
   where
