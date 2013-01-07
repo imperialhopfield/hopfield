@@ -117,11 +117,10 @@ following subscript.
 
 \subsection{Using Restricted Boltzmann Machines for classification}
 
-As suggested by Hinton in section 16 http://www.cs.toronto.edu/\~{
-}hinton/absps/guideTR.pdf, there are various ways of using Restricted
+As suggested by Hinton in section 16 \cite{hinton2010practical}, there are various ways of using Restricted
 Boltzmann Machines for classification. We have employed two methods, one which
-we developed ourselves and one third one descriebed in the paper, by adding
-another set of visible units, the classification units.
+we developed ourselves and another one described in the paper. The latter is adding
+another set of visible units, called the \emph{classification units}.
 
 
 
@@ -132,7 +131,7 @@ another set of visible units, the classification units.
 
 
 
-The vector hidden units is used to model the joint distribution between a
+The vector of hidden units is used to model the joint distribution between a
 vector of inputs v and a target (classification) vector y. The classification
 vector y corresponds to a class. It's length is given by the number of
 classes. $y = e_c$, where c is the class the vector is modeling ($e_c$ is a
