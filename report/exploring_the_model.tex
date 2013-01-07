@@ -175,6 +175,18 @@ We will be interested to observe how can the probability p influences the basin 
 
 This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other.
 
+\subsubsection{Further explanation of the results using T1}
+
+The results can also be easily understood and visualised in figure \ref{fig:basins}. For small p values, the attractors formed in the network are too close to each other to allow room for any basin sizes. When the p-value is high, the attractors become more disperse, leaving room for large basin sizes. %It is also worth mentioning that, as p 
+
+\begin{figure}[h]
+  \centering
+\includegraphics[scale=0.25]{images/basins_of_attraction.png}
+\caption{Illustration of clusters of attractors generated using T1, with different p-values. }
+\label{fig:basins}
+\end{figure}
+
+
 \section{Experiments with Gaussian-distributed patterns}
 
 In this section we are testing clusters of patterns that have been generated using a normal distribution. We are expecting to get similar results to the T1 method, since by the Central Limit Theorem, the Binomial distribution ~ B(N, p) is nicely approximated by a Gaussian distribution with mean N(Np, Np(1-p)). Since in the previous experiments, we used to increase the probability p of flipping a bit, this now translates to increasing the standard deviation of the normal distribution.

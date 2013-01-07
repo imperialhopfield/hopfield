@@ -82,8 +82,6 @@ The function decreases as the system gets updated until it reaches a local minim
 \label{fig:energy_landscape}
 \end{figure}
 
-
-
 \subsection{Stability and Capacity}
 
 Concepts of stability and capacity are important in the analysis of Hopfield Networks. A neuron unit \( \epsilon_{i}^{\mu}\) is said to be stable if the update rule will not change its state. The mathematical condition for this is:
@@ -111,9 +109,8 @@ Since we are using the Hebbian Rule, we can replace \(w_{ij}\) with
 		       		 \epsilon_{j}^{\nu}
 				 \epsilon_{j}^{\mu}\]
  
- If \( C_{i}^{\nu} \) is negative, then the cross-talk term has the same sign as unit i, and thus this value will not change \cite{lectureslides}. However, if \( C_{i}^{\nu} \) is positive and greater than 1, then \( \epsilon_{i}^{\nu}\) will change, so node i will become unstable. We will estimate the probability of \( C_{i}^{\nu} > 1 \)
+ If \( C_{i}^{\nu} \) is negative, then the cross-talk term has the same sign as unit i, and thus this value will not change \cite{lectureslides}. However, if \( C_{i}^{\nu} \) is positive and greater than 1, then \( \epsilon_{i}^{\nu}\) will change, so node i will become unstable. This quantity can be used to show, with further analysis, that the capacity of the Hopfield Network is revolving around the value 0.138 (approximately 138 \textbf{random} patterns can be recalled for every 1000 neurons) (Hertz et al., 1991).
  
- \textbf{UNFINISHED}
  
 \subsection{Training using the Pseudo-Inverse Rule}
 
