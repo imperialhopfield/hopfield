@@ -53,3 +53,7 @@ One solution to this which we have employed \hilight{have we? also cross ref if 
 \subsection{A stored pattern not a fixed point}
 It is possible that the given set of training patterns are such that some of the patterns simply cannot be ``stored'' in the network, i.e. it is not a fixed point of the netowkr. The probability of this occurring increases as the relative number of training patterns with respect to the number of neurons increases \hilight{cross ref to capacity}.
 The best way to deal with this problem is to perform a check (using \texttt{checkFixed}) \hilight{make sure we do that} and, if detected, report it  to the user and allow them to take action. The typical remedy for this would be to increase the number of neurons in the network, at the expense of increased resource usage in both space and time.
+
+
+\subsection{Floating point calculation}
+As we are dealing with extensive calculations of floating point value, we must be careful when dealing with such quantities. In particular, equality comparisons are likely to yield unexpected results. This has had an impact on some tests as well as functions such as \texttt{validWeights}. We have taken care of this problem by replacing equality comparisons and similar with fuzzy equality comparisons, with some accepted margin of error $\epsilon$.
