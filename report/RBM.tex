@@ -10,7 +10,7 @@
 %%%%%%%%%% End TeXmacs macros
 
 
-\tmtextbf{Restricted Boltzmann Machines}
+\section{Restricted Boltzmann Machines}
 
 Hopfield networks are deterministc: training a network with the same patterns
 will yield the same weights, and matching a pattern against the network will
@@ -62,7 +62,7 @@ indices of a visible vector and by \tmtextit{H} = \{1, .. \tmtextit{length}
 
 
 
-\tmtextbf{Probability of a state}
+\subsection{Probability of a state}
 
 After traning, the network assigns a probability to each possible state, as
 follows:
@@ -73,7 +73,8 @@ Thus, the porbability the network assings for a visibile vector \tmtextit{v}:
 \begin{equation}
   p \left( v \right) = \sum_h \frac{1}{Z} e^{- E \left( v, h \right)}
 \end{equation}
-\tmtextbf{Training the network}
+
+\subsection{Training the network}
 
 The network can be trained such that one maximizes the probabilty of a traning
 pattern. The derivative of the log probability of a trainig vector (given by
@@ -115,7 +116,7 @@ following subscript.
 
 
 
-\tmtextbf{Using Restricted Boltzmann Machines for classification}
+\subsection{Using Restricted Boltzmann Machines for classification}
 
 As suggested by Hinton in section 16 http://www.cs.toronto.edu/\~{
 }hinton/absps/guideTR.pdf, there are various ways of using Restricted
@@ -180,7 +181,7 @@ Valuable reference for this was given to us from
 [http://uai.sis.pitt.edu/papers/11/p463-louradour.pdf and,
 http://www.dmi.usherb.ca/\~{ }larocheh/publications/drbm-mitacs-poster.pdf].
 
-\tmtextbf{Learning}
+\subsection{Learning}
 
 Contrastive divergence can be used to train the network, giving rise to the
 following update rules:
@@ -205,7 +206,7 @@ $y_{\tmop{sampled}} $are obtained by sampling the distributions in (5) and
   h_{\sigma \tmop{sampled}} & = & \sigma \left( c_j + \noplus \noplus W_j
   v_{\tmop{sampled}} \noplus + U_j y_{\tmop{sampled}}  \right)
 \end{eqnarray*}
-\tmtextbf{Classification}
+\subsection{Classification}
 \[ p \left( y = e_c \left| v \right. \right) = \frac{e^{- F \left( v \nocomma,
    e_c \right)}}{\sum_d e^{- F \left( v \nocomma, e_d \right)}} \]
 where $F \left( v \nocomma, e_c \right) $is the \tmtextit{free energy
@@ -223,7 +224,7 @@ The implementation of the Classification Boltzmann Machine can be found in
 
 
 
-\tmtextbf{New method}
+\subsection{New method}
 
 Another method we have employed using Boltzmann Machines was created by us. We
 have never seen this approach used somewhere else. Instead of creating 2 types
