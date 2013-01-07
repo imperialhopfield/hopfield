@@ -47,6 +47,22 @@ Unit testing of our Haskell functions was performed using the HUnit framework. T
 
 %show some testing results here
 
-\section{Evaluating our experiments}
+\section{Evaluating our deliverables}
 % We can use this section to evaluate some of our experiments, point out any inconsistencies, limitations, ...
 
+Our main task was twofold:
+
+\begin{enumerate}
+\item Implement the Hopfield model and a basic image recognition application to show its functionality.
+\item Support or reject Federico's claims about clustering and evaluate his results in the context of Attachment Types.
+\end{enumerate}
+
+We implemented both of these goals: We have a clear, concise Haskell implementation of the Hopfield model with a public and well-tested API to train Hopfield networks and converge patterns in them. To show that it works in the real world, we built a police-style suspect face matching application with an accessible GUI, which in addition to performing image recognition also has a functionality to introduce a layman to how Hopfield networks work using interactive examples.
+
+We implemented Federicos clustering experiments and checked the majority of his claims; as described in the analysis above, our independent results largely support his claims.
+
+Extending our initial goals, we additionaly evaluated the influence of Super Attractors and their relation to Attachment Theory; we can conclude that Federicos results concerning clustering and our results concerning Super Attractors support the idea that Hopfield networks are a good way to model the real world domain of Attachement Types.
+
+[BOLZMANN]
+
+Finally, we came up with some our own way to use the Boltzmann machine for pattern matching, implemented the Storkey method as an alternative to Hebbian learning for increased network capacity, and proved properties about [...].
