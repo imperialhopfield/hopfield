@@ -1,0 +1,933 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PoliceDB</class>
+ <widget class="QMainWindow" name="PoliceDB">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>849</width>
+    <height>599</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>PoliceDB</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="font">
+       <font>
+        <family>Helvetica LT Std Light</family>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>40</width>
+        <height>40</height>
+       </size>
+      </property>
+      <widget class="QWidget" name="suspect_database_tab">
+       <attribute name="title">
+        <string>Suspect Database</string>
+       </attribute>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>661</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Helvetica LT Std Light</family>
+          <pointsize>48</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Suspect Database</string>
+        </property>
+       </widget>
+       <widget class="Line" name="line">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>80</y>
+          <width>481</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>140</y>
+          <width>461</width>
+          <height>450</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="policedbresource1.qrc">:/new/prefix1/mugshots.jpg</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QScrollBar" name="verticalScrollBar">
+        <property name="geometry">
+         <rect>
+          <x>490</x>
+          <y>140</y>
+          <width>16</width>
+          <height>451</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>440</x>
+          <y>100</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Add New</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>80</y>
+          <width>291</width>
+          <height>521</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Selected suspect</string>
+        </property>
+        <widget class="QTabWidget" name="tabWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>271</width>
+           <height>251</height>
+          </rect>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="PrimaryIm">
+          <attribute name="title">
+           <string>Primary Image</string>
+          </attribute>
+          <widget class="QLabel" name="label_3">
+           <property name="geometry">
+            <rect>
+             <x>30</x>
+             <y>10</y>
+             <width>201</width>
+             <height>201</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="policedbresource1.qrc">:/new/prefix1/lucasss.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Secondary Image</string>
+          </attribute>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>280</y>
+           <width>271</width>
+           <height>91</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Person</string>
+         </property>
+         <widget class="QLabel" name="label_31">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>30</y>
+            <width>58</width>
+            <height>15</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Name:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_32">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>30</y>
+            <width>58</width>
+            <height>15</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Lucas S.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_33">
+          <property name="geometry">
+           <rect>
+            <x>70</x>
+            <y>50</y>
+            <width>58</width>
+            <height>15</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Age:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_34">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>50</y>
+            <width>58</width>
+            <height>15</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>21</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>380</y>
+           <width>271</width>
+           <height>131</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Notes</string>
+         </property>
+         <widget class="QLabel" name="label_35">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>20</y>
+            <width>251</width>
+            <height>71</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A highly suspicious criminal with a&lt;br/&gt;dark history.&lt;/p&gt;&lt;p&gt;Seen primarily at night in libraries.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::RichText</enum>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QLabel" name="label_10">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>110</y>
+          <width>371</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>The following images are trained into the database:</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="suspect_matching_tab">
+       <attribute name="title">
+        <string>Suspect Matching</string>
+       </attribute>
+       <widget class="QLabel" name="label_4">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>631</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Helvetica LT Std Light</family>
+          <pointsize>48</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Suspect Matching</string>
+        </property>
+       </widget>
+       <widget class="Line" name="line_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>80</y>
+          <width>521</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>745</x>
+          <y>-40</y>
+          <width>78</width>
+          <height>720</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="policedbresource1.qrc">:/new/prefix1/vert2.jpg</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QScrollBar" name="verticalScrollBar_2">
+        <property name="geometry">
+         <rect>
+          <x>730</x>
+          <y>0</y>
+          <width>16</width>
+          <height>591</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>100</y>
+          <width>321</width>
+          <height>331</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Input image</string>
+        </property>
+        <widget class="QLabel" name="label_7">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>301</width>
+           <height>301</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/mugchar.jpg</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_5">
+        <property name="geometry">
+         <rect>
+          <x>380</x>
+          <y>100</y>
+          <width>321</width>
+          <height>331</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Best matching image</string>
+        </property>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>301</width>
+           <height>301</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/celeb.jpg</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QLabel" name="label_12">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>450</y>
+          <width>101</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="policedbresource1.qrc">:/new/prefix1/sheen-images/000000.bmp</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_13">
+        <property name="geometry">
+         <rect>
+          <x>310</x>
+          <y>450</y>
+          <width>101</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="policedbresource1.qrc">:/new/prefix1/sheen-images/000060.bmp</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>450</y>
+          <width>101</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="policedbresource1.qrc">:/new/prefix1/sheen-images/000160.bmp</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_15">
+        <property name="geometry">
+         <rect>
+          <x>590</x>
+          <y>450</y>
+          <width>101</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="policedbresource1.qrc">:/new/prefix1/sheen-images/000225.bmp</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>490</y>
+          <width>121</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>of</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_16">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>460</y>
+          <width>131</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Convergence chain</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_17">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>510</y>
+          <width>121</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Hopfield model:</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="hopfiel_playground_tab">
+       <attribute name="title">
+        <string>Understanding Hopfield</string>
+       </attribute>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>771</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Helvetica LT Std Light</family>
+          <pointsize>48</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Understanding Hopfield</string>
+        </property>
+       </widget>
+       <widget class="Line" name="line_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>80</y>
+          <width>521</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_6">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>100</y>
+          <width>791</width>
+          <height>131</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Trained Patterns</string>
+        </property>
+        <widget class="QLabel" name="label_18">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>20</y>
+           <width>101</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/smiley1.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_19">
+         <property name="geometry">
+          <rect>
+           <x>280</x>
+           <y>20</y>
+           <width>101</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/eleven.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_20">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>20</y>
+           <width>101</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/plus.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_21">
+         <property name="geometry">
+          <rect>
+           <x>410</x>
+           <y>20</y>
+           <width>101</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/house.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_22">
+         <property name="geometry">
+          <rect>
+           <x>540</x>
+           <y>20</y>
+           <width>101</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/circle.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_23">
+         <property name="geometry">
+          <rect>
+           <x>670</x>
+           <y>20</y>
+           <width>101</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/squarecross.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_7">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>240</y>
+          <width>321</width>
+          <height>311</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Draw Here!</string>
+        </property>
+        <widget class="QLabel" name="label_9">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>291</width>
+           <height>281</height>
+          </rect>
+         </property>
+         <property name="cursor">
+          <cursorShape>ArrowCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/drawn-circle.jpg</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_8">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>240</y>
+          <width>461</width>
+          <height>311</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Convergance Chain</string>
+        </property>
+        <widget class="QLabel" name="label_24">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>30</y>
+           <width>61</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000001.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_25">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>30</y>
+           <width>61</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000004.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_26">
+         <property name="geometry">
+          <rect>
+           <x>160</x>
+           <y>30</y>
+           <width>61</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000006.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_27">
+         <property name="geometry">
+          <rect>
+           <x>230</x>
+           <y>30</y>
+           <width>61</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000008.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_28">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>30</y>
+           <width>61</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000009.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_29">
+         <property name="geometry">
+          <rect>
+           <x>370</x>
+           <y>30</y>
+           <width>61</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000010.bmp.bmp</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_30">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>90</y>
+           <width>411</width>
+           <height>221</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;How it works&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The Hopfiled network used to converge this pattern is trained based on the&lt;br/&gt;&lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Hebbian rule&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;, which says that neurons that &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;fire together, wire together&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;In the context of images, neurons are black/white pixels.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Based on this rule, a fully connected neural network is &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;trained&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; from&lt;br/&gt;the patterns to learn.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;When run against a pattern, random pixels are updated to the sign of&lt;br/&gt;their &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;weighted neighbours&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; until it &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;converges&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;.&lt;br/&gt;With high probability the converged pattern will be one of the trained ones.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="policedbresource1.qrc"/>
+ </resources>
+ <connections/>
+</ui>
