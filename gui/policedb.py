@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'policedb.ui'
 #
-# Created: Wed Jan  9 19:27:08 2013
+# Created: Wed Jan  9 22:27:33 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -55,6 +55,8 @@ class Ui_PoliceDB(object):
         self.horizontalLayout.addWidget(self.addNewButton)
         self.lhs.addLayout(self.horizontalLayout)
         self.imageList = QtGui.QListWidget(self.suspect_database_tab)
+        self.imageList.setDragDropMode(QtGui.QAbstractItemView.NoDragDrop)
+        self.imageList.setMovement(QtGui.QListView.Free)
         self.imageList.setResizeMode(QtGui.QListView.Adjust)
         self.imageList.setLayoutMode(QtGui.QListView.Batched)
         self.imageList.setViewMode(QtGui.QListView.IconMode)
@@ -105,20 +107,32 @@ class Ui_PoliceDB(object):
         self.label_32.setFont(font)
         self.label_32.setObjectName("label_32")
         self.verticalLayout_3.addWidget(self.label_32)
-        self.descLabel = QtGui.QLabel(self.rhs)
-        self.descLabel.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
+        self.descLabel = QtGui.QTextBrowser(self.rhs)
+        palette = QtGui.QPalette()
+        brush = QtGui.QBrush(QtGui.QColor(242, 241, 240))
+        brush.setStyle(QtCore.Qt.SolidPattern)
+        palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.Base, brush)
+        brush = QtGui.QBrush(QtGui.QColor(242, 241, 240))
+        brush.setStyle(QtCore.Qt.SolidPattern)
+        palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.Base, brush)
+        brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+        brush.setStyle(QtCore.Qt.SolidPattern)
+        palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.Base, brush)
+        self.descLabel.setPalette(palette)
+        self.descLabel.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.descLabel.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByKeyboard|QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextBrowserInteraction|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.descLabel.setObjectName("descLabel")
         self.verticalLayout_3.addWidget(self.descLabel)
         self.verticalLayout_4.addLayout(self.verticalLayout_3)
         self.gridLayout.addLayout(self.verticalLayout_4, 1, 0, 1, 1)
-        self.label_3 = QtGui.QLabel(self.rhs)
-        self.label_3.setMinimumSize(QtCore.QSize(201, 201))
-        self.label_3.setMaximumSize(QtCore.QSize(251, 241))
-        self.label_3.setText("")
-        self.label_3.setPixmap(QtGui.QPixmap(":/new/prefix1/lucasss.png"))
-        self.label_3.setScaledContents(True)
-        self.label_3.setObjectName("label_3")
-        self.gridLayout.addWidget(self.label_3, 0, 0, 1, 1)
+        self.imageLabel = QtGui.QLabel(self.rhs)
+        self.imageLabel.setMinimumSize(QtCore.QSize(201, 201))
+        self.imageLabel.setMaximumSize(QtCore.QSize(251, 241))
+        self.imageLabel.setText("")
+        self.imageLabel.setPixmap(QtGui.QPixmap(":/new/prefix1/lucasss.png"))
+        self.imageLabel.setScaledContents(True)
+        self.imageLabel.setObjectName("imageLabel")
+        self.gridLayout.addWidget(self.imageLabel, 0, 0, 1, 1)
         self.horizontalLayout_2.addWidget(self.rhs)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.line = QtGui.QFrame(self.suspect_database_tab)
@@ -348,7 +362,11 @@ class Ui_PoliceDB(object):
         self.label_31.setText(QtGui.QApplication.translate("PoliceDB", "Age:", None, QtGui.QApplication.UnicodeUTF8))
         self.ageLabel.setText(QtGui.QApplication.translate("PoliceDB", "21", None, QtGui.QApplication.UnicodeUTF8))
         self.label_32.setText(QtGui.QApplication.translate("PoliceDB", "Description:", None, QtGui.QApplication.UnicodeUTF8))
-        self.descLabel.setText(QtGui.QApplication.translate("PoliceDB", "Shady character from the hood", None, QtGui.QApplication.UnicodeUTF8))
+        self.descLabel.setHtml(QtGui.QApplication.translate("PoliceDB", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Helvetica LT Std Light\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:14px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Arial,Helvetica,sans\'; font-size:11px; color:#000000;\">Slim shady</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.suspect_database_tab), QtGui.QApplication.translate("PoliceDB", "Suspect Database", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("PoliceDB", "Suspect Matching", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_4.setTitle(QtGui.QApplication.translate("PoliceDB", "Input image", None, QtGui.QApplication.UnicodeUTF8))
