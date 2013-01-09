@@ -1,6 +1,7 @@
 import sys
 from PySide import QtCore, QtGui
 from policedb import Ui_PoliceDB
+import json
 
 QIcon = QtGui.QIcon
 QListWidgetItem = QtGui.QListWidgetItem
@@ -53,6 +54,26 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		self.imageList.addItem(item)
 
 
+	# Save DB to file
+	def saveDB(self, filename):
+		# Retrieve all image data
+		items = self.imageList.findItems('*', Qt.MatchWildcard)
+		itemsData = [ item.data(Qt.UserRole) for item in items ]
+
+		# Save to file
+		with open(filename, 'w') as f:
+			json.dump(itemsData, f)
+
+
+	# Load DB from file
+	def loadDB(self, filename):
+		with open(filename, 'r') as f:
+			itemsData = json.load(f)
+
+		for itemData in itemsData:
+			self.addImageToDB(**itemData)
+
+
 	# Handler for when an image in the grid is selected
 	@QtCore.Slot(QItemSelection, QItemSelection)
 	def gridImageSelected(self, selected, deselected):
@@ -92,6 +113,6 @@ def loadImages(app):
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     mySW = ControlPoliceDB()
-    loadImages(mySW)
+    mySW.loadDB('db')
     mySW.show()
     sys.exit(app.exec_())
