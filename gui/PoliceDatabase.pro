@@ -20,4 +20,4 @@ HEADERS  += policedb.h
 FORMS    += policedb.ui
 
 RESOURCES += \
-    policedbresource1.qrc
+    policedbresource.qrc
