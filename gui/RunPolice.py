@@ -9,6 +9,11 @@ class ControlPoliceDB(QtGui.QMainWindow):
       super(ControlPoliceDB, self).__init__(parent)
       self.ui =  Ui_PoliceDB()
       self.ui.setupUi(self)
+      self.ui.pushButton.clicked.connect(self.addPattern)
+
+  def addPattern(self):
+    print "Hello ela!"
+
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
