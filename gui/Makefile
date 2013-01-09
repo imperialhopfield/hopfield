@@ -1,6 +1,9 @@
 default: policedb.gen.py policedbresource.gen.py
 
 
+clean:
+	rm *.gen.py
+
 policedb.gen.py: policedb.ui
 	pyside-uic policedb.ui -o policedb.gen.py
 
