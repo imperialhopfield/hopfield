@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>lucasss.png</file>
+        <file>vert.jpg</file>
+        <file>vert2.jpg</file>
+        <file>celeb.jpg</file>
+        <file>mugchar.jpg</file>
+        <file>8by8.jpg</file>
+        <file>8by82.jpg</file>
+        <file>sheen-images/000000.bmp</file>
+        <file>sheen-images/000225.bmp</file>
+        <file>sheen-images/000080.bmp</file>
+        <file>sheen-images/000160.bmp</file>
+        <file>sheen-images/000060.bmp</file>
+        <file>8x8-images/circle.bmp</file>
+        <file>8x8-images/eleven.bmp</file>
+        <file>8x8-images/house.bmp</file>
+        <file>8x8-images/plus.bmp</file>
+        <file>8x8-images/random1.bmp</file>
+        <file>8x8-images/smiley1.bmp</file>
+        <file>8x8-images/highres/circle.bmp.bmp</file>
+        <file>8x8-images/highres/eleven.bmp.bmp</file>
+        <file>8x8-images/highres/house.bmp.bmp</file>
+        <file>8x8-images/highres/plus.bmp.bmp</file>
+        <file>8x8-images/highres/random1.bmp.bmp</file>
+        <file>8x8-images/highres/smiley1.bmp.bmp</file>
+        <file>8x8-images/highres/squarecross.bmp.bmp</file>
+        <file>drawn-circle.jpg</file>
+        <file>8x8-convergence/highres/000000.bmp.bmp</file>
+        <file>8x8-convergence/highres/000001.bmp.bmp</file>
+        <file>8x8-convergence/highres/000002.bmp.bmp</file>
+        <file>8x8-convergence/highres/000003.bmp.bmp</file>
+        <file>8x8-convergence/highres/000004.bmp.bmp</file>
+        <file>8x8-convergence/highres/000005.bmp.bmp</file>
+        <file>8x8-convergence/highres/000006.bmp.bmp</file>
+        <file>8x8-convergence/highres/000007.bmp.bmp</file>
+        <file>8x8-convergence/highres/000008.bmp.bmp</file>
+        <file>8x8-convergence/highres/000009.bmp.bmp</file>
+        <file>8x8-convergence/highres/000010.bmp.bmp</file>
+        <file>mugshots.jpg</file>
+    </qresource>
+</RCC>
