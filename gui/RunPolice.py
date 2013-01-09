@@ -4,6 +4,7 @@ from policedb import Ui_PoliceDB
 
 QIcon = QtGui.QIcon
 QListWidgetItem = QtGui.QListWidgetItem
+QListView = QtGui.QListView
 QSize = QtCore.QSize
 
 

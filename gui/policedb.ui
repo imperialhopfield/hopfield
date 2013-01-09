@@ -84,6 +84,18 @@
             </item>
             <item>
              <widget class="QListWidget" name="imageList">
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::NoDragDrop</enum>
+              </property>
+              <property name="movement">
+               <enum>QListView::Free</enum>
+              </property>
+              <property name="resizeMode">
+               <enum>QListView::Adjust</enum>
+              </property>
+              <property name="layoutMode">
+               <enum>QListView::Batched</enum>
+              </property>
               <property name="viewMode">
                <enum>QListView::IconMode</enum>
               </property>

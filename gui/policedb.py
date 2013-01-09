@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'policedb.ui'
 #
-# Created: Wed Jan  9 18:57:08 2013
+# Created: Wed Jan  9 19:27:08 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -55,6 +55,8 @@ class Ui_PoliceDB(object):
         self.horizontalLayout.addWidget(self.addNewButton)
         self.lhs.addLayout(self.horizontalLayout)
         self.imageList = QtGui.QListWidget(self.suspect_database_tab)
+        self.imageList.setResizeMode(QtGui.QListView.Adjust)
+        self.imageList.setLayoutMode(QtGui.QListView.Batched)
         self.imageList.setViewMode(QtGui.QListView.IconMode)
         self.imageList.setUniformItemSizes(True)
         self.imageList.setObjectName("imageList")
@@ -96,17 +98,17 @@ class Ui_PoliceDB(object):
         self.verticalLayout_4.addLayout(self.horizontalLayout_4)
         self.verticalLayout_3 = QtGui.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.descLabel = QtGui.QLabel(self.rhs)
+        self.label_32 = QtGui.QLabel(self.rhs)
         font = QtGui.QFont()
         font.setWeight(75)
         font.setBold(True)
-        self.descLabel.setFont(font)
+        self.label_32.setFont(font)
+        self.label_32.setObjectName("label_32")
+        self.verticalLayout_3.addWidget(self.label_32)
+        self.descLabel = QtGui.QLabel(self.rhs)
+        self.descLabel.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.descLabel.setObjectName("descLabel")
         self.verticalLayout_3.addWidget(self.descLabel)
-        self.ageLabel_2 = QtGui.QLabel(self.rhs)
-        self.ageLabel_2.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
-        self.ageLabel_2.setObjectName("ageLabel_2")
-        self.verticalLayout_3.addWidget(self.ageLabel_2)
         self.verticalLayout_4.addLayout(self.verticalLayout_3)
         self.gridLayout.addLayout(self.verticalLayout_4, 1, 0, 1, 1)
         self.label_3 = QtGui.QLabel(self.rhs)
@@ -345,8 +347,8 @@ class Ui_PoliceDB(object):
         self.nameLabel.setText(QtGui.QApplication.translate("PoliceDB", "Lukas S.", None, QtGui.QApplication.UnicodeUTF8))
         self.label_31.setText(QtGui.QApplication.translate("PoliceDB", "Age:", None, QtGui.QApplication.UnicodeUTF8))
         self.ageLabel.setText(QtGui.QApplication.translate("PoliceDB", "21", None, QtGui.QApplication.UnicodeUTF8))
-        self.descLabel.setText(QtGui.QApplication.translate("PoliceDB", "Description:", None, QtGui.QApplication.UnicodeUTF8))
-        self.ageLabel_2.setText(QtGui.QApplication.translate("PoliceDB", "Shady character from the hood", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_32.setText(QtGui.QApplication.translate("PoliceDB", "Description:", None, QtGui.QApplication.UnicodeUTF8))
+        self.descLabel.setText(QtGui.QApplication.translate("PoliceDB", "Shady character from the hood", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.suspect_database_tab), QtGui.QApplication.translate("PoliceDB", "Suspect Database", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("PoliceDB", "Suspect Matching", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_4.setTitle(QtGui.QApplication.translate("PoliceDB", "Input image", None, QtGui.QApplication.UnicodeUTF8))
