@@ -2,8 +2,8 @@
 \section{Comparing Storkey and Hebbian learning}
 
 When training a Hopfield network, we have employed two types of learning: the
-first one is the hebbian learning, while the second one is Storkey learning.
-The advatage of the latter is that it increases the capacity of the network
+first one is the Hebbian learning, while the second one is Storkey learning.
+The advantage of the latter is that it increases the capacity of the network
 and the basin of attraction of the clusters. We will now explain some
 experiments we did with both types of learning in order to see how the
 learning type affects the basin of attraction for clusters.
@@ -13,6 +13,7 @@ Gaussian distributed cluster. The generation was done using the T2 method
 described in section ~\ref{sec:fexp}.
 
 \begin{table}[h]
+\centering
   \begin{tabular}{|c|c|c|c|c|c|}
     \hline
     \tmtextbf{Learning} & N & Cluster size & $\mu$ & $\sigma$ & Average size
@@ -43,7 +44,7 @@ described in section ~\ref{sec:fexp}.
     Storkey & 50 & 6 & 25 & 10 & 5.61\\
     \hline
   \end{tabular}
-  \caption{}
+  \caption{Results comparing Storkey and Hebbian learning for various parameters}
 \end{table}
 
 

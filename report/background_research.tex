@@ -54,7 +54,7 @@ For the Hopfield Networks, this is implemented in the following manner, when lea
 For pattern \(\mu\), if the bits corresponding to neurons i and j are equal, then the product  \( \epsilon_{i}^\mu \epsilon_{j}^\mu \) will be positive. This would, in turn, have a positive effect on the weight \(w_{ij} \) and the values of i and j will tend to become equal. The opposite happens if the bits corresponding to neurons i and j are different.
 
 \subsection{Spurious Patterns}
-
+\label{spurious_patterns}
 Patterns that the network uses for training, called retrieval states, become attractors of the system. Repeated updates would eventually lead to convergence to one of the retrieval states. However, sometimes the network will converge to spurious patterns, that are different from the training patterns. 
 
 A a linear combination of an odd number of stored patterns, in this case 3 patterns, would give us a spurious state:
@@ -71,10 +71,16 @@ One of Hopfield's most important contributions was to associate a Lyapunov, or e
 
 \[ E = -\frac{1}{2} \sum_{i,j=1}^{N}w_{ij}x_{i}x_{j} \]
 
-The function decreases as the system gets updated until it reaches a local minimum, corresponding to an attractor.
+The function decreases as the system gets updated until it reaches a local minimum, corresponding to an attractor (see fig. \ref{fig:energy_landscape}).
 
-% Inportenergy Landscape drawing from Lukasz
+% Energy Landscape drawing from Lukasz
+
+\begin{figure}[h]
+  \centering
 \includegraphics[scale=0.25]{energy_landscape.png}
+\caption{Energy Landscape highlighting a current state of the network (up the hill), an attractor to which it will eventually converge, a minimum energy level and a basin of attraction filled in green. Note how the update of the Hopfield Network is always going down in Energy. The basin of attraction concept will be introduced later on.}
+\label{fig:energy_landscape}
+\end{figure}
 
 \subsection{Stability and Capacity}
 
@@ -103,9 +109,8 @@ Since we are using the Hebbian Rule, we can replace \(w_{ij}\) with
 		       		 \epsilon_{j}^{\nu}
 				 \epsilon_{j}^{\mu}\]
  
- If \( C_{i}^{\nu} \) is negative, then the cross-talk term has the same sign as unit i, and thus this value will not change \cite{lectureslides}. However, if \( C_{i}^{\nu} \) is positive and greater than 1, then \( \epsilon_{i}^{\nu}\) will change, so node i will become unstable. We will estimate the probability of \( C_{i}^{\nu} > 1 \)
+ If \( C_{i}^{\nu} \) is negative, then the cross-talk term has the same sign as unit i, and thus this value will not change \cite{lectureslides}. However, if \( C_{i}^{\nu} \) is positive and greater than 1, then \( \epsilon_{i}^{\nu}\) will change, so node i will become unstable. This quantity can be used to show, with further analysis, that the capacity of the Hopfield Network is revolving around the value 0.138 (approximately 138 \textbf{random} patterns can be recalled for every 1000 neurons) (Hertz et al., 1991).
  
- \textbf{UNFINISHED}
  
 \subsection{Training using the Pseudo-Inverse Rule}
 

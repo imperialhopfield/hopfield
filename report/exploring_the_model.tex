@@ -1,6 +1,46 @@
-\chapter{Exploring The Model}
+\chapter{Exploring The Hopfield Model}
 % This is where we describe our experiments. We insert plots, images, ....
 
+We started out the analysis by experimenting with converge of patterns. We shall present two experiments, that provide some interesting insight for the reader into the Hopfield Model.
+
+\section{Facial Recognition for Police criminal records}
+
+This experiment describes how the Hopfield network might be used by a Police Office, in order to identify criminals. Since the police has a big database that contains facial images of criminals, the network can perform identify, given an image, which criminal is depicted.
+
+Before being sent to the Hopfield model, the image suffers a few normalizing transformations:
+\begin{enumerate}
+ \item the background is completely removed
+ \item the image is scaled to 25x25 pixels.
+ \item conversion first to grayscale, and then to only black or white pixels takes place
+\end{enumerate}
+
+In figure \ref{fig:criminal}, we present the convergence series for the input image of a criminal. The network used for this experiment had 400 neurons, running on images of 20x20 pixels. It clearly illustrates the how efficient the networks can be in these scenarios. However, the network might also convert to to spurious patterns, which might create problems in certain situations. See section \ref{spurious_patterns} for a more detailed description.
+
+\begin{figure}[h]
+  \centering
+\includegraphics[scale=2]{images/convergence/all.png}
+\caption{Convergence sequence for a criminal in the police database}
+\label{fig:criminal}
+\end{figure}
+
+Furthermore, we have developed a GUI, powered by the underlying recognition core, to provide a friendly user experience, in addition to providing interactive facilities (figure \ref{fig:gui}). An overview of our the recognition system can be found in figure ~\ref{fig:system}.
+
+\begin{figure}[h]
+  \centering
+\includegraphics[scale=0.3]{screenshots-small/gui1.jpg}
+\caption{GUI for a criminal record recognition system.}
+\label{fig:gui}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+\includegraphics[scale=0.3]{recognition.jpg}
+\caption{Outline of the Recognition System demonstrating how the various system components interact}
+\label{fig:system}
+\end{figure}
+
+
+\section{Further analysis}
 
 Our initial aim was to explore various properties of the attractors in a Hopfield Network. We are interested in studying, testing or challenging several ideas about the neural network:
 \begin{itemize}
@@ -11,11 +51,12 @@ Our initial aim was to explore various properties of the attractors in a Hopfiel
 
 \section{Basins of Attraction}
 %I think we should move the measurements for the basins of attraction in here.
-A basin of attraction for a particular attractor a is defined as the set of all states that will eventually converge to a, under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A large basin size would provide stability for the attractor, since the states in the neighbourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor.
+A basin of attraction for a particular attractor \(\alpha\) is defined as the set of all states that will eventually converge to \(\alpha\), under repeated update. Here, we are particularly interested in finding a way to measure the size of such a basin of attraction. A large basin size would provide stability for the attractor, since the states in the neighbourhood would converge to it. A small basin size for an attractor would mean that the network might never recall the pattern corresponding to that attractor.
 
-\subsection{Measuring the Basin Size}
+\subsection{Measuring the Basin Size using the Storkey-Valabregue technique}
+\label{storkey_basin_size}
 
- A large part of our experiments were thus dedicated to measuring basin sizes of different attractors, clusters of attractors and a newly introduced concept of \emph{Super-Attractors}.
+ A large part of our experiments were thus dedicated to measuring basin sizes of different attractors, clusters of attractors and a newly introduced concept of \emph{Super-Attractors}, in section ~\ref{super_attractors}.
 
  A recognised scientific method for calculating the basin size is the Storkey-Valabregue measurement. This can be computed as follows:
 
@@ -63,9 +104,7 @@ Another idea would be to extend our distribution to a multi-variate distribution
 Unfortunately, we did not have enough time to implement these ideas, so we only experimented with the naive encoding of patterns described above.
 
 
-
-
-\section{First experiments}
+\section{First experiments with basin sizes}
 \label{sec:fexp}
 
 In this section we shall introduce the experiments that we used to analyse various properties of the Hopfield Network. We remind the reader about the two methods that we are going to use for generating clusters of attractors:
@@ -90,22 +129,37 @@ Our first experiment is showing us the basin sizes for increasing values of p, t
     && We measure the basin size for all the patterns learned using the Storkey-Valabregue measurement and take their mean.
 \end{easylist}
 
-
-\hilight{Insert graph here}
+\begin{figure}[h]
+  \centering
+  \input{plot-T1-onecluster-100}
+\caption{Average Basin size of patterns belonging to one cluster generated using T1}
+\label{fig:plot-T1-onecluster}
+\end{figure}
 
 \subsubsection{Comments}
 
-This initial experiment is confirming what we already know from theory: A Hopfield network that is trained with similar patterns loses capacity. Although we are not measuring capacity here, the basin size is strongly correlated to that.
+The results are displayed in figure \ref{fig:plot-T1-onecluster}. This initial experiment is confirming not only what Federico obtained \cite{federico}, but also what we already know from theory: A Hopfield network that is trained with similar patterns loses capacity. Although we are not measuring capacity here, the basin size is strongly correlated to that.
 
-Initially, when p is zero, we observe a huge value for the basin size. This is easily explained, since all the patterns generated are the the same as the root pattern. Subsequently, the network is trained with the same patterns that have the effect of creating a super-attractor with a huge basin size.
+Initially, when p is zero, we observe a huge value of 24 for the basin size. This is easily explained, since all the patterns generated are the the same as the root pattern. Subsequently, the network is trained with the same patterns that have the effect of creating a super-attractor with a huge basin size.
 
-When p is between 0 and a critical value of 0.35, the basin size is 0, since the patterns are too close to each other and don't have enough space to fit basins of attraction between them. As soon as p goes over 0.35, the basins start to increase until a certain maximum level.
+When p is between 0 and a critical value of 0.35, the basin size is 0, since the patterns are too close to each other and don't have enough space to fit basins of attraction between them. As soon as p goes over 0.35, the basins start to increase until a maximum size of 11.
+
+\subsubsection{Further explanation of the results}
+
+The results can also be easily understood and visualised in figure \ref{fig:basins}. For small p values, the attractors formed in the network are too close to each other to allow room for any basins of attraction (apart from the attractors lying at the edge of the cluster). When the p-value is high, the attractors become more disperse, leaving room for larger basins. It is also worth mentioning that the basin shapes are not necessarily hyper-spherical.  
+
+
+\begin{figure}[h]
+  \centering
+\includegraphics[scale=0.25]{images/basins_of_attraction.png}
+\caption{Illustration of clusters of attractors generated using T1, with different p-values. }
+\label{fig:basins}
+\end{figure}
 
 
 \subsection{Basin Size for Two Clusters using T1}
 
 This experiment is similar to the previous one, however it contains two clusters this time. The value \(p_{1}\) for one cluster will stay the same (fixed at 0.45), while \( p_{2}\), corresponding to the second cluster, will vary in the range [0-0.5]. Method T1 is used, for a Hopfield Network of N neurons. The procedure is given below:
-\hilight{INSERT NEWLINE HERE}
 \newline
 \begin{easylist}[enumerate]
 \ListProperties(Style2*=,Numbers=a,Numbers1=R,FinalMark=.)
@@ -120,15 +174,25 @@ This experiment is similar to the previous one, however it contains two clusters
     && For both sets of patterns, we measure the mean basin size using the Storkey-Valabregue measurement and plot the values on the graph.
 \end{easylist}
 
-\hilight{INSERT NEWLINE HERE}
-We will be interested to observe how can one cluster influence the other. For this reason, we have set a big p-value for one cluster (0.45), in order to make sure the attractors are spread around the state space.
+We will be interested to observe how can the probability p influences the basin sizes. For this reason, we have run two experiments, in which we are outputting the basin sizes for cluster 1, in which p varies. The
 
-\hilight{Insert graph here}
 \subsubsection{Comments}
 
-This latter experiment seems to suggest that one cluster can indeed influence the other, in terms of basins of attraction. The instability (small basin sizes) of \(C_{2}\) seems to be transmitted to cluster \(C_{}\), as long as p is smaller than 0.4. Cluster \(C_{2}\) seems to have a corresponding stability that increases linearly. As soon as the 2 probabilities approach each other, the basin sizes become equal.
+\begin{figure}[h]
+  \centering
+  \input{plot-T1-twocluster-100}
+\caption{Average Basin size of patterns belonging to Cluster 2, generated using T1}
+\label{fig:plot-T1-twocluster}
+\end{figure}
 
-This result is confirming Federico's earlier work \cite{federico}, in the sense that instability is indeed and "illness" that can be passed from one cluster to another.
+This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other. 
+
+
+
+
+\subsubsection{Link to attachment theory}
+A network having been trained with two clusters of patterns can be interpreted, in attachment theory, with an infant that has been exposed to two different caregivers. The patterns can be for example, visual or auditory memories describing the 2 caregivers. 
+
 
 
 \section{Experiments with Gaussian-distributed patterns}
@@ -137,22 +201,35 @@ In this section we are testing clusters of patterns that have been generated usi
 
 
 \subsubsection{Comments}
-\hilight{Insert graph here}
+
+\begin{figure}[h]
+  \centering
+  \input{plot-T2-onecluster-100}
+\caption{Average basin sizes of one cluster generated using T2}
+\label{fig:plot-T2-onecluster}
+\end{figure}
 
 The results here are quite surprising. The experiment with Gaussian-distributed patterns shows us that the basin sizes decrease exponentially as standard deviation increases. This might be the case because at low standard deviation, the patterns would repeat themselves and create small super-attractors that have big basin sizes.
-
+This is in contradiction with what we obtained previously, when using method T1, and further details and possible explanations are given in section \ref{inconsistencies}.
 
 \subsection{Basin Size for Two Clusters using T2}
 
 \subsubsection{Comments}
-\hilight{Insert graph here}\\
 
-This experiment has been run on a network of X nodes, with 2 clusters of patterns: C1 composed of XX nr of patterns, having a standard deviation of XX.
+\begin{figure}[h]
+  \centering
+  \input{plot-T2-twocluster-100}
+\caption{Average basin size for two clusters generated using T2}
+\label{fig:plot-T2-twocluster}
+\end{figure}
 
-As it can be easily noticed in the graph, cluster C1, with varying standard deviation, has greater basin sizes
+This experiment has been run on a network of 100 nodes, with 2 clusters of patterns:C1, with fixed standard deviation $\sigma_{1}$, and C2, with varying standard deviation $\sigma_{2}$. We have run 3 diffeent trials, with $\sigma_{1}$ = 0.2, 5 or 10
+
+As it can be easily noticed in the graph, the standard deviation does not have any effect on the basin size of the clusters. This seems to suggest that a more disperse cluster will not be affected by neighbouring attractors.
 
 
 \section{Super Attractors}
+\label{super_attractors}
 In the context of learning models such as the Hopfield model, we define a super attractor as an attractor resulting from training a model with multiple occurrences or instances of some stored pattern. The degree of a super attractor denotes the number of occurrences of its corresponding pattern in the training set.
 
 
@@ -165,7 +242,6 @@ In the context of modelling Attachment theory, a super attractor may represent r
 \newcommand{\psuper}{$p_{super}$}
 \newcommand{\prandom}{$\overrightarrow{p}_{random}$}
 
-\hilight{WHAT SHALL WE DO ABOUT NON-FIXED POINTS???? DO WE DISCARD THEM OR INCLUDE THEM??}
 \begin{enumerate}
 
 

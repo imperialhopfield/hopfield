@@ -2,3 +2,21 @@
 % Tony: "Conclusion is NOT a summary"
 % e.g. result that you did not know about
 
+\section{Analogy with Attachment Theory}
+
+The thorough analysis of the attractor neural networks (Hopfield network and Bolzman machine) has clearly proven their capabilities, being able to model complex attachment types. However, research done in linking the model with the real-life scenario is quite slim, and further work needs to be dedicated especially in this area. 
+
+\section{Future Extensions}
+
+We have introduced the reader with only a few flavors of what Attractor neural networks can really do. Deep investigations should be done in order to further investigate their properties, and really push them to the limit. These might provide a good source of inspiration for developing even more biologically realistic models, that better simulate the human brain.
+
+Another line of extension is about providing better visualisation tools for these highly abstract models, that work on N-dimensional spaces. Parallel coordinates can be used for eaily visualizing the N-dimensional attractors, or the convergence of the network to such an attractor. Furthermore, plots can be done on the available number of neurons that can be updated at each step in the convergence process. 
+
+The experiments we did on Hopfield networks should be reproduced using the Restricted Bolzman machine, which is a more powerful neural network. Furthermore, biological plausibility also needs to be kept in mind, which would surely provide us with more efficient learning systems.
+
+\subsection{Inconsistencies in the results}
+\label{inconsistencies}
+
+It is important mentioning a few apparent inconsistencies in the cluster experiments. For examples, the experiments that have been done, using 1 cluster, display inconsistencies in the results between methods T1 and T2. We believe the main reason for this inconsistency is the limitation of the methodology for sampling Gaussian-distributed patterns and the poor use of the state space. Another reason for this apparent inconsistency might also be the presence of spurious attractors, that can interfere with the real attractors and "steal" part of their basins.
+
+Another reason for the inconsistencies might also be the chaotic shape of the basins. Since the Storkey-Valabregue measurement is only good for hyper-spherical basin shapes. A more powerful method, such as a Monte Carlo sampling in the neighbourhood, is necessary for measuring basins that don't have hyperspherical shapes. 
