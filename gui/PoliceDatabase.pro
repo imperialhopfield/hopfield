@@ -17,7 +17,8 @@ SOURCES += main.cpp\
 
 HEADERS  += policedb.h
 
-FORMS    += policedb.ui
+FORMS    += policedb.ui \
+    imageaddpage.ui
 
 RESOURCES += \
     policedbresource.qrc
