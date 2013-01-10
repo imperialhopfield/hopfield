@@ -2,6 +2,7 @@ import sys
 from os.path import basename
 from PySide import QtCore, QtGui
 from policedb import Ui_PoliceDB
+from imageaddpage import Ui_WizardPage
 import json
 
 QIcon = QtGui.QIcon
@@ -10,9 +11,29 @@ QListView = QtGui.QListView
 QMessageBox = QtGui.QMessageBox
 QItemSelection = QtGui.QItemSelection
 QFileDialog = QtGui.QFileDialog
+QPixmap = QtGui.QPixmap
+QWizard = QtGui.QWizard
 QSize = QtCore.QSize
 Qt = QtCore.Qt
 
+
+class ControlImageAddPage(QtGui.QWizardPage):
+	def __init__(self, imagePath, parent=None):
+		super(ControlImageAddPage, self).__init__(parent)
+		self.ui = Ui_WizardPage()
+		self.ui.setupUi(self)
+		self.loadImage(imagePath)
+
+
+	# Skip using '.ui' all the time!
+	def __getattr__(self, name):
+		return self.ui.__getattribute__(name)
+
+
+	def loadImage(self, imagePath):
+		self.imagePath = imagePath
+		self.filePath.setText(imagePath)
+		self.imageLabel.setPixmap(QPixmap(imagePath))
 
 
 #  Runs the policeUI gui
@@ -37,7 +58,7 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		self.imageList.selectionChanged = self.gridImageSelected
 
 		# Button handlers
-		self.addNewButton.clicked.connect(self.addPattern)
+		self.addNewButton.clicked.connect(self.loadImages)
 		self.saveButton.clicked.connect(self.saveDB)
 		self.loadButton.clicked.connect(self.loadDB)
 
@@ -46,6 +67,52 @@ class ControlPoliceDB(QtGui.QMainWindow):
 	# Skip using '.ui' all the time!
 	def __getattr__(self, name):
 		return self.ui.__getattribute__(name)
+
+
+	# Load images to be added the photo database grid AND hopfield network
+	def loadImages(self):
+		filenames=openFile(self,
+				nameFilter="Image files (*.jpg *.jpeg *.png *.bmp)",
+				fileMode=QFileDialog.ExistingFiles)
+
+		# if no files selected, abort
+		if not filenames: return
+
+
+		# Image importer wizard
+		wizard = QWizard(self)
+		pageIds = xrange(len(filenames))
+		origAccept = wizard.accept
+
+
+		# Handler function to add images to database
+		def addImages():
+			for i in pageIds:
+				path = filenames[i]
+				name = wizard.field('name-%d'%i)
+				age = wizard.field('age-%d'%i)
+				desc = wizard.field('desc-%d'%i)
+
+				self.addImageToDB(path, name, age, desc)
+
+			return origAccept()
+
+		# Set handler functions
+		wizard.accept = addImages
+
+		# Create and add wizard pages
+		for (i, filename) in enumerate(filenames):
+			page = ControlImageAddPage(filename)
+			page.setCommitPage(True)
+			page.setButtonText(QWizard.CommitButton, "Add")
+
+			page.registerField('name-%d*'%i, page.nameInput)
+			page.registerField('age-%d*'%i, page.ageInput)
+			page.registerField("desc-%d"%i, page.descInput, "plainText");
+
+			wizard.addPage(page)
+
+		wizard.show()
 
 
 	def addPattern(self):
@@ -127,6 +194,7 @@ class ControlPoliceDB(QtGui.QMainWindow):
 	# Clear DB from memory - remove images from grid and their associated data
 	def clearDB(self):
 		self.imageList.clear()
+
 
 	# Handler for when an image in the grid is selected
 	@QtCore.Slot(QItemSelection, QItemSelection)
