@@ -1,0 +1,16 @@
+in order to make python to haskell work one has to do the following:
+
+1. cabal install dph-par
+2. cabal install dph-seq
+3. sudo apt-get install ghc-dynamic
+
+run ghc-v and see your version of ghc.
+Open make file and complete GHC variable with your version of ghc
+eg:
+GHC=ghc-7.4.1
+
+Change the second variable to match the version of ghc passed in the first one.
+
+Run make
+
+for more details see http://stackoverflow.com/questions/676498/haskell-binding-with-ruby-through-ffi/2430233#2430233
