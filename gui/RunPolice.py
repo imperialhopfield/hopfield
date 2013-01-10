@@ -1,4 +1,5 @@
 import sys
+from os.path import basename
 from PySide import QtCore, QtGui
 from policedb import Ui_PoliceDB
 import json
@@ -8,6 +9,7 @@ QListWidgetItem = QtGui.QListWidgetItem
 QListView = QtGui.QListView
 QMessageBox = QtGui.QMessageBox
 QItemSelection = QtGui.QItemSelection
+QFileDialog = QtGui.QFileDialog
 QSize = QtCore.QSize
 Qt = QtCore.Qt
 
@@ -34,7 +36,10 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		# Selection handler
 		self.imageList.selectionChanged = self.gridImageSelected
 
+		# Button handlers
 		self.addNewButton.clicked.connect(self.addPattern)
+		self.saveButton.clicked.connect(self.saveDB)
+		self.loadButton.clicked.connect(self.loadDB)
 
 
 
@@ -61,25 +66,47 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		self.imageList.addItem(item)
 
 
-	# Save DB to file
-	def saveDB(self, filename):
+	# Save DB to file - if none specified, ask user
+	def saveDB(self, filename=None):
 		# Retrieve all image data
 		items = self.imageList.findItems('*', Qt.MatchWildcard)
 		itemsData = [ item.data(Qt.UserRole) for item in items ]
+
+
+		# If no file, ask user for file
+		if filename is None:
+			filename = saveFile(self, "Database files (*.db)", 'db')
+
+		# If user selected nothing, abort
+		if filename is None: return
+
 
 		# Save to file
 		try:
 			with open(filename, 'w') as f:
 				json.dump(itemsData, f)
+				message(title='Success',
+					message='File %s saved successfully!'%basename(filename))
 		except IOError, e:
 			message(title='Save error',
 				icon=QMessageBox.Warning,
 				message="An error has occurred while saving the file.",
 				detail=str(e))
+			return
 
 
-	# Load DB from file
-	def loadDB(self, filename):
+	# Load DB from file - if none specified, ask user
+	def loadDB(self, filename=None):
+
+		# If no file, ask user for file
+		if filename is None:
+			filename=openFile(self, nameFilter="Database files (*.db)",
+				fileMode=QFileDialog.ExistingFile)
+
+		# If user selected nothing, abort
+		if filename is None: return
+
+
 		try:
 			with open(filename, 'r') as f:
 				itemsData = json.load(f)
@@ -87,12 +114,19 @@ class ControlPoliceDB(QtGui.QMainWindow):
 			message(title='Load error',
 				icon=QMessageBox.Warning,
 				message="An error has occurred while loading the file.",
-				etail=str(e))
+				detail=str(e))
+			return
 
+
+		self.clearDB()
 
 		for itemData in itemsData:
 			self.addImageToDB(**itemData)
 
+
+	# Clear DB from memory - remove images from grid and their associated data
+	def clearDB(self):
+		self.imageList.clear()
 
 	# Handler for when an image in the grid is selected
 	@QtCore.Slot(QItemSelection, QItemSelection)
@@ -130,15 +164,58 @@ def loadImages(app):
 
 
 # Create message box with the specified message
-def message(message, detail, title, icon):
+def message(message, title, detail="", icon=QMessageBox.Information):
 	msgBox = QMessageBox(icon, title, message)
 	msgBox.setInformativeText(detail)
 	msgBox.exec_()
 
 
+# nameFilter is a string in the form:
+# All C++ files (*.cpp *.cc *.C *.cxx *.c++)
+# fileMode is one of:
+# 1) QFileDialog.ExistingFile
+# 2) QFileDialog.ExistingFiles
+def openFile(parent, nameFilter, fileMode=QFileDialog.ExistingFile):
+	dialog = QFileDialog(parent)
+	dialog.setFileMode(fileMode)
+	dialog.setNameFilter(nameFilter)
+
+	# Return None if no files selected
+	if not dialog.exec_(): return None
+	fileNames = dialog.selectedFiles()
+
+	if not fileNames:
+		return None
+	elif fileMode == QFileDialog.ExistingFile:
+		return fileNames[0]
+	elif fileMode == QFileDialog.ExistingFiles:
+		return fileNames
+	else:
+		return None
+
+
+# nameFilter is a string in the form:
+# All C++ files (*.cpp *.cc *.C *.cxx *.c++)
+# defaultExt is in the form:
+# 'cpp'  (i.e. without the 'dot'!)
+def saveFile(parent, nameFilter, defaultExt):
+	dialog = QFileDialog(parent)
+	dialog.setAcceptMode(QFileDialog.AcceptSave)
+	dialog.setFileMode(QFileDialog.AnyFile)
+	dialog.setNameFilter(nameFilter)
+	dialog.setConfirmOverwrite(True)
+	dialog.setDefaultSuffix(defaultExt)
+
+	if not dialog.exec_(): return
+	fileNames = dialog.selectedFiles()
+
+	return fileNames[0] if fileNames else None
+
+
+
 if __name__ == "__main__":
 	app = QtGui.QApplication(sys.argv)
 	mySW = ControlPoliceDB()
-	mySW.loadDB('db')
+	mySW.loadDB('suspects.db')
 	mySW.show()
 	sys.exit(app.exec_())

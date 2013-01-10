@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'policedb.ui'
 #
-# Created: Thu Jan 10 01:00:12 2013
+# Created: Thu Jan 10 10:14:51 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -50,9 +50,30 @@ class Ui_PoliceDB(object):
         self.label_10 = QtGui.QLabel(self.suspect_database_tab)
         self.label_10.setObjectName("label_10")
         self.horizontalLayout.addWidget(self.label_10)
-        self.addNewButton = QtGui.QPushButton(self.suspect_database_tab)
+        self.addNewButton = QtGui.QToolButton(self.suspect_database_tab)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/new/prefix1/icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.addNewButton.setIcon(icon)
+        self.addNewButton.setIconSize(QtCore.QSize(42, 42))
+        self.addNewButton.setAutoRaise(True)
         self.addNewButton.setObjectName("addNewButton")
         self.horizontalLayout.addWidget(self.addNewButton)
+        self.saveButton = QtGui.QToolButton(self.suspect_database_tab)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/new/prefix1/icons/save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.saveButton.setIcon(icon1)
+        self.saveButton.setIconSize(QtCore.QSize(42, 42))
+        self.saveButton.setAutoRaise(True)
+        self.saveButton.setObjectName("saveButton")
+        self.horizontalLayout.addWidget(self.saveButton)
+        self.loadButton = QtGui.QToolButton(self.suspect_database_tab)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/new/prefix1/icons/open.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.loadButton.setIcon(icon2)
+        self.loadButton.setIconSize(QtCore.QSize(42, 42))
+        self.loadButton.setAutoRaise(True)
+        self.loadButton.setObjectName("loadButton")
+        self.horizontalLayout.addWidget(self.loadButton)
         self.lhs.addLayout(self.horizontalLayout)
         self.imageList = QtGui.QListWidget(self.suspect_database_tab)
         self.imageList.setDragDropMode(QtGui.QAbstractItemView.NoDragDrop)
@@ -356,7 +377,12 @@ class Ui_PoliceDB(object):
         PoliceDB.setWindowTitle(QtGui.QApplication.translate("PoliceDB", "PoliceDB", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("PoliceDB", "Suspect Database", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("PoliceDB", "The following images are trained into the database:", None, QtGui.QApplication.UnicodeUTF8))
-        self.addNewButton.setText(QtGui.QApplication.translate("PoliceDB", "Add New", None, QtGui.QApplication.UnicodeUTF8))
+        self.addNewButton.setToolTip(QtGui.QApplication.translate("PoliceDB", "Add suspect", None, QtGui.QApplication.UnicodeUTF8))
+        self.addNewButton.setText(QtGui.QApplication.translate("PoliceDB", "Add Suspect", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveButton.setToolTip(QtGui.QApplication.translate("PoliceDB", "<html><head/><body><p>Save database</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.saveButton.setText(QtGui.QApplication.translate("PoliceDB", "Save Database", None, QtGui.QApplication.UnicodeUTF8))
+        self.loadButton.setToolTip(QtGui.QApplication.translate("PoliceDB", "<html><head/><body><p>Load database</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.loadButton.setText(QtGui.QApplication.translate("PoliceDB", "Save Database", None, QtGui.QApplication.UnicodeUTF8))
         self.rhs.setTitle(QtGui.QApplication.translate("PoliceDB", "Selected suspect", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("PoliceDB", "Name:", None, QtGui.QApplication.UnicodeUTF8))
         self.nameLabel.setText(QtGui.QApplication.translate("PoliceDB", "Lukas S.", None, QtGui.QApplication.UnicodeUTF8))
