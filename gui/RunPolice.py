@@ -116,8 +116,8 @@ def loadImages(app):
 
 
 if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    mySW = ControlPoliceDB()
-    mySW.loadDB('db')
-    mySW.show()
-    sys.exit(app.exec_())
+	app = QtGui.QApplication(sys.argv)
+	mySW = ControlPoliceDB()
+	mySW.loadDB('db')
+	mySW.show()
+	sys.exit(app.exec_())
