@@ -102,6 +102,9 @@
               <property name="uniformItemSizes">
                <bool>true</bool>
               </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
            </layout>
@@ -259,7 +262,7 @@ p, li { white-space: pre-wrap; }
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap resource="policedbresource1.qrc">:/new/prefix1/lucasss.png</pixmap>
+                <pixmap resource="policedbresource.qrc">:/new/prefix1/lucasss.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -355,7 +358,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="policedbresource1.qrc">:/new/prefix1/vert2.jpg</pixmap>
+         <pixmap resource="policedbresource.qrc">:/new/prefix1/vert2.jpg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -402,7 +405,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/mugchar.jpg</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/mugchar.jpg</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -434,7 +437,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/celeb.jpg</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/celeb.jpg</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -454,7 +457,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="policedbresource1.qrc">:/new/prefix1/sheen-images/000000.bmp</pixmap>
+         <pixmap resource="policedbresource.qrc">:/new/prefix1/sheen-images/000000.bmp</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -473,7 +476,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="policedbresource1.qrc">:/new/prefix1/sheen-images/000060.bmp</pixmap>
+         <pixmap resource="policedbresource.qrc">:/new/prefix1/sheen-images/000060.bmp</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -492,7 +495,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="policedbresource1.qrc">:/new/prefix1/sheen-images/000160.bmp</pixmap>
+         <pixmap resource="policedbresource.qrc">:/new/prefix1/sheen-images/000160.bmp</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -511,7 +514,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="policedbresource1.qrc">:/new/prefix1/sheen-images/000225.bmp</pixmap>
+         <pixmap resource="policedbresource.qrc">:/new/prefix1/sheen-images/000225.bmp</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -632,7 +635,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/smiley1.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/smiley1.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -651,7 +654,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/eleven.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/eleven.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -670,7 +673,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/plus.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/plus.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -689,7 +692,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/house.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/house.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -708,7 +711,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/circle.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/circle.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -727,7 +730,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-images/highres/squarecross.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/squarecross.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -762,7 +765,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/drawn-circle.jpg</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/drawn-circle.jpg</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -794,7 +797,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000001.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000001.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -813,7 +816,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000004.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000004.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -832,7 +835,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000006.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000006.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -851,7 +854,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000008.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000008.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -870,7 +873,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000009.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000009.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -889,7 +892,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="policedbresource1.qrc">:/new/prefix1/8x8-convergence/highres/000010.bmp.bmp</pixmap>
+          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000010.bmp.bmp</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -921,7 +924,7 @@ p, li { white-space: pre-wrap; }
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="policedbresource1.qrc"/>
+  <include location="policedbresource.qrc"/>
  </resources>
  <connections/>
 </ui>

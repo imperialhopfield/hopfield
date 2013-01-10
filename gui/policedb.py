@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'policedb.ui'
 #
-# Created: Wed Jan  9 23:13:44 2013
+# Created: Thu Jan 10 01:00:12 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,6 +61,7 @@ class Ui_PoliceDB(object):
         self.imageList.setLayoutMode(QtGui.QListView.Batched)
         self.imageList.setViewMode(QtGui.QListView.IconMode)
         self.imageList.setUniformItemSizes(True)
+        self.imageList.setWordWrap(True)
         self.imageList.setObjectName("imageList")
         self.lhs.addWidget(self.imageList)
         self.horizontalLayout_2.addLayout(self.lhs)
@@ -382,3 +383,4 @@ class Ui_PoliceDB(object):
         self.label_30.setText(QtGui.QApplication.translate("PoliceDB", "<html><head/><body><p><span style=\" font-size:14pt;\">How it works</span></p><p><span style=\" font-size:8pt;\">The Hopfiled network used to converge this pattern is trained based on the<br/></span><span style=\" font-size:8pt; font-weight:600;\">Hebbian rule</span><span style=\" font-size:8pt;\">, which says that neurons that </span><span style=\" font-size:8pt; font-weight:600;\">fire together, wire together</span><span style=\" font-size:8pt;\">.</span></p><p><span style=\" font-size:8pt;\">In the context of images, neurons are black/white pixels.</span></p><p><span style=\" font-size:8pt;\">Based on this rule, a fully connected neural network is </span><span style=\" font-size:8pt; font-weight:600;\">trained</span><span style=\" font-size:8pt;\"> from<br/>the patterns to learn.</span></p><p><span style=\" font-size:8pt;\">When run against a pattern, random pixels are updated to the sign of<br/>their </span><span style=\" font-size:8pt; font-weight:600;\">weighted neighbours</span><span style=\" font-size:8pt;\"> until it </span><span style=\" font-size:8pt; font-weight:600;\">converges</span><span style=\" font-size:8pt;\">.<br/>With high probability the converged pattern will be one of the trained ones.</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.hopfiel_playground_tab), QtGui.QApplication.translate("PoliceDB", "Understanding Hopfield", None, QtGui.QApplication.UnicodeUTF8))
 
+import policedbresource_rc
