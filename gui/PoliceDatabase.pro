@@ -21,3 +21,5 @@ FORMS    += policedb.ui
 
 RESOURCES += \
     policedbresource.qrc
+
+OTHER_FILES +=

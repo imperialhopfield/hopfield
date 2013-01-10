@@ -38,5 +38,8 @@
         <file>8x8-convergence/highres/000009.bmp.bmp</file>
         <file>8x8-convergence/highres/000010.bmp.bmp</file>
         <file>mugshots.jpg</file>
+        <file>icons/add.png</file>
+        <file>icons/open.png</file>
+        <file>icons/save.png</file>
     </qresource>
 </RCC>
