@@ -204,7 +204,6 @@ def saveFile(parent, nameFilter, defaultExt):
 	dialog.setFileMode(QFileDialog.AnyFile)
 	dialog.setNameFilter(nameFilter)
 	dialog.setConfirmOverwrite(True)
-	dialog.setLabelText(QFileDialog.Accept, "Save")
 	dialog.setDefaultSuffix(defaultExt)
 
 	if not dialog.exec_(): return
@@ -217,6 +216,6 @@ def saveFile(parent, nameFilter, defaultExt):
 if __name__ == "__main__":
 	app = QtGui.QApplication(sys.argv)
 	mySW = ControlPoliceDB()
-	mySW.loadDB('db')
+	mySW.loadDB('suspects.db')
 	mySW.show()
 	sys.exit(app.exec_())
