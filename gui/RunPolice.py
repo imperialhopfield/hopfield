@@ -1,4 +1,5 @@
 import sys
+from os.path import basename
 from PySide import QtCore, QtGui
 from policedb import Ui_PoliceDB
 import json
@@ -8,6 +9,7 @@ QListWidgetItem = QtGui.QListWidgetItem
 QListView = QtGui.QListView
 QMessageBox = QtGui.QMessageBox
 QItemSelection = QtGui.QItemSelection
+QFileDialog = QtGui.QFileDialog
 QSize = QtCore.QSize
 Qt = QtCore.Qt
 
@@ -34,7 +36,10 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		# Selection handler
 		self.imageList.selectionChanged = self.gridImageSelected
 
+		# Button handlers
 		self.addNewButton.clicked.connect(self.addPattern)
+		self.saveButton.clicked.connect(self.saveDB)
+		self.loadButton.clicked.connect(self.loadDB)
 
 
 
@@ -61,16 +66,35 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		self.imageList.addItem(item)
 
 
-	# Save DB to file
-	def saveDB(self, filename):
+	# Save DB to file - if none specified, ask user
+	def saveDB(self, filename=None):
 		# Retrieve all image data
 		items = self.imageList.findItems('*', Qt.MatchWildcard)
 		itemsData = [ item.data(Qt.UserRole) for item in items ]
+
+
+		# If no file, ask user for file
+		if filename is None:
+			dialog = QFileDialog(self)
+			dialog.setAcceptMode(QFileDialog.AcceptSave)
+			dialog.setFileMode(QFileDialog.AnyFile)
+			dialog.setNameFilter("Database files (*.db)")
+			dialog.setConfirmOverwrite(True)
+			dialog.setLabelText(QFileDialog.Accept, "Save")
+			dialog.setDefaultSuffix("db")
+
+			if not dialog.exec_(): return
+			fileNames = dialog.selectedFiles()
+			if not fileNames: return
+			filename = fileNames[0]
+
 
 		# Save to file
 		try:
 			with open(filename, 'w') as f:
 				json.dump(itemsData, f)
+				message(title='Success',
+					message='File %s saved successfully!'%basename(filename))
 		except IOError, e:
 			message(title='Save error',
 				icon=QMessageBox.Warning,
@@ -78,8 +102,21 @@ class ControlPoliceDB(QtGui.QMainWindow):
 				detail=str(e))
 
 
-	# Load DB from file
-	def loadDB(self, filename):
+	# Load DB from file - if none specified, ask user
+	def loadDB(self, filename=None):
+
+		# If no file, ask user for file
+		if filename is None:
+			dialog = QFileDialog(self)
+			dialog.setFileMode(QFileDialog.ExistingFile)
+			dialog.setNameFilter("Database files (*.db)")
+
+			if not dialog.exec_(): return
+			fileNames = dialog.selectedFiles()
+			if not fileNames: return
+			filename = fileNames[0]
+
+
 		try:
 			with open(filename, 'r') as f:
 				itemsData = json.load(f)
@@ -90,9 +127,15 @@ class ControlPoliceDB(QtGui.QMainWindow):
 				etail=str(e))
 
 
+		self.clearDB()
+
 		for itemData in itemsData:
 			self.addImageToDB(**itemData)
 
+
+	# Clear DB from memory - remove images from grid and their associated data
+	def clearDB(self):
+		self.imageList.clear()
 
 	# Handler for when an image in the grid is selected
 	@QtCore.Slot(QItemSelection, QItemSelection)
@@ -130,7 +173,7 @@ def loadImages(app):
 
 
 # Create message box with the specified message
-def message(message, detail, title, icon):
+def message(message, title, detail="", icon=QMessageBox.Information):
 	msgBox = QMessageBox(icon, title, message)
 	msgBox.setInformativeText(detail)
 	msgBox.exec_()
