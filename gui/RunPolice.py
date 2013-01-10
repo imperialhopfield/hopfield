@@ -16,7 +16,6 @@ Qt = QtCore.Qt
 #  Runs the policeUI gui
 class ControlPoliceDB(QtGui.QMainWindow):
 
-
 	# Size of icons in image list
 	ICON_SIZE = QSize(200, 200)
 
@@ -35,10 +34,17 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		# Selection handler
 		self.imageList.selectionChanged = self.gridImageSelected
 
+    self.ui.pushButton.clicked.connect(self.addPattern)
+
+
 
 	# Skip using '.ui' all the time!
 	def __getattr__(self, name):
 		return self.ui.__getattribute__(name)
+
+
+  def addPattern(self):
+    print "Hello ela!"
 
 
 	# Add image to photo database grid

@@ -211,6 +211,21 @@ updateChain (HopfieldData ws pats) pat
   | otherwise                  = (pat:) `liftM` unfoldrSelfM (update_ ws) pat
 
 
+addPattern :: LearningType -> HopfieldData -> Pattern -> HopfieldData
+addPattern learning (HopfieldData ws pats) pat
+  | Just e <- validPattern pat = error e
+  | otherwise = (HopfieldData new_ws (pat: pats))
+      where new_ws = updateWeightsGivenNewPattern learning ws pat
+
+
+updateWeightsGivenNewPattern :: LearningType -> Weights -> Pattern -> Weights
+updateWeightsGivenNewPattern Storkey ws pat = updateWeightsStorkey ws pat
+updateWeightsGivenNewPattern Hebbian ws pat = vector2D updated_ws
+  where updated_ws = [ [ws ! i ! j + 1 ./. (pat ! i * pat ! j) | i <-neurons ] | j <- neurons]
+        n = V.length ws - 1
+        neurons = [0 .. n]
+
+
 -- | See `energy`.
 energy_ :: Weights -> Pattern -> Double
 energy_ ws pat = s / (-2.0)
