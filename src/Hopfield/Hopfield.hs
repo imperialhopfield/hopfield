@@ -14,6 +14,7 @@ module Hopfield.Hopfield (
   , buildHopfieldData
   -- * Running
   , update
+  , addPatterns
   , getUpdatables
   , repeatedUpdate
   , updateChain
@@ -25,11 +26,10 @@ module Hopfield.Hopfield (
 
 import           Control.Monad
 import           Control.Monad.Random (MonadRandom)
-import           Data.List
+import           Data.Maybe
 import           Data.Vector ((!))
 import qualified Data.Vector as V
 import           Data.Vector.Generic.Mutable (write)
-import           Control.Parallel.Strategies
 
 import           Hopfield.Common
 import           Hopfield.Util
@@ -206,22 +206,26 @@ matchPattern (HopfieldData ws pats) pat = do
 --
 -- POST: The returned list is not empty.
 updateChain :: (MonadRandom m) => HopfieldData -> Pattern -> m [Pattern]
-updateChain (HopfieldData ws pats) pat
+updateChain (HopfieldData ws _pats) pat
   | Just e <- validPattern pat = error e
   | otherwise                  = (pat:) `liftM` unfoldrSelfM (update_ ws) pat
 
 
-addPattern :: LearningType -> HopfieldData -> Pattern -> HopfieldData
-addPattern learning (HopfieldData ws pats) pat
-  | Just e <- validPattern pat = error e
-  | otherwise = (HopfieldData new_ws (pat: pats))
-      where new_ws = updateWeightsGivenNewPattern learning ws pat
+-- | Stores patterns in an already trained network. One has to ensure that this
+-- function is not over used, as this will decrease the capacity of the network.
+addPatterns ::  LearningType -> HopfieldData -> [Pattern] -> HopfieldData
+addPatterns learning (HopfieldData ws pats) addedPats
+  | any (isJust . validPattern) addedPats = error "invalid patterns in addMultiplePatterns"
+  | any (isJust . validWeightsPatternSize ws) addedPats = error "pattern does not match weights in addMultiplePatterns"
+  | otherwise = HopfieldData new_ws (pats ++ addedPats)
+      where new_ws = foldl (updateWeightsGivenNewPattern learning) ws addedPats
 
 
+-- Updates the weight matrix when a new pattern is stored in the network
 updateWeightsGivenNewPattern :: LearningType -> Weights -> Pattern -> Weights
 updateWeightsGivenNewPattern Storkey ws pat = updateWeightsStorkey ws pat
 updateWeightsGivenNewPattern Hebbian ws pat = vector2D updated_ws
-  where updated_ws = [ [ws ! i ! j + 1 ./. (pat ! i * pat ! j) | i <-neurons ] | j <- neurons]
+  where updated_ws = [ [ws ! i ! j + (pat ! i * pat ! j) ./. n | j <- neurons ] | i <- neurons]
         n = V.length ws - 1
         neurons = [0 .. n]
 
