@@ -75,18 +75,10 @@ class ControlPoliceDB(QtGui.QMainWindow):
 
 		# If no file, ask user for file
 		if filename is None:
-			dialog = QFileDialog(self)
-			dialog.setAcceptMode(QFileDialog.AcceptSave)
-			dialog.setFileMode(QFileDialog.AnyFile)
-			dialog.setNameFilter("Database files (*.db)")
-			dialog.setConfirmOverwrite(True)
-			dialog.setLabelText(QFileDialog.Accept, "Save")
-			dialog.setDefaultSuffix("db")
+			filename = saveFile(self, "Database files (*.db)", 'db')
 
-			if not dialog.exec_(): return
-			fileNames = dialog.selectedFiles()
-			if not fileNames: return
-			filename = fileNames[0]
+		# If user selected nothing, abort
+		if filename is None: return
 
 
 		# Save to file
@@ -100,6 +92,7 @@ class ControlPoliceDB(QtGui.QMainWindow):
 				icon=QMessageBox.Warning,
 				message="An error has occurred while saving the file.",
 				detail=str(e))
+			return
 
 
 	# Load DB from file - if none specified, ask user
@@ -107,14 +100,11 @@ class ControlPoliceDB(QtGui.QMainWindow):
 
 		# If no file, ask user for file
 		if filename is None:
-			dialog = QFileDialog(self)
-			dialog.setFileMode(QFileDialog.ExistingFile)
-			dialog.setNameFilter("Database files (*.db)")
+			filename=openFile(self, nameFilter="Database files (*.db)",
+				fileMode=QFileDialog.ExistingFile)
 
-			if not dialog.exec_(): return
-			fileNames = dialog.selectedFiles()
-			if not fileNames: return
-			filename = fileNames[0]
+		# If user selected nothing, abort
+		if filename is None: return
 
 
 		try:
@@ -124,7 +114,8 @@ class ControlPoliceDB(QtGui.QMainWindow):
 			message(title='Load error',
 				icon=QMessageBox.Warning,
 				message="An error has occurred while loading the file.",
-				etail=str(e))
+				detail=str(e))
+			return
 
 
 		self.clearDB()
@@ -177,6 +168,50 @@ def message(message, title, detail="", icon=QMessageBox.Information):
 	msgBox = QMessageBox(icon, title, message)
 	msgBox.setInformativeText(detail)
 	msgBox.exec_()
+
+
+# nameFilter is a string in the form:
+# All C++ files (*.cpp *.cc *.C *.cxx *.c++)
+# fileMode is one of:
+# 1) QFileDialog.ExistingFile
+# 2) QFileDialog.ExistingFiles
+def openFile(parent, nameFilter, fileMode=QFileDialog.ExistingFile):
+	dialog = QFileDialog(parent)
+	dialog.setFileMode(fileMode)
+	dialog.setNameFilter(nameFilter)
+
+	# Return None if no files selected
+	if not dialog.exec_(): return None
+	fileNames = dialog.selectedFiles()
+
+	if not fileNames:
+		return None
+	elif fileMode == QFileDialog.ExistingFile:
+		return fileNames[0]
+	elif fileMode == QFileDialog.ExistingFiles:
+		return fileNames
+	else:
+		return None
+
+
+# nameFilter is a string in the form:
+# All C++ files (*.cpp *.cc *.C *.cxx *.c++)
+# defaultExt is in the form:
+# 'cpp'  (i.e. without the 'dot'!)
+def saveFile(parent, nameFilter, defaultExt):
+	dialog = QFileDialog(parent)
+	dialog.setAcceptMode(QFileDialog.AcceptSave)
+	dialog.setFileMode(QFileDialog.AnyFile)
+	dialog.setNameFilter(nameFilter)
+	dialog.setConfirmOverwrite(True)
+	dialog.setLabelText(QFileDialog.Accept, "Save")
+	dialog.setDefaultSuffix(defaultExt)
+
+	if not dialog.exec_(): return
+	fileNames = dialog.selectedFiles()
+
+	return fileNames[0] if fileNames else None
+
 
 
 if __name__ == "__main__":
