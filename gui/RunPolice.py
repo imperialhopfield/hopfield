@@ -34,7 +34,7 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		# Selection handler
 		self.imageList.selectionChanged = self.gridImageSelected
 
-    self.ui.pushButton.clicked.connect(self.addPattern)
+		self.addNewButton.clicked.connect(self.addPattern)
 
 
 
@@ -43,8 +43,8 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		return self.ui.__getattribute__(name)
 
 
-  def addPattern(self):
-    print "Hello ela!"
+	def addPattern(self):
+		print "Hello ela!"
 
 
 	# Add image to photo database grid
