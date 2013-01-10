@@ -93,7 +93,12 @@ class ControlPoliceDB(QtGui.QMainWindow):
 				age = wizard.field('age-%d'%i)
 				desc = wizard.field('desc-%d'%i)
 
+				# Add images to grid
 				self.addImageToDB(path, name, age, desc)
+
+				# build network
+				self.addPatterns(filenames)
+
 
 			return origAccept()
 
@@ -115,7 +120,7 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		wizard.show()
 
 
-	def addPattern(self):
+	def addPatterns(self, filenames):
 		print "Hello ela!"
 
 
