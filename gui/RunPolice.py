@@ -62,6 +62,9 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		self.saveButton.clicked.connect(self.saveDB)
 		self.loadButton.clicked.connect(self.loadDB)
 
+		# Input image handler
+		self.findButton.clicked.connect(self.findSuspect)
+
 
 
 	# Skip using '.ui' all the time!
@@ -98,7 +101,6 @@ class ControlPoliceDB(QtGui.QMainWindow):
 
 				# build network
 				self.addPatterns(filenames)
-
 
 			return origAccept()
 
@@ -165,6 +167,18 @@ class ControlPoliceDB(QtGui.QMainWindow):
 				message="An error has occurred while saving the file.",
 				detail=str(e))
 			return
+
+
+	# Load image to match
+	def findSuspect(self):
+		imagePath=openFile(self,
+				nameFilter="Image files (*.jpg *.jpeg *.png *.bmp)",
+				fileMode=QFileDialog.ExistingFile)
+
+		# Set image
+		self.inputImage.setPixmap(QPixmap(imagePath))
+
+		print "MATCH IMAGE"
 
 
 	# Load DB from file - if none specified, ask user
