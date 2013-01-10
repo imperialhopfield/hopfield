@@ -6,6 +6,7 @@ import json
 QIcon = QtGui.QIcon
 QListWidgetItem = QtGui.QListWidgetItem
 QListView = QtGui.QListView
+QMessageBox = QtGui.QMessageBox
 QItemSelection = QtGui.QItemSelection
 QSize = QtCore.QSize
 Qt = QtCore.Qt
@@ -61,14 +62,27 @@ class ControlPoliceDB(QtGui.QMainWindow):
 		itemsData = [ item.data(Qt.UserRole) for item in items ]
 
 		# Save to file
-		with open(filename, 'w') as f:
-			json.dump(itemsData, f)
+		try:
+			with open(filename, 'w') as f:
+				json.dump(itemsData, f)
+		except IOError, e:
+			message(title='Save error',
+				icon=QMessageBox.Warning,
+				message="An error has occurred while saving the file.",
+				detail=str(e))
 
 
 	# Load DB from file
 	def loadDB(self, filename):
-		with open(filename, 'r') as f:
-			itemsData = json.load(f)
+		try:
+			with open(filename, 'r') as f:
+				itemsData = json.load(f)
+		except IOError, e:
+			message(title='Load error',
+				icon=QMessageBox.Warning,
+				message="An error has occurred while loading the file.",
+				etail=str(e))
+
 
 		for itemData in itemsData:
 			self.addImageToDB(**itemData)
@@ -108,6 +122,12 @@ def loadImages(app):
 	for (path, name, age, desc) in [("celeb.jpg", "Charlie Seen", '37', "Shady character"), ("mugchar.jpg", "Charlie Dude", "27", ' '.join('men'*200))]:
 		app.addImageToDB(path, name, age, desc)
 
+
+# Create message box with the specified message
+def message(message, detail, title, icon):
+	msgBox = QMessageBox(icon, title, message)
+	msgBox.setInformativeText(detail)
+	msgBox.exec_()
 
 
 if __name__ == "__main__":
