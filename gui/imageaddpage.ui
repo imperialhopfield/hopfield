@@ -129,39 +129,6 @@
      </item>
     </layout>
    </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="nextButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Next</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
   </layout>
  </widget>
  <resources>

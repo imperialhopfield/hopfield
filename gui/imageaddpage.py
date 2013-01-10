@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'imageaddpage.ui'
 #
-# Created: Thu Jan 10 11:53:54 2013
+# Created: Thu Jan 10 14:48:16 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -75,26 +75,6 @@ class Ui_WizardPage(object):
         self.verticalLayout.addWidget(self.filePath)
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
-        self.horizontalLayout_2 = QtGui.QHBoxLayout()
-        self.horizontalLayout_2.setSizeConstraint(QtGui.QLayout.SetDefaultConstraint)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.cancelButton = QtGui.QPushButton(WizardPage)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.cancelButton.sizePolicy().hasHeightForWidth())
-        self.cancelButton.setSizePolicy(sizePolicy)
-        self.cancelButton.setObjectName("cancelButton")
-        self.horizontalLayout_2.addWidget(self.cancelButton)
-        self.nextButton = QtGui.QPushButton(WizardPage)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.nextButton.sizePolicy().hasHeightForWidth())
-        self.nextButton.setSizePolicy(sizePolicy)
-        self.nextButton.setObjectName("nextButton")
-        self.horizontalLayout_2.addWidget(self.nextButton)
-        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
 
         self.retranslateUi(WizardPage)
         QtCore.QMetaObject.connectSlotsByName(WizardPage)
@@ -107,7 +87,5 @@ class Ui_WizardPage(object):
         self.label_31.setText(QtGui.QApplication.translate("WizardPage", "Age:", None, QtGui.QApplication.UnicodeUTF8))
         self.ageInput.setPlaceholderText(QtGui.QApplication.translate("WizardPage", "enter age", None, QtGui.QApplication.UnicodeUTF8))
         self.label_32.setText(QtGui.QApplication.translate("WizardPage", "Description:", None, QtGui.QApplication.UnicodeUTF8))
-        self.cancelButton.setText(QtGui.QApplication.translate("WizardPage", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
-        self.nextButton.setText(QtGui.QApplication.translate("WizardPage", "Next", None, QtGui.QApplication.UnicodeUTF8))
 
 import policedbresource_rc
