@@ -1,11 +1,11 @@
-default: policedb.gen.py policedbresource.gen.py
+default: policedb.py policedbresource_rc.py
 
 
 clean:
-	rm *.gen.py
+	rm policedb.py policedbresource_rc.py *.pyc
 
-policedb.gen.py: policedb.ui
-	pyside-uic policedb.ui -o policedb.gen.py
+policedb.py: policedb.ui
+	pyside-uic policedb.ui -o policedb.py
 
-policedbresource.gen.py: policedbresource.qrc
-	pyside-rcc policedbresource.qrc -o policedbresource.gen.py
+policedbresource_rc.py: policedbresource.qrc
+	pyside-rcc policedbresource.qrc -o policedbresource_rc.py
