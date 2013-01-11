@@ -218,6 +218,9 @@ class ControlPoliceDB(QtGui.QMainWindow):
       env= current_env, cwd=exec_path, stdout=subprocess.PIPE)
 
     self.rhsRec.setPixmap(QPixmap(None))
+    self.nameOut.setText("")
+    self.ageOut.setText("")
+    self.descOut.setText("")
 
 
 
