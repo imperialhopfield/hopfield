@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'imageaddpage.ui'
 #
-# Created: Thu Jan 10 14:48:16 2013
-#      by: pyside-uic 0.2.13 running on PySide 1.1.0
+# Created: Fri Jan 11 01:21:16 2013
+#      by: pyside-uic 0.2.13 running on PySide 1.1.2
 #
 # WARNING! All changes made in this file will be lost!
 

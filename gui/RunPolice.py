@@ -1,4 +1,6 @@
 import sys
+import subprocess
+import os
 from os.path import basename
 from PySide import QtCore, QtGui
 from policedb import Ui_PoliceDB
@@ -17,244 +19,277 @@ QSize = QtCore.QSize
 Qt = QtCore.Qt
 
 
+pathKey = 'path'
+nameKey = 'name'
+ageKey  = 'age'
+descKey = 'desc'
+
+
+
 class ControlImageAddPage(QtGui.QWizardPage):
-	def __init__(self, imagePath, parent=None):
-		super(ControlImageAddPage, self).__init__(parent)
-		self.ui = Ui_WizardPage()
-		self.ui.setupUi(self)
-		self.loadImage(imagePath)
+  def __init__(self, imagePath, parent=None):
+    super(ControlImageAddPage, self).__init__(parent)
+    self.ui = Ui_WizardPage()
+    self.ui.setupUi(self)
+    self.loadImage(imagePath)
 
 
-	# Skip using '.ui' all the time!
-	def __getattr__(self, name):
-		return self.ui.__getattribute__(name)
+  # Skip using '.ui' all the time!
+  def __getattr__(self, name):
+    return self.ui.__getattribute__(name)
 
 
-	def loadImage(self, imagePath):
-		self.imagePath = imagePath
-		self.filePath.setText(imagePath)
-		self.imageLabel.setPixmap(QPixmap(imagePath))
+  def loadImage(self, imagePath):
+    self.imagePath = imagePath
+    self.filePath.setText(imagePath)
+    self.imageLabel.setPixmap(QPixmap(imagePath))
 
 
 #  Runs the policeUI gui
 class ControlPoliceDB(QtGui.QMainWindow):
 
-	# Size of icons in image list
-	ICON_SIZE = QSize(200, 200)
+  # Size of icons in image list
+  ICON_SIZE = QSize(200, 200)
 
-	# Max size of 'selected suspect' image
-	FULL_IMAGE_SIZE = QSize(400, 400)
-
-
-	def __init__(self, parent=None):
-		super(ControlPoliceDB, self).__init__(parent)
-		self.ui =  Ui_PoliceDB()
-		self.ui.setupUi(self)
+  # Max size of 'selected suspect' image
+  FULL_IMAGE_SIZE = QSize(400, 400)
 
 
-		self.imageList.setIconSize(ControlPoliceDB.ICON_SIZE)
-
-		# Selection handler
-		self.imageList.selectionChanged = self.gridImageSelected
-
-		# Button handlers
-		self.addNewButton.clicked.connect(self.loadImages)
-		self.saveButton.clicked.connect(self.saveDB)
-		self.loadButton.clicked.connect(self.loadDB)
-
-		# Input image handler
-		self.findButton.clicked.connect(self.findSuspect)
+  def __init__(self, parent=None):
+    super(ControlPoliceDB, self).__init__(parent)
+    self.ui =  Ui_PoliceDB()
+    self.ui.setupUi(self)
 
 
+    self.imageList.setIconSize(ControlPoliceDB.ICON_SIZE)
 
-	# Skip using '.ui' all the time!
-	def __getattr__(self, name):
-		return self.ui.__getattribute__(name)
+    # Selection handler
+    self.imageList.selectionChanged = self.gridImageSelected
 
+    # Button handlers
+    self.addNewButton.clicked.connect(self.loadImages)
+    self.saveButton.clicked.connect(self.saveDB)
+    self.loadButton.clicked.connect(self.loadDB)
 
-	# Load images to be added the photo database grid AND hopfield network
-	def loadImages(self):
-		filenames=openFile(self,
-				nameFilter="Image files (*.jpg *.jpeg *.png *.bmp)",
-				fileMode=QFileDialog.ExistingFiles)
-
-		# if no files selected, abort
-		if not filenames: return
+    # Input image handler
+    self.findButton.clicked.connect(self.findSuspect)
 
 
-		# Image importer wizard
-		wizard = QWizard(self)
-		pageIds = xrange(len(filenames))
-		origAccept = wizard.accept
+
+  # Skip using '.ui' all the time!
+  def __getattr__(self, name):
+    return self.ui.__getattribute__(name)
 
 
-		# Handler function to add images to database
-		def addImages():
-			for i in pageIds:
-				path = filenames[i]
-				name = wizard.field('name-%d'%i)
-				age = wizard.field('age-%d'%i)
-				desc = wizard.field('desc-%d'%i)
+  # Load images to be added the photo database grid AND hopfield network
+  def loadImages(self):
+    filenames=openFile(self,
+        nameFilter="Image files (*.jpg *.jpeg *.png *.bmp)",
+        fileMode=QFileDialog.ExistingFiles)
 
-				# Add images to grid
-				self.addImageToDB(path, name, age, desc)
-
-				# build network
-				self.addPatterns(filenames)
-
-			return origAccept()
-
-		# Set handler functions
-		wizard.accept = addImages
-
-		# Create and add wizard pages
-		for (i, filename) in enumerate(filenames):
-			page = ControlImageAddPage(filename)
-			page.setCommitPage(True)
-			page.setButtonText(QWizard.CommitButton, "Add")
-
-			page.registerField('name-%d*'%i, page.nameInput)
-			page.registerField('age-%d*'%i, page.ageInput)
-			page.registerField("desc-%d"%i, page.descInput, "plainText");
-
-			wizard.addPage(page)
-
-		wizard.show()
+    # if no files selected, abort
+    if not filenames: return
 
 
-	def addPatterns(self, filenames):
-		print "Hello ela!"
+    # Image importer wizard
+    wizard = QWizard(self)
+    pageIds = xrange(len(filenames))
+    origAccept = wizard.accept
 
 
-	# Add image to photo database grid
-	def addImageToDB(self, path, name, age="N/A", desc="None available"):
-		# Create icon and item
-		icon = QIcon(path)
-		item = QListWidgetItem(icon, name)
+    # Handler function to add images to database
+    def addImages():
+      for i in pageIds:
+        path = filenames[i]
+        name = wizard.field('name-%d'%i)
+        age = wizard.field('age-%d'%i)
+        desc = wizard.field('desc-%d'%i)
 
-		# Associated image data
-		data = {'path': path, 'name': name, 'age':age, 'desc':desc}
-		item.setData(Qt.UserRole, data)
+        # Add images to grid
+        self.addImageToDB(path, name, age, desc)
 
-		# Add image to grid
-		self.imageList.addItem(item)
+      return origAccept()
 
+    # Set handler functions
+    wizard.accept = addImages
 
-	# Save DB to file - if none specified, ask user
-	def saveDB(self, filename=None):
-		# Retrieve all image data
-		items = self.imageList.findItems('*', Qt.MatchWildcard)
-		itemsData = [ item.data(Qt.UserRole) for item in items ]
+    # Create and add wizard pages
+    for (i, filename) in enumerate(filenames):
+      page = ControlImageAddPage(filename)
+      page.setCommitPage(True)
+      page.setButtonText(QWizard.CommitButton, "Add")
 
+      page.registerField('name-%d*'%i, page.nameInput)
+      page.registerField('age-%d*'%i, page.ageInput)
+      page.registerField("desc-%d"%i, page.descInput, "plainText");
 
-		# If no file, ask user for file
-		if filename is None:
-			filename = saveFile(self, "Database files (*.db)", 'db')
+      wizard.addPage(page)
 
-		# If user selected nothing, abort
-		if filename is None: return
-
-
-		# Save to file
-		try:
-			with open(filename, 'w') as f:
-				json.dump(itemsData, f)
-				message(title='Success',
-					message='File %s saved successfully!'%basename(filename))
-		except IOError, e:
-			message(title='Save error',
-				icon=QMessageBox.Warning,
-				message="An error has occurred while saving the file.",
-				detail=str(e))
-			return
+    wizard.show()
 
 
-	# Load image to match
-	def findSuspect(self):
-		imagePath=openFile(self,
-				nameFilter="Image files (*.jpg *.jpeg *.png *.bmp)",
-				fileMode=QFileDialog.ExistingFile)
+  # Add image to photo database grid
+  def addImageToDB(self, path, name, age="N/A", desc="None available"):
+    # Create icon and item
+    icon = QIcon(path)
+    item = QListWidgetItem(icon, name)
 
-		# Set image
-		self.inputImage.setPixmap(QPixmap(imagePath))
+    # Associated image data
+    data = {pathKey: path, nameKey: name, ageKey:age, descKey:desc}
+    item.setData(Qt.UserRole, data)
 
-		print "MATCH IMAGE"
-
-
-	# Load DB from file - if none specified, ask user
-	def loadDB(self, filename=None):
-
-		# If no file, ask user for file
-		if filename is None:
-			filename=openFile(self, nameFilter="Database files (*.db)",
-				fileMode=QFileDialog.ExistingFile)
-
-		# If user selected nothing, abort
-		if filename is None: return
+    # Add image to grid
+    self.imageList.addItem(item)
 
 
-		try:
-			with open(filename, 'r') as f:
-				itemsData = json.load(f)
-		except IOError, e:
-			message(title='Load error',
-				icon=QMessageBox.Warning,
-				message="An error has occurred while loading the file.",
-				detail=str(e))
-			return
+  def getItemData(self):
+    items = self.imageList.findItems('*', Qt.MatchWildcard)
+    return [ item.data(Qt.UserRole) for item in items ]
 
 
-		self.clearDB()
-
-		for itemData in itemsData:
-			self.addImageToDB(**itemData)
-
-
-	# Clear DB from memory - remove images from grid and their associated data
-	def clearDB(self):
-		self.imageList.clear()
+  # Save DB to file - if none specified, ask user
+  def saveDB(self, filename=None):
+    # Retrieve all image data
+    itemsData = getItemData()
 
 
-	# Handler for when an image in the grid is selected
-	@QtCore.Slot(QItemSelection, QItemSelection)
-	def gridImageSelected(self, selected, deselected):
-		selectedIndices = selected.indexes()
+    # If no file, ask user for file
+    if filename is None:
+      filename = saveFile(self, "Database files (*.db)", 'db')
 
-		if not selectedIndices:
-			self.imageLabel.setPixmap(None)
+    # If user selected nothing, abort
+    if filename is None: return
 
-			self.nameLabel.setText("")
-			self.ageLabel.setText("")
-			self.descLabel.setText("")
 
-		else:
-			selectedItem = selectedIndices[0]
-			icon = selectedItem.data(Qt.DecorationRole)
+    # Save to file
+    try:
+      with open(filename, 'w') as f:
+        json.dump(itemsData, f)
+        message(title='Success',
+          message='File %s saved successfully!'%basename(filename))
+    except IOError, e:
+      message(title='Save error',
+        icon=QMessageBox.Warning,
+        message="An error has occurred while saving the file.",
+        detail=str(e))
+      return
 
-			# Retrieve criminal data
-			criminalData = selectedItem.data(Qt.UserRole)
 
-			# Set image icon
-			pixmap = icon.pixmap(ControlPoliceDB.FULL_IMAGE_SIZE)
-			self.imageLabel.setPixmap(pixmap)
+  # Load image to match
+  def findSuspect(self):
+    imagePath=openFile(self,
+        nameFilter="Image files (*.jpg *.jpeg *.png *.bmp)",
+        fileMode=QFileDialog.ExistingFile)
 
-			# Set labels
-			self.nameLabel.setText(criminalData['name'])
-			self.ageLabel.setText(criminalData['age'])
-			self.descLabel.setText(criminalData['desc'])
+    # Set image
+    self.inputImage.setPixmap(QPixmap(imagePath))
+
+    self.matchImage(imagePath)
+
+
+  def getAllStoredPaths(self):
+    data = self.getItemData()
+    return [d[pathKey] for d in data]
+
+
+  def matchImage(self, imagePath):
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    dist_path = "/../dist/build/recognize/"
+    gui_path = "../../../gui/"
+    exec_path = current_path + dist_path
+    # this is dangerous. paths are relative to this gui thing
+    storedImagesPaths = self.getAllStoredPaths()
+    storedImagesPaths = [gui_path + p for p in storedImagesPaths]
+    current_env = os.environ.copy()
+    current_env["PATH"] += ":" + current_path
+    current_env["PATH"] += ":" + exec_path
+    proc = subprocess.Popen(
+      ["recognize", "run", "hopfield",  "20", "20", imagePath] + storedImagesPaths,
+      env= current_env, cwd=exec_path, stdout=subprocess.PIPE)
+    possible_path = proc.stdout.read()
+    if possible_path.startswith(gui_path):
+      print "in if"
+      possible_path = possible_path[len(gui_path):].strip()
+      print possible_path
+      self.rhsRec.setPixmap(QPixmap(possible_path))
+    else:
+      print "not found"
+
+
+  # Load DB from file - if none specified, ask user
+  def loadDB(self, filename=None):
+
+    # If no file, ask user for file
+    if filename is None:
+      filename=openFile(self, nameFilter="Database files (*.db)",
+        fileMode=QFileDialog.ExistingFile)
+
+    # If user selected nothing, abort
+    if filename is None: return
+
+
+    try:
+      with open(filename, 'r') as f:
+        itemsData = json.load(f)
+    except IOError, e:
+      message(title='Load error',
+        icon=QMessageBox.Warning,
+        message="An error has occurred while loading the file.",
+        detail=str(e))
+      return
+
+
+    self.clearDB()
+
+    for itemData in itemsData:
+      self.addImageToDB(**itemData)
+
+
+  # Clear DB from memory - remove images from grid and their associated data
+  def clearDB(self):
+    self.imageList.clear()
+
+
+  # Handler for when an image in the grid is selected
+  @QtCore.Slot(QItemSelection, QItemSelection)
+  def gridImageSelected(self, selected, deselected):
+    selectedIndices = selected.indexes()
+
+    if not selectedIndices:
+      self.imageLabel.setPixmap(None)
+
+      self.nameLabel.setText("")
+      self.ageLabel.setText("")
+      self.descLabel.setText("")
+
+    else:
+      selectedItem = selectedIndices[0]
+      icon = selectedItem.data(Qt.DecorationRole)
+
+      # Retrieve criminal data
+      criminalData = selectedItem.data(Qt.UserRole)
+
+      # Set image icon
+      pixmap = icon.pixmap(ControlPoliceDB.FULL_IMAGE_SIZE)
+      self.imageLabel.setPixmap(pixmap)
+
+      # Set labels
+      self.nameLabel.setText(criminalData['name'])
+      self.ageLabel.setText(criminalData['age'])
+      self.descLabel.setText(criminalData['desc'])
 
 
 # Sample function - probably to be removed later
 def loadImages(app):
-	for (path, name, age, desc) in [("celeb.jpg", "Charlie Seen", '37', "Shady character"), ("mugchar.jpg", "Charlie Dude", "27", ' '.join('men'*200))]:
-		app.addImageToDB(path, name, age, desc)
+  for (path, name, age, desc) in [("celeb.jpg", "Charlie Seen", '37', "Shady character"), ("mugchar.jpg", "Charlie Dude", "27", ' '.join('men'*200))]:
+    app.addImageToDB(path, name, age, desc)
 
 
 # Create message box with the specified message
 def message(message, title, detail="", icon=QMessageBox.Information):
-	msgBox = QMessageBox(icon, title, message)
-	msgBox.setInformativeText(detail)
-	msgBox.exec_()
+  msgBox = QMessageBox(icon, title, message)
+  msgBox.setInformativeText(detail)
+  msgBox.exec_()
 
 
 # nameFilter is a string in the form:
@@ -263,22 +298,22 @@ def message(message, title, detail="", icon=QMessageBox.Information):
 # 1) QFileDialog.ExistingFile
 # 2) QFileDialog.ExistingFiles
 def openFile(parent, nameFilter, fileMode=QFileDialog.ExistingFile):
-	dialog = QFileDialog(parent)
-	dialog.setFileMode(fileMode)
-	dialog.setNameFilter(nameFilter)
+  dialog = QFileDialog(parent)
+  dialog.setFileMode(fileMode)
+  dialog.setNameFilter(nameFilter)
 
-	# Return None if no files selected
-	if not dialog.exec_(): return None
-	fileNames = dialog.selectedFiles()
+  # Return None if no files selected
+  if not dialog.exec_(): return None
+  fileNames = dialog.selectedFiles()
 
-	if not fileNames:
-		return None
-	elif fileMode == QFileDialog.ExistingFile:
-		return fileNames[0]
-	elif fileMode == QFileDialog.ExistingFiles:
-		return fileNames
-	else:
-		return None
+  if not fileNames:
+    return None
+  elif fileMode == QFileDialog.ExistingFile:
+    return fileNames[0]
+  elif fileMode == QFileDialog.ExistingFiles:
+    return fileNames
+  else:
+    return None
 
 
 # nameFilter is a string in the form:
@@ -286,23 +321,23 @@ def openFile(parent, nameFilter, fileMode=QFileDialog.ExistingFile):
 # defaultExt is in the form:
 # 'cpp'  (i.e. without the 'dot'!)
 def saveFile(parent, nameFilter, defaultExt):
-	dialog = QFileDialog(parent)
-	dialog.setAcceptMode(QFileDialog.AcceptSave)
-	dialog.setFileMode(QFileDialog.AnyFile)
-	dialog.setNameFilter(nameFilter)
-	dialog.setConfirmOverwrite(True)
-	dialog.setDefaultSuffix(defaultExt)
+  dialog = QFileDialog(parent)
+  dialog.setAcceptMode(QFileDialog.AcceptSave)
+  dialog.setFileMode(QFileDialog.AnyFile)
+  dialog.setNameFilter(nameFilter)
+  dialog.setConfirmOverwrite(True)
+  dialog.setDefaultSuffix(defaultExt)
 
-	if not dialog.exec_(): return
-	fileNames = dialog.selectedFiles()
+  if not dialog.exec_(): return
+  fileNames = dialog.selectedFiles()
 
-	return fileNames[0] if fileNames else None
+  return fileNames[0] if fileNames else None
 
 
 
 if __name__ == "__main__":
-	app = QtGui.QApplication(sys.argv)
-	mySW = ControlPoliceDB()
-	mySW.loadDB('suspects.db')
-	mySW.show()
-	sys.exit(app.exec_())
+  app = QtGui.QApplication(sys.argv)
+  mySW = ControlPoliceDB()
+  mySW.loadDB('suspects.db')
+  mySW.show()
+  sys.exit(app.exec_())

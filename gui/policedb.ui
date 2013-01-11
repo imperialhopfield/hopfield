@@ -147,7 +147,7 @@
             <item>
              <widget class="QListWidget" name="imageList">
               <property name="dragDropMode">
-               <enum>QAbstractItemView::NoDragDrop</enum>
+               <enum>QAbstractItemView::DragDrop</enum>
               </property>
               <property name="movement">
                <enum>QListView::Free</enum>
@@ -435,7 +435,7 @@ p, li { white-space: pre-wrap; }
             <property name="title">
              <string>Best matching image</string>
             </property>
-            <widget class="QLabel" name="label_6">
+            <widget class="QLabel" name="rhsRec">
              <property name="geometry">
               <rect>
                <x>10</x>

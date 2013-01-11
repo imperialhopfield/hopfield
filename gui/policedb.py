@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'policedb.ui'
 #
-# Created: Thu Jan 10 16:15:52 2013
-#      by: pyside-uic 0.2.13 running on PySide 1.1.0
+# Created: Fri Jan 11 01:21:35 2013
+#      by: pyside-uic 0.2.13 running on PySide 1.1.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -76,7 +76,7 @@ class Ui_PoliceDB(object):
         self.horizontalLayout.addWidget(self.loadButton)
         self.lhs.addLayout(self.horizontalLayout)
         self.imageList = QtGui.QListWidget(self.suspect_database_tab)
-        self.imageList.setDragDropMode(QtGui.QAbstractItemView.NoDragDrop)
+        self.imageList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
         self.imageList.setMovement(QtGui.QListView.Free)
         self.imageList.setResizeMode(QtGui.QListView.Adjust)
         self.imageList.setLayoutMode(QtGui.QListView.Batched)
@@ -203,12 +203,12 @@ class Ui_PoliceDB(object):
         self.horizontalLayout_5.addWidget(self.groupBox_4)
         self.groupBox_5 = QtGui.QGroupBox(self.suspect_matching_tab)
         self.groupBox_5.setObjectName("groupBox_5")
-        self.label_6 = QtGui.QLabel(self.groupBox_5)
-        self.label_6.setGeometry(QtCore.QRect(10, 20, 301, 301))
-        self.label_6.setText("")
-        self.label_6.setPixmap(QtGui.QPixmap(":/new/prefix1/celeb.jpg"))
-        self.label_6.setScaledContents(True)
-        self.label_6.setObjectName("label_6")
+        self.rhsRec = QtGui.QLabel(self.groupBox_5)
+        self.rhsRec.setGeometry(QtCore.QRect(10, 20, 301, 301))
+        self.rhsRec.setText("")
+        self.rhsRec.setPixmap(QtGui.QPixmap(":/new/prefix1/celeb.jpg"))
+        self.rhsRec.setScaledContents(True)
+        self.rhsRec.setObjectName("rhsRec")
         self.horizontalLayout_5.addWidget(self.groupBox_5)
         self.verticalLayout_5.addLayout(self.horizontalLayout_5)
         self.horizontalLayout_6 = QtGui.QHBoxLayout()
