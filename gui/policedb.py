@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'policedb.ui'
 #
-# Created: Fri Jan 11 10:23:08 2013
+# Created: Fri Jan 11 11:13:15 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -279,7 +279,7 @@ class Ui_PoliceDB(object):
         PoliceDB.setStatusBar(self.statusBar)
 
         self.retranslateUi(PoliceDB)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(PoliceDB)
 
     def retranslateUi(self, PoliceDB):
