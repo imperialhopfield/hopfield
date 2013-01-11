@@ -6,6 +6,7 @@ from PySide import QtCore, QtGui
 from policedb import Ui_PoliceDB
 from imageaddpage import Ui_WizardPage
 import json
+import thread
 
 QIcon = QtGui.QIcon
 QListWidgetItem = QtGui.QListWidgetItem
@@ -16,6 +17,8 @@ QFileDialog = QtGui.QFileDialog
 QPixmap = QtGui.QPixmap
 QWizard = QtGui.QWizard
 QSize = QtCore.QSize
+QThread = QtCore.QThread
+Signal = QtCore.Signal
 Qt = QtCore.Qt
 
 
@@ -73,6 +76,7 @@ class ControlPoliceDB(QtGui.QMainWindow):
 
     # Input image handler
     self.findButton.clicked.connect(self.findSuspect)
+
 
 
 
@@ -181,10 +185,16 @@ class ControlPoliceDB(QtGui.QMainWindow):
         nameFilter="Image files (*.jpg *.jpeg *.png *.bmp)",
         fileMode=QFileDialog.ExistingFile)
 
+    originalText = self.findButton.text()
+
+    self.findButton.setText("Please wait...")
+    self.findButton.setEnabled(False)
+
     # Set image
     self.inputImage.setPixmap(QPixmap(imagePath))
 
     self.matchImage(imagePath)
+
 
 
   def getAllStoredPaths(self):
@@ -197,7 +207,7 @@ class ControlPoliceDB(QtGui.QMainWindow):
     dist_path = "/../dist/build/recognize/"
     gui_path = "../../../gui/"
     exec_path = current_path + dist_path
-    # this is dangerous. paths are relative to this gui thing
+    # this is dangerous. paths are re*lative to this gui thing
     storedImagesPaths = self.getAllStoredPaths()
     storedImagesPaths = [gui_path + p for p in storedImagesPaths]
     current_env = os.environ.copy()
@@ -206,21 +216,44 @@ class ControlPoliceDB(QtGui.QMainWindow):
     proc = subprocess.Popen(
       ["recognize", "run", "hopfield",  "15", "15", imagePath] + storedImagesPaths,
       env= current_env, cwd=exec_path, stdout=subprocess.PIPE)
-    possible_path = proc.stdout.read()
+
     self.rhsRec.setPixmap(QPixmap(None))
-    self.rhsRec.setPixmap(QPixmap(None))
-    if possible_path.startswith(gui_path):
-      actual_path = possible_path[len(gui_path):].strip()
-      self.rhsRec.setPixmap(QPixmap(actual_path))
-      for d in self.getItemData():
-        if d[pathKey] == actual_path:
-          description = d[descKey]
-          age = d[ageKey]
-          name = d[nameKey]
-          # stringinfo =
-          QtGui.QMessageBox.information(self,"Suspect found",description, QtGui.QMessageBox.Ok)
-    else:
-          QtGui.QMessageBox.information(self,"Suspect not found","the person you are trying to find is not in the database", QtGui.QMessageBox.Ok)
+
+
+
+    def update(possible_path):
+      name = ""
+      age = ""
+      description = ""
+      if possible_path.startswith(gui_path):
+        actual_path = possible_path[len(gui_path):].strip()
+        self.rhsRec.setPixmap(QPixmap(actual_path))
+        for d in self.getItemData():
+          if d[pathKey] == actual_path:
+            name = d[nameKey]
+            age = d[ageKey]
+            description = d[descKey]
+      else:
+            QtGui.QMessageBox.information(self,"Suspect not found","The person you are trying to find is not in the database", QtGui.QMessageBox.Ok)
+
+      self.nameOut.setText(name)
+      self.ageOut.setText(age)
+      self.descOut.setText(description)
+
+      self.findButton.setText("Find suspect")
+      self.findButton.setEnabled(True)
+
+    class Future(QThread):
+      dataReady = Signal(object)
+
+      def run(self):
+        possible_path = proc.stdout.read()
+        self.dataReady.emit(possible_path)
+
+
+    self.finderThread = Future()
+    self.finderThread.dataReady.connect(update, Qt.QueuedConnection)
+    self.finderThread.start()
 
 
 
