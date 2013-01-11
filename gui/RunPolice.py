@@ -204,14 +204,18 @@ class ControlPoliceDB(QtGui.QMainWindow):
     current_env["PATH"] += ":" + current_path
     current_env["PATH"] += ":" + exec_path
     proc = subprocess.Popen(
-      ["recognize", "run", "hopfield",  "20", "20", imagePath] + storedImagesPaths,
+      ["recognize", "run", "hopfield",  "15", "15", imagePath] + storedImagesPaths,
       env= current_env, cwd=exec_path, stdout=subprocess.PIPE)
     possible_path = proc.stdout.read()
     if possible_path.startswith(gui_path):
-      print "in if"
-      possible_path = possible_path[len(gui_path):].strip()
-      print possible_path
-      self.rhsRec.setPixmap(QPixmap(possible_path))
+      actual_path = possible_path[len(gui_path):].strip()
+      self.rhsRec.setPixmap(QPixmap(actual_path))
+      for d in self.getItemData():
+        if d[pathKey] == actual_path:
+          description = d[descKey]
+          age = d[ageKey]
+          name = d[nameKey]
+          QtGui.QMessageBox.question(self,"Suspect found",QtGui.QMessageBox.Ok)
     else:
       print "not found"
 
