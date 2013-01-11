@@ -32,7 +32,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -197,7 +197,7 @@
                  <item>
                   <widget class="QLabel" name="nameLabel">
                    <property name="text">
-                    <string>Lukas S.</string>
+                    <string/>
                    </property>
                    <property name="textInteractionFlags">
                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -224,7 +224,7 @@
                  <item>
                   <widget class="QLabel" name="ageLabel">
                    <property name="text">
-                    <string>21</string>
+                    <string/>
                    </property>
                    <property name="textInteractionFlags">
                     <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -295,7 +295,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Helvetica LT Std Light'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:14px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial,Helvetica,sans'; font-size:11px; color:#000000;&quot;&gt;Slim shady&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:14px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                    <property name="textInteractionFlags">
                     <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -322,9 +322,6 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string/>
-               </property>
-               <property name="pixmap">
-                <pixmap resource="policedbresource.qrc">:/new/prefix1/lucasss.png</pixmap>
                </property>
                <property name="scaledContents">
                 <bool>true</bool>
@@ -421,9 +418,6 @@ p, li { white-space: pre-wrap; }
              <property name="text">
               <string/>
              </property>
-             <property name="pixmap">
-              <pixmap resource="policedbresource.qrc">:/new/prefix1/mugchar.jpg</pixmap>
-             </property>
              <property name="scaledContents">
               <bool>true</bool>
              </property>
@@ -447,99 +441,12 @@ p, li { white-space: pre-wrap; }
              <property name="text">
               <string/>
              </property>
-             <property name="pixmap">
-              <pixmap resource="policedbresource.qrc">:/new/prefix1/celeb.jpg</pixmap>
-             </property>
              <property name="scaledContents">
               <bool>true</bool>
              </property>
             </widget>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <property name="sizeConstraint">
-           <enum>QLayout::SetMaximumSize</enum>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_12">
-            <property name="maximumSize">
-             <size>
-              <width>125</width>
-              <height>150</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="policedbresource.qrc">:/new/prefix1/sheen-images/000000.bmp</pixmap>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_13">
-            <property name="maximumSize">
-             <size>
-              <width>125</width>
-              <height>150</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="policedbresource.qrc">:/new/prefix1/sheen-images/000060.bmp</pixmap>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_14">
-            <property name="maximumSize">
-             <size>
-              <width>125</width>
-              <height>150</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="policedbresource.qrc">:/new/prefix1/sheen-images/000160.bmp</pixmap>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_15">
-            <property name="maximumSize">
-             <size>
-              <width>125</width>
-              <height>150</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="pixmap">
-             <pixmap resource="policedbresource.qrc">:/new/prefix1/sheen-images/000225.bmp</pixmap>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
+            <zorder>rhsRec</zorder>
+            <zorder>groupBox_4</zorder>
            </widget>
           </item>
          </layout>
@@ -558,362 +465,6 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
        </layout>
-      </widget>
-      <widget class="QWidget" name="hopfiel_playground_tab">
-       <attribute name="title">
-        <string>Understanding Hopfield</string>
-       </attribute>
-       <widget class="QLabel" name="label_8">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>0</y>
-          <width>771</width>
-          <height>81</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Helvetica LT Std Light</family>
-          <pointsize>48</pointsize>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Understanding Hopfield</string>
-        </property>
-       </widget>
-       <widget class="Line" name="line_3">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>80</y>
-          <width>521</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="acceptDrops">
-         <bool>false</bool>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <property name="lineWidth">
-         <number>1</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-       <widget class="QGroupBox" name="groupBox_6">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>100</y>
-          <width>791</width>
-          <height>131</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Trained Patterns</string>
-        </property>
-        <widget class="QLabel" name="label_18">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>20</y>
-           <width>101</width>
-           <height>101</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/smiley1.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_19">
-         <property name="geometry">
-          <rect>
-           <x>280</x>
-           <y>20</y>
-           <width>101</width>
-           <height>101</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/eleven.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_20">
-         <property name="geometry">
-          <rect>
-           <x>150</x>
-           <y>20</y>
-           <width>101</width>
-           <height>101</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/plus.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_21">
-         <property name="geometry">
-          <rect>
-           <x>410</x>
-           <y>20</y>
-           <width>101</width>
-           <height>101</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/house.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_22">
-         <property name="geometry">
-          <rect>
-           <x>540</x>
-           <y>20</y>
-           <width>101</width>
-           <height>101</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/circle.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_23">
-         <property name="geometry">
-          <rect>
-           <x>670</x>
-           <y>20</y>
-           <width>101</width>
-           <height>101</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-images/highres/squarecross.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QGroupBox" name="groupBox_7">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>240</y>
-          <width>321</width>
-          <height>311</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Draw Here!</string>
-        </property>
-        <widget class="QLabel" name="label_9">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>20</y>
-           <width>291</width>
-           <height>281</height>
-          </rect>
-         </property>
-         <property name="cursor">
-          <cursorShape>ArrowCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/drawn-circle.jpg</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QGroupBox" name="groupBox_8">
-        <property name="geometry">
-         <rect>
-          <x>340</x>
-          <y>240</y>
-          <width>461</width>
-          <height>311</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Convergance Chain</string>
-        </property>
-        <widget class="QLabel" name="label_24">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>30</y>
-           <width>61</width>
-           <height>61</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000001.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_25">
-         <property name="geometry">
-          <rect>
-           <x>90</x>
-           <y>30</y>
-           <width>61</width>
-           <height>61</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000004.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_26">
-         <property name="geometry">
-          <rect>
-           <x>160</x>
-           <y>30</y>
-           <width>61</width>
-           <height>61</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000006.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_27">
-         <property name="geometry">
-          <rect>
-           <x>230</x>
-           <y>30</y>
-           <width>61</width>
-           <height>61</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000008.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_28">
-         <property name="geometry">
-          <rect>
-           <x>300</x>
-           <y>30</y>
-           <width>61</width>
-           <height>61</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000009.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_29">
-         <property name="geometry">
-          <rect>
-           <x>370</x>
-           <y>30</y>
-           <width>61</width>
-           <height>61</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/8x8-convergence/highres/000010.bmp.bmp</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_30">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>90</y>
-           <width>411</width>
-           <height>221</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;How it works&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The Hopfiled network used to converge this pattern is trained based on the&lt;br/&gt;&lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Hebbian rule&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;, which says that neurons that &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;fire together, wire together&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;In the context of images, neurons are black/white pixels.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Based on this rule, a fully connected neural network is &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;trained&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; from&lt;br/&gt;the patterns to learn.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;When run against a pattern, random pixels are updated to the sign of&lt;br/&gt;their &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;weighted neighbours&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; until it &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;converges&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;.&lt;br/&gt;With high probability the converged pattern will be one of the trained ones.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </widget>
       </widget>
      </widget>
     </item>

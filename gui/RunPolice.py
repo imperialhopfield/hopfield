@@ -207,6 +207,8 @@ class ControlPoliceDB(QtGui.QMainWindow):
       ["recognize", "run", "hopfield",  "15", "15", imagePath] + storedImagesPaths,
       env= current_env, cwd=exec_path, stdout=subprocess.PIPE)
     possible_path = proc.stdout.read()
+    self.rhsRec.setPixmap(QPixmap(None))
+    self.rhsRec.setPixmap(QPixmap(None))
     if possible_path.startswith(gui_path):
       actual_path = possible_path[len(gui_path):].strip()
       self.rhsRec.setPixmap(QPixmap(actual_path))
@@ -215,9 +217,11 @@ class ControlPoliceDB(QtGui.QMainWindow):
           description = d[descKey]
           age = d[ageKey]
           name = d[nameKey]
-          QtGui.QMessageBox.question(self,"Suspect found",QtGui.QMessageBox.Ok)
+          # stringinfo =
+          QtGui.QMessageBox.information(self,"Suspect found",description, QtGui.QMessageBox.Ok)
     else:
-      print "not found"
+          QtGui.QMessageBox.information(self,"Suspect not found","the person you are trying to find is not in the database", QtGui.QMessageBox.Ok)
+
 
 
   # Load DB from file - if none specified, ask user
