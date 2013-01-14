@@ -59,6 +59,8 @@ getDimension Visible ws = V.length $ ws ! 0
 getDimension Classification ws = V.length $ ws ! 0
 
 
+-- | @buildCBoltzmannData patterns@ trains a boltzmann network with @patterns@.
+-- The number of hidden neurons is set to the number of visible neurons.
 buildCBoltzmannData ::  MonadRandom m => [Pattern] ->  m BoltzmannData
 buildCBoltzmannData []   = error "Train patterns are empty"
 buildCBoltzmannData pats =
@@ -66,7 +68,7 @@ buildCBoltzmannData pats =
     where nr_visible = V.length (head pats)
 
 
--- | @buildBoltzmannData' patterns nrHidden@: Takes a list of patterns and
+-- | @buildCBoltzmannData' patterns nrHidden@: Takes a list of patterns and
 -- builds a Boltzmann network (by training) in which these patterns are
 -- stable states. The result of this function can be used to run a pattern
 -- against the network, by using 'matchPatternBoltzmann'.

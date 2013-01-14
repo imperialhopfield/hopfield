@@ -21,6 +21,8 @@ import Hopfield.Util
 
 -- TODO niklas make --fixseed command line option for deterministic results
 
+-- Function used to transform binary bits (0 or 1) from images to values
+-- stored in the network we are using
 transformFunction :: Method -> (Int -> Int)
 transformFunction Hopfield  = (\x -> 2 * x - 1)
 transformFunction _ = id
@@ -42,6 +44,11 @@ patternToBwImage :: Pattern -> Int -> Int -> Image Pixel8
 patternToBwImage pattern width height = generateImage (genPixelBW pattern width) width height
 
 
+-- | @recPic method (width, height) imgPaths queryImgPath@ recognises a
+-- an image given by @queryImgPath@ by using a network of type @method@ which
+-- has been trained using @imgPaths@.
+-- The images are rescaled accorging to @width@ and @heigth@ before training
+-- the network.
 recPic :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO (Either (Image Pixel8) FilePath)
 recPic method (width, height) imgPaths queryImgPath = do
   l@(_queryImg:_imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
@@ -59,7 +66,9 @@ recPic method (width, height) imgPaths queryImgPath = do
              Left pattern -> Left $ patternToBwImage pattern width height
              Right i      -> Right $ imgPaths !! i
 
-
+-- @saveChain method (width, height) imgPaths queryImgPath@ uses @method@ to train
+-- the netwwork using @imgPaths@. Writes to disk all the intermediate images
+-- which were produced in the process of mathching @queryImgPath@.
 saveChain :: Method -> (Int, Int) -> [FilePath] -> FilePath -> IO ()
 saveChain method (width, height) imgPaths queryImgPath = do
   l@(_queryImg:_imgs) <- forM (queryImgPath:imgPaths) (\path -> loadPicture path width height)
@@ -70,7 +79,7 @@ saveChain method (width, height) imgPaths queryImgPath = do
                    mapM_ (putStrLn . patternToAsciiArt width) chain
                    cleanupDir
                    mapM_ save $ zip [(0::Int)..] chain
-    m        -> error $ "saving convergence chains for method " ++ show m ++ " not yet implemented"
+    m        -> error $ "Method" ++ show m ++ "does not use a chain of images for recognition"
 
   where
     save (number, pattern) = do let filename = printf "converged-images/%.6d.bmp" number

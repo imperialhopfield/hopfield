@@ -59,6 +59,8 @@ notMode Visible = Hidden
 notMode Hidden  = Visible
 
 
+-- | @buildBoltzmannData patterns@ trains a boltzmann network with @patterns@.
+-- The number of hidden neurons is set to the number of visible neurons.
 buildBoltzmannData ::  MonadRandom  m => [Pattern] ->  m BoltzmannData
 buildBoltzmannData []   = error "Train patterns are empty"
 buildBoltzmannData pats =
@@ -89,7 +91,7 @@ updateNeuron' ::  Double -> Phase -> Mode -> Weights -> Pattern -> Int -> Int
 updateNeuron' r phase mode ws pat index = if (r < a) then 1 else 0
   where a = getActivationProbability phase mode ws pat index
 
-
+--
 getActivationProbability :: Phase -> Mode -> Weights -> Pattern -> Int -> Double
 getActivationProbability phase mode ws pat index = if a <=1 && a >=0 then a else error (show a)
   where
@@ -191,6 +193,7 @@ validWeights ws
   | otherwise = Nothing
 
 
+-- | Updates a pattern using the Boltzmann machine
 updateBoltzmann :: MonadRandom m => Weights -> Pattern -> m Pattern
 updateBoltzmann ws pat = do
   h <- getCounterPattern Matching Visible ws pat
@@ -212,10 +215,11 @@ getFreeEnergy ws pat
           f x = log (1 + exp x)
           p = V.length pat
 
--- TODO Mihaela. See if we need to do repeated or just simple update
+
+-- | Matches a pattern against the a given network
 matchPatternBoltzmann :: MonadRandom m => BoltzmannData -> Pattern -> m Int
 matchPatternBoltzmann (BoltzmannData ws pats _ pats_with_binary) pat = do
-  hot_pat <- repeatUntilEqualOrLimitExceeded 1000 (updateBoltzmann ws) ((V.++) pat (V.fromList $ snd $ head pats_with_binary))
+  hot_pat <- updateBoltzmann ws ((V.++) pat (V.fromList $ snd $ head pats_with_binary)
   let h = V.take (V.length $ head pats) hot_pat
       extendWithClass p = ((V.++) h (V.fromList . fromJust $ lookup p pats_with_binary) )
       getPatternProbability x = exp $ (- getFreeEnergy ws x)
