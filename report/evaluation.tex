@@ -16,7 +16,6 @@
 \section{Implementation}
 % In here, we can evaluate our implementation ... Talk about why Haskell was slow for computing the experiments, how we overcame this, ...
 
-\hilight{we need to add some sub-sections here, or bullet points ... this wall of text would only appeal to Chatley}
 %why Haskell?
 In a nutshell, we are content with the choice of our tools and with our implementation of the neural network. Since our mathematical core of the algorithm does not contain much state information, we chose to implement our project in Haskell.
 The strong types allowed us to have confidence in the code we write. Since most of our experiments took a lot of computation time, we had to make sure they run seamlessly and don't crash in the middle of the execution because of a pattern match failure.

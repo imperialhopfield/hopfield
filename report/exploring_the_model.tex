@@ -146,7 +146,7 @@ When p is between 0 and a critical value of 0.35, the basin size is 0, since the
 
 \subsubsection{Further explanation of the results}
 
-The results can also be easily understood and visualised in figure \ref{fig:basins}. For small p values, the attractors formed in the network are too close to each other to allow room for any basins of attraction (apart from the attractors lying at the edge of the cluster). When the p-value is high, the attractors become more disperse, leaving room for larger basins. It is also worth mentioning that the basin shapes are not necessarily hyper-spherical.  
+The results can also be easily understood and visualised in figure \ref{fig:basins}. For small p values, the attractors formed in the network are too close to each other to allow room for any basins of attraction (apart from the attractors lying at the edge of the cluster). When the p-value is high, the attractors become more disperse, leaving room for larger basins. It is also worth mentioning that the basin shapes are not necessarily hyper-spherical.
 
 
 \begin{figure}[h]
@@ -185,13 +185,13 @@ We will be interested to observe how can the probability p influences the basin 
 \label{fig:plot-T1-twocluster}
 \end{figure}
 
-This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other. 
+This latter experiment seems to suggest that the probability $p$ of flipping bits in the pattern doesn't actually inflence the basin sizes of attractors in Cluster 1. The same behaviour has been observed in the previous graph, and this is the case especially when the root images, that are randomly generated, are far away from each other.
 
 
 
 
 \subsubsection{Link to attachment theory}
-A network having been trained with two clusters of patterns can be interpreted, in attachment theory, with an infant that has been exposed to two different caregivers. The patterns can be for example, visual or auditory memories describing the 2 caregivers. 
+A network having been trained with two clusters of patterns can be interpreted, in attachment theory, with an infant that has been exposed to two different caregivers. The patterns can be for example, visual or auditory memories describing the 2 caregivers.
 
 
 
@@ -251,11 +251,11 @@ In the context of modelling Attachment theory, a super attractor may represent r
 
 \item Choose a number of random patterns \prandom, such that the Hamming distance between \psuper and each of \prandom is between 25\% and 75\%.
 
-The range forms a ball centred at 50\% Hamming distance\footnote{The percentage Hamming distance is simply the Hamming distance divided by the number of bits N} with an arbitrary radius, chosen such that the probability of a \prandom falling into \psuper's basin of attraction is small. This is done to avoid forming clusters of attractors, which we deal with separately in \hilight{a later section. TODO insert cross reference to section!!!!!} Recall that the Hopfield network is sign blind, and as a result the inverse of \psuper, $p_{super}^{-1}$, forms a symmetric super attractor. It is for this reason that a symmetric range about 50\% is chosen.
+The range forms a ball centred at 50\% Hamming distance\footnote{The percentage Hamming distance is simply the Hamming distance divided by the number of bits N} with an arbitrary radius, chosen such that the probability of a \prandom falling into \psuper's basin of attraction is small. This is done to avoid forming clusters of attractors, which we deal with separately in Recall that the Hopfield network is sign blind, and as a result the inverse of \psuper, $p_{super}^{-1}$, forms a symmetric super attractor. It is for this reason that a symmetric range about 50\% is chosen.
 
 \item Choose a degree $d$ for \psuper and train a Hopfield network using $\overrightarrow{p}^d_{super}$ ($d$ instances of \psuper) and \prandom.
 
-\item Measure the basin of attraction of \psuper using the Storkey-Valabregue method. \hilight{CROSS REFERENCE THIS}
+\item Measure the basin of attraction of \psuper using the Storkey-Valabregue method.
 
 \item Repeat from (\ref{itm:choose pattern}) for various values of degree $d$.
 
@@ -264,7 +264,7 @@ The range forms a ball centred at 50\% Hamming distance\footnote{The percentage 
 
 In our experiment 100 neurons are used, and the network is trained with 16 random patterns in addition to the super attractor. It is run with degree values {[}1, 2, 4, 8, 16, 32{]}. The entire procedure is repeated 800 times for various randomly chosen \psuper and \prandom. The average results obtained are summarised in ~\ref{fig:one super plot}.
 
-This experiment can be replicated by running \texttt{Experiment.hs}. \hilight{VERIFY}
+This experiment can be replicated by running \texttt{Experiment.hs}.
 
 \begin{figure}[h]
   \centering
@@ -298,7 +298,7 @@ Linking back to the Attachment theory model, this may be interpreted as depictin
 
 \item \label{itm:choose two super} Choose a random pattern \poriginsuper, which signifies the primary care giver.
 
-\item Choose a random pattern \pnewsuper, such that the Hamming distance between \poriginsuper and each of \pnewsuper is between 25\% and 75\%. This could symbolize the training due to either an alternate and influential care giver, or that resulting from a retraining period. \hilight{CROSS REF TO RETRAINING IN ATTACHMENT THEORY}
+\item Choose a random pattern \pnewsuper, such that the Hamming distance between \poriginsuper and each of \pnewsuper is between 25\% and 75\%. This could symbolize the training due to either an alternate and influential care giver, or that resulting from a retraining period.
 
 
 \item Choose a number of random patterns \prandom, such that the Hamming distance between \poriginsuper and each of \prandom is between 25\% and 75\%.
@@ -308,15 +308,15 @@ Note that while this allows for the possibility of forming a cluster in the vici
 
 \item Choose a degree \dnew for \pnewsuper and train a Hopfield network using \prandom, \dorigin instances of \poriginsuper, and \dnew instances of \pnewsuper
 
-\item Measure the basins of attraction for each of \poriginsuper and \pnewsuper using the Storkey-Valabregue method. \hilight{CROSS REFERENCE THIS}
+\item Measure the basins of attraction for each of \poriginsuper and \pnewsuper using the Storkey-Valabregue method.
 
 \item Repeat from (\ref{itm:choose two super}) for different value of degree \dnew.
 
 \end{enumerate}
 
-In our experiment 100 neurons are used, and the network was trained with 8 random patterns in addition to the original and new super attractors, \poriginsuper and \pnewsuper, respectively. \poriginsuper is given a fixed degree, \dorigin, of 8. This value was chosen as being the smallest point of stability from the previous experiment ~\ref{fig:one super plot}, beyond which increasing the degree further does not greatly impact the basin of attraction. It is run with \dnew degree values {[}1, 2, 4, 8, 16, 32{]}. The entire procedure is repeated 634 \hilight{CHECK NEW RESULTS} times for various randomly chosen \poriginsuper, \pnewsuper and \prandom. The average results obtained are summarised in ~\ref{fig:two super plot}.
+In our experiment 100 neurons are used, and the network was trained with 8 random patterns in addition to the original and new super attractors, \poriginsuper and \pnewsuper, respectively. \poriginsuper is given a fixed degree, \dorigin, of 8. This value was chosen as being the smallest point of stability from the previous experiment ~\ref{fig:one super plot}, beyond which increasing the degree further does not greatly impact the basin of attraction. It is run with \dnew degree values {[}1, 2, 4, 8, 16, 32{]}. The entire procedure is repeated 634 times for various randomly chosen \poriginsuper, \pnewsuper and \prandom. The average results obtained are summarised in ~\ref{fig:two super plot}.
 
-This experiment can be replicated by running \texttt{ExperimentSuper2.hs}. \hilight{VERIFY}
+This experiment can be replicated by running \texttt{ExperimentSuper2.hs}.
 
 \begin{figure}[h]
   \centering
@@ -330,7 +330,7 @@ The results clearly reveal that increasing the degree of the new pattern increas
 
 This also fits in nicely nicely with in the Attachment theory interpretation. The original pattern as before represents the consistent interactions with a primary care giver. The new pattern may represent the consistent, yet significantly different, interactions with an alternate and influential care giver, perhaps the other parent of the child or a relative with whom they have developed a close relationship. Intuitively, the care giver which has more interactions would exert a stronger influence, undermining the dominance of the other care giver, and indeed the impact of any other interactions.
 
-In relation to retraining \hilight{reword?}, the new pattern may also be taken to represent the influences arising due to the undertaken retraining phase. We find that, similar to the above, increasing the number of interactions due to retraining further ingrains its dominance, and dilutes that of the previous interactions due to the primary care giver or otherwise.
+In relation to retraining, the new pattern may also be taken to represent the influences arising due to the undertaken retraining phase. We find that, similar to the above, increasing the number of interactions due to retraining further ingrains its dominance, and dilutes that of the previous interactions due to the primary care giver or otherwise.
 
 
 % undefined variables
