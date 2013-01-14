@@ -1,5 +1,6 @@
 *.out
 *.swp
+*.pyc
 report/*.log
 report/*.aux
 report/*.pdf
