@@ -1,5 +1,9 @@
 {-# LANGUAGE ParallelListComp, ScopedTypeVariables #-}
 
+-- This module uses general purpose functions which are use trought the project.
+-- Should not contain any project defined data types. Needs to be kept
+-- as general as possible.
+
 
 module Hopfield.Util (
     average
@@ -208,8 +212,8 @@ toBinary n size
   | n >  2 ^ size - 1 = error "cannot fit binary representation into given size"
   | otherwise =  [ (n `div` 2 ^ i) `mod` 2 | i <- [size - 1, size - 2 .. 0] ]
 
-
--- TODO write comment
+-- returns the binary represenation of the indices of the elements in a list
+-- after the duplicates have been removed
 getBinaryIndices :: Eq a => [a] -> [(a, [Int])]
 getBinaryIndices xs = [ (x, toBinary i bitsNeeded) | i <- [0 ..] | x <- nub_xs]
   where
@@ -262,6 +266,7 @@ randomSignVector size = do
   return $ V.map (\x -> 2 * x - 1) binaryVec
 
 
+-- Returns the average of the elements in a list
 average :: (Real a, Fractional b) => [a] -> b
 average xs = realToFrac (sum xs) / genericLength xs
 

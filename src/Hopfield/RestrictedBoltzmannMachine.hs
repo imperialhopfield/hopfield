@@ -219,7 +219,7 @@ getFreeEnergy ws pat
 -- | Matches a pattern against the a given network
 matchPatternBoltzmann :: MonadRandom m => BoltzmannData -> Pattern -> m Int
 matchPatternBoltzmann (BoltzmannData ws pats _ pats_with_binary) pat = do
-  hot_pat <- updateBoltzmann ws ((V.++) pat (V.fromList $ snd $ head pats_with_binary)
+  hot_pat <- updateBoltzmann ws ((V.++) pat (V.fromList $ snd $ head pats_with_binary))
   let h = V.take (V.length $ head pats) hot_pat
       extendWithClass p = ((V.++) h (V.fromList . fromJust $ lookup p pats_with_binary) )
       getPatternProbability x = exp $ (- getFreeEnergy ws x)

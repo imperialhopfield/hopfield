@@ -36,7 +36,7 @@ import           Hopfield.Util
 
 
 
-data LearningType = Hebbian | Storkey deriving (Eq, Show)
+data LearningType = Hebbian | Storkey deriving (Eq, Show, Read)
 
 --make Hopefield data implement show
 -- | Encapsulates the network weights together with the patterns that generate

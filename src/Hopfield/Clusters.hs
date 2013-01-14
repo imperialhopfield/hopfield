@@ -19,7 +19,7 @@ import Hopfield.Measurement
 import Hopfield.Util
 
 
---  @getPatternInCluster pat p@ gets a pattern in a cluster given by @pat@
+-- |@getPatternInCluster pat p@ gets a pattern in a cluster given by @pat@
 -- by flipping each bit in the pattern with probability p.
 getPatternInCluster :: MonadRandom  m => Method -> Pattern -> Double -> m Pattern
 getPatternInCluster method originPat p
@@ -30,12 +30,11 @@ getPatternInCluster method originPat p
           return bit
 
 
---  @getPatternInCluster pat p@ gets a pattern in a cluster given by @pat@
+-- |@getPatternInCluster pat p@ gets a pattern in a cluster given by @pat@
 -- by flipping each bit in the pattern with probability p.
 getCluster :: MonadRandom  m => Method -> Pattern -> Int -> Double -> m [Pattern]
 getCluster method originPat size p
   = replicateM size (getPatternInCluster method originPat p)
-
 
 
 -- Caller has to take care with setting the mean and stdDev such that

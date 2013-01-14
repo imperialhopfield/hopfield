@@ -33,8 +33,6 @@ basinHeader :: String
 basinHeader = "Degree\tBasin size"
 
 
-
-
 main :: IO ()
 main = do
 
