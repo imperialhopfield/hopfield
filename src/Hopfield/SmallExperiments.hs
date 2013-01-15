@@ -27,5 +27,4 @@ runs = [ (Hebbian, 50, 6, 25, 5)
 main :: IO ()
 main = do
  forM_ runs $ \(method, a, b, c, d) ->
-  print =<< average <$> replicateM _REPETITIONS (basinsGivenStdT2 method a b c d)
-
+  print =<< ((average <$> replicateM _REPETITIONS (basinsGivenStdT2 method a b c d)) :: IO Double)

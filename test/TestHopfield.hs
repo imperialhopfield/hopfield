@@ -30,6 +30,7 @@ configs = [ Config Hebbian 100
           , Config Storkey 30
           ]
 
+-- forAllMethods :: (Config -> Spec) -> Core.Type.SpecM ()
 forAllMethods testFun = forM_ configs $ \conf@Config {method, maxPatSize} ->
                           describe (show method ++ " " ++ show maxPatSize) $ do
                             testFun conf
@@ -62,11 +63,14 @@ testHopfield = do
 
 
     describe "test repeatedUpdate" $ forAllMethods $ \(Config method maxPatSize) -> do
-
-      return ()
-
-      -- TODO implement
-      -- it "test that when repeatedUpdate has finished, no other update can occur" $
+      it "test that when repeatedUpdate has finished, no other update can occur" $
+        forAll (patternsTupleGen H maxPatSize maxPatListSize) $ \(training_pats, testPats) ->
+          let hd = buildHopfieldData method training_pats
+              notUpdatable p = do
+                convergedPat <- repeatedUpdate (weights hd) p
+                updatedOnceMore <- update (weights hd) convergedPat
+                return $ updatedOnceMore == Nothing
+          in and $ flip evalRand (mkStdGen 1) $ forM testPats notUpdatable
 
 
     describe "updateChain" $ forAllMethods $ \(Config method maxPatSize) -> do

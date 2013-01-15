@@ -5,7 +5,7 @@ import Test.QuickCheck
 
 import Hopfield.TestUtil
 
-
+testUtil :: Spec
 testUtil = do
   describe "test functions in Util" $ do
 

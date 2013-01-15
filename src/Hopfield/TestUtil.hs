@@ -116,7 +116,7 @@ boundedReplicateGen n g = liftM2 replicate (choose (0, n)) g
 -- | Replaces the nth element in the list with 'r'
 replaceAtN :: Int -> a -> [a] -> [a]
 replaceAtN _ _ []     = error "index greater than list size"
-replaceAtN 0 r (x:xs) = (r:xs)
+replaceAtN 0 r (_:xs) = (r:xs)
 replaceAtN n r (x:xs)
   | n > 0     = (x:(replaceAtN (n-1) r xs))
   | otherwise = error "negative index"
