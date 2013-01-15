@@ -26,9 +26,9 @@ powersOfTwo ceil = takeWhile (<= ceil) $ iterate (*2) 1
 
 -- For each degree in 'ds', builds a network combining the degree and the list
 -- of patterns (or some variant) 'ps' using the given function 'combine'
-buildNetworks :: a -> [Degree] -> PatternCombiner a -> [HopfieldData]
-buildNetworks ps ds combine
-  = [ buildHopfieldData Hebbian $ combine ps d | d <- ds ]
+buildNetworks :: a -> [Degree] -> LearningType-> PatternCombiner a -> [HopfieldData]
+buildNetworks ps ds learnType combine
+  = [ buildHopfieldData learnType $ combine ps d | d <- ds ]
 
 
 -- -----------------------------------------------------------------------------
@@ -77,16 +77,16 @@ q1 = V.fromList [1,-1,-1,-1,1,-1,-1,1,1,1]
 
 
 -- Networks with first pattern as a super attractor
-oneSuperNets :: [HopfieldData]
-oneSuperNets = buildNetworks ps degrees oneSuperAttr
+oneSuperNets :: LearningType -> [HopfieldData]
+oneSuperNets learnType = buildNetworks ps degrees learnType oneSuperAttr
   where
     ps      = [p1,p2]
     degrees = powersOfTwo $ V.length $ head ps
 
 
 -- Networks with all patterns as (equal) super attractors
-allSuperNets :: [HopfieldData]
-allSuperNets = buildNetworks ps degrees allSuperAttr
+allSuperNets :: LearningType -> [HopfieldData]
+allSuperNets learnType = buildNetworks ps degrees learnType allSuperAttr
   where
     ps      = [p1,p2]
     degrees = powersOfTwo $ V.length $ head ps
@@ -94,36 +94,36 @@ allSuperNets = buildNetworks ps degrees allSuperAttr
 
 
 -- Convenience function for building networks with multiple training phases
-buildMultiPhaseNetwork :: [PatternCombiner [Pattern]] -> [HopfieldData]
-buildMultiPhaseNetwork combFuncs = buildNetworks patList degrees aggComb
+buildMultiPhaseNetwork :: LearningType -> [PatternCombiner [Pattern]] -> [HopfieldData]
+buildMultiPhaseNetwork learnType combFuncs = buildNetworks patList degrees learnType aggComb
   where
     patList = [ [p1,p2], [q1] ]
     degrees = powersOfTwo $ (V.length . head . head) patList
     aggComb = aggregateCombiners combFuncs
 
 
-retrainNormalWithOneSuper   :: [HopfieldData]
-retrainOneSuperWithNormal   :: [HopfieldData]
-retrainOneSuperWithOneSuper :: [HopfieldData]
-retrainAllSuperWithNormal   :: [HopfieldData]
-retrainAllSuperWithOneSuper :: [HopfieldData]
+retrainNormalWithOneSuper   :: LearningType -> [HopfieldData]
+retrainOneSuperWithNormal   :: LearningType -> [HopfieldData]
+retrainOneSuperWithOneSuper :: LearningType -> [HopfieldData]
+retrainAllSuperWithNormal   :: LearningType -> [HopfieldData]
+retrainAllSuperWithOneSuper :: LearningType -> [HopfieldData]
 
 -- A normal network (i.e. no super attractor) retrained with one super attractor
-retrainNormalWithOneSuper = buildMultiPhaseNetwork [const, oneSuperAttr]
+retrainNormalWithOneSuper l = buildMultiPhaseNetwork l [const, oneSuperAttr]
 
 -- A network with one super attractor retrained with a normal pattern (i.e. a
 -- non-super attractor)
-retrainOneSuperWithNormal = buildMultiPhaseNetwork [oneSuperAttr, const]
+retrainOneSuperWithNormal l = buildMultiPhaseNetwork l [oneSuperAttr, const]
 
 -- A network with one super attractor retrained with another super attractor
-retrainOneSuperWithOneSuper = buildMultiPhaseNetwork [oneSuperAttr, oneSuperAttr]
+retrainOneSuperWithOneSuper l = buildMultiPhaseNetwork l [oneSuperAttr, oneSuperAttr]
 
 -- A network with all super attractors retrained with a normal pattern (i.e. a
 -- non-super attractor)
-retrainAllSuperWithNormal = buildMultiPhaseNetwork [allSuperAttr, const]
+retrainAllSuperWithNormal l = buildMultiPhaseNetwork l [allSuperAttr, const]
 
 -- A network with all super attractors retrained with another super attractor
-retrainAllSuperWithOneSuper = buildMultiPhaseNetwork [allSuperAttr, oneSuperAttr]
+retrainAllSuperWithOneSuper l = buildMultiPhaseNetwork l [allSuperAttr, oneSuperAttr]
 
 
 

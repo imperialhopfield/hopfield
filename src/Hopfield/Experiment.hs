@@ -7,7 +7,6 @@ import Control.Monad.Random
 import Test.QuickCheck
 import Test.QuickCheck.Gen (unGen)
 
-import Hopfield.Analysis
 import Hopfield.Clusters
 import Hopfield.Common
 import Hopfield.ExpUtil
@@ -73,7 +72,7 @@ main = do
 
 
     putStrLn "Building networks..."
-    let nets = buildNetworks pats degrees patCombiner
+    let nets = buildNetworks pats degrees Hebbian patCombiner
 
 
     --Check if pattern is fixed.

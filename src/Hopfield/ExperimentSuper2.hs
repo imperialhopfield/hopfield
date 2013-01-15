@@ -9,10 +9,11 @@ import Test.QuickCheck.Gen (unGen)
 
 import Hopfield.Common
 import Hopfield.ExpUtil
+import Hopfield.Hopfield (LearningType (..))
 import Hopfield.Measurement
 import Hopfield.SuperAttractors
-import Hopfield.Util
 import Hopfield.TestUtil (Type(H), patternGen)
+import Hopfield.Util
 
 
 genIO :: Gen a -> IO a
@@ -68,7 +69,7 @@ main = do
 
 
     putStrLn "Building networks...\n"
-    let nets = buildNetworks pats degrees patCombiner
+    let nets = buildNetworks pats degrees Hebbian patCombiner
 
 
     --Check if patterns are fixed.
