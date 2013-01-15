@@ -1,5 +1,0 @@
-ghc -c -dynamic -fPIC Foo.hs &&
-swig -python example.i &&
-gcc -fpic -c example.c example_wrap.c -I/usr/include/python2.7 -I`ghc --print-libdir`/include &&
-ghc -o _example.so -shared -dynamic -fPIC example.o example_wrap.o Foo.o  -lHSrts-ghc7.4.1 &&
-python run.py
