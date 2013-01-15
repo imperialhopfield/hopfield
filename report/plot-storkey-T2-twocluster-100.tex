@@ -1,0 +1,38 @@
+\begin{tikzpicture}
+\begin{axis}[
+xmin = 0,
+ymin = 0,
+xlabel = Standard Deviation of Cluster 2,
+ylabel = Average Basin Size of Cluster 2,
+width=12cm,
+height=9cm
+]
+
+\addplot [
+color = red,
+mark = x, % A filled circle
+% mark = none,
+only marks,
+smooth  % draw smooth curve
+] table [
+y = mean-new
+] {data-storkey-T2-twocluster-100-5.csv};
+
+\addlegendentry{Cluster 1 with $\sigma$ = 5.0} ;
+
+
+\addplot [
+color = blue,
+mark = triangle, % A filled circle
+only marks,
+smooth  % draw smooth curve
+] table [
+y = mean-new
+] {data-storkey-T2-twocluster-100-10.csv};
+
+\addlegendentry{Cluster 1 with $\sigma$ = 10.0} ;
+
+
+
+\end{axis}
+\end{tikzpicture}
