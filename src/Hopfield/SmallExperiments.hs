@@ -13,7 +13,7 @@ import Hopfield.Hopfield
 import Hopfield.Util
 
 
-_REPETITIONS = 10
+_REPETITIONS = 10 :: Int
 
 -- Experiments are performed using the T2 method
 -- (learning type, number of neurons, cluster size, mean of cluster, std dev)

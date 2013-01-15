@@ -1,4 +1,5 @@
 {-# LANGUAGE ParallelListComp #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Hopfield.TestUtil where
 
@@ -24,7 +25,7 @@ data Type = H | BM
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
   arbitrary = fmap V.fromList arbitrary
 
-
+nonempty :: forall a. Gen [a] -> Gen [a]
 nonempty = (`suchThat` (not . null))
 
 mapMonad :: Monad m => (a -> b) -> m [a] -> m [b]
@@ -103,7 +104,7 @@ sameElemVector = toGenVector . sameElemList
 allWeightsSame :: Int -> [[Double]]
 allWeightsSame n
   = [ [ if i==j then 0 else w | i <- [0..n-1] ] | j <- [0..n-1] ]
-    where w = 1 ./. n
+    where w = (1 :: Int) ./. n
 
 
 -- | @boundedReplicateGen n g@ Generates lists containing 'g' replicated.

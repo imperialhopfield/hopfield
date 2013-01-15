@@ -7,7 +7,6 @@ import           Control.Monad
 import           Control.Monad.Random
 import qualified Data.Vector as V
 import           Test.Hspec
-import           Test.HUnit
 import           Test.QuickCheck
 
 import           Hopfield.Hopfield

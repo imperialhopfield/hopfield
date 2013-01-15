@@ -3,14 +3,13 @@ module TestMeasurement where
 import qualified Data.Vector as V
 import           Test.Hspec
 import           Test.QuickCheck
-import           Test.HUnit
 
-import           Hopfield.Hopfield
 import           Hopfield.Measurement
 import           Hopfield.Util
 import           Hopfield.TestUtil
 
 
+testMeasurement :: Spec
 testMeasurement = do
 
   describe "sampleHammingDistance" $ do

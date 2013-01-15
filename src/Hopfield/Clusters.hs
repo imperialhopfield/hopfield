@@ -9,9 +9,6 @@ module Hopfield.Clusters where
 import qualified Data.Vector as V
 import           Control.Monad.Random (MonadRandom)
 import           Control.Monad (liftM, replicateM)
-import           Control.Parallel.Strategies
-
-
 
 import Hopfield.Common
 import Hopfield.Hopfield

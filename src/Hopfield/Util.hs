@@ -49,9 +49,7 @@ module Hopfield.Util (
 ) where
 
 
-import           Control.Applicative
 import           Control.Monad
-import           Control.Monad.Loops (unfoldrM)
 import           Control.Monad.Random (MonadRandom)
 import qualified Control.Monad.Random as Random
 import           Data.Array.ST

@@ -1,12 +1,8 @@
 module TestUtil where
 
-import Data.List
-import Data.Maybe
 import Test.Hspec
-import Test.HUnit
 import Test.QuickCheck
 
-import Hopfield.Util
 import Hopfield.TestUtil
 
 
