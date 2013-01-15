@@ -210,9 +210,11 @@ class ControlPoliceDB(QtGui.QMainWindow):
     dist_path = "/../dist/build/recognize/"
     gui_path = "../../../gui/"
     exec_path = current_path + dist_path
-    # this is dangerous. paths are re*lative to this gui thing
+    # this is dangerous. paths are relative to this gui thing
+    # absolute paths (starting with '/') are left untouched
+    # empty strings are discarded
     storedImagesPaths = self.getAllStoredPaths()
-    storedImagesPaths = [gui_path + p for p in storedImagesPaths]
+    storedImagesPaths = [p if p[0]=='/' else gui_path + p for p in storedImagesPaths if p]
     current_env = os.environ.copy()
     current_env["PATH"] += ":" + current_path
     current_env["PATH"] += ":" + exec_path
@@ -235,8 +237,16 @@ class ControlPoliceDB(QtGui.QMainWindow):
         if possible_path is None:
           raise Exception('The recognition sub-process encountered an error or was terminated unexpectedly.')
 
-        elif possible_path.startswith(gui_path):
-          actual_path = possible_path[len(gui_path):].strip()
+        elif not possible_path or possible_path.startswith('no pattern found'):
+              QtGui.QMessageBox.information(self,"Suspect not found","The person you are trying to find is not in the database", QtGui.QMessageBox.Ok)
+
+        else:
+
+          if possible_path.startswith(gui_path):
+            actual_path = possible_path[len(gui_path):].strip()
+          elif possible_path.startswith('/'):
+            actual_path = possible_path.strip()
+
           self.rhsRec.setPixmap(QPixmap(actual_path))
           for d in self.getItemData():
             if d[pathKey] == actual_path:
@@ -244,8 +254,6 @@ class ControlPoliceDB(QtGui.QMainWindow):
               age = d[ageKey]
               description = d[descKey]
 
-        else:
-              QtGui.QMessageBox.information(self,"Suspect not found","The person you are trying to find is not in the database", QtGui.QMessageBox.Ok)
 
       except Exception, e:
         message(title='Matching error',
