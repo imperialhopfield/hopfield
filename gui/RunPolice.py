@@ -185,6 +185,9 @@ class ControlPoliceDB(QtGui.QMainWindow):
         nameFilter="Image files (*.jpg *.jpeg *.png *.bmp)",
         fileMode=QFileDialog.ExistingFile)
 
+    # If no image selected, abort
+    if imagePath is None: return
+
     originalText = self.findButton.text()
 
     self.findButton.setText("Please wait...")
@@ -222,34 +225,53 @@ class ControlPoliceDB(QtGui.QMainWindow):
     self.ageOut.setText("")
     self.descOut.setText("")
 
-
-
+    # Note this is defined *within* match image to execute in a different thread
     def update(possible_path):
       name = ""
       age = ""
       description = ""
-      if possible_path.startswith(gui_path):
-        actual_path = possible_path[len(gui_path):].strip()
-        self.rhsRec.setPixmap(QPixmap(actual_path))
-        for d in self.getItemData():
-          if d[pathKey] == actual_path:
-            name = d[nameKey]
-            age = d[ageKey]
-            description = d[descKey]
-      else:
-            QtGui.QMessageBox.information(self,"Suspect not found","The person you are trying to find is not in the database", QtGui.QMessageBox.Ok)
 
-      self.nameOut.setText(name)
-      self.ageOut.setText(age)
-      self.descOut.setText(description)
+      try:
+        if possible_path is None:
+          raise Exception('The recognition sub-process encountered an error or was terminated unexpectedly.')
 
-      self.findButton.setText("Find suspect")
-      self.findButton.setEnabled(True)
+        elif possible_path.startswith(gui_path):
+          actual_path = possible_path[len(gui_path):].strip()
+          self.rhsRec.setPixmap(QPixmap(actual_path))
+          for d in self.getItemData():
+            if d[pathKey] == actual_path:
+              name = d[nameKey]
+              age = d[ageKey]
+              description = d[descKey]
 
+        else:
+              QtGui.QMessageBox.information(self,"Suspect not found","The person you are trying to find is not in the database", QtGui.QMessageBox.Ok)
+
+      except Exception, e:
+        message(title='Matching error',
+        icon=QMessageBox.Warning,
+        message="An error has occurred while matching the image.",
+        detail=str(e))
+
+        name = ""
+        age = ""
+        description = ""
+
+      # Ensure that if anything goes wrong, the button is re-enabled
+      finally:
+        self.nameOut.setText(name)
+        self.ageOut.setText(age)
+        self.descOut.setText(description)
+
+        self.findButton.setText("Find suspect")
+        self.findButton.setEnabled(True)
+
+    # Run matching in separate thread
     class Future(QThread):
       dataReady = Signal(object)
 
       def run(self):
+        # Wait for process to terminate and read output
         possible_path = proc.stdout.read()
         self.dataReady.emit(possible_path)
 
