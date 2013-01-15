@@ -2,6 +2,9 @@
 
 module Hopfield.SmallExperiments where
 
+-- Module use to perform small experiments that prove that Storkey learning
+-- has a bigger basin size than Hebbian learning
+
 import Control.Applicative
 import Control.Monad
 
@@ -12,6 +15,8 @@ import Hopfield.Util
 
 _REPETITIONS = 10
 
+-- Experiments are performed using the T2 method
+-- (learning type, number of neurons, cluster size, mean of cluster, std dev)
 runs = [ (Hebbian, 50, 6, 25, 5)
        , (Storkey, 50, 6, 25, 5)
        , (Hebbian, 50, 4, 25, 10)
