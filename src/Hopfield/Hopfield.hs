@@ -73,7 +73,8 @@ repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
 repeatedUpdate = checkWsPat repeatedUpdate_
 
 
--- |
+-- | Computes the weighted sum of current neuron values, which will give us
+-- the value of the neuron (by taking the sign)
 computeH :: Weights -> Pattern -> Int -> Int
 computeH ws pat i = checkWsPat (\w p -> computeH_ w p i) ws pat
 
@@ -139,7 +140,13 @@ computeH_ ws pat i = {-# SCC "computeHall" #-} if weighted >= 0 then 1 else -1
 
 
 -- | See `update`.
--- TODO niklas doc how we do random updating now
+-- The update is done by finding a neuron that will change its value given the
+-- current state. The search for this neuron is done in a random manner:
+-- pick up a random neuron, check if it is updatable: if so, update the pattern
+-- by updating this neuron. If not, continue until an updatable neuron is found.
+-- (Note: Initially the update was performed by obtaining a list of all
+-- updatable neurons and then picking a random one. The current method is 2 times
+-- faster)
 update_ :: MonadRandom m => Weights -> Pattern -> m (Maybe Pattern)
 update_ ws pat = do
   randomIndices <- shuffle . toArray $ [0 .. V.length pat - 1]
