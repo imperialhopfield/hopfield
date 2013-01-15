@@ -2,6 +2,9 @@
 
 module Hopfield.TestUtil where
 
+-- Util functions used for test
+-- Mostly properties and generators
+
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Random
@@ -13,7 +16,6 @@ import           Hopfield.Hopfield
 import           Hopfield.Measurement
 import           Hopfield.RestrictedBoltzmannMachine
 import           Hopfield.Util
-
 
 
 data Type = H | BM

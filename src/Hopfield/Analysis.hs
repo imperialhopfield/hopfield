@@ -1,5 +1,9 @@
 module Hopfield.Analysis where
 
+-- Module for computing the theoretical error of a network
+-- Uses the error derivations for independent patterns and super attractors
+-- which can be found at the appendix of the report
+
 import           Data.List
 import           Data.Number.Erf
 import qualified Data.Vector as V
@@ -10,8 +14,6 @@ import Hopfield.Util
 
 
 
--- TODO I don't understand this (niklas)
--- TODO check where this function is used
 -- | Computes the probability of error for one element given a hopfield data
 -- structure. Note that I claim that the actuall error of probability depends
 -- on this, but is not the whole term
@@ -38,6 +40,7 @@ computeErrorIndependentPatsNumbers :: Int -> Int -> Double
 computeErrorIndependentPatsNumbers p n
   = 1.0 / 2.0 * (1 - (erf $ sqrt $ n ./. (2 *  p)))
 
+
 -- | @computeErrorSuperAttractorNumbers d p n@
 -- Computes the probability of error for a super attractor with degree @d@, in
 -- a Hopfield network with @n@ neurons, which has been trained with @p@ patterns.
@@ -57,6 +60,7 @@ computeErrorSuperAttractorNumbers d p n
 -- maximum error accepted error.
 patternsToNeuronsRatioFromError :: Double -> Double
 patternsToNeuronsRatioFromError err = 1.0 / (2.0 * (inverf (1.0 - 2.0 * err)) ^ (2 :: Int))
+
 
 
 -- @minNumberOfNeurons p err@ Given the number of patterns used to train a Hopfield
