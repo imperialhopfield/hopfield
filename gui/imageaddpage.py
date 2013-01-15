@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'imageaddpage.ui'
 #
-# Created: Fri Jan 11 01:21:16 2013
-#      by: pyside-uic 0.2.13 running on PySide 1.1.2
+# Created: Tue Jan 15 14:02:37 2013
+#      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -65,7 +65,6 @@ class Ui_WizardPage(object):
         self.imageLabel.setMinimumSize(QtCore.QSize(201, 201))
         self.imageLabel.setMaximumSize(QtCore.QSize(251, 241))
         self.imageLabel.setText("")
-        self.imageLabel.setPixmap(QtGui.QPixmap(":/new/prefix1/lucasss.png"))
         self.imageLabel.setScaledContents(True)
         self.imageLabel.setObjectName("imageLabel")
         self.verticalLayout.addWidget(self.imageLabel)
@@ -88,4 +87,3 @@ class Ui_WizardPage(object):
         self.ageInput.setPlaceholderText(QtGui.QApplication.translate("WizardPage", "enter age", None, QtGui.QApplication.UnicodeUTF8))
         self.label_32.setText(QtGui.QApplication.translate("WizardPage", "Description:", None, QtGui.QApplication.UnicodeUTF8))
 
-import policedbresource_rc

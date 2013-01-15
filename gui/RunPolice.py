@@ -154,7 +154,7 @@ class ControlPoliceDB(QtGui.QMainWindow):
   # Save DB to file - if none specified, ask user
   def saveDB(self, filename=None):
     # Retrieve all image data
-    itemsData = getItemData()
+    itemsData = self.getItemData()
 
 
     # If no file, ask user for file

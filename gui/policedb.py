@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'policedb.ui'
 #
-# Created: Tue Jan 15 11:42:26 2013
+# Created: Tue Jan 15 14:06:33 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!

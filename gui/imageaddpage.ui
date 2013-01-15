@@ -110,9 +110,6 @@
          <property name="text">
           <string/>
          </property>
-         <property name="pixmap">
-          <pixmap resource="policedbresource.qrc">:/new/prefix1/lucasss.png</pixmap>
-         </property>
          <property name="scaledContents">
           <bool>true</bool>
          </property>
@@ -131,8 +128,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="policedbresource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
