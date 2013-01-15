@@ -21,7 +21,9 @@ import           Hopfield.Util
 
 data Type = H | BM
 
-
+-- Warning: orphan instance. For more details see:
+-- http://stackoverflow.com/questions/3079537/orphaned-instances-in-haskell
+-- The way to avoid it is to make a warpper around Vector.
 instance (Arbitrary a) => Arbitrary (V.Vector a) where
   arbitrary = fmap V.fromList arbitrary
 
