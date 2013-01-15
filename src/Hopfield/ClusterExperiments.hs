@@ -38,6 +38,7 @@ oneIteration1 expType learnType networkSize clusterSize start stop p_step i
 performAndPrint1 :: ExpType -> LearningType -> Int -> Int -> Double -> Double -> Double -> Int -> IO ()
 performAndPrint1 expType learnType neurons clusterSize start stop step iterations = do
   putStrLn $ "Experiment type" ++ show expType
+  putStrLn $ "Learning type " ++ show learnType
   putStrLn $ "Only one clusters"
   putStrLn $ "neurons  " ++ show neurons ++ "  cluster " ++ show clusterSize
   putStrLn $ "performed for " ++ show iterations ++ " iterations"
@@ -63,6 +64,7 @@ oneIteration2 expType learnType networkSize clusterSize val1 start2 stop2 p_step
 performAndPrint2 :: ExpType -> LearningType -> Int -> Int -> Double -> Double -> Double -> Double -> Int -> IO ()
 performAndPrint2 expType learnType neurons clusterSize val1 start2 stop2 step2 iterations = do
   putStrLn $ "Experiment type " ++ show expType
+  putStrLn $ "Learning type " ++ show learnType
   putStrLn $ "Two clusters"
   putStrLn $ "neurons  " ++ show neurons ++ "  cluster " ++ show clusterSize
   putStrLn $ "performed for " ++ show iterations ++ " iterations"
