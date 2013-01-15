@@ -76,8 +76,6 @@ samplePatternRing hs pat r = do
   return $ numConverging ./. (length samples)
 
 
--- TODO include ring 0? This is 1 iff pattern is a fixed point.
---
 -- Percentage convergence for each ring of 'pat' (excluding the trivial ring 0)
 -- pre: pattern of same size as network
 samplePatternBasin :: (MonadRandom m) => BasinMeasure m [Double]
