@@ -234,7 +234,7 @@ updateNeuronCheck r (pats, nr_h, pat)
 buildIntTuple :: Gen (Int, Int)
 buildIntTuple = do
   i <- choose (1, 100)
-  let min_size = ceiling $ logBase 2.0 $ fromIntegral i
+  let min_size = ceiling $ log2 $ fromIntegral i
   j <- choose (min_size + 1, min_size + 2)
   return (i, j)
 
@@ -242,7 +242,7 @@ buildIntTuple = do
 binaryCheck :: (Int, Int) -> Bool
 binaryCheck (x, y) = x == refold
  where
-   refold = sum [ b * 2^pos | b <- reverse bits | pos <- [0..] ]
+   refold = sum [ b * 2^pos | b <- reverse bits | pos <- [(0:: Int)..] ]
    bits   = toBinary x y
 
 

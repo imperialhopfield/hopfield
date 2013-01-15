@@ -14,15 +14,18 @@ import           Hopfield.Util
 import           Hopfield.TestUtil
 
 
+toV :: forall a. Gen[a] -> Gen (V.Vector a)
 toV = (V.fromList <$>)
-_EPSILON = 0.001
 
+_EPSILON :: Double
+_EPSILON = 0.001
 
 data Config = Config {
   method :: LearningType
 , maxPatSize :: Int
 }
 
+configs :: [Config]
 configs = [ Config Hebbian 100
           , Config Storkey 30
           ]
