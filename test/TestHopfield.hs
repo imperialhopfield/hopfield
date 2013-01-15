@@ -80,22 +80,6 @@ testHopfield = do
                 return $ length result_chain >= 1
 
 
-    describe "getUpdatables" $ do
-      it "getUpdatables test1" $
-        getUpdatables (vector2D  [[0  ,0.2,0.5],
-                                [0.2,0  ,0.7],
-                                [0.5,0.7,0  ]]) (V.fromList [1, 1, -1])
-        `shouldBe` ([0, 1, 2])
-
-      it "getUpdatables test2" $
-        getUpdatables (vector2D [[ 0  , 0.2,-0.5,0.7,-0.1],
-                           [ 0.2, 0  , 0.3,0.4,-0.7],
-                           [-0.5, 0.3, 0  ,0.2,-0.4],
-                           [ 0.7, 0.4, 0.2,0  , 0.5],
-                           [-0.1,-0.7,-0.4,0.5, 0  ]
-                           ]) (V.fromList [1,-1,-1,1,-1])
-        `shouldBe` ([1, 3, 4])
-
     describe "matchPattern tests" $ do
       let check pats p = evalRand (matchPattern
                                      (buildHopfieldData Hebbian $ V.fromList <$> pats)

@@ -15,7 +15,6 @@ module Hopfield.Hopfield (
   -- * Running
   , update
   , addPatterns
-  , getUpdatables
   , repeatedUpdate
   , updateChain
   , matchPattern
@@ -66,18 +65,6 @@ update :: MonadRandom m => Weights -> Pattern -> m (Maybe Pattern)
 update = checkWsPat update_
 
 
--- TODO Mihaela what valid?
--- | @getUpdatables ws pat@. Given a Hopfield network represented by ws, returns
--- a list of pairs comprising of the updatable neurons (represented by the index
--- in the pattern) and their new, changed value.
--- No check is performed in this function for efficiency reasons: the checks
--- are expensive and are done in update, before update_.
--- Any other caller should ensure that ws and pat are compatible and valid
--- (by calling @valid@)
-getUpdatables :: Weights -> Pattern ->  [Int]
-getUpdatables = checkWsPat getUpdatables_
-
-
 -- | @repeatedUpdate weights pattern@: Performs repeated updates on the given
 -- pattern until it reaches a stable state with respect to the Hopfield network
 -- (represented by @weights@).
@@ -86,7 +73,7 @@ repeatedUpdate :: (MonadRandom m) => Weights -> Pattern -> m Pattern
 repeatedUpdate = checkWsPat repeatedUpdate_
 
 
--- TODO Mihaela what is "computeH"? Docs please
+-- |
 computeH :: Weights -> Pattern -> Int -> Int
 computeH ws pat i = checkWsPat (\w p -> computeH_ w p i) ws pat
 
@@ -149,12 +136,6 @@ computeH_ ws pat i = {-# SCC "computeHall" #-} if weighted >= 0 then 1 else -1
 
     p = {-# SCC "computeHvlength" #-} V.length pat
 
-
--- | See `getUpdatables`.
-getUpdatables_ :: Weights -> Pattern -> [Int]
-getUpdatables_ ws pat = [ i | (i, x_i) <- zip [0..] (V.toList pat)
-                              , let new = computeH_ ws pat i
-                              , new /= x_i ]
 
 
 -- | See `update`.
