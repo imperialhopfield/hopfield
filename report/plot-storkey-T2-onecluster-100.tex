@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+\begin{axis}[
+xmin = 0,
+ymin = 0,
+xlabel = Standard deviation,
+ylabel = Average Basin Size
+]
+
+\addplot [
+color = blue,
+mark = *, % A filled circle
+only marks,
+smooth  % draw smooth curve
+] table [
+y = mean
+] {data-T2-onecluster-100.csv};
+
+\addlegendentry{Hebbian Learning} ;
+
+\addplot [
+color = red,
+mark = *, % A filled circle
+only marks,
+smooth  % draw smooth curve
+] table [
+y = mean
+] {data-storkey-T2-onecluster-100.csv};
+
+\addlegendentry{Storkey Learning} ;
+
+
+\end{axis}
+\end{tikzpicture}
