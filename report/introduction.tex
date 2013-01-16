@@ -22,7 +22,7 @@ The subsequent chapters will introduce the Attachment Theory and the mathematica
 \section{Objectives}
 
 %Main Objectives
-Our main objective is to confirm the results of previous work done by Federico Macinelli, who has been analysing the attachment theory using neural networks. He has performed several experiments regarding clusters of attractors, basin sizes, and Gaussian-distributed patterns. Furthermore, we have been aiming at extending his results by exploring the following concepts:
+Our main objective is to confirm the results of previous work done by Federico Mancinelli, who has been analysing the attachment theory using neural networks. He has performed several experiments regarding clusters of attractors, basin sizes, and Gaussian-distributed patterns. Furthermore, we have been aiming at extending his results by exploring the following concepts:
 \begin{itemize}
 \item Using the network for performing image recognition
 \item Restricted Boltzmann machines
@@ -39,7 +39,7 @@ Since our project was related to exploring attractor-based neural networks, we h
 %This list is by no means exhaustive. Feel free to add any other aspects. This is what I(Raz) could recall a few days ago.
 Our main contributions are outlined below:
 \begin{itemize}
-\item Confirming Federico's results by reimplementing them in a completely different environment (Haskell)
+\item Confirming Mancinelli's results by reimplementing them in a completely different environment (Haskell)
 \item Proving that the Hopfield network is capable of performing image recognition, by learning image patterns and then recalling the closest image, when queried for an input. Furthermore, we have proven it's associative memory properties, by successfully recalling some of the learned images.
 \item We found out that training patterns are not guaranteed to become fixed points in the Hopfield network. This is an aspect that was not mentioned in similar research papers, and we first thought the the patterns are always fixed points.
 \item Extending the research to encompass the Boltzmann Machine, which provides a nice way of overcoming some limitations of the Hopfield Network. Amongst other features, it can prevent convergence to spurious patterns by using a stochastic update rule.
