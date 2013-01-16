@@ -87,13 +87,13 @@ and they affect each others basin sizes, both sizes increase with Storkey learni
 
 
 %T2
-\\*\
+
 The results are different when looking at T2 type experiments:
 the difference between the two learning methods is less straight forward.
 When training a Hopfield network with one cluster (\ref{fig:plot-storkey-T2-onecluster})  there is a critical point from which the Storkey learning clearly gives a bigger basin size 
-(at a standard dev aproximatevely 5.0), but before that it seems like the two methods give very similar results.
+(at a standard deviation aproximatevely 5.0), but before that it seems like the two methods give very similar results.
 \\*
-Even more intersting results come from training the network with two clusters (as seen in \ref{fig:plot-storkey-T2-twocluster}): suprisingly, when the standard deviation of the second cluster 
+Even more intersting results come from training the network with two clusters (as seen in \ref{fig:plot-storkey-T2-twoclusters}): suprisingly, when the standard deviation of the second cluster 
 is less than 9, the Hebbian learning provides a bigger basin size. After that point, Storkey learning acts as expected, by giving a 
 bigger basin size when compared to Hebbian. Note that the treshold point of this crossover is very close to the standard deviation of the first
 cluster, which was fixed to 10. 
@@ -101,11 +101,7 @@ cluster, which was fixed to 10.
 2 clusters and the T2 experiments show this. However, we believe that more investigation needs to be done in order to have confidence in these results.
 
 
-
-
-
-
-\begin{figure}[h]
+\begin{figure}[h!]
   \centering
   \input{plot-storkey-T2-onecluster-100}
 \caption{Comparing the impact of different learning methods on the average basin size of patterns belonging to a cluster generated using T2.}
