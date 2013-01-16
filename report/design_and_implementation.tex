@@ -5,12 +5,12 @@
 \section{Technologies used}
 
 \subsection*{Haskell}
-We have combined several technologies in order to create a nice workflow for our working environment. First of all, it is worth mentioning that we implemented the core algorithms for the neural network in Haskell. It is a very good candidate for solving mathematical problems, and has a strong type system that helped us detect bugs early on, at compile time, and made refactorings easy.
+We have combined several technologies in order to create a nice workflow for our working environment. First of all, it is worth mentioning that we implemented the core algorithms for the neural network in Haskell. It is a very good candidate for solving mathematical problems, and has a strong type system that helped us detect bugs early on, at compile time, and made refactoring easy.
 
 We also evaluated Python and Scala as our main implementation language for this project; Haskell was eventually chosen because of its strong, static type system (compared to Python), its easy integration with C (compared to Scala), and the personal learning interests of our team.
 
 \subsection*{Image loading with C}
-The functions responsible for image preprocessing (loading, rescaling, converting to gray-scale values, mapping pixels to binary patterns) were implemented in the \textbf{C} programming language, using the MagickWand ibrary which is part of ImageMagick. We used Haskell's \textit{Foreign Function Interface} for the communication between C and Haskell.
+The functions responsible for image preprocessing (loading, rescaling, converting to gray-scale values, mapping pixels to binary patterns) were implemented in the \textbf{C} programming language, using the MagickWand library which is part of ImageMagick. We used Haskell's \textit{Foreign Function Interface} for the communication between C and Haskell.
 
 \subsection*{Git}
 Since this was a group project in which all of us has to implement various parts of the system, we used Git as the version-control system that can keep track of our files, automatically merge source code and backup our data.
@@ -18,12 +18,12 @@ Since this was a group project in which all of us has to implement various parts
 \subsection*{Test-driven development with QuickCheck}
 Although Haskell as a programming language is already quite good at avoiding programming errors, it is not a theorem prover.
 In our effort to keep our code correct and find errors early, we therefore maintained an extensive test suite structured with \textbf{Hspec}, where we performed both unit tests on lower level implementations and as well as behavioural tests testing the functionality of the full program.
-We barely had to write tests in the example-driven style often found in imparative and dynamically typed languages, as we used \textbf{QuickCheck} to express the required functionality as lambda functions in first order logic. QuickCheck then generates thousands of tests cases automatically, based on the types our functions take as input, and also shrinks failing test cases to the smallest input that still fails. Using this technique, we found many failing edge cases in our initial implementation, and managed to keep the code size of our test suite small because most functions could be covered using only one or two first-order predicates.
+We barely had to write tests in the example-driven style often found in imperative and dynamically typed languages, as we used \textbf{QuickCheck} to express the required functionality as lambda functions in first order logic. QuickCheck then generates thousands of tests cases automatically, based on the types our functions take as input, and also shrinks failing test cases to the smallest input that still fails. Using this technique, we found many failing edge cases in our initial implementation, and managed to keep the code size of our test suite small because most functions could be covered using only one or two first-order predicates.
 
 %TODO. Talk about Jenkins , continuous integration, Review Board, ....
 \subsection*{Code Reviews and Continuous Integration}
 With the third year project being the largest group effort in our course, we tried to set ourselves new standards in using tools and techniques that help or benefit from the team. We set up an instance of the \textbf{ReviewBoard} web-based code review review system and enforced that all commits to our code base were reviewed by other team members before integration in the stable branch. We could avoid a lot of bugs with this and it also had the positive effect that the whole group agreed on the style and conceptual structure of the code.
-We also set up our own \textbf{Jenkins} Continuous Integration server on a lab machine that pulled the code, built it and ran the test suite as soon as a change had been made; using this, we could get rapid feedback on new changes and whether they broke the build or introduced a correctness or performance regression. The code always being in a buildable state after every single commit also saved us from wasting time to manually find out afterwards what change broke it.
+We also set up our own \textbf{Jenkins} Continuous Integration server on a lab machine that pulled the code, built it and ran the test suite as soon as a change had been made; using this, we could get rapid feedback on new changes and whether they broke the build or introduced a correctness or performance regression. The code always being in a build-able state after every single commit also saved us from wasting time to manually find out afterwards what change broke it.
 
 
 

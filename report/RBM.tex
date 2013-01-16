@@ -16,7 +16,7 @@ Hopfield networks are deterministic: training a network with the same patterns
 will yield the same weights, and matching a pattern against the network will
 always give the same result. This has the advantage of simplicity and ease of
 testing. However, as mentioned before, there are spurious attractors in the
-Hopfields network (linear combination of an odd number of training patterns).
+Hopfield network (linear combination of an odd number of training patterns).
 Using stochastic updating rules will decrease the probability of being 'stuck'
 in such a state. This resembles simulated annealing, but ensuring we are not
 caught in a local minima (in the energy landscape).
@@ -64,25 +64,25 @@ indices of a visible vector and by \tmtextit{H} = \{1, .. \tmtextit{length}
 
 \subsection{Probability of a state}
 
-After traning, the network assigns a probability to each possible state, as
+After training, the network assigns a probability to each possible state, as
 follows:
 \[ p \left( v, h \right) = \frac{1}{Z} e^{- E \left( v, h \right)} \]
-where Z is used to normalize the probabilities
+where Z is used to normalise the probabilities
 \[ Z = \sum_{v, h} e^{- E \left( v, h \right)} \]
-Thus, the probability the network asessings for a visibile vector \tmtextit{v}:
+Thus, the probability the network assigns for a visible vector \tmtextit{v}:
 \begin{equation}
   p \left( v \right) = \sum_h \frac{1}{Z} e^{- E \left( v, h \right)}
 \end{equation}
 
 \subsection{Training the network}
 
-The network can be trained such that one maximizes the probability of a training
+The network can be trained such that one maximises the probability of a training
 pattern. The derivative of the log probability of a training vector (given by
 (1)), is simple, as follows:
 \[ \frac{\delta \log p \left( v \right)}{\delta w_{\tmop{ij}}} = < v_i h_i
    >_{\tmop{data}} - < v_i h_i >_{\tmop{model}} \]
 Due to the fact that the Restricted Boltzmann Machine can be represented as a bipartite graph, it is easy
-to attain an \tmtextit{unabiased} sample of the hidden units, given the
+to attain an \tmtextit{unbiased} sample of the hidden units, given the
 visible units.
 \begin{equation}
   p \left( h_j = 1 \left|  \right. v \right) = \sigma \left( b_j + \sum_{i \in
@@ -109,7 +109,7 @@ vector using (3).
 The training rule then becomes:
 \[ \Delta w_{\tmop{ij}} = \lambda \left( < v_i h_i >_{\tmop{data}} - < v_i h_i
    >_{\tmop{reconstruction}} \right) \]
-We note that the above training rule has the desired properties for modeling
+We note that the above training rule has the desired properties for modelling
 the biological brain: it is both \tmtextit{local} and \tmtextit{incremental}.
 Angle brackets \ denote the expected value under the given distribution by the
 following subscript.
@@ -136,7 +136,7 @@ another set of visible units, called the \emph{classification units}.
 The vector of hidden units is used to model the joint distribution between a
 vector of inputs v and a target (classification) vector y. The classification
 vector y corresponds to a class. It's length is given by the number of
-classes. $y = e_c$, where c is the class the vector is modeling ($e_c$ is a
+classes. $y = e_c$, where c is the class the vector is modelling ($e_c$ is a
 vector with all zeros, expect from the position c, where it is 1).
 
 As seen from Figure 2, one now needs to weight matrices, which we will denote
@@ -153,7 +153,7 @@ Which gives rise to the following formula for the probability of a configuration
 \tmtextit{v}, \tmtextit{y}.
 \[ p \left( v, y, h \right) = \frac{e^{- E \left( v \nocomma, y, h
    \right)}}{Z} \]
-where \tmtextit{Z} is the normalizing constant. Thus,
+where \tmtextit{Z} is the normalising constant. Thus,
 \[ p \left( v, y \right) = \sum_h p \left( v, y, h \right) = \sum_h \frac{e^{-
    E \left( v \nocomma, y, h \right)}}{Z} \]
 The distribution used for the Classification Boltzmann Machine are the
@@ -170,7 +170,7 @@ following:
   p \left( y = e_c \left| h \right. \right) = \frac{e^{d^T e_c \noplus + h^T
   Ue_c}}{N}
 \end{equation}
-where N is the normalizing constant $\sum_c$ $e^{d^T e_c \noplus + h^T Ue_c}$.
+where N is the normalising constant $\sum_c$ $e^{d^T e_c \noplus + h^T Ue_c}$.
 
 Note that we denote by $W_i$ the row \tmtextit{i} of matrix \tmtextit{W}, and
 by $W^i_{}$ the column \tmtextit{i} of matrix \tmtextit{W}.
@@ -257,7 +257,7 @@ different classifications, we use as class the index of the pattern in the list
 
 When a pattern needs to be matched to one of the training patterns for
 recognition, one uses the log probability to compute the
-probability of each of the classifications, and choses the one with maximum
+probability of each of the classifications, and chooses the one with maximum
 probability.
 
 
