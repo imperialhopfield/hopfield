@@ -1,0 +1,127 @@
+	Sun Jan  6 01:04 2013 Time and Allocation Profiling Report  (Final)
+
+	   recognize +RTS -p -RTS inbuiltbench bench2
+
+	total time  =        9.91 secs   (9914 ticks @ 1000 us, 1 processor)
+	total alloc = 15,908,682,240 bytes  (excludes profiling overheads)
+
+COST CENTRE        MODULE            %time %alloc
+
+computeH_.weighted Hopfield.Hopfield  42.3   65.9
+randomElem         Hopfield.Util      20.3    6.0
+*.                 Hopfield.Util      15.0   17.1
+shuffle            Hopfield.Util       6.0    4.5
+validWeights       Hopfield.Hopfield   4.3    0.8
+getUpdatables_     Hopfield.Hopfield   3.0    2.7
+getUpdatables_.new Hopfield.Hopfield   1.9    0.9
+computeH_          Hopfield.Hopfield   1.1    0.0
+repeatUntilNothing Hopfield.Util       1.1    0.2
+
+
+                                                                                                        individual     inherited
+COST CENTRE                                      MODULE                               no.     entries  %time %alloc   %time %alloc
+
+MAIN                                             MAIN                                 149           0    0.0    0.0   100.0  100.0
+ main                                            Main                                 299           0    0.0    0.0    99.9  100.0
+  bench2                                         Hopfield.Benchmark                   306           0    0.0    0.0    99.9  100.0
+   performAndPrint1                              Hopfield.ClusterExperiments          308           0    0.0    0.0    99.9  100.0
+    oneIteration1                                Hopfield.ClusterExperiments          312           2    0.0    0.0    99.9  100.0
+     oneIteration1.f                             Hopfield.ClusterExperiments          353           0    0.0    0.0     0.0    0.0
+     oneIteration1.evaluatedFunction             Hopfield.ClusterExperiments          317           2    0.0    0.0     0.0    0.0
+      ./                                         Hopfield.Util                        325           2    0.0    0.0     0.0    0.0
+     oneIteration1.cs                            Hopfield.ClusterExperiments          315           2    0.0    0.0     0.0    0.0
+     oneIteration1.unevaluated                   Hopfield.ClusterExperiments          314           2    0.0    0.0    99.9  100.0
+      oneIteration1.f                            Hopfield.ClusterExperiments          316           4    0.0    0.0    99.9  100.0
+       oneIteration1.evaluatedFunction           Hopfield.ClusterExperiments          318           0    0.0    0.0    99.9  100.0
+        basinsGivenStdT2                         Hopfield.Clusters                    319           4    0.0    0.0    99.9  100.0
+         getGaussianCluster                      Hopfield.Clusters                    324           4    0.0    0.0     0.0    0.0
+          normal                                 Hopfield.Util                        352           4    0.0    0.0     0.0    0.0
+          getGaussianCluster.encoding            Hopfield.Clusters                    328          20    0.0    0.0     0.0    0.0
+           getGaussianCluster.valueAtIndex       Hopfield.Clusters                    351         400    0.0    0.0     0.0    0.0
+            getGaussianCluster.smallerValue      Hopfield.Clusters                    354         178    0.0    0.0     0.0    0.0
+          getGaussianCluster.patSize             Hopfield.Clusters                    326           4    0.0    0.0     0.0    0.0
+         randomSignVector                        Hopfield.Util                        322           4    0.0    0.0     0.0    0.0
+          randomBinaryVector                     Hopfield.Util                        323           4    0.0    0.0     0.0    0.0
+         avgBasinsGivenPats                      Hopfield.Clusters                    320           4    0.0    0.0    99.9  100.0
+          avgBasinsGivenPats.hopfield            Hopfield.Clusters                    339           4    0.0    0.0     0.0    0.0
+           buildHopfieldData                     Hopfield.Hopfield                    340           4    0.0    0.0     0.0    0.0
+            train                                Hopfield.Hopfield                    344           4    0.0    0.0     0.0    0.0
+             vector2D                            Hopfield.Util                        347           4    0.0    0.0     0.0    0.0
+             train.ws                            Hopfield.Hopfield                    346           4    0.0    0.0     0.0    0.0
+              ./.                                Hopfield.Util                        350        1524    0.0    0.0     0.0    0.0
+              train.w                            Hopfield.Hopfield                    349        1600    0.0    0.0     0.0    0.0
+             train.n                             Hopfield.Hopfield                    345           4    0.0    0.0     0.0    0.0
+            buildHopfieldData.trainingFunction   Hopfield.Hopfield                    343           4    0.0    0.0     0.0    0.0
+            buildHopfieldData.\                  Hopfield.Hopfield                    342          20    0.0    0.0     0.0    0.0
+            buildHopfieldData.first_len          Hopfield.Hopfield                    341           4    0.0    0.0     0.0    0.0
+          measurePatternBasin                    Hopfield.Measurement                 327          20    0.0    0.0    99.9  100.0
+           samplePatternBasin                    Hopfield.Measurement                 329          20    0.0    0.0    99.9  100.0
+            samplePatternRing                    Hopfield.Measurement                 331         351    0.3    0.1    99.9  100.0
+             ./.                                 Hopfield.Util                        382         182    0.0    0.0     0.0    0.0
+             checkWsPat                          Hopfield.Hopfield                    336       35100    0.1    0.0    91.2   94.3
+              repeatedUpdate                     Hopfield.Hopfield                    366           0    0.0    0.0    86.7   93.5
+               repeatedUpdate_                   Hopfield.Hopfield                    367       35100    0.1    0.0    86.7   93.5
+                repeatUntilNothing               Hopfield.Util                        368      212670    1.1    0.2    86.6   93.4
+                 update_                         Hopfield.Hopfield                    369      212670    0.8    0.3    85.5   93.2
+                  randomElem                     Hopfield.Util                        380      177570   20.3    6.0    20.3    6.0
+                  update_.flipAtIndex            Hopfield.Hopfield                    378      177570    0.9    0.4     1.0    0.4
+                   update_.flipAtIndex.\         Hopfield.Hopfield                    381      177570    0.0    0.0     0.0    0.0
+                   update_.flipAtIndex.val       Hopfield.Hopfield                    379      177570    0.0    0.0     0.0    0.0
+                  update_.updatables             Hopfield.Hopfield                    370      212670    0.0    0.0    63.4   86.5
+                   getUpdatables_                Hopfield.Hopfield                    371      212670    3.0    2.7    63.4   86.5
+                    getUpdatables_.new           Hopfield.Hopfield                    373     4253400    1.9    0.9    60.4   83.8
+                     computeH_                   Hopfield.Hopfield                    375     4253400    1.1    0.0    58.5   83.0
+                      computeH_.weighted         Hopfield.Hopfield                    376     4253400   42.3   65.9    57.3   83.0
+                       *.                        Hopfield.Util                        377    85068000   15.0   17.1    15.0   17.1
+                     computeH_.p                 Hopfield.Hopfield                    374     4253400    0.0    0.0     0.0    0.0
+              validWeightsPatternSize            Hopfield.Hopfield                    365       35100    0.0    0.0     0.0    0.0
+              validPattern                       Hopfield.Hopfield                    355       35100    0.1    0.0     0.1    0.0
+              validWeights                       Hopfield.Hopfield                    337       35100    4.3    0.8     4.3    0.8
+               validWeights.\                    Hopfield.Hopfield                    348      702000    0.0    0.0     0.0    0.0
+               validWeights.n                    Hopfield.Hopfield                    338       35100    0.0    0.0     0.0    0.0
+             repeatedUpdate                      Hopfield.Hopfield                    335         351    0.0    0.0     0.0    0.0
+             sampleHammingDistance               Hopfield.Measurement                 333         351    0.6    0.5     8.3    5.6
+              sampleHammingDistance.n            Hopfield.Measurement                 363         351    0.0    0.0     0.0    0.0
+              sampleHammingDistance.basePerm     Hopfield.Measurement                 360         351    0.0    0.0     0.0    0.0
+               toArray                           Hopfield.Util                        361         351    0.0    0.0     0.0    0.0
+                toArray.l                        Hopfield.Util                        362         351    0.0    0.0     0.0    0.0
+              sampleHammingDistance.multByPat    Hopfield.Measurement                 356       35100    0.3    0.5     0.3    0.5
+              sampleHammingDistance.coeffSamples Hopfield.Measurement                 334         351    0.1    0.1     7.3    4.6
+               shuffle                           Hopfield.Util                        357         351    6.0    4.5     7.2    4.6
+                shuffle.len                      Hopfield.Util                        359         351    0.0    0.0     0.0    0.0
+                shuffle.shuffledArray            Hopfield.Util                        358       35100    1.0    0.1     1.3    0.1
+                 shuffle.shuffledArray.\         Hopfield.Util                        364      702000    0.3    0.0     0.3    0.0
+             samplePatternRing.numConverging     Hopfield.Measurement                 332         182    0.2    0.0     0.2    0.0
+            samplePatternBasin.n                 Hopfield.Measurement                 330          20    0.0    0.0     0.0    0.0
+          average                                Hopfield.Util                        321           4    0.0    0.0     0.0    0.0
+     oneIteration1.values                        Hopfield.ClusterExperiments          313           2    0.0    0.0     0.0    0.0
+    showsPrec                                    Hopfield.ClusterExperiments          309           1    0.0    0.0     0.0    0.0
+  inbuiltBenchmarkOptions                        Main                                 304           0    0.0    0.0     0.0    0.0
+  recognizeOptions                               Main                                 302           0    0.0    0.0     0.0    0.0
+ CAF                                             Main                                 297           0    0.0    0.0     0.0    0.0
+  inbuiltBenchmarkOptions                        Main                                 303           1    0.0    0.0     0.0    0.0
+  recognizeOptions                               Main                                 301           1    0.0    0.0     0.0    0.0
+  recognizeArgParser                             Main                                 300           1    0.0    0.0     0.0    0.0
+  main                                           Main                                 298           1    0.0    0.0     0.0    0.0
+ CAF                                             Hopfield.Hopfield                    296           0    0.0    0.0     0.0    0.0
+  getUpdatables_                                 Hopfield.Hopfield                    372           0    0.0    0.0     0.0    0.0
+ CAF                                             Hopfield.Benchmark                   290           0    0.0    0.0     0.0    0.0
+  bench2                                         Hopfield.Benchmark                   305           1    0.0    0.0     0.0    0.0
+   performAndPrint1                              Hopfield.ClusterExperiments          307           1    0.0    0.0     0.0    0.0
+ CAF                                             Hopfield.ClusterExperiments          289           0    0.0    0.0     0.0    0.0
+  performAndPrint1                               Hopfield.ClusterExperiments          311           0    0.0    0.0     0.0    0.0
+  showsPrec                                      Hopfield.ClusterExperiments          310           0    0.0    0.0     0.0    0.0
+ CAF                                             Data.Random.Distribution.Normal      286           0    0.1    0.0     0.1    0.0
+ CAF                                             Options.Applicative.Extra            234           0    0.0    0.0     0.0    0.0
+ CAF                                             Options.Applicative.BashCompletion   229           0    0.0    0.0     0.0    0.0
+ CAF                                             System.Random                        223           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.IO.Encoding                      202           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.IO.Handle.FD                     199           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.Show                             198           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.Conc.Signal                      194           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.Float                            191           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.Float.ConversionUtils            190           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.IO.Encoding.Iconv                189           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.Event.Thread                     169           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.Event.Internal                   165           0    0.0    0.0     0.0    0.0
+ CAF                                             GHC.Integer.Logarithms.Internals     157           0    0.0    0.0     0.0    0.0

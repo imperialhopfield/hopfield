@@ -1,0 +1,221 @@
+	Sat Jan  5 20:15 2013 Time and Allocation Profiling Report  (Final)
+
+	   experiments +RTS -p -RTS
+
+	total time  =       44.78 secs   (44776 ticks @ 1000 us, 1 processor)
+	total alloc = 74,817,005,472 bytes  (excludes profiling overheads)
+
+COST CENTRE         MODULE   %time %alloc
+
+computeH_.weighted  Hopfield  43.7   63.5
+randomElem          Util      17.2    5.2
+*.                  Util      15.2   16.5
+update_.flipAtIndex Hopfield   5.1    6.2
+shuffle             Util       4.2    3.2
+validWeights        Hopfield   3.6    0.6
+getUpdatables_      Hopfield   3.1    2.6
+getUpdatables_.new  Hopfield   2.2    0.8
+computeH_           Hopfield   1.1    0.0
+
+
+                                                                                                 individual     inherited
+COST CENTRE                                 MODULE                             no.     entries  %time %alloc   %time %alloc
+
+MAIN                                        MAIN                               134           0    0.0    0.0   100.0  100.0
+ main                                       Main                               269           0    0.0    0.0   100.0  100.0
+  experimentUsingT1NoAvg                    Clusters                           373           0    0.0    0.0    99.4   99.8
+   avgBasinsGivenPats                       Clusters                           386           6    0.0    0.0     0.1    0.0
+    avgBasinsGivenPats.hopfield             Clusters                           405           6    0.0    0.0     0.0    0.0
+     buildHopfieldData                      Hopfield                           406           6    0.0    0.0     0.0    0.0
+      train                                 Hopfield                           410           6    0.0    0.0     0.0    0.0
+       vector2D                             Util                               413           6    0.0    0.0     0.0    0.0
+       train.ws                             Hopfield                           412           6    0.0    0.0     0.0    0.0
+        ./.                                 Util                               416        2286    0.0    0.0     0.0    0.0
+        train.w                             Hopfield                           415        2400    0.0    0.0     0.0    0.0
+       train.n                              Hopfield                           411           6    0.0    0.0     0.0    0.0
+      buildHopfieldData.trainingFunction    Hopfield                           409           6    0.0    0.0     0.0    0.0
+      buildHopfieldData.\                   Hopfield                           408          60    0.0    0.0     0.0    0.0
+      buildHopfieldData.first_len           Hopfield                           407           6    0.0    0.0     0.0    0.0
+    measurePatternBasin                     Measurement                        388          60    0.0    0.0     0.1    0.0
+     samplePatternBasin                     Measurement                        390          60    0.0    0.0     0.1    0.0
+      samplePatternRing                     Measurement                        393        1200    0.0    0.0     0.1    0.0
+       repeatedUpdate                       Hopfield                           401        1200    0.0    0.0     0.0    0.0
+       sampleHammingDistance                Measurement                        395        1200    0.0    0.0     0.0    0.0
+        sampleHammingDistance.multByPat     Measurement                        429           0    0.0    0.0     0.0    0.0
+        sampleHammingDistance.n             Measurement                        426        1200    0.0    0.0     0.0    0.0
+        sampleHammingDistance.basePerm      Measurement                        423        1200    0.0    0.0     0.0    0.0
+         toArray                            Util                               424        1200    0.0    0.0     0.0    0.0
+          toArray.l                         Util                               425        1200    0.0    0.0     0.0    0.0
+        sampleHammingDistance.coeffSamples  Measurement                        397        1200    0.0    0.0     0.0    0.0
+         shuffle                            Util                               399        1200    0.0    0.0     0.0    0.0
+          shuffle.len                       Util                               422        1200    0.0    0.0     0.0    0.0
+          shuffle.shuffledArray             Util                               421           0    0.0    0.0     0.0    0.0
+      samplePatternBasin.n                  Measurement                        391          60    0.0    0.0     0.0    0.0
+   basinsGivenProbabilityT1                 Clusters                           377           0    0.0    0.0    99.3   99.8
+    avgBasinsGivenPats                      Clusters                           387           0    0.0    0.0    99.3   99.8
+     average                                Util                               447           6    0.0    0.0     0.0    0.0
+     measurePatternBasin                    Measurement                        389           0    0.0    0.0    99.3   99.8
+      samplePatternBasin                    Measurement                        392           0    0.1    0.0    99.3   99.8
+       samplePatternRing                    Measurement                        394           0    0.1    0.0    99.2   99.7
+        ./.                                 Util                               449         168    0.0    0.0     0.0    0.0
+        samplePatternRing.numConverging     Measurement                        448         168    0.0    0.0     0.0    0.0
+        repeatedUpdate                      Hopfield                           431           0    0.0    0.0    89.9   95.2
+         repeatedUpdate_                    Hopfield                           432      120000    0.0    0.0    89.9   95.2
+          repeatUntilNothing                Util                               433      963429    0.7    0.1    89.9   95.1
+           update_                          Hopfield                           434      963429    0.7    0.2    89.1   95.0
+            update_.flipAtIndex             Hopfield                           444      843429    5.1    6.2     6.0    6.2
+             update_.valueAtIndex           Hopfield                           445    16868580    0.9    0.0     0.9    0.0
+            randomElem                      Util                               443      843429   17.2    5.2    17.2    5.2
+            update_.updatables              Hopfield                           435      963429    0.0    0.0    65.2   83.4
+             getUpdatables_                 Hopfield                           436      963429    3.1    2.6    65.2   83.4
+              getUpdatables_.new            Hopfield                           438    19268580    2.2    0.8    62.1   80.8
+               computeH_                    Hopfield                           440    19268580    1.1    0.0    60.0   79.9
+                computeH_.weighted          Hopfield                           441    19268580   43.7   63.5    58.9   79.9
+                 *.                         Util                               442   385371600   15.2   16.5    15.2   16.5
+               computeH_.p                  Hopfield                           439    19268580    0.0    0.0     0.0    0.0
+        checkWsPat                          Hopfield                           402      120000    0.1    0.0     3.4    0.6
+         validWeightsPatternSize            Hopfield                           430      120000    0.0    0.0     0.0    0.0
+         validPattern                       Hopfield                           419      120000    0.1    0.0     0.1    0.0
+         validWeights                       Hopfield                           403      120000    3.2    0.6     3.2    0.6
+          validWeights.\                    Hopfield                           414     2400000    0.0    0.0     0.0    0.0
+          validWeights.n                    Hopfield                           404      120000    0.0    0.0     0.0    0.0
+        sampleHammingDistance               Measurement                        396           0    0.5    0.3     5.8    4.0
+         sampleHammingDistance.multByPat    Measurement                        420      120000    0.3    0.4     0.3    0.4
+         sampleHammingDistance.coeffSamples Measurement                        398           0    0.0    0.0     5.0    3.3
+          shuffle                           Util                               400           0    4.2    3.2     5.0    3.2
+           shuffle.shuffledArray            Util                               427      120000    0.5    0.1     0.8    0.1
+            shuffle.shuffledArray.\         Util                               428     2400000    0.2    0.0     0.2    0.0
+    getCluster                              Clusters                           382           6    0.0    0.0     0.0    0.0
+     getPatternInCluster                    Clusters                           383           6    0.0    0.0     0.0    0.0
+      getPatternInCluster.transformBit      Clusters                           384         120    0.0    0.0     0.0    0.0
+       getPatternInCluster.transformBit.bit Clusters                           417        1200    0.0    0.0     0.0    0.0
+        flipBit                             Common                             446          88    0.0    0.0     0.0    0.0
+       gibbsSampling                        Util                               385           6    0.0    0.0     0.0    0.0
+    randomSignVector                        Util                               379           0    0.0    0.0     0.0    0.0
+     randomSignVector.\                     Util                               418         120    0.0    0.0     0.0    0.0
+     randomBinaryVector                     Util                               381           0    0.0    0.0     0.0    0.0
+  main.originIndex                          Main                               347           1    0.0    0.0     0.0    0.0
+  doCheckFixed                              ExpUtil                            340           1    0.0    0.0     0.4    0.0
+   doCheckFixed.patErrs                     ExpUtil                            341           1    0.0    0.0     0.4    0.0
+    checkFixed                              Measurement                        348           6    0.0    0.0     0.4    0.0
+     checkFixed.\                           Measurement                        349         600    0.0    0.0     0.4    0.0
+      compTerm                              Measurement                        350         600    0.0    0.0     0.4    0.0
+       computeH                             Hopfield                           352         600    0.0    0.0     0.4    0.0
+        checkWsPat                          Hopfield                           353         600    0.0    0.0     0.4    0.0
+         computeH.\                         Hopfield                           366         600    0.0    0.0     0.0    0.0
+          computeH_                         Hopfield                           368         600    0.0    0.0     0.0    0.0
+           computeH_.weighted               Hopfield                           369         600    0.0    0.0     0.0    0.0
+            *.                              Util                               370       60000    0.0    0.0     0.0    0.0
+          computeH_.p                       Hopfield                           367         600    0.0    0.0     0.0    0.0
+         validWeightsPatternSize            Hopfield                           365         600    0.0    0.0     0.0    0.0
+         validPattern                       Hopfield                           364         600    0.0    0.0     0.0    0.0
+         validWeights                       Hopfield                           354         600    0.4    0.0     0.4    0.0
+          validWeights.\                    Hopfield                           361       60000    0.0    0.0     0.0    0.0
+          validWeights.n                    Hopfield                           355         600    0.0    0.0     0.0    0.0
+       compTerm.pat                         Measurement                        351           6    0.0    0.0     0.0    0.0
+  main.nets                                 Main                               338           1    0.0    0.0     0.2    0.2
+   buildNetworks                            SuperAttractors                    339           1    0.0    0.0     0.2    0.2
+    oneSuperAttr                            SuperAttractors                    344           6    0.0    0.0     0.0    0.0
+    buildHopfieldData                       Hopfield                           342           6    0.0    0.0     0.2    0.2
+     train                                  Hopfield                           357           6    0.0    0.0     0.2    0.2
+      vector2D                              Util                               360           6    0.0    0.0     0.0    0.0
+      train.ws                              Hopfield                           359           6    0.0    0.0     0.2    0.2
+       ./.                                  Util                               363       59406    0.0    0.0     0.0    0.0
+       train.w                              Hopfield                           362       60000    0.2    0.2     0.2    0.2
+      train.n                               Hopfield                           358           6    0.0    0.0     0.0    0.0
+     buildHopfieldData.trainingFunction     Hopfield                           356           6    0.0    0.0     0.0    0.0
+     buildHopfieldData.\                    Hopfield                           346         111    0.0    0.0     0.0    0.0
+     buildHopfieldData.first_len            Hopfield                           345           6    0.0    0.0     0.0    0.0
+  main.dist                                 Main                               317           1    0.0    0.0     0.0    0.0
+   hammingDistribution                      Measurement                        320           0    0.0    0.0     0.0    0.0
+  patternGen                                Utils                              310           0    0.0    0.0     0.0    0.0
+   toGenVector                              Utils                              311           0    0.0    0.0     0.0    0.0
+    signGen                                 Utils                              333           0    0.0    0.0     0.0    0.0
+  doHamming                                 ExpUtil                            298           1    0.0    0.0     0.0    0.0
+   doHamming.n                              ExpUtil                            337           1    0.0    0.0     0.0    0.0
+   toPercents                               Util                               335           1    0.0    0.0     0.0    0.0
+   doHamming.hammingPct                     ExpUtil                            334           1    0.0    0.0     0.0    0.0
+    ./.                                     Util                               336           8    0.0    0.0     0.0    0.0
+   doHamming.hammingDists                   ExpUtil                            303           1    0.0    0.0     0.0    0.0
+    hammingDistance                         Util                               306           8    0.0    0.0     0.0    0.0
+     hammingDistance.l2                     Util                               312           8    0.0    0.0     0.0    0.0
+     hammingDistance.(...)                  Util                               307           0    0.0    0.0     0.0    0.0
+    hammingDistance.l1                      Util                               305           8    0.0    0.0     0.0    0.0
+    hammingDistance.(...)                   Util                               304           8    0.0    0.0     0.0    0.0
+   prettyList                               Util                               302           1    0.0    0.0     0.0    0.0
+   doHamming.msg                            ExpUtil                            299           1    0.0    0.0     0.0    0.0
+  main.pats                                 Main                               295           1    0.0    0.0     0.0    0.0
+  main.p                                    Main                               294           1    0.0    0.0     0.0    0.0
+  doErrorProb                               ExpUtil                            279           1    0.0    0.0     0.0    0.0
+   doErrorProb.expErrs                      ExpUtil                            293           1    0.0    0.0     0.0    0.0
+    computeErrorSuperAttractorNumbers       Analysis                           296           6    0.0    0.0     0.0    0.0
+     ./.                                    Util                               297           6    0.0    0.0     0.0    0.0
+   packL                                    Common                             286           2    0.0    0.0     0.0    0.0
+    pack                                    Common                             292           2    0.0    0.0     0.0    0.0
+   attachLabels                             Util                               281           1    0.0    0.0     0.0    0.0
+    attachLabels.list                       Util                               284           1    0.0    0.0     0.0    0.0
+     attachLabel                            Util                               285           2    0.0    0.0     0.0    0.0
+      showsPrec                             Common                             291          12    0.0    0.0     0.0    0.0
+  sampleHammingRange                        Measurement                        273           1    0.0    0.0     0.0    0.0
+   sampleHammingDistance                    Measurement                        275           8    0.0    0.0     0.0    0.0
+    sampleHammingDistance.n                 Measurement                        330           8    0.0    0.0     0.0    0.0
+    sampleHammingDistance.basePerm          Measurement                        316           8    0.0    0.0     0.0    0.0
+     toArray                                Util                               328           8    0.0    0.0     0.0    0.0
+      toArray.l                             Util                               329           8    0.0    0.0     0.0    0.0
+    sampleHammingDistance.multByPat         Measurement                        313           8    0.0    0.0     0.0    0.0
+    sampleHammingDistance.coeffSamples      Measurement                        276           8    0.0    0.0     0.0    0.0
+     shuffle                                Util                               277           8    0.0    0.0     0.0    0.0
+      shuffle.len                           Util                               315           8    0.0    0.0     0.0    0.0
+      shuffle.shuffledArray                 Util                               314           8    0.0    0.0     0.0    0.0
+       shuffle.shuffledArray.\              Util                               331         800    0.0    0.0     0.0    0.0
+   runT                                     Util                               274           1    0.0    0.0     0.0    0.0
+  genIO                                     Main                               271           0    0.0    0.0     0.0    0.0
+ CAF                                        Main                               267           0    0.0    0.0     0.0    0.0
+  main                                      Main                               268           1    0.0    0.0     0.0    0.0
+   experimentUsingT1NoAvg                   Clusters                           372           1    0.0    0.0     0.0    0.0
+    basinsGivenProbabilityT1                Clusters                           376           6    0.0    0.0     0.0    0.0
+     randomSignVector                       Util                               378           6    0.0    0.0     0.0    0.0
+      randomBinaryVector                    Util                               380           6    0.0    0.0     0.0    0.0
+   main.patCombiner                         Main                               343           1    0.0    0.0     0.0    0.0
+   main.maxHamming                          Main                               324           1    0.0    0.0     0.0    0.0
+    .*                                      Util                               325           1    0.0    0.0     0.0    0.0
+   main.minHamming                          Main                               322           1    0.0    0.0     0.0    0.0
+    .*                                      Util                               323           1    0.0    0.0     0.0    0.0
+   main.dist                                Main                               318           0    0.0    0.0     0.0    0.0
+    hammingDistribution                     Measurement                        319           1    0.0    0.0     0.0    0.0
+     hammingDistribution.probs              Measurement                        327           1    0.0    0.0     0.0    0.0
+     hammingDistribution.dist               Measurement                        326           1    0.0    0.0     0.0    0.0
+     hammingDistribution.rs                 Measurement                        321           1    0.0    0.0     0.0    0.0
+   patternGen                               Utils                              308           1    0.0    0.0     0.0    0.0
+    toGenVector                             Utils                              309           1    0.0    0.0     0.0    0.0
+   main.maxDegree                           Main                               290           1    0.0    0.0     0.0    0.0
+   main.degrees                             Main                               287           1    0.0    0.0     0.0    0.0
+    powersOfTwo                             SuperAttractors                    288           1    0.0    0.0     0.0    0.0
+   main.n                                   Main                               278           1    0.0    0.0     0.0    0.0
+   main.numRandoms                          Main                               272           1    0.0    0.0     0.0    0.0
+   genIO                                    Main                               270           1    0.0    0.0     0.0    0.0
+ CAF                                        ExpUtil                            265           0    0.0    0.0     0.0    0.0
+  doCheckFixed                              ExpUtil                            371           0    0.0    0.0     0.0    0.0
+  doHamming                                 ExpUtil                            300           0    0.0    0.0     0.0    0.0
+   doHamming.msg                            ExpUtil                            301           0    0.0    0.0     0.0    0.0
+  doErrorProb.errorHeader                   ExpUtil                            282           1    0.0    0.0     0.0    0.0
+  doErrorProb                               ExpUtil                            280           0    0.0    0.0     0.0    0.0
+   doErrorProb.errorHeader                  ExpUtil                            283           0    0.0    0.0     0.0    0.0
+ CAF                                        Hopfield                           264           0    0.0    0.0     0.0    0.0
+  getUpdatables_                            Hopfield                           437           0    0.0    0.0     0.0    0.0
+ CAF                                        SuperAttractors                    262           0    0.0    0.0     0.0    0.0
+  powersOfTwo                               SuperAttractors                    289           0    0.0    0.0     0.0    0.0
+ CAF                                        Utils                              260           0    0.0    0.0     0.0    0.0
+  signGen                                   Utils                              332           1    0.0    0.0     0.0    0.0
+ CAF                                        Clusters                           259           0    0.0    0.0     0.0    0.0
+  experimentUsingT1NoAvg                    Clusters                           374           0    0.0    0.0     0.0    0.0
+   experimentUsingT1NoAvg.probabilities     Clusters                           375           1    0.0    0.0     0.0    0.0
+ CAF                                        Math.Combinatorics.Exact.Primes    212           0    0.0    0.0     0.0    0.0
+ CAF                                        System.Random                      205           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.IO.Handle.FD                   184           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.Conc.Signal                    181           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.Float                          177           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.Float.ConversionUtils          176           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.IO.Encoding                    175           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.IO.Encoding.Iconv              174           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.Integer.Logarithms.Internals   142           0    0.0    0.0     0.0    0.0

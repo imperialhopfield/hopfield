@@ -1,0 +1,232 @@
+	Sat Jan  5 20:27 2013 Time and Allocation Profiling Report  (Final)
+
+	   experiments +RTS -p -RTS
+
+	total time  =       77.18 secs   (77184 ticks @ 1000 us, 1 processor)
+	total alloc = 121,317,420,048 bytes  (excludes profiling overheads)
+
+COST CENTRE          MODULE            %time %alloc
+
+computeH_.cs         Hopfield.Hopfield  31.9   38.2
+computeH_.weighted   Hopfield.Hopfield  17.5   41.8
+computeH_.weighted.\ Hopfield.Hopfield  15.0    0.0
+randomElem           Hopfield.Util      11.3    3.4
+*.                   Hopfield.Util       9.0   10.9
+computeH_            Hopfield.Hopfield   4.3    0.0
+shuffle              Hopfield.Util       2.6    2.0
+validWeights         Hopfield.Hopfield   2.1    0.4
+getUpdatables_       Hopfield.Hopfield   2.0    1.7
+getUpdatables_.new   Hopfield.Hopfield   1.1    0.5
+
+
+                                                                                                 individual     inherited
+COST CENTRE                                 MODULE                             no.     entries  %time %alloc   %time %alloc
+
+MAIN                                        MAIN                               136           0    0.0    0.0   100.0  100.0
+ main                                       Hopfield.Experiment                274           0    0.0    0.0   100.0  100.0
+  experimentUsingT1NoAvg                    Hopfield.Clusters                  383           0    0.0    0.0    99.7   99.9
+   avgBasinsGivenPats                       Hopfield.Clusters                  396           6    0.0    0.0     0.0    0.0
+    avgBasinsGivenPats.hopfield             Hopfield.Clusters                  415           6    0.0    0.0     0.0    0.0
+     buildHopfieldData                      Hopfield.Hopfield                  416           6    0.0    0.0     0.0    0.0
+      train                                 Hopfield.Hopfield                  420           6    0.0    0.0     0.0    0.0
+       vector2D                             Hopfield.Util                      423           6    0.0    0.0     0.0    0.0
+       train.ws                             Hopfield.Hopfield                  422           6    0.0    0.0     0.0    0.0
+        ./.                                 Hopfield.Util                      426        2286    0.0    0.0     0.0    0.0
+        train.w                             Hopfield.Hopfield                  425        2400    0.0    0.0     0.0    0.0
+       train.n                              Hopfield.Hopfield                  421           6    0.0    0.0     0.0    0.0
+      buildHopfieldData.trainingFunction    Hopfield.Hopfield                  419           6    0.0    0.0     0.0    0.0
+      buildHopfieldData.\                   Hopfield.Hopfield                  418          60    0.0    0.0     0.0    0.0
+      buildHopfieldData.first_len           Hopfield.Hopfield                  417           6    0.0    0.0     0.0    0.0
+    measurePatternBasin                     Hopfield.Measurement               398          60    0.0    0.0     0.0    0.0
+     samplePatternBasin                     Hopfield.Measurement               400          60    0.0    0.0     0.0    0.0
+      samplePatternRing                     Hopfield.Measurement               403        1200    0.0    0.0     0.0    0.0
+       repeatedUpdate                       Hopfield.Hopfield                  411        1200    0.0    0.0     0.0    0.0
+       sampleHammingDistance                Hopfield.Measurement               405        1200    0.0    0.0     0.0    0.0
+        sampleHammingDistance.multByPat     Hopfield.Measurement               439           0    0.0    0.0     0.0    0.0
+        sampleHammingDistance.n             Hopfield.Measurement               436        1200    0.0    0.0     0.0    0.0
+        sampleHammingDistance.basePerm      Hopfield.Measurement               433        1200    0.0    0.0     0.0    0.0
+         toArray                            Hopfield.Util                      434        1200    0.0    0.0     0.0    0.0
+          toArray.l                         Hopfield.Util                      435        1200    0.0    0.0     0.0    0.0
+        sampleHammingDistance.coeffSamples  Hopfield.Measurement               407        1200    0.0    0.0     0.0    0.0
+         shuffle                            Hopfield.Util                      409        1200    0.0    0.0     0.0    0.0
+          shuffle.len                       Hopfield.Util                      432        1200    0.0    0.0     0.0    0.0
+          shuffle.shuffledArray             Hopfield.Util                      431           0    0.0    0.0     0.0    0.0
+      samplePatternBasin.n                  Hopfield.Measurement               401          60    0.0    0.0     0.0    0.0
+   basinsGivenProbabilityT1                 Hopfield.Clusters                  387           0    0.0    0.0    99.6   99.9
+    avgBasinsGivenPats                      Hopfield.Clusters                  397           0    0.0    0.0    99.6   99.9
+     average                                Hopfield.Util                      460           6    0.0    0.0     0.0    0.0
+     measurePatternBasin                    Hopfield.Measurement               399           0    0.0    0.0    99.6   99.9
+      samplePatternBasin                    Hopfield.Measurement               402           0    0.0    0.0    99.6   99.9
+       samplePatternRing                    Hopfield.Measurement               404           0    0.1    0.0    99.6   99.8
+        ./.                                 Hopfield.Util                      462         164    0.0    0.0     0.0    0.0
+        samplePatternRing.numConverging     Hopfield.Measurement               461         164    0.0    0.0     0.0    0.0
+        repeatedUpdate                      Hopfield.Hopfield                  441           0    0.0    0.0    93.9   97.0
+         repeatedUpdate_                    Hopfield.Hopfield                  442      120000    0.0    0.0    93.9   97.0
+          repeatUntilNothing                Hopfield.Util                      443     1034565    0.5    0.1    93.9   97.0
+           update_                          Hopfield.Hopfield                  444     1034565    0.5    0.1    93.4   96.9
+            update_.flipAtIndex             Hopfield.Hopfield                  456      914565    0.7    0.2     0.8    0.3
+             update_.flipAtIndex.\          Hopfield.Hopfield                  458      914565    0.0    0.0     0.0    0.0
+             update_.flipAtIndex.val        Hopfield.Hopfield                  457      914565    0.1    0.0     0.1    0.0
+            randomElem                      Hopfield.Util                      455      914565   11.3    3.4    11.3    3.4
+            update_.updatables              Hopfield.Hopfield                  445     1034565    0.0    0.0    80.8   93.1
+             getUpdatables_                 Hopfield.Hopfield                  446     1034565    2.0    1.7    80.7   93.1
+              getUpdatables_.new            Hopfield.Hopfield                  448    20691300    1.1    0.5    78.7   91.4
+               computeH_                    Hopfield.Hopfield                  450    20691300    4.3    0.0    77.6   90.9
+                computeH_.cs                Hopfield.Hopfield                  452    20691300   31.8   38.2    31.8   38.2
+                computeH_.weighted          Hopfield.Hopfield                  451    20691300   17.5   41.8    41.5   52.7
+                 computeH_.weighted.\       Hopfield.Hopfield                  453   413826000   15.0    0.0    23.9   10.9
+                  *.                        Hopfield.Util                      454   413826000    9.0   10.9     9.0   10.9
+               computeH_.p                  Hopfield.Hopfield                  449    20691300    0.0    0.0     0.0    0.0
+        checkWsPat                          Hopfield.Hopfield                  412      120000    0.0    0.0     2.0    0.4
+         validWeightsPatternSize            Hopfield.Hopfield                  440      120000    0.0    0.0     0.0    0.0
+         validPattern                       Hopfield.Hopfield                  429      120000    0.1    0.0     0.1    0.0
+         validWeights                       Hopfield.Hopfield                  413      120000    1.9    0.4     1.9    0.4
+          validWeights.\                    Hopfield.Hopfield                  424     2400000    0.0    0.0     0.0    0.0
+          validWeights.n                    Hopfield.Hopfield                  414      120000    0.0    0.0     0.0    0.0
+        sampleHammingDistance               Hopfield.Measurement               406           0    0.3    0.2     3.7    2.5
+         sampleHammingDistance.multByPat    Hopfield.Measurement               430      120000    0.2    0.2     0.2    0.2
+         sampleHammingDistance.coeffSamples Hopfield.Measurement               408           0    0.0    0.0     3.1    2.0
+          shuffle                           Hopfield.Util                      410           0    2.6    2.0     3.1    2.0
+           shuffle.shuffledArray            Hopfield.Util                      437      120000    0.3    0.0     0.5    0.0
+            shuffle.shuffledArray.\         Hopfield.Util                      438     2400000    0.1    0.0     0.1    0.0
+    getCluster                              Hopfield.Clusters                  392           6    0.0    0.0     0.0    0.0
+     getPatternInCluster                    Hopfield.Clusters                  393           6    0.0    0.0     0.0    0.0
+      getPatternInCluster.transformBit      Hopfield.Clusters                  394         120    0.0    0.0     0.0    0.0
+       getPatternInCluster.transformBit.bit Hopfield.Clusters                  427        1200    0.0    0.0     0.0    0.0
+        flipBit                             Hopfield.Common                    459          91    0.0    0.0     0.0    0.0
+       gibbsSampling                        Hopfield.Util                      395           6    0.0    0.0     0.0    0.0
+    randomSignVector                        Hopfield.Util                      389           0    0.0    0.0     0.0    0.0
+     randomSignVector.\                     Hopfield.Util                      428         120    0.0    0.0     0.0    0.0
+     randomBinaryVector                     Hopfield.Util                      391           0    0.0    0.0     0.0    0.0
+  main.originIndex                          Hopfield.Experiment                352           1    0.0    0.0     0.0    0.0
+  doCheckFixed                              Hopfield.ExpUtil                   345           1    0.0    0.0     0.2    0.0
+   prettyList                               Hopfield.Util                      381           1    0.0    0.0     0.0    0.0
+   doCheckFixed.msg                         Hopfield.ExpUtil                   378           1    0.0    0.0     0.0    0.0
+   doCheckFixed.patErrs                     Hopfield.ExpUtil                   346           1    0.0    0.0     0.2    0.0
+    checkFixed                              Hopfield.Measurement               353           6    0.0    0.0     0.2    0.0
+     checkFixed.\                           Hopfield.Measurement               354         460    0.0    0.0     0.2    0.0
+      compTerm                              Hopfield.Measurement               355         460    0.0    0.0     0.2    0.0
+       computeH                             Hopfield.Hopfield                  357         460    0.0    0.0     0.2    0.0
+        checkWsPat                          Hopfield.Hopfield                  358         460    0.0    0.0     0.2    0.0
+         computeH.\                         Hopfield.Hopfield                  371         460    0.0    0.0     0.0    0.0
+          computeH_                         Hopfield.Hopfield                  373         460    0.0    0.0     0.0    0.0
+           computeH_.cs                     Hopfield.Hopfield                  375         460    0.0    0.0     0.0    0.0
+           computeH_.weighted               Hopfield.Hopfield                  374         460    0.0    0.0     0.0    0.0
+            computeH_.weighted.\            Hopfield.Hopfield                  376       46000    0.0    0.0     0.0    0.0
+             *.                             Hopfield.Util                      377       46000    0.0    0.0     0.0    0.0
+          computeH_.p                       Hopfield.Hopfield                  372         460    0.0    0.0     0.0    0.0
+         validWeightsPatternSize            Hopfield.Hopfield                  370         460    0.0    0.0     0.0    0.0
+         validPattern                       Hopfield.Hopfield                  369         460    0.0    0.0     0.0    0.0
+         validWeights                       Hopfield.Hopfield                  359         460    0.2    0.0     0.2    0.0
+          validWeights.\                    Hopfield.Hopfield                  366       46000    0.0    0.0     0.0    0.0
+          validWeights.n                    Hopfield.Hopfield                  360         460    0.0    0.0     0.0    0.0
+       compTerm.pat                         Hopfield.Measurement               356           6    0.0    0.0     0.0    0.0
+  main.nets                                 Hopfield.Experiment                343           1    0.0    0.0     0.1    0.1
+   buildNetworks                            Hopfield.SuperAttractors           344           1    0.0    0.0     0.1    0.1
+    oneSuperAttr                            Hopfield.SuperAttractors           349           6    0.0    0.0     0.0    0.0
+    buildHopfieldData                       Hopfield.Hopfield                  347           6    0.0    0.0     0.1    0.1
+     train                                  Hopfield.Hopfield                  362           6    0.0    0.0     0.1    0.1
+      vector2D                              Hopfield.Util                      365           6    0.0    0.0     0.0    0.0
+      train.ws                              Hopfield.Hopfield                  364           6    0.0    0.0     0.1    0.1
+       ./.                                  Hopfield.Util                      368       59406    0.0    0.0     0.0    0.0
+       train.w                              Hopfield.Hopfield                  367       60000    0.1    0.1     0.1    0.1
+      train.n                               Hopfield.Hopfield                  363           6    0.0    0.0     0.0    0.0
+     buildHopfieldData.trainingFunction     Hopfield.Hopfield                  361           6    0.0    0.0     0.0    0.0
+     buildHopfieldData.\                    Hopfield.Hopfield                  351         111    0.0    0.0     0.0    0.0
+     buildHopfieldData.first_len            Hopfield.Hopfield                  350           6    0.0    0.0     0.0    0.0
+  main.dist                                 Hopfield.Experiment                322           1    0.0    0.0     0.0    0.0
+   hammingDistribution                      Hopfield.Measurement               325           0    0.0    0.0     0.0    0.0
+  patternGen                                Hopfield.TestUtil                  315           0    0.0    0.0     0.0    0.0
+   toGenVector                              Hopfield.TestUtil                  316           0    0.0    0.0     0.0    0.0
+    signGen                                 Hopfield.TestUtil                  338           0    0.0    0.0     0.0    0.0
+  doHamming                                 Hopfield.ExpUtil                   303           1    0.0    0.0     0.0    0.0
+   doHamming.n                              Hopfield.ExpUtil                   342           1    0.0    0.0     0.0    0.0
+   toPercents                               Hopfield.Util                      340           1    0.0    0.0     0.0    0.0
+   doHamming.hammingPct                     Hopfield.ExpUtil                   339           1    0.0    0.0     0.0    0.0
+    ./.                                     Hopfield.Util                      341           8    0.0    0.0     0.0    0.0
+   doHamming.hammingDists                   Hopfield.ExpUtil                   308           1    0.0    0.0     0.0    0.0
+    hammingDistance                         Hopfield.Util                      311           8    0.0    0.0     0.0    0.0
+     hammingDistance.l2                     Hopfield.Util                      317           8    0.0    0.0     0.0    0.0
+     hammingDistance.(...)                  Hopfield.Util                      312           0    0.0    0.0     0.0    0.0
+    hammingDistance.l1                      Hopfield.Util                      310           8    0.0    0.0     0.0    0.0
+    hammingDistance.(...)                   Hopfield.Util                      309           8    0.0    0.0     0.0    0.0
+   prettyList                               Hopfield.Util                      307           1    0.0    0.0     0.0    0.0
+   doHamming.msg                            Hopfield.ExpUtil                   304           1    0.0    0.0     0.0    0.0
+  main.pats                                 Hopfield.Experiment                300           1    0.0    0.0     0.0    0.0
+  main.p                                    Hopfield.Experiment                299           1    0.0    0.0     0.0    0.0
+  doErrorProb                               Hopfield.ExpUtil                   284           1    0.0    0.0     0.0    0.0
+   doErrorProb.expErrs                      Hopfield.ExpUtil                   298           1    0.0    0.0     0.0    0.0
+    computeErrorSuperAttractorNumbers       Hopfield.Analysis                  301           6    0.0    0.0     0.0    0.0
+     ./.                                    Hopfield.Util                      302           6    0.0    0.0     0.0    0.0
+   packL                                    Hopfield.Common                    291           2    0.0    0.0     0.0    0.0
+    pack                                    Hopfield.Common                    297           2    0.0    0.0     0.0    0.0
+   attachLabels                             Hopfield.Util                      286           1    0.0    0.0     0.0    0.0
+    attachLabels.list                       Hopfield.Util                      289           1    0.0    0.0     0.0    0.0
+     attachLabel                            Hopfield.Util                      290           2    0.0    0.0     0.0    0.0
+      showsPrec                             Hopfield.Common                    296          12    0.0    0.0     0.0    0.0
+  sampleHammingRange                        Hopfield.Measurement               278           1    0.0    0.0     0.0    0.0
+   sampleHammingDistance                    Hopfield.Measurement               280           8    0.0    0.0     0.0    0.0
+    sampleHammingDistance.n                 Hopfield.Measurement               335           8    0.0    0.0     0.0    0.0
+    sampleHammingDistance.basePerm          Hopfield.Measurement               321           8    0.0    0.0     0.0    0.0
+     toArray                                Hopfield.Util                      333           8    0.0    0.0     0.0    0.0
+      toArray.l                             Hopfield.Util                      334           8    0.0    0.0     0.0    0.0
+    sampleHammingDistance.multByPat         Hopfield.Measurement               318           8    0.0    0.0     0.0    0.0
+    sampleHammingDistance.coeffSamples      Hopfield.Measurement               281           8    0.0    0.0     0.0    0.0
+     shuffle                                Hopfield.Util                      282           8    0.0    0.0     0.0    0.0
+      shuffle.len                           Hopfield.Util                      320           8    0.0    0.0     0.0    0.0
+      shuffle.shuffledArray                 Hopfield.Util                      319           8    0.0    0.0     0.0    0.0
+       shuffle.shuffledArray.\              Hopfield.Util                      336         800    0.0    0.0     0.0    0.0
+   runT                                     Hopfield.Util                      279           1    0.0    0.0     0.0    0.0
+  genIO                                     Hopfield.Experiment                276           0    0.0    0.0     0.0    0.0
+ CAF                                        Main                               271           0    0.0    0.0     0.0    0.0
+  main                                      Main                               272           1    0.0    0.0     0.0    0.0
+ CAF                                        Hopfield.Experiment                270           0    0.0    0.0     0.0    0.0
+  main                                      Hopfield.Experiment                273           1    0.0    0.0     0.0    0.0
+   experimentUsingT1NoAvg                   Hopfield.Clusters                  382           1    0.0    0.0     0.0    0.0
+    basinsGivenProbabilityT1                Hopfield.Clusters                  386           6    0.0    0.0     0.0    0.0
+     randomSignVector                       Hopfield.Util                      388           6    0.0    0.0     0.0    0.0
+      randomBinaryVector                    Hopfield.Util                      390           6    0.0    0.0     0.0    0.0
+   main.patCombiner                         Hopfield.Experiment                348           1    0.0    0.0     0.0    0.0
+   main.maxHamming                          Hopfield.Experiment                329           1    0.0    0.0     0.0    0.0
+    .*                                      Hopfield.Util                      330           1    0.0    0.0     0.0    0.0
+   main.minHamming                          Hopfield.Experiment                327           1    0.0    0.0     0.0    0.0
+    .*                                      Hopfield.Util                      328           1    0.0    0.0     0.0    0.0
+   main.dist                                Hopfield.Experiment                323           0    0.0    0.0     0.0    0.0
+    hammingDistribution                     Hopfield.Measurement               324           1    0.0    0.0     0.0    0.0
+     hammingDistribution.probs              Hopfield.Measurement               332           1    0.0    0.0     0.0    0.0
+     hammingDistribution.dist               Hopfield.Measurement               331           1    0.0    0.0     0.0    0.0
+     hammingDistribution.rs                 Hopfield.Measurement               326           1    0.0    0.0     0.0    0.0
+   patternGen                               Hopfield.TestUtil                  313           1    0.0    0.0     0.0    0.0
+    toGenVector                             Hopfield.TestUtil                  314           1    0.0    0.0     0.0    0.0
+   main.maxDegree                           Hopfield.Experiment                295           1    0.0    0.0     0.0    0.0
+   main.degrees                             Hopfield.Experiment                292           1    0.0    0.0     0.0    0.0
+    powersOfTwo                             Hopfield.SuperAttractors           293           1    0.0    0.0     0.0    0.0
+   main.n                                   Hopfield.Experiment                283           1    0.0    0.0     0.0    0.0
+   main.numRandoms                          Hopfield.Experiment                277           1    0.0    0.0     0.0    0.0
+   genIO                                    Hopfield.Experiment                275           1    0.0    0.0     0.0    0.0
+ CAF                                        Hopfield.TestUtil                  269           0    0.0    0.0     0.0    0.0
+  signGen                                   Hopfield.TestUtil                  337           1    0.0    0.0     0.0    0.0
+ CAF                                        Hopfield.ExpUtil                   268           0    0.0    0.0     0.0    0.0
+  doCheckFixed                              Hopfield.ExpUtil                   379           0    0.0    0.0     0.0    0.0
+   doCheckFixed.msg                         Hopfield.ExpUtil                   380           0    0.0    0.0     0.0    0.0
+  doHamming                                 Hopfield.ExpUtil                   305           0    0.0    0.0     0.0    0.0
+   doHamming.msg                            Hopfield.ExpUtil                   306           0    0.0    0.0     0.0    0.0
+  doErrorProb.errorHeader                   Hopfield.ExpUtil                   287           1    0.0    0.0     0.0    0.0
+  doErrorProb                               Hopfield.ExpUtil                   285           0    0.0    0.0     0.0    0.0
+   doErrorProb.errorHeader                  Hopfield.ExpUtil                   288           0    0.0    0.0     0.0    0.0
+ CAF                                        Hopfield.Hopfield                  267           0    0.0    0.0     0.0    0.0
+  getUpdatables_                            Hopfield.Hopfield                  447           0    0.0    0.0     0.0    0.0
+ CAF                                        Hopfield.Clusters                  264           0    0.0    0.0     0.0    0.0
+  experimentUsingT1NoAvg                    Hopfield.Clusters                  384           0    0.0    0.0     0.0    0.0
+   experimentUsingT1NoAvg.probabilities     Hopfield.Clusters                  385           1    0.0    0.0     0.0    0.0
+ CAF                                        Hopfield.SuperAttractors           261           0    0.0    0.0     0.0    0.0
+  powersOfTwo                               Hopfield.SuperAttractors           294           0    0.0    0.0     0.0    0.0
+ CAF                                        Math.Combinatorics.Exact.Primes    214           0    0.0    0.0     0.0    0.0
+ CAF                                        System.Random                      207           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.IO.Handle.FD                   186           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.Conc.Signal                    183           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.Float                          179           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.Float.ConversionUtils          178           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.IO.Encoding                    177           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.IO.Encoding.Iconv              176           0    0.0    0.0     0.0    0.0
+ CAF                                        GHC.Integer.Logarithms.Internals   144           0    0.0    0.0     0.0    0.0

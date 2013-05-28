@@ -1,0 +1,12 @@
+UTIL
+
+slow:
+
+columnVector
+dotProduct
+
+
+-- Random update
+
+before new random update: 2e5d858 - pattern size 60 - 1:12
+after new random update:  c6d01c6 - pattern size 60 -   42
