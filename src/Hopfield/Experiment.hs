@@ -9,7 +9,7 @@ import Test.QuickCheck.Gen (unGen)
 
 import Hopfield.Clusters
 import Hopfield.Common
-import Hopfield.ExpUtil
+import Hopfield.ExperimentUtil
 import Hopfield.Hopfield
 import Hopfield.Measurement
 import Hopfield.SuperAttractors

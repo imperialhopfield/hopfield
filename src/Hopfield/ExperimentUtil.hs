@@ -1,6 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Hopfield.ExpUtil where
+module Hopfield.ExperimentUtil where
 
 import qualified Data.Vector as V
 

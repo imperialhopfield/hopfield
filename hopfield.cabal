@@ -25,7 +25,7 @@ library
     , Hopfield.Util
     , Hopfield.Experiment
     , Hopfield.TestUtil
-    , Hopfield.ExpUtil
+    , Hopfield.ExperimentUtil
     , Hopfield.Benchmark
     , Hopfield.SmallExperiments
     , Hopfield.ClusterExperiments

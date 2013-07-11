@@ -8,7 +8,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Gen (unGen)
 
 import Hopfield.Common
-import Hopfield.ExpUtil
+import Hopfield.ExperimentUtil
 import Hopfield.Hopfield (LearningType (..))
 import Hopfield.Measurement
 import Hopfield.SuperAttractors
