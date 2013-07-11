@@ -1,12 +1,12 @@
-module TestUtil where
+module TestBinary where
 
 import Test.Hspec
 import Test.QuickCheck
 
 import Hopfield.TestUtil
 
-testUtil :: Spec
-testUtil = do
+testBinary :: Spec
+testBinary = do
   describe "test functions in Util" $ do
 
     it "tests toBinary" $

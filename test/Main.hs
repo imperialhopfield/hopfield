@@ -6,7 +6,7 @@ import Test.Hspec
 
 import TestBoltzmann
 import TestHopfield
-import TestUtil
+import TestBinary
 import TestMeasurement
 
 main :: IO ()
@@ -16,6 +16,6 @@ main = hspec $ do
 
   testHopfield
 
-  testUtil
+  testBinary
 
   testMeasurement
