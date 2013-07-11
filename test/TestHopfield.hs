@@ -30,7 +30,7 @@ configs = [ Config Hebbian 100
           , Config Storkey 30
           ]
 
--- forAllMethods :: (Config -> Spec) -> Core.Type.SpecM ()
+forAllMethods :: (Config -> Spec) -> Spec
 forAllMethods testFun = forM_ configs $ \conf@Config {method, maxPatSize} ->
                           describe (show method ++ " " ++ show maxPatSize) $ do
                             testFun conf
