@@ -2,7 +2,7 @@
 
 -- | Base Restricted Boltzmann machine.
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
-module Hopfield.RestrictedBoltzmannMachine where
+module Hopfield.Boltzmann.RestrictedBoltzmannMachine where
 
 
 import           Data.Maybe

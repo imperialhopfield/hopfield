@@ -1,6 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Hopfield.ClusterExperiments where
+module Hopfield.Experiments.ClusterExperiments where
 -- Cluster Experiments which were performed by Federico
 
 import Control.Monad

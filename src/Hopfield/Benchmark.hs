@@ -3,7 +3,7 @@ module Hopfield.Benchmark where
 
 import Hopfield.Hopfield
 import Hopfield.Clusters
-import Hopfield.ClusterExperiments
+import Hopfield.Experiments.ClusterExperiments
 
 bench1 :: IO ()
 bench1 = print =<< experimentUsingT1NoAvg Hebbian 10 10

@@ -1,7 +1,7 @@
 {-# LANGUAGE ParallelListComp #-}
 
 -- | Performs experiments with two super attractors.
-module Hopfield.Experiment2SuperAttractors where
+module Hopfield.Experiments.Experiment2SuperAttractors where
 
 import Control.Monad (replicateM)
 import Control.Monad.Random
@@ -9,7 +9,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Gen (unGen)
 
 import Hopfield.Common
-import Hopfield.ExperimentUtil
+import Hopfield.Experiments.ExperimentUtil
 import Hopfield.Hopfield (LearningType (..))
 import Hopfield.Measurement
 import Hopfield.SuperAttractors

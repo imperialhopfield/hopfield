@@ -15,21 +15,21 @@ library
   exposed-modules:
       Hopfield.Hopfield
     , Hopfield.Analysis
-    , Hopfield.Measurement
-    , Hopfield.ClassificationBoltzmannMachine
+    , Hopfield.Benchmark
+    , Hopfield.Boltzmann.ClassificationBoltzmannMachine
+    , Hopfield.Boltzmann.RestrictedBoltzmannMachine
     , Hopfield.Clusters
     , Hopfield.Common
-    , Hopfield.ConvertImage
-    , Hopfield.RestrictedBoltzmannMachine
+    , Hopfield.Experiments.ClusterExperiments
+    , Hopfield.Experiments.Experiment
+    , Hopfield.Experiments.Experiment2SuperAttractors
+    , Hopfield.Experiments.ExperimentUtil
+    , Hopfield.Experiments.SmallExperiments
+    , Hopfield.Images.ConvertImage
+    , Hopfield.Measurement
     , Hopfield.SuperAttractors
-    , Hopfield.Util
-    , Hopfield.Experiment
     , Hopfield.TestUtil
-    , Hopfield.ExperimentUtil
-    , Hopfield.Benchmark
-    , Hopfield.SmallExperiments
-    , Hopfield.ClusterExperiments
-    , Hopfield.Experiment2SuperAttractors
+    , Hopfield.Util
   other-modules:
   hs-source-dirs:
     src
@@ -52,7 +52,7 @@ library
     , monad-loops >= 0.3.3.0
     , split >= 0.2.1.1
   c-sources:
-      src/Hopfield/convertImage.c
+      src/Hopfield/Images/convertImage.c
   include-dirs:
       src/Hopfield
     , /usr/include/ImageMagick

@@ -16,7 +16,7 @@ import           Test.QuickCheck
 
 import           Hopfield.Hopfield
 import           Hopfield.Measurement
-import           Hopfield.RestrictedBoltzmannMachine
+import           Hopfield.Boltzmann.RestrictedBoltzmannMachine
 import           Hopfield.Util
 
 

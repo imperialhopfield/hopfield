@@ -12,9 +12,9 @@ import           System.Directory
 
 import Hopfield.Common
 import Hopfield.Hopfield
-import Hopfield.ConvertImage
-import Hopfield.RestrictedBoltzmannMachine
-import Hopfield.ClassificationBoltzmannMachine
+import Hopfield.Images.ConvertImage
+import Hopfield.Boltzmann.RestrictedBoltzmannMachine
+import Hopfield.Boltzmann.ClassificationBoltzmannMachine
 import Hopfield.Benchmark
 import Hopfield.Util
 

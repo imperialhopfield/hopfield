@@ -1,6 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Hopfield.Experiment where
+module Hopfield.Experiments.Experiment where
 
 import Control.Monad (replicateM)
 import Control.Monad.Random
@@ -9,7 +9,7 @@ import Test.QuickCheck.Gen (unGen)
 
 import Hopfield.Clusters
 import Hopfield.Common
-import Hopfield.ExperimentUtil
+import Hopfield.Experiments.ExperimentUtil
 import Hopfield.Hopfield
 import Hopfield.Measurement
 import Hopfield.SuperAttractors

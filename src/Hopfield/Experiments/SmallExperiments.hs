@@ -1,6 +1,6 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Hopfield.SmallExperiments where
+module Hopfield.Experiments.SmallExperiments where
 
 -- Module use to perform small experiments that prove that Storkey learning
 -- has a bigger basin size than Hebbian learning

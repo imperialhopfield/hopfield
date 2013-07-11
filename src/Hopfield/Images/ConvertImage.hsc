@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP, ForeignFunctionInterface #-}
 
-module Hopfield.ConvertImage (
+module Hopfield.Images.ConvertImage (
   loadPicture
 , CBinaryPattern (..)
 ) where
@@ -11,7 +11,7 @@ import Foreign.Ptr
 import Foreign.Storable
 import Foreign.Marshal.Array
 
-#include "convertImage.h"
+#include "Images/convertImage.h"
 
 -- From: http://www.haskell.org/haskellwiki/FFI_cook_book
 #let alignment t = "%lu", (unsigned long) offsetof(struct { char x__; t (y__); }, y__)

@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternGuards, ScopedTypeVariables #-}
 
-module Hopfield.ClassificationBoltzmannMachine where
+module Hopfield.Boltzmann.ClassificationBoltzmannMachine where
 -- | Base Restricted Boltzmann machine.
 
 -- http://en.wikipedia.org/wiki/Restricted_Boltzmann_machine
