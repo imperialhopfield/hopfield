@@ -6,7 +6,7 @@ import           Options.Applicative
 import qualified Hopfield.Experiment
 import qualified Hopfield.SmallExperiments
 import qualified Hopfield.ClusterExperiments
-import qualified Hopfield.ExperimentSuper2
+import qualified Hopfield.Experiment2SuperAttractors
 
 
 data ExperimentArgs = ExperimentArgs { experimentName :: String
@@ -30,5 +30,5 @@ main = do
     "experiment" -> Hopfield.Experiment.main
     "small"      -> Hopfield.SmallExperiments.main
     "cluster"    -> Hopfield.ClusterExperiments.run args
-    "super"      -> Hopfield.ExperimentSuper2.main
+    "super"      -> Hopfield.Experiment2SuperAttractors.main
     _            -> error "unknown experiment"

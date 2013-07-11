@@ -29,7 +29,7 @@ library
     , Hopfield.Benchmark
     , Hopfield.SmallExperiments
     , Hopfield.ClusterExperiments
-    , Hopfield.ExperimentSuper2
+    , Hopfield.Experiment2SuperAttractors
   other-modules:
   hs-source-dirs:
     src

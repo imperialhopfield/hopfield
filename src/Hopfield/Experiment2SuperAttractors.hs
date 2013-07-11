@@ -1,6 +1,7 @@
 {-# LANGUAGE ParallelListComp #-}
 
-module Hopfield.ExperimentSuper2 where
+-- | Performs experiments with two super attractors.
+module Hopfield.Experiment2SuperAttractors where
 
 import Control.Monad (replicateM)
 import Control.Monad.Random
