@@ -20,7 +20,7 @@ testBoltzmannMachine = do
    let boltzmannAndPatGen' = boltzmannAndPatGen maxPatListSize maxPatSize maxNrHidden
 
    it "tests that the patterns and nr of hidden neurons stored in the Boltzmann data structure are the same as the ones which were given as input" $
-     forAll boltzmannBuildGen' build_BM_Check
+     forAll boltzmannBuildGen' buildBoltzmannCheck
 
    it "tests that the activation function application always gives us a probability" $
      forAll boltzmannAndPatGen' $ probabilityCheck

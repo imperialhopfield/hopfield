@@ -198,8 +198,8 @@ boltzmannBuildGen m1 m2 max_hidden = do
   return $ (pats, i)
 
 
-build_BM_Check :: ([Pattern], Int) -> Gen Bool
-build_BM_Check (pats, nr_h) = do
+buildBoltzmannCheck :: ([Pattern], Int) -> Gen Bool
+buildBoltzmannCheck (pats, nr_h) = do
   i <- arbitrary
   let bd = evalRand (buildBoltzmannData' pats nr_h) (mkStdGen i)
   return $ patternsB bd == pats && nr_hiddenB bd == nr_h
