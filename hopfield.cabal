@@ -97,7 +97,7 @@ executable recognize
     , MonadRandom >= 0.1.8
     , vector >= 0.9.1
     , optparse-applicative >= 0.5.0.0
-    , JuicyPixels >= 2.0.0 && < 2.0.2
+    , JuicyPixels >= 2.0.0
     , directory >= 1.1.0.2
   ghc-options:
 
