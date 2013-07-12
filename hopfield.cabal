@@ -3,7 +3,7 @@ version:       0.1.0.0
 license:       MIT
 author:        Mihaela Rosca, Lukasz Severyn, Niklas Hambuechen, Razvan Marinescu, Wael Al Jisihi
 copyright:     Copyright: (c) 2012 Mihaela Rosca, Lukasz Severyn, Niklas Hambuechen, Razvan Marinescu, Wael Al Jisihi
-maintainer:    Niklas Hambüchen <mail@nh2.me>
+maintainer:    Niklas Hambuechen <mail@nh2.me>
 category:      AI, Machine Learning
 stability:     experimental
 synopsis:      Hopfield Networks, Boltzmann Machines and Clusters
