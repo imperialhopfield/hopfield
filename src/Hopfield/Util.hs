@@ -1,9 +1,8 @@
 {-# LANGUAGE ParallelListComp, ScopedTypeVariables #-}
 
--- This module uses general purpose functions which are use trought the project.
+-- | This module uses general purpose functions which are use trought the project.
 -- Should not contain any project defined data types. Needs to be kept
 -- as general as possible.
-
 
 module Hopfield.Util (
     average
@@ -100,8 +99,8 @@ log2 = logBase 2.0
 
 
 
- -- | Generates a number sampled from a random distribution, given the mean and
- -- standard deviation.
+-- | Generates a number sampled from a random distribution, given the mean and
+-- standard deviation.
 normal :: forall m . MonadRandom m => Double -> Double -> m Double
 normal m std = do
   r <- DR.runRVar (DR.normal m std) (Random.getRandom :: MonadRandom m => m Word32)
