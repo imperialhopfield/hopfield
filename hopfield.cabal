@@ -4,10 +4,37 @@ license:       AllRightsReserved
 author:        Lukasz Severyn, Mihaela Rosca, Niklas Hambuechen, Razvan Marinescu, Wael Al Jisihi
 copyright:     Copyright: (c) 2012 Lukasz Severyn, Mihaela Rosca, Niklas Hambuechen, Razvan Marinescu, Wael Al Jisihi
 maintainer:    Niklas Hambüchen <mail@nh2.me>
+category:      AI, Machine Learning
 stability:     experimental
+synopsis:      Hopfield Networks, Boltzmann Machines and Clusters
+description:   Attractor Neural Networks for Modelling Associative Memory
+               .
+               Report: <https://github.com/imperialhopfield/hopfield/raw/master/report/report.pdf>
+               .
+               A third year group project at Imperial College London,
+               supervised by Prof. Abbas Edalat.
+               .
+               This projects implements:
+               .
+               * Hopfield Networks
+               .
+               * Clusters and Super Attractors
+               .
+               * The Restricted Boltzmann Machine
+               .
+               * A Boltzmann Machine for classification
+               .
+               and comes with a range of experiments to evaluate their properties.
+
+homepage:      https://github.com/imperialhopfield/hopfield
+bug-Reports:   https://github.com/imperialhopfield/hopfield/issues
 
 build-type:    Simple
 cabal-version: >= 1.10
+
+source-repository head
+  type: git
+  location: git://github.com/imperialhopfield/hopfield.git
 
 
 library
