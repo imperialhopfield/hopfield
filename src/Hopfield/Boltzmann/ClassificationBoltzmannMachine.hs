@@ -20,8 +20,6 @@ import qualified Numeric.Container as NC
 import Hopfield.Common
 import Hopfield.Util
 
-import Debug.Trace
-
 -- In the case of the Boltzmann Machine the weight matrix establishes the
 -- weights between visible and hidden neurons
 -- w i j - connection between visible neuron i and hidden neuron j
@@ -256,7 +254,7 @@ trainBoltzmann pats nr_h = do
 matchPatternCBoltzmann :: BoltzmannData -> Pattern -> Int
 matchPatternCBoltzmann bm v
   | Just e <- validPattern Visible (weightsB bm) v = error e
-  | otherwise = trace (show $ map (probability . snd) patternsWithClassifications) fromJust $ maxPat `elemIndex` pats
+  | otherwise = fromJust $ maxPat `elemIndex` pats
     where
       pats_classes = pattern_to_class bm
       pats = patternsB bm
