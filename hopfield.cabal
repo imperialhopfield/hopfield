@@ -89,7 +89,7 @@ library
     -- Can't use "-Wextra -Werror" here due to hsc2hs generating unused main() parameters
     -g -std=c99 -O0 -Wall -Wextra
   ghc-options:
-    -Wall -fwarn-unused-imports -auto-all -O
+    -Wall -fwarn-unused-imports -auto-all
   extra-libraries:
     MagickWand MagickCore
 
@@ -106,7 +106,7 @@ executable experiment
     , hopfield
     , optparse-applicative >= 0.5.0.0
   ghc-options:
-    -Wall -fwarn-unused-imports -auto-all -O -caf-all -rtsopts -threaded
+    -Wall -fwarn-unused-imports -auto-all -caf-all -rtsopts -threaded
 
 
 
@@ -128,7 +128,7 @@ executable recognize
     , directory >= 1.1.0.2
   ghc-options:
 
-    -Wall -fwarn-unused-imports -auto-all -O -caf-all -rtsopts -threaded
+    -Wall -fwarn-unused-imports -auto-all -caf-all -rtsopts -threaded
 
 
 Test-Suite tests
@@ -151,4 +151,4 @@ Test-Suite tests
     , exact-combinatorics >= 0.2.0.4
     , parallel >= 3.1.0.1
   ghc-options:
-    -Wall -fwarn-unused-imports -auto-all -O -caf-all -rtsopts
+    -Wall -fwarn-unused-imports -auto-all -caf-all -rtsopts
