@@ -71,7 +71,11 @@ boundedListGen g n = do
   len <- choose (0, n)
   vectorOf len g
 
-
+-- | @patListGen t maxPatSize maxPatListSize@ Generates a list of patterns.
+-- The size of each pattern is less than maxPatSize.
+-- The size odf the list is less than maxPatListSize.
+-- The type is required in order to create types specific for Boltzmann, 
+-- Hopfield etc.
 patListGen :: Type -> Int -> Int -> Gen [Pattern]
 patListGen t maxPatSize maxPatListSize = do
     i <- choose (1, maxPatSize)
@@ -190,29 +194,37 @@ repeatedUpdateCheck method (training_pats, pats)
         i <- arbitrary
         return $ evalRand (stopped pat) (mkStdGen i)
 
-
+-- | @boltzmannBuildGen m1 m2 max_hidden@ Generates the structures
+-- required for creating a Boltzmann machine: a list of patterns
+-- together with the number of hidden layers, which has to be less 
+-- than max_hidden.
 boltzmannBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
-boltzmannBuildGen m1 m2 max_hidden = do
-  pats <- patListGen BM m1 m2
+boltzmannBuildGen maxPatSize maxPatListSize max_hidden = do
+  pats <- patListGen BM maxPatSize maxPatListSize
   i    <- choose (1, max_hidden)
   return $ (pats, i)
 
-
+--  | Checks that the buildBoltzmann function does not modify
+-- the given patterns or the number of hidden layers.
 buildBoltzmannCheck :: ([Pattern], Int) -> Gen Bool
 buildBoltzmannCheck (pats, nr_h) = do
   i <- arbitrary
   let bd = evalRand (buildBoltzmannData' pats nr_h) (mkStdGen i)
   return $ patternsB bd == pats && nr_hiddenB bd == nr_h
 
-
+-- | Generates a list of patterns and the number of hidden layers
+-- used to create a Boltzmann machine, as well as a generic pattern to 
+-- recognize on this machine.
 boltzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
-boltzmannAndPatGen m1 m2 max_hidden = do
-  pats_train <- patListGen BM m1 m2
+boltzmannAndPatGen maxPatSize maxPatListSize max_hidden = do
+  pats_train <- patListGen BM maxPatSize maxPatListSize
   i          <- choose (1, max_hidden)
   pats_check <- patternGen BM (V.length $ pats_train !! 0)
   return $ (pats_train, i, pats_check)
 
-
+-- | @probabilityCheck (pats, nr_h, pat)@. Creates a Boltzmann machine
+-- using @pats@ and @nr_h@ and computes the activation probability for 
+-- pat using this machine.
 probabilityCheck ::  ([Pattern], Int, Pattern) -> Gen Bool
 probabilityCheck (pats, nr_h, pat) = do
   seed <- arbitrary
