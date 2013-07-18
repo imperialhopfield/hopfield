@@ -194,10 +194,10 @@ repeatedUpdateCheck method (training_pats, pats)
         i <- arbitrary
         return $ evalRand (stopped pat) (mkStdGen i)
 
--- | @boltzmannBuildGen m1 m2 max_hidden@ Generates the structures
--- required for creating a Boltzmann machine: a list of patterns
--- together with the number of hidden layers, which has to be less 
--- than max_hidden.
+-- | @boltzmannBuildGen maxPatSize maxPatListSize max_hidden@ 
+-- Generates the structures required for creating a Boltzmann machine: 
+-- a list of patterns together with the number of hidden layers,
+-- which has to be less than max_hidden.
 boltzmannBuildGen :: Int -> Int -> Int -> Gen ([Pattern], Int)
 boltzmannBuildGen maxPatSize maxPatListSize max_hidden = do
   pats <- patListGen BM maxPatSize maxPatListSize
@@ -213,7 +213,7 @@ buildBoltzmannCheck (pats, nr_h) = do
   return $ patternsB bd == pats && nr_hiddenB bd == nr_h
 
 -- | Generates a list of patterns and the number of hidden layers
--- used to create a Boltzmann machine, as well as a generic pattern to 
+-- used to train a Boltzmann machine, as well as a generic pattern to 
 -- recognize on this machine.
 boltzmannAndPatGen :: Int -> Int -> Int -> Gen ([Pattern], Int, Pattern)
 boltzmannAndPatGen maxPatSize maxPatListSize max_hidden = do
@@ -222,9 +222,10 @@ boltzmannAndPatGen maxPatSize maxPatListSize max_hidden = do
   pats_check <- patternGen BM (V.length $ pats_train !! 0)
   return $ (pats_train, i, pats_check)
 
--- | @probabilityCheck (pats, nr_h, pat)@. Creates a Boltzmann machine
+-- | @probabilityCheck (pats, nr_h, pat)@. Trains a Boltzmann machine
 -- using @pats@ and @nr_h@ and computes the activation probability for 
--- pat using this machine.
+-- @pat@ using this machine, and check if it is indeed a probability,
+-- ie in [0,1]
 probabilityCheck ::  ([Pattern], Int, Pattern) -> Gen Bool
 probabilityCheck (pats, nr_h, pat) = do
   seed <- arbitrary
