@@ -32,6 +32,8 @@ bug-Reports:   https://github.com/imperialhopfield/hopfield/issues
 build-type:    Simple
 cabal-version: >= 1.10
 
+extra-source-files: src/Hopfield/Images/convertImage.h
+
 source-repository head
   type: git
   location: git://github.com/imperialhopfield/hopfield.git
