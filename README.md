@@ -7,7 +7,7 @@ A third year Computing group project at [Imperial College London](http://www3.im
 
 Get it from Hackage via: `cabal install hopfield`.
 
-Our report: <https://github.com/imperialhopfield/hopfield/raw/master/report/report.pdf>
+Our **report**: <https://github.com/imperialhopfield/hopfield/raw/master/report/report.pdf>
 
 
 Features
