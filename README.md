@@ -5,7 +5,7 @@ Attractor Neural Networks for Modelling Associative Memory
 
 A third year Computing group project at [Imperial College London](http://www3.imperial.ac.uk/computing/), supervised by [Prof. Abbas Edalat](https://www.doc.ic.ac.uk/~ae/).
 
-Get it from Hackage via: `cabal install hopfield`.
+Get it from [Hackage](http://hackage.haskell.org/package/hopfield) via: `cabal install hopfield`.
 
 Our **report**: <https://github.com/imperialhopfield/hopfield/raw/master/report/report.pdf>
 
@@ -15,10 +15,10 @@ Features
 
 This project implements (in Haskell):
 
-* Hopfield Networks
-* Clusters and Super Attractors
-* The Restricted Boltzmann Machine
-* A Boltzmann Machine for classification
+* [Hopfield Networks](src/Hopfield/Hopfield.hs)
+* [Clusters](src/Hopfield/Clusters.hs) and [Super Attractors](src/Hopfield/SuperAttractors.hs)
+* The [Restricted Boltzmann Machine](src/Hopfield/Boltzmann/RestrictedBoltzmannMachine.hs)
+* A [Boltzmann Machine for classification](src/Hopfield/Boltzmann/ClassificationBoltzmannMachine.hs)
 
 and comes with a range of experiments to evaluate their properties.
 
