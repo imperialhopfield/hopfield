@@ -1,1 +1,4 @@
 language: haskell
+
+before_install:
+- sudo apt-get install libgsl0-dev liblapack-dev
