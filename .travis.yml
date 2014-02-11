@@ -1,4 +1,5 @@
 language: haskell
 
+# gsl and lapack are for hmatrix
 before_install:
 - sudo apt-get install libgsl0-dev liblapack-dev
