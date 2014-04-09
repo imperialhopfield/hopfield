@@ -4,9 +4,7 @@
 module Hopfield.Experiments.Experiment2SuperAttractors where
 
 import Control.Monad (replicateM)
-import Control.Monad.Random
 import Test.QuickCheck
-import Test.QuickCheck.Gen (unGen)
 
 import Hopfield.Common
 import Hopfield.Experiments.ExperimentUtil
@@ -15,13 +13,6 @@ import Hopfield.Measurement
 import Hopfield.SuperAttractors
 import Hopfield.TestUtil (Type(H), patternGen)
 import Hopfield.Util
-
-
-genIO :: Gen a -> IO a
-genIO g = do
-    rndInt <- randomIO
-    stdGen <- getStdGen
-    return $ unGen g stdGen rndInt
 
 
 basinHeader :: String
@@ -38,7 +29,7 @@ main = do
 
 
     -- The first super attractor - primary care giver
-    originPat <- genIO $ patternGen H n
+    originPat <- generate $ patternGen H n
 
     -- Sample random patterns with Hamming distance between 25-75% from origin
     -- This is to ensure that this is a pure super attractor experiment
