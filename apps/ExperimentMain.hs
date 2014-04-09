@@ -17,8 +17,8 @@ data ExperimentArgs = ExperimentArgs { experimentName :: String
 argParser :: ParserInfo ExperimentArgs
 argParser = info (helper <*> options) ( fullDesc <> header "Runs Hopfield experiments" )
   where
-    options = ExperimentArgs <$> argument str ( metavar "EXPERIMENT" <> help "the name of the experiment to run" )
-                             <*> arguments str ( metavar "EXPERIMENT_ARGS" <> help "experiment parameters" )
+    options = ExperimentArgs <$>       argument str ( metavar "EXPERIMENT" <> help "the name of the experiment to run" )
+                             <*> many (argument str ( metavar "EXPERIMENT_ARGS" <> help "experiment parameters" ))
 
 
 main :: IO ()

@@ -108,16 +108,16 @@ data RecognizeArgs = RunOptions
 
 
 runOptions :: Parser RecognizeArgs
-runOptions = RunOptions <$> argument str  ( metavar "METHOD"     <> help "hopfield, boltzmann or cboltzmann" )
-                        <*> argument auto ( metavar "WIDTH"      <> help "width images are resized to" )
-                        <*> argument auto ( metavar "HEIGHT"     <> help "height images are resized to" )
-                        <*> argument str  ( metavar "QUERY_PATH" <> help "image to match" )
-                        <*> arguments str ( metavar "FILE_PATHS" <> help "images to match against (training set)" )
+runOptions = RunOptions <$>       argument str  ( metavar "METHOD"     <> help "hopfield, boltzmann or cboltzmann" )
+                        <*>       argument auto ( metavar "WIDTH"      <> help "width images are resized to" )
+                        <*>       argument auto ( metavar "HEIGHT"     <> help "height images are resized to" )
+                        <*>       argument str  ( metavar "QUERY_PATH" <> help "image to match" )
+                        <*> many (argument str  ( metavar "FILE_PATHS" <> help "images to match against (training set)" ))
                         <*> switch ( long "save-all-patterns" <> help "save all intermediate patterns to harddisk" )
 
 
 benchmarkOptions :: Parser RecognizeArgs
-benchmarkOptions = BenchmarkOptions <$> arguments str ( metavar "FILE_PATHS" <> help "Target for the greeting" )
+benchmarkOptions = BenchmarkOptions <$> many (argument str ( metavar "FILE_PATHS" <> help "Target for the greeting" ))
 
 
 inbuiltBenchmarkOptions :: Parser RecognizeArgs
