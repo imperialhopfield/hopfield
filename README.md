@@ -31,7 +31,7 @@ MIT licensed. We appreciate a mention if our code or results were useful for you
 Written by:
 
 * Mihaela Rosca
-* Wael Al Jisihi
+* Wael Al Jishi
 * Niklas Hambüchen
 * Razvan Marinescu
 * Lukasz Severyn
